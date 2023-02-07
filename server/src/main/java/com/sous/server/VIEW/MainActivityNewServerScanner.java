@@ -168,13 +168,24 @@ public class MainActivityNewServerScanner extends AppCompatActivity  {
                     materialTextViewToolBar.setText("Сервер");
                     // TODO: 25.01.2023  подключение после получение BINDER
                     МетодСобыытиеКнопокСканирования(new Intent("activity"));
-                    МетодЗапускКлиентаИлиСервера(new FragmentServerUser());//todo Запускам клиента или сервер фрагмент
+
+
+
+                    // TODO: 07.02.2023  первый запуск сервер  ВТОРОЙ
+                    if (fragment!=null) {
+                        fragment.onDetach();
+                        fragmentTransaction.remove(fragment);
+                    }
+              fragment=      new FragmentServerUser();
+                    МетодЗапускКлиентаИлиСервера(fragment);//todo Запускам клиента или сервер фрагмент
 
                 }, 1000);
             }
             });
             // TODO: 24.01.2023 методы для блютусаа
-            МетодЗапускКлиентаИлиСервера(new FragmentBootServer());//todo Запускам клиента или сервер фрагмент
+            fragment=      new FragmentBootServer();
+            // TODO: 07.02.2023 запус самого СЕРВЕРА СКАНРРОВНИЕ..
+            МетодЗапускКлиентаИлиСервера(fragment);//todo Запускам клиента или сервер фрагмент
             ОтветныйHendlerОтСлужбы();
             МетодНастрокийBlueTools();
             Log.d(this.getClass().getName(), " binderСканнер " + binderСканнер);
@@ -197,7 +208,6 @@ public class MainActivityNewServerScanner extends AppCompatActivity  {
         }
 
     }
-
 
 
     @SuppressLint("MissingPermission")
