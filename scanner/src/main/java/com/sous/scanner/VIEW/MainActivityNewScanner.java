@@ -278,7 +278,7 @@ public class MainActivityNewScanner extends AppCompatActivity  {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+//                    Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
                     Manifest.permission.BLUETOOTH_SCAN,
                     Manifest.permission.BLUETOOTH_CONNECT,
                     Manifest.permission.BLUETOOTH_PRIVILEGED,
@@ -288,7 +288,7 @@ public class MainActivityNewScanner extends AppCompatActivity  {
             String[] PERMISSIONS_LOCATION = {
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+        /*            Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,*/
                     Manifest.permission.BLUETOOTH_SCAN,
                     Manifest.permission.BLUETOOTH_CONNECT,
                     Manifest.permission.BLUETOOTH_PRIVILEGED,
