@@ -1166,7 +1166,7 @@ class com.dsy.dsu.CONTROLLER_synchronized_LAUNCH_IN_BACKGROUND.ClassGettingPubli
 }
 class ClassSendErros {
 }
-class com.dsy.dsu.Code_ForTABEL.MainActivity_New_Templates_Tabels {
+class com.dsy.dsu.Code_ForTABEL.MainActivity_New_Templates {
 # Spinner СпинерВыборДату
 ~ String ПолученноеЗначениеИзСпинераДата
 ~ String КакойКонтекст
@@ -1341,8 +1341,8 @@ com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized <|-- com.dsy.dsu.
 com.dsy.dsu.CONTROLLER_synchronized_LAUNCH_IN_BACKGROUND +.. com.dsy.dsu.CONTROLLER_synchronized_LAUNCH_IN_BACKGROUND.ClassCalculateInFieldIDNULLMeanDataValueNotyetsent
 com.dsy.dsu.CONTROLLER_synchronized_LAUNCH_IN_BACKGROUND +.. com.dsy.dsu.CONTROLLER_synchronized_LAUNCH_IN_BACKGROUND.ClassGettingPublicUserID
 com.dsy.dsu.CONTROLLER_synchronized_LAUNCH_IN_BACKGROUND <|-- com.dsy.dsu.CONTROLLER_synchronized_LAUNCH_IN_BACKGROUND.ClassGettingPublicUserID
-com.dsy.dsu.OnDateSetListener <|.. com.dsy.dsu.Code_ForTABEL.MainActivity_New_Templates_Tabels
-androidx.appcompat.app.AppCompatActivity <|-- com.dsy.dsu.Code_ForTABEL.MainActivity_New_Templates_Tabels
+com.dsy.dsu.OnDateSetListener <|.. com.dsy.dsu.Code_ForTABEL.MainActivity_New_Templates
+androidx.appcompat.app.AppCompatActivity <|-- com.dsy.dsu.Code_ForTABEL.MainActivity_New_Templates
 android.content.ContentProvider <|-- com.dsy.dsu.MyContentProviderDatabase
 android.content.BroadcastReceiver <|-- com.dsy.dsu.Broadcasts_Широковещательный_приемник
 @enduml

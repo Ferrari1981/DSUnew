@@ -80,7 +80,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Update_Download_File_APK_From
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Delete_File_FOr_MainActivity_Face_App;
 import com.dsy.dsu.Code_ForTABEL.MainActivity_List_Tabels;
-import com.dsy.dsu.Code_ForTABEL.MainActivity_New_Templates_Tabels;
+import com.dsy.dsu.Code_ForTABEL.MainActivity_New_Templates;
 import com.dsy.dsu.Code_For_AdmissionMaterials_ПоступлениеМатериалов.MainActivity_AdmissionMaterials;
 import com.dsy.dsu.Code_For_Commit_Payments_КодДля_Согласование.MainActivity_CommitPay;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
@@ -95,19 +95,10 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -116,7 +107,6 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import javax.inject.Inject;
@@ -472,7 +462,7 @@ SubClassTEstКод subClassВторойТЕст=new SubClassTEstКод("А мо�
                             Log.w(getPackageName().getClass().getName(), "item.getItemId()  Шаблоны из меню  " + item.getItemId() + "\n");/////////
                             try {
                                 Intent Интент_BackВозвращаемАктивти = new Intent();
-                                Интент_BackВозвращаемАктивти.setClass(getApplicationContext(), MainActivity_New_Templates_Tabels.class); // Т
+                                Интент_BackВозвращаемАктивти.setClass(getApplicationContext(), MainActivity_New_Templates.class); // Т
                                 Интент_BackВозвращаемАктивти.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 Интент_BackВозвращаемАктивти.putExtra("ЗапускШаблоновFaceAppБлокировкаКнопкиДа", true);
                                 startActivity(Интент_BackВозвращаемАктивти);

@@ -60,6 +60,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -76,7 +77,7 @@ import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Predicate;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class MainActivity_New_Templates_Tabels extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class MainActivity_New_Templates extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private Spinner СпинерВыборДату;/////спинеры для создание табеляСпинерТабельДепратамент
     private String ПолученноеЗначениеИзСпинераДата; ///результат полученный из спенров
     private   String КакойКонтекст;
@@ -595,104 +596,42 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
                                                                Cursor[] курсор_КоторыйПроверяетПУстойЛиТабеля, Integer НазваниеУдаляемогоТАбеляВЦифровомФормате
             ,String НазваниеТаблицыГдеУдалитьШАБЛОН)
             throws ExecutionException, InterruptedException, TimeoutException {
-        ///////
         Integer РезультатУдалениеСамогоТАбеля = 0;
-
         try {
             Class_MODEL_synchronized classModel_synchronizedСсылкаДляУдаленияШаблона =new Class_MODEL_synchronized(getApplicationContext());
-
             String СодержимоеКурсора = null;
-
             String СодержимоеКурсораНазваниеТабеля = null;
-            //todo если данныз нет то не удаляем Табеля удаляем если нет не одного сотрудника в нутир табеля
-
-
-//////////////////////////////
-
-
-            // TODO: 28.01.2022
-
             РезультатУдалениеСамогоТАбеля = 0;
-
-// TODO: 28.01.2022 удаление  ВО В ВЕРХНЕЙ ТАБЛИЦЕ
-
             /////TODO КОД ПРИ ОБНОВЛЯЕМ ПРИ ТАБЕЛЯ (ВАРИАНТ ВАРИАНТ УДЯЛЯЕМ А НИЖЕ ПРОСТО ОБНОВЛЯЕМ КОЛОКУ И ВПИСЫВАЕМ уДАЛЕННЫЕ)
             РезультатУдалениеСамогоТАбеля = classModel_synchronizedСсылкаДляУдаленияШаблона.
                     УдалениеТолькоШАблонЧерезКонтейнерУниверсальная(НазваниеТаблицыГдеУдалитьШАБЛОН,
                             "uuid",
                             String.valueOf(СамоЗначениеUUID));
-            //todo очищаем память
-
-
             Log.d(this.getClass().getName(), " РезультатУдалениеСотрудникаИзТаблея " + РезультатУдалениеСамогоТАбеля + " СамоЗначениеUUID " + СамоЗначениеUUID);
-
-
-
-
-
-
-
-
-
-
             // TODO: 28.01.2022 удаление  ВО ВТОРОЙ ТАБЛИЦЕ НИЖНЕЙ
             Integer РезультатУдалениеСамогоФИО_Шаблон = 0;
-
-
-
-
-
             Log.d(this.getClass().getName(), " РезультатУдалениеСотрудникаИзТаблея " + РезультатУдалениеСамогоТАбеля + " СамоЗначениеUUID " + СамоЗначениеUUID);
-
             if (РезультатУдалениеСамогоТАбеля > 0) {
-
                 Log.d(this.getClass().getName(), " УСпешное удаление ШАБЛОНА ШАБЛОНА Templates  РезультатУдалениеСамогоФИО_Шаблон " + РезультатУдалениеСамогоФИО_Шаблон + " СамоЗначениеUUID " + СамоЗначениеUUID);
-
-
-
                 /////TODO КОД ПРИ ОБНОВЛЯЕМ ПРИ ТАБЕЛЯ (ВАРИАНТ ВАРИАНТ УДЯЛЯЕМ А НИЖЕ ПРОСТО ОБНОВЛЯЕМ КОЛОКУ И ВПИСЫВАЕМ уДАЛЕННЫЕ)
                 РезультатУдалениеСамогоФИО_Шаблон = classModel_synchronizedСсылкаДляУдаленияШаблона.УдалениеТолькоШАблонЧерезКонтейнерУниверсальная("fio_template",
                         "fio_template",
                         String.valueOf(СамоЗначениеUUID));
-                //todo очищаем память
             }
-
-
             Log.d(this.getClass().getName(), " РезультатУдалениеСамогоФИО_Шаблон " + РезультатУдалениеСамогоФИО_Шаблон + " СамоЗначениеUUID " + СамоЗначениеUUID);
-
-
-
-
-
             ///TODO СООБЩЕНИЕ О РЕЗУЛЬТАТОВ
             if (РезультатУдалениеСамогоТАбеля > 0) {
-
-
-                //todo после успешной уданеие обнуляем ерпеменные
-                ДляУдалениеUUID = null;
-
-                СамоЗначениеUUID = null;
-
-                РезультатУдалениеСамогоТАбеля = 0;
-
                 ///todo сообещение о успешном удалении
                 Long ВстакаРезультата = Long.parseLong(String.valueOf(РезультатУдалениеСамогоТАбеля));
-
-                Log.d(this.getClass().getName(), " УСпешное удаление ШАБЛОНА ШАБЛОНА fio_template  РезультатУдалениеСамогоФИО_Шаблон " + РезультатУдалениеСамогоФИО_Шаблон + " СамоЗначениеUUID " + СамоЗначениеUUID);
-
-
-
+                Log.d(this.getClass().getName(), " УСпешное удаление ШАБЛОНА ШАБЛОНА fio_template  РезультатУдалениеСамогоФИО_Шаблон "
+                        + РезультатУдалениеСамогоФИО_Шаблон + " СамоЗначениеUUID " + СамоЗначениеUUID);
             } else {
                 СообщениеПослеУдаленияСамогоТАбеля("Шаблоны", "Операция удалание Шаблона не прошла ", false,
                         НазваниеУдаляемогоТАбеляВЦифровомФормате);
             }
-            //TODO в табеле присуствют сотрудника
-
-
 
         } catch (Exception e) {
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
@@ -814,41 +753,22 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void МетодУдалениеВсехСотрудниковВТАбеле(Long СамоЗначениеUUID, String ДляУдалениеUUID, Integer НазваниеУдаляемогоТАбеляВЦифровомФормате) throws ExecutionException, InterruptedException, TimeoutException {
-
+    private void МетодУдалениеВсехСотрудниковВТАбеле(Long СамоЗначениеUUID, String ДляУдалениеUUID,
+                                                     Integer НазваниеУдаляемогоТАбеляВЦифровомФормате) throws ExecutionException, InterruptedException, TimeoutException {
         final long[] РезультатУдалениеВсехСотрудниковСамогоТАбеля = {0};
         try {
-
-
             String СамоЗначениеUUIDДляУдаланиевсехСотрудников = null;
-
             Iterator<String> итераторДляУдалениеВсегоТабеля = СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.iterator();
-
-
             СамоЗначениеUUIDДляУдаланиевсехСотрудников = итераторДляУдалениеВсегоТабеля.next();
             System.out.println(СамоЗначениеUUIDДляУдаланиевсехСотрудников);
-
-
-            ///////
-
             РезультатУдалениеВсехСотрудниковСамогоТАбеля[0] = new Class_MODEL_synchronized(getApplication()).
                     УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("tabels", "cfo",
                             Long.parseLong(String.valueOf(НазваниеУдаляемогоТАбеляВЦифровомФормате)));
-
             System.out.println("РезультатУдалениеВсехСотрудниковСамогоТАбеля " + РезультатУдалениеВсехСотрудниковСамогоТАбеля[0]);
-
-            //todo очищаем память
-
             System.out.println(РезультатУдалениеВсехСотрудниковСамогоТАбеля[0]);
-
-
-            //  ССылкаНаСозданнуюБазу.close();
-
             СообщениеПослеУдаленияСамогоТАбеля("Оповещение Табеля", "Успешное удалание Табеля"
                     + "\n" + " (с сотрудниками): "
                     + СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.size(), true, НазваниеУдаляемогоТАбеляВЦифровомФормате);
-
-
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу
@@ -865,8 +785,6 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
     @UiThread
     protected void СообщениеПослеУдаленияСамогоТАбеля(String ШабкаДиалога, String СообщениеДиалога, boolean Статус, Integer НазваниеУдаляемогоТАбеляВЦифровомФормате) {
         ///////СОЗДАЕМ ДИАЛОГ ДА ИЛИ НЕТ///////СОЗДАЕМ ДИАЛОГ ДА ИЛИ НЕТ
-
-
 //////сам вид
         int Значек;
         if (Статус) {
@@ -893,33 +811,14 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
                 Log.d(this.getClass().getName(), "  ФИНАЛ после удалание сотрудуника ");
                 //////// todo если успешно удаление табеля то запускаем сообщение
                 if (Статус) {
-
-                    ///TODO попытка открыть экран как full screan
-                    ////////ЗАПОЛНЯЕМ АРАЙЛИСТ
-                    ////////ЗАПОЛНЯЕМ АРАЙЛИСТ
                     try {
-
                         ///todo метод для удаления табеля
                         МетодДляУдалениеШаблонаЕслиВнемНетСотрудников();
-                        //////
-                        //////
-
-                        ////todo заполение спинера
                         МетодЗаполненияАлайЛИстаНовымМЕсцевНовогоТабеля();////метод вызаваем все созжданные ТАБЕДЯ ИЗ БАПЗЫ И ДАЛЕЕ ИХ ЗАПИСЫВАЕМ В ОБМЕН
-                        ////todo заполение спинера
-                        //////
-
-
                         МетодСозданиеСпинераДляДатыНаАктивитиСозданиеИВыборТабеля();
-
-                        //
                         ScrollНаАктивтиСозданныхТабелей.forceLayout();
-
-                        //////
-
                     } catch (Exception e) {
                         e.printStackTrace();
-                        ///метод запись ошибок в таблицу
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                                 " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
                         // TODO: 01.09.2021 метод вызова
@@ -928,16 +827,10 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
                                 Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                     }
                 }
-
-                //TODO  второе действие заполенние контентом  в табеля в TableLyзаполения табеля из базы через элемент TableLauy
-                //todo код послеу успешного удаления табеля
-                //todo
             }
         });
     }
 ////todo конец фильаного сообщения о удалени самого табеля
-
-
     private void МетодСозданиеСпинераДляДатыНаАктивитиСозданиеИВыборТабеля() {
         try {
 
@@ -1812,7 +1705,7 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
 
 
                                 // TODO: 14.03.2021 метод записываем сотрудников в табель на базе ранее созданого шаблона
-                                СообщениеКотороеСпрашиваетНужноЛиВставлятьСотрудниковИзРанееСозданогоШаблона("Шаблоны", "Заполнить Табель из Шаблона ? :"
+                                СообщениеЗаполнениеСотрудниковИзШаблона("Шаблоны", "Заполнить Табель из Шаблона ? :"
                                                 + "\n" + "\n" + stringBuffer.toString() + ":" + lines + " кол.", true,
                                         Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней, Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм, ПередаемСозданнуюНазваниеТабеля,
                                         ПередаваемыйИзКнопкиПолучаемUUIDТабеля,lines);
@@ -2548,21 +2441,10 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
                     alertDialog.dismiss();
                     Log.d(this.getClass().getName(), " создание нового сотрудника ");
                     ///TODO создание нового ТАБЕЛЯ
-
                     Log.d(this.getClass().getName(), " Переход на  Шаблоны");
-
-
                     МетодСозданияНовогоШАблона();
-
-
-                    ////////МетодСозданиеДиалогаКалендаряДаты();////ЗПАСУКАЕМ МЕТОД КОГДА НАДО ВЫБРВТЬ ДАТУ С КАЛЕНДАРКА
-
-
                 }
-
-
             });
-
 /////////кнопка
             final Button MessageBoxUpdateЗАкрытьСозданиеТабеля = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
             MessageBoxUpdateЗАкрытьСозданиеТабеля.setOnClickListener(new View.OnClickListener() {
@@ -2730,166 +2612,123 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
 
     ///todo сообщение на активти создание новго сотрудника спрашиваем нужно ли создать
     @UiThread
-    protected void СообщениеКотороеСпрашиваетНужноЛиВставлятьСотрудниковИзРанееСозданогоШаблона(String ШабкаДиалога,
-                                                                                                final String СообщениеДиалога,
-                                                                                                boolean статус,
-                                                                                                SQLiteCursor Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней,
-                                                                                                SQLiteCursor Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм,
-                                                                                                String ПередаемСозданнуюНазваниеТабеля,
-                                                                                                Object ПередаваемыйИзКнопкиПолучаемUUIDТабеля
+    protected void СообщениеЗаполнениеСотрудниковИзШаблона(String ШабкаДиалога,
+                                                           final String СообщениеДиалога,
+                                                           boolean статус,
+                                                           SQLiteCursor Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней,
+                                                           SQLiteCursor Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм,
+                                                           String ПередаемСозданнуюНазваниеТабеля,
+                                                           Object ПередаваемыйИзКнопкиПолучаемUUIDТабеля
             , int lines) {
         ///////СОЗДАЕМ ДИАЛОГ ДА ИЛИ НЕТ///////СОЗДАЕМ ДИАЛОГ ДА ИЛИ НЕТ
-        try {
 //////сам вид
-            final AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)
-                    .setTitle(ШабкаДиалога)
-                    .setMessage(СообщениеДиалога)
-                    .setPositiveButton("Да", null)
-                    .setNegativeButton("Нет", null)
-                    .setNeutralButton("Ещё", null)
-                    .setIcon(R.drawable.icon_dsu1_tabels_for_new_tamples)
-                    .show();
-
-
-            Log.d(this.getClass().getName(),
-                    " ЗапускШаблоновFaceAppБлокировкаКнопкиДа " + ЗапускШаблоновFaceAppБлокировкаКнопкиДа
-                            + " lines " +lines);
-            ///TODO создание нового ТАБЕЛЯ
-
-
-
-
-            if (ЗапускШаблоновFaceAppБлокировкаКнопкиДа == true   || lines==0) {
-                // Initially disable the button
-                ((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(View.GONE);
-                //  ((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_NEUTRAL).setVisibility(View.GONE);
-            }
-/////////кнопка
-            final Button MessageBoxUpdateСоздатьТабель = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            MessageBoxUpdateСоздатьТабель.setOnClickListener(new View.OnClickListener() {
-                ///MessageBoxUpdate метод CLICK для DIALOBOX
-                @Override
-                public void onClick(View v) {
-                    //удаляем с экрана Диалог
-                    alertDialog.dismiss();
-
-
-                    Log.d(this.getClass().getName(), " создание нового сотрудникаКурсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм " + Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм.getCount());
-                    ///TODO создание нового ТАБЕЛЯ
-
-                    Log.d(this.getClass().getName(), " Переход на  Шаблоны");
-
-                    try {
-
-
-                        // TODO: 17.03.2021 запусить добадение сотрудниковвиз шабона
-
-
-                        МетодСамойЗаписиСотрудниковИзРанееСозданногШаблона(Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней,
-                                Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм);
-
-                        ///
-
-
-                        Log.d(this.getClass().getName(), " Переход на  Шаблоны"
-                                + " Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней "
-                                + Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней +
-                                "  Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм " + Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм);
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        ///метод запись ошибок в таблицу
-                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        // TODO: 01.09.2021 метод вызова
-                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
-                                this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    }
-
-                }
-            });
-
-/////////кнопка
-            final Button MessageBoxUpdateЗАкрытьСозданиеТабеля = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-            MessageBoxUpdateЗАкрытьСозданиеТабеля.setOnClickListener(new View.OnClickListener() {
-                ///MessageBoxUpdate метод CLICK для DIALOBOX
-                @Override
-                public void onClick(View v) {
-                    //удаляем с экрана Диалог
-                    alertDialog.dismiss();
-///запуск метода обновления через DIALOGBOX
-                }
-            });
-            /////
-            //TODO шаблоны
-
-
-            /////////кнопка
-            final Button MessageBoxUpdateЕщеДобавитьКШАблонуСорудников = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-            MessageBoxUpdateЕщеДобавитьКШАблонуСорудников.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialog.dismiss();
-                    Log.d(this.getClass().getName(), " создание нового сотрудника ");
-                    ///TODO создание нового ТАБЕЛЯ
-                    Log.d(this.getClass().getName(), " Переход на  Шаблоны");
-                    try {
-                        Log.d(this.getClass().getName(), " Переход на  Шаблоны");
-                        Intent Интент_ШаблоныызватИлиСоздать = new Intent();
-                        Интент_ШаблоныызватИлиСоздать.setClass(getApplicationContext(), MainActivity_Find_Templates.class); // Т
-                        Интент_ШаблоныызватИлиСоздать.putExtra("ЦифровоеИмяНовгоТабеля", ЦифровоеИмяНовгоТабеля);
-                        Интент_ШаблоныызватИлиСоздать.putExtra("ПолноеИмяТабеляПослеСозданиеНовогоСотрудника", ПолноеИмяТабеляПослеСозданиеНовогоСотрудника);
-                        Интент_ШаблоныызватИлиСоздать.putExtra("МесяцТабеляФинал", МесяцТабеляФинал);
-                        Интент_ШаблоныызватИлиСоздать.putExtra("ПолученнаяUUIDНазванияОрганизации", ПолученнаяUUIDНазванияОрганизации);
-                        Интент_ШаблоныызватИлиСоздать.putExtra("ПередаемСозданнуюНазваниеТабеля", ПередаемСозданнуюНазваниеТабеля);
-                        Интент_ШаблоныызватИлиСоздать.putExtra("ПередаваемыйИзКнопкиПолучаемUUIDТабеля", Long.parseLong(ПередаваемыйИзКнопкиПолучаемUUIDТабеля.toString()));
-                        Интент_ШаблоныызватИлиСоздать.putExtra("ЗапускШаблоновFaceAppБлокировкаКнопкиДа", ЗапускШаблоновFaceAppБлокировкаКнопкиДа);
-                        Log.d(this.getClass().getName(), "  РодительскийUUDТаблицыТабель " + РодительскийUUDТаблицыТабель);
-                        Интент_ШаблоныызватИлиСоздать.putExtra("РодительскийUUDТаблицыТабель", РодительскийUUDТаблицыТабель);
-                        Log.d(this.getClass().getName(), "ЦифровоеИмяНовгоТабеля" + ЦифровоеИмяНовгоТабеля + " ПередаемСозданнуюНазваниеТабеля " + ПередаемСозданнуюНазваниеТабеля +
-                                "  РодительскийUUDТаблицыТабель " + РодительскийUUDТаблицыТабель);
-                        Интент_ШаблоныызватИлиСоздать.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        Bundle data=new Bundle();
-                        data.putBinder("binder", binder);
-                        Интент_ШаблоныызватИлиСоздать.putExtras(data);
-                        startActivity(Интент_ШаблоныызватИлиСоздать);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        // TODO: 01.09.2021 метод вызова
-                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
-                                this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    }
-                }
-            });
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ///метод запись ошибок в таблицу
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            // TODO: 01.09.2021 метод вызова
-            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
-                    this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+        final AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)
+                .setTitle(ШабкаДиалога)
+                .setMessage(СообщениеДиалога)
+                .setPositiveButton("Да", null)
+                .setNegativeButton("Нет", null)
+                .setNeutralButton("Ещё", null)
+                .setIcon(R.drawable.icon_dsu1_tabels_for_new_tamples)
+                .show();
+        Log.d(this.getClass().getName(),
+                " ЗапускШаблоновFaceAppБлокировкаКнопкиДа " + ЗапускШаблоновFaceAppБлокировкаКнопкиДа
+                        + " lines " + lines);
+        if (ЗапускШаблоновFaceAppБлокировкаКнопкиДа == true || lines == 0) {
+            ((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(View.GONE);
         }
+
+        final Button MessageBoxUpdateСоздатьТабель = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        MessageBoxUpdateСоздатьТабель.setOnClickListener(new View.OnClickListener() {
+            ///MessageBoxUpdate метод CLICK для DIALOBOX
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                Log.d(this.getClass().getName(), " создание нового сотрудникаКурсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм " + Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм.getCount());
+                Log.d(this.getClass().getName(), " Переход на  Шаблоны");
+
+                // TODO: 17.03.2021 запусить добадение сотрудниковвиз шабона
+                try {
+                    МетодСамойЗаписиСотрудниковИзРанееСозданногШаблона(Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней,
+                            Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм);
+                    Log.d(this.getClass().getName(), " Переход на  Шаблоны"
+                            + " Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней "
+                            + Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней +
+                            "  Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм " + Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм);
+                    // TODO: 14.02.2023
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    // TODO: 01.09.2021 метод вызова
+                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                            this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                            Thread.currentThread().getStackTrace()[2].getLineNumber());
+                }
+            }
+
+        });
+
+/////////кнопка
+        final Button MessageBoxUpdateЗАкрытьСозданиеТабеля = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        MessageBoxUpdateЗАкрытьСозданиеТабеля.setOnClickListener(new View.OnClickListener() {
+            ///MessageBoxUpdate метод CLICK для DIALOBOX
+            @Override
+            public void onClick(View v) {
+                //удаляем с экрана Диалог
+                alertDialog.dismiss();
+            }
+        });
+        final Button MessageBoxUpdateЕщеДобавитьКШАблонуСорудников = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+        MessageBoxUpdateЕщеДобавитьКШАблонуСорудников.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                Log.d(this.getClass().getName(), " создание нового сотрудника ");
+                ///TODO создание нового ТАБЕЛЯ
+                Log.d(this.getClass().getName(), " Переход на  Шаблоны");
+                try {
+                    Log.d(this.getClass().getName(), " Переход на  Шаблоны");
+                    Intent Интент_ШаблоныызватИлиСоздать = new Intent();
+                    Интент_ШаблоныызватИлиСоздать.setClass(getApplicationContext(), MainActivity_Find_Templates.class); // Т
+                    Интент_ШаблоныызватИлиСоздать.putExtra("ЦифровоеИмяНовгоТабеля", ЦифровоеИмяНовгоТабеля);
+                    Интент_ШаблоныызватИлиСоздать.putExtra("ПолноеИмяТабеляПослеСозданиеНовогоСотрудника", ПолноеИмяТабеляПослеСозданиеНовогоСотрудника);
+                    Интент_ШаблоныызватИлиСоздать.putExtra("МесяцТабеляФинал", МесяцТабеляФинал);
+                    Интент_ШаблоныызватИлиСоздать.putExtra("ПолученнаяUUIDНазванияОрганизации", ПолученнаяUUIDНазванияОрганизации);
+                    Интент_ШаблоныызватИлиСоздать.putExtra("ПередаемСозданнуюНазваниеТабеля", ПередаемСозданнуюНазваниеТабеля);
+                    Интент_ШаблоныызватИлиСоздать.putExtra("ПередаваемыйИзКнопкиПолучаемUUIDТабеля", Long.parseLong(ПередаваемыйИзКнопкиПолучаемUUIDТабеля.toString()));
+                    Интент_ШаблоныызватИлиСоздать.putExtra("ЗапускШаблоновFaceAppБлокировкаКнопкиДа", ЗапускШаблоновFaceAppБлокировкаКнопкиДа);
+                    Log.d(this.getClass().getName(), "  РодительскийUUDТаблицыТабель " + РодительскийUUDТаблицыТабель);
+                    Интент_ШаблоныызватИлиСоздать.putExtra("РодительскийUUDТаблицыТабель", РодительскийUUDТаблицыТабель);
+                    Log.d(this.getClass().getName(), "ЦифровоеИмяНовгоТабеля" + ЦифровоеИмяНовгоТабеля + " ПередаемСозданнуюНазваниеТабеля " + ПередаемСозданнуюНазваниеТабеля +
+                            "  РодительскийUUDТаблицыТабель " + РодительскийUUDТаблицыТабель);
+                    Интент_ШаблоныызватИлиСоздать.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Bundle data = new Bundle();
+                    data.putBinder("binder", binder);
+                    Интент_ШаблоныызватИлиСоздать.putExtras(data);
+                    startActivity(Интент_ШаблоныызватИлиСоздать);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    // TODO: 01.09.2021 метод вызова
+                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                            this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                            Thread.currentThread().getStackTrace()[2].getLineNumber());
+                }
+            }
+        });
     }
 
 
-    void МетодСамойЗаписиСотрудниковИзРанееСозданногШаблона(@NonNull SQLiteCursor Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней,
-                                                            @NonNull  SQLiteCursor Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм) throws InterruptedException {
+    void МетодСамойЗаписиСотрудниковИзРанееСозданногШаблона(@NonNull SQLiteCursor Курсор_ВыходныеДниДанные,
+                                                            @NonNull  SQLiteCursor Курсор_СамиДАнные) throws InterruptedException {
 
      
         try {
             // TODO: 29.06.2022 Данные Пришли ДЛля Вставки Данных В шаблон Из ШАБЛОНА ГТовго 
-            Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм.moveToFirst();
-            Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней.moveToFirst();
-            Integer Count = Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм.getCount();
+            Курсор_СамиДАнные.moveToFirst();
+            Курсор_ВыходныеДниДанные.moveToFirst();
+            Integer Count = Курсор_СамиДАнные.getCount();
 
             // TODO: 29.06.2022  запускаем ПрогрессБарСОТпображениеОперациий Вставки данных В ТАбель Из шаблона  
             progressDialog = new ProgressDialog(this);
@@ -2910,108 +2749,100 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
 
 // TODO: 29.06.2022  Запускам Добалвение ШАблона в Табель
 
-            Observable observableВставкаИзШаблонаВТабкель=    Observable.fromAction(new Action() {
+            Observable observableВставкаИзШаблонаВТабкель=    Observable.fromArray(Курсор_СамиДАнные.getCount())
+                    .subscribeOn(Schedulers.single())
+                    .doOnNext(new Consumer<Integer>() {
                         @Override
-                        public void run() throws Throwable {
+                        public void accept(Integer integer) throws Throwable {
                             Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
-                                int ТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел = 0;
-                                Long finalРезультатВставкиСотрудниковИзШаблона1 = 0l;
+                            int ТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел = 0;
+                            Long finalРезультатВставкиСотрудниковИзШаблона1 = 0l;
                             // TODO: 29.06.2022
+                            try {
+                                    locker.lock();
+                                    try {
+                                        ContentValues АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель = new ContentValues();
+                                        ///todo из заполянем адапрет из курсора
+                                        АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель =
+                                                МетодЗаполенияДаннымиДляЗаполенияТабеляИзГотовогоШаблона(Курсор_ВыходныеДниДанные,
+                                                        Курсор_СамиДАнные);
+                                        Log.d(this.getClass().getName(), "АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель[0]" + АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.valueSet().toString()+
+                                                " Курсор_СамиДАнные "+Курсор_СамиДАнные+ " Курсор_ВыходныеДниДанные "+Курсор_ВыходныеДниДанные);
 
-                                try {
-                                    do {
-                                        locker.lock();
-
-                                        try {
-                                            ContentValues АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель = new ContentValues();
-                                            ///todo из заполянем адапрет из курсора
-                                            АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель =
-                                                    МетодЗаполенияДаннымиДляЗаполенияТабеляИзГотовогоШаблона(Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней,
-                                                            Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм);
-                                            Log.d(this.getClass().getName(), "АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель[0]" + АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.valueSet().toString());
-
-                                            String ТаблицаОбработкиДорбалвенИзШаблона = "data_tabels";
-                                            finalРезультатВставкиСотрудниковИзШаблона1 = 0l;
-                                            // TODO: 03.10.2021  сама вставка
-                                            if (АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.size() > 0) {
-                                                ///////////////////////////////
-                                                finalРезультатВставкиСотрудниковИзШаблона1 = new Class_MODEL_synchronized(getApplicationContext()).
-                                                        ВставкаДанныхЧерезКонтейнерТолькоПриСозданииНовогоСотрудникаУниверсальная(ТаблицаОбработкиДорбалвенИзШаблона,
-                                                                АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель, ТаблицаОбработкиДорбалвенИзШаблона, "");//////TODO когда true -это значет применяеться только не вобмене  и говорит что плюс записываем изменению версии джанных
-                                            }else{
-                                                //todo
-                                                Toast.makeText(getApplicationContext(), "  Нет данных для заполнения из шаблона !!! " , Toast.LENGTH_SHORT).show();
-                                            }
-                                            Log.d(this.getClass().getName(), "   finalРезультатВставкиСотрудниковИзШаблона1[0]  " + finalРезультатВставкиСотрудниковИзШаблона1);
-// TODO: 24.05.2021 вставка если пользователь разреил атоматическую вставку выходных дней
-                                            // TODO: 24.05.2021  месяц
-                                            if (finalРезультатВставкиСотрудниковИзШаблона1 > 0) {
-                                                int ИндексМесяц = Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней.getColumnIndex("month_tabels");
-                                                int Месяц = Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней.getInt(ИндексМесяц);
-                                                // TODO: 24.05.2021  год
-                                                int ИндексГод = Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней.getColumnIndex("year_tabels");
-                                                int Год = Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней.getInt(ИндексГод);
-                                                Integer РезультатВставкаВыходныхДНей =
-                                                        new Class_Generation_Weekend_For_Tabels(getApplicationContext())
-                                                                .МетодТретийАвтоматическаяВставкаВыходныхДней(МетодГенерацииUUIDУжеСуществующегоСотрудника, Год, Месяц);
-                                                Log.d(this.getClass().getName(), "   РезультатВставкаВыходныхДНей  " + РезультатВставкаВыходныхДНей);
-                                                // TODO: 28.01.2022 ПОВЫШАЕМ ВЕРСИЮ  В ТАБЛИЦЕ МОДИФИКАЦИИ КЛИЕНТ
-                                            }
-
-                                            if (finalРезультатВставкиСотрудниковИзШаблона1 > 0) {
-                                                Log.w(this.getClass().getName(), " finalРезультатВставкиСотрудниковИзШаблона1 " + finalРезультатВставкиСотрудниковИзШаблона1);
-                                                ТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел++;
-                                                int finalТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел = ТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел;
-                                                // TODO: 29.06.2022
-                                                condition.await(200,TimeUnit.MILLISECONDS);
-                                                condition.signal();
-
-                                                ((Activity) КонтекстШаблоны).runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        progressDialog.setIndeterminate(false);
-                                                        progressDialog.setProgress((int) finalТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел);
-                                                        progressDialog.setMessage("Добавление сотрудника/ов..." + finalТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел + " (" + Count + ")");
-                                                    }
-                                                });
-
-                                            } else  {
-                                                ((Activity) КонтекстШаблоны).runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        progressDialog.setIndeterminate(false);
-                                                        progressDialog.setMessage(" Данный сотрудник уже в  табеле !!!");
-                                                    }
-                                                });
-                                            }
-                                        } catch (ExecutionException e) {
-                                            e.printStackTrace();
-                                            ///метод запись ошибок в таблицу
-                                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-
-                                        }finally {
-                                            locker.unlock();
+                                        String ТаблицаОбработкиДорбалвенИзШаблона = "data_tabels";
+                                        finalРезультатВставкиСотрудниковИзШаблона1 = 0l;
+                                        // TODO: 03.10.2021  сама вставка
+                                        if (АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.size() > 0) {
+                                            ///////////////////////////////
+                                            finalРезультатВставкиСотрудниковИзШаблона1 = new Class_MODEL_synchronized(getApplicationContext()).
+                                                    ВставкаДанныхЧерезКонтейнерТолькоПриСозданииНовогоСотрудникаУниверсальная(ТаблицаОбработкиДорбалвенИзШаблона,
+                                                            АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель, ТаблицаОбработкиДорбалвенИзШаблона, "");//////TODO когда true -это значет применяеться только не вобмене  и говорит что плюс записываем изменению версии джанных
+                                        }else{
+                                            //todo
+                                            Toast.makeText(getApplicationContext(), "  Нет данных для заполнения из шаблона !!! " , Toast.LENGTH_SHORT).show();
                                         }
-                                        ////////
-                                        ///todo КРУИТЬ ЗАПИСИ СКОЛЬКО В ШАБЛОНЕ ДЛ ЭТГО БЫЛО УЖЕ ЗАПОНЕНО СКОЛЬКО И БУДЕТ  ПОВТОРЕНИЙ
-                                    } while (Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм.moveToNext());
-                                    // TODO: 29.06.2022 close cursor
-                                    Курсор_СДаннымиИзШаблонаДАнныхСозданныйПользовательм.close();
-                                    Курсор_КотрыйПолученИзТаблицыТабельТолькоДляПолученияНаОсновеСФОляВставкиВыходныхДней.close();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    ///метод запись ошибок в таблицу
-                                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                }
+                                        Log.d(this.getClass().getName(), "   finalРезультатВставкиСотрудниковИзШаблона1[0]  " + finalРезультатВставкиСотрудниковИзШаблона1);
+// TODO: 24.05.2021 вставка если пользователь разреил атоматическую вставку выходных дней
+                                        // TODO: 24.05.2021  месяц
+                                        if (finalРезультатВставкиСотрудниковИзШаблона1 > 0) {
+                                            int ИндексМесяц = Курсор_ВыходныеДниДанные.getColumnIndex("month_tabels");
+                                            int Месяц = Курсор_ВыходныеДниДанные.getInt(ИндексМесяц);
+                                            // TODO: 24.05.2021  год
+                                            int ИндексГод = Курсор_ВыходныеДниДанные.getColumnIndex("year_tabels");
+                                            int Год = Курсор_ВыходныеДниДанные.getInt(ИндексГод);
+                                            Integer РезультатВставкаВыходныхДНей =
+                                                    new Class_Generation_Weekend_For_Tabels(getApplicationContext())
+                                                            .МетодТретийАвтоматическаяВставкаВыходныхДней(МетодГенерацииUUIDУжеСуществующегоСотрудника, Год, Месяц);
+                                            Log.d(this.getClass().getName(), "   РезультатВставкаВыходныхДНей  " + РезультатВставкаВыходныхДНей);
+                                            // TODO: 28.01.2022 ПОВЫШАЕМ ВЕРСИЮ  В ТАБЛИЦЕ МОДИФИКАЦИИ КЛИЕНТ
+                                        }
+
+                                        if (finalРезультатВставкиСотрудниковИзШаблона1 > 0) {
+                                            Log.w(this.getClass().getName(), " finalРезультатВставкиСотрудниковИзШаблона1 " + finalРезультатВставкиСотрудниковИзШаблона1);
+                                            ТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел++;
+                                            int finalТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел = ТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел;
+                                            ((Activity) КонтекстШаблоны).runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    progressDialog.setIndeterminate(false);
+                                                    progressDialog.setProgress((int) finalТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел);
+                                                    progressDialog.setMessage("Добавление сотрудника/ов..." + finalТекущаяОперацияВставкиИзШаблонаСотрудниковВТабел + " (" + Count + ")");
+                                                }
+                                            });
+
+                                        } else  {
+                                            ((Activity) КонтекстШаблоны).runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    progressDialog.setIndeterminate(false);
+                                                    progressDialog.setMessage(" Данный сотрудник уже в  табеле !!!");
+                                                }
+                                            });
+                                        }
+                                        condition.await(300,TimeUnit.MILLISECONDS);
+                                        condition.signal();
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                        ///метод запись ошибок в таблицу
+                                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                    }finally {
+                                        locker.unlock();
+                                    }
+                                    ////////
+                                    ///todo КРУИТЬ ЗАПИСИ СКОЛЬКО В ШАБЛОНЕ ДЛ ЭТГО БЫЛО УЖЕ ЗАПОНЕНО СКОЛЬКО И БУДЕТ  ПОВТОРЕНИЙ
+                                    Курсор_СамиДАнные.moveToNext();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            }
                         }
-                    }).subscribeOn(Schedulers.computation())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    })
                     .onErrorComplete(new Predicate<Throwable>() {
                         @Override
                         public boolean test(Throwable throwable) throws Throwable {
@@ -3019,28 +2850,25 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
                             return false;
                         }
                     })
+                    .observeOn(AndroidSchedulers.mainThread())
                     .doOnComplete(new Action() {
                         @Override
                         public void run() throws Throwable {
                             Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+                            // TODO: 29.06.2022 close cursor
+                            Курсор_СамиДАнные.close();
+                            Курсор_ВыходныеДниДанные.close();
                             progressDialog.setIndeterminate(true);
                             progressDialog.dismiss();
                             progressDialog.cancel();
                             ///////todo ПОСЛЕ САТВКИ УСПЕШНОЙ ЕПРЕХОДИМ НА ДРУГУЮ АКТИВТИ
                             МетодПереходаПослеУспешногоДобавленияСотрудниклвИзШаблонаВТабель();
                             // TODO: 26.03.2021 ДОПОЛНИТЕЛЬНО ОБНУЛЯЕМ ВСЕ ТАБЕЛЯ С NULL В ФИО ЧТО БЫ ОБМЕН НЕ РУГАЛЬСЯ
-
                             Log.w(this.getClass().getName(), " Не был вставлен СОТРУДНИК ИЗ ШАБЛОНА КАК ТАК ОН УЖЕ ЕСТЬ В ЭТОМ ТАБЕЛЕ o  ");
                         }
                     });
 
-            observableВставкаИзШаблонаВТабкель.subscribe(new Consumer() {
-                @Override
-                public void accept(Object o) throws Throwable {
-                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  "+o.toString() );
-
-                }
-            });
+            observableВставкаИзШаблонаВТабкель.subscribe();
             ///
         } catch (Exception e) {
             e.printStackTrace();
@@ -3223,7 +3051,7 @@ public class MainActivity_New_Templates_Tabels extends AppCompatActivity impleme
         Intent ИнтентЗапускаемСуществующийТабель = new Intent();//getApplicationContext()
         try {
             if (ЦифровоеИмяНовгоТабеля > 0) {
-                ИнтентЗапускаемСуществующийТабель = new Intent(MainActivity_New_Templates_Tabels.this, MainActivity_List_Peoples.class);//getApplicationContext()
+                ИнтентЗапускаемСуществующийТабель = new Intent(MainActivity_New_Templates.this, MainActivity_List_Peoples.class);//getApplicationContext()
             }else {
                 ИнтентЗапускаемСуществующийТабель.setClass(getApplicationContext(), MainActivity_Face_App.class); // Т
             }
