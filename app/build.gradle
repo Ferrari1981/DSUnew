@@ -148,7 +148,7 @@ dependencies {
     implementation "androidx.startup:startup-runtime:1.1.0"
     //TODO Firebase Push Notifications
     implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.2'
-    implementation 'com.firebase:firebase-jobdispatcher:0.5.2'
+
     implementation   'com.google.gms:google-services:4.2.0'
     implementation   'com.google.firebase:firebase-bom:26.1.1'
     implementation 'com.google.firebase:firebase-crashlytics-gradle:2.8.0'
