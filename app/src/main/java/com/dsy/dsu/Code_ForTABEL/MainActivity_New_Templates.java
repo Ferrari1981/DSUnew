@@ -50,6 +50,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -71,6 +74,7 @@ import java.util.regex.Pattern;
 
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Consumer;
@@ -2748,8 +2752,56 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
             Condition condition = locker.newCondition(); // получаем условие, связанное с блокировкойм
 
 // TODO: 29.06.2022  Запускам Добалвение ШАблона в Табель
+            Flowable.range(1, Flowable.bufferSize() * 2)
+                    .doOnNext(new Consumer<Integer>() {
+                        @Override
+                        public void accept(Integer t) {
+                            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+                        }
+                    }).subscribe();
+            Flowable.range(1, 5)
+                    .throttleLatest(1, TimeUnit.MINUTES).doOnNext(new Consumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) throws Throwable {
+                            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+                        }
+                    }).subscribe();
+            Flowable.range(1, 5).take(1, TimeUnit.MINUTES).doOnNext(new Consumer<Integer>() {
+                @Override
+                public void accept(Integer integer) throws Throwable {
+                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+                }
+            }).subscribe();
 
-            Observable observableВставкаИзШаблонаВТабкель=    Observable.fromArray(Курсор_СамиДАнные.getCount())
+            Flowable.range(1,Count).doOnNext(new Consumer<Integer>() {
+                @Override
+                public void accept(Integer integer) throws Throwable {
+                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+                }
+            }).subscribe(new Subscriber<Integer>() {
+                @Override
+                public void onSubscribe(Subscription s) {
+                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+                }
+
+                @Override
+                public void onNext(Integer integer) {
+                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+                }
+
+                @Override
+                public void onComplete() {
+                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+                }
+            });
+            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+
+            /*Observable observableВставкаИзШаблонаВТабкель=    Observable.fromArray(Курсор_СамиДАнные.getCount())
                     .subscribeOn(Schedulers.single())
                     .doOnNext(new Consumer<Integer>() {
                         @Override
@@ -2779,7 +2831,9 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                                                             АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель, ТаблицаОбработкиДорбалвенИзШаблона, "");//////TODO когда true -это значет применяеться только не вобмене  и говорит что плюс записываем изменению версии джанных
                                         }else{
                                             //todo
-                                            Toast.makeText(getApplicationContext(), "  Нет данных для заполнения из шаблона !!! " , Toast.LENGTH_SHORT).show();
+                                            getApplicationContext().getMainExecutor().execute(()->{
+                                                Toast.makeText(getApplicationContext(), "  Нет данных для заполнения из шаблона !!! " , Toast.LENGTH_SHORT).show();
+                                            });
                                         }
                                         Log.d(this.getClass().getName(), "   finalРезультатВставкиСотрудниковИзШаблона1[0]  " + finalРезультатВставкиСотрудниковИзШаблона1);
 // TODO: 24.05.2021 вставка если пользователь разреил атоматическую вставку выходных дней
@@ -2869,7 +2923,7 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                     });
 
             observableВставкаИзШаблонаВТабкель.subscribe();
-            ///
+            ///*/
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу
