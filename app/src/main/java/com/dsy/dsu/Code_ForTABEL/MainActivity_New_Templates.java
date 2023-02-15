@@ -76,7 +76,10 @@ import java.util.regex.Pattern;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.functions.BiFunction;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Predicate;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -2751,6 +2754,76 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
             ReentrantLock locker = new ReentrantLock(); // создаем блокировку
             Condition condition = locker.newCondition(); // получаем условие, связанное с блокировкойм
 
+            Disposable ds;
+            Observable.range(0,5)
+                      .concatMap(i->Observable.just(i).t
+                              .delay(3,TimeUnit.SECONDS))
+                              .subscribe(new Observer<Integer>() {
+                                  @Override
+                                  public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                                      System.out.println("## result : " + d);
+                                  }
+
+                                  @Override
+                                  public void onNext(@io.reactivex.rxjava3.annotations.NonNull Integer integer) {
+                                      System.out.println("## result : " + integer+ "  время " +new Date().toLocaleString());
+                                  }
+
+                                  @Override
+                                  public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                      System.out.println("## result : " + e);
+                                  }
+
+                                  @Override
+                                  public void onComplete() {
+                                      System.out.println("## result : " );
+                                  }
+                              });
+
+
+         /*   Observable.fromArray("0", "1", "2", "3", "4")
+                    .zipWith(Observable.interval(3000L, TimeUnit.MILLISECONDS),
+                            new BiFunction<String, Long, String>() {
+
+                        @Override
+                        public String apply(String s, Long index) throws Exception {
+                            System.out.println("apply : [" + index + "]");
+                            return s;
+                        }
+                    })
+                    .throttleLast(5000L, TimeUnit.MILLISECONDS)
+                    .blockingSubscribe(new Observer<String>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            System.out.println("## result : " + d);
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            System.out.println("## result : " + s);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            System.out.println("## onError : " + e);
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            System.out.println("## onComplete");
+                        }
+                    });
+
+
+            Flowable.range(1, 5)//throttleLast
+                    .observeOn(Schedulers.computation())
+                    .throttleLatest(1, TimeUnit.MINUTES).doOnNext(new Consumer<Integer>() {
+                        @Override
+                        public void accept(Integer integer) throws Throwable {
+                            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+                        }
+                    }).blockingSubscribe();
+
 // TODO: 29.06.2022  Запускам Добалвение ШАблона в Табель
             Flowable.range(1, Flowable.bufferSize() * 2)
                     .doOnNext(new Consumer<Integer>() {
@@ -2759,7 +2832,7 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                             Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
                         }
                     }).subscribe();
-            Flowable.range(1, 5)
+            Flowable.range(1, 5)//throttleLast
                     .throttleLatest(1, TimeUnit.MINUTES).doOnNext(new Consumer<Integer>() {
                         @Override
                         public void accept(Integer integer) throws Throwable {
@@ -2773,33 +2846,8 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                 }
             }).subscribe();
 
-            Flowable.range(1,Count).doOnNext(new Consumer<Integer>() {
-                @Override
-                public void accept(Integer integer) throws Throwable {
-                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
-                }
-            }).subscribe(new Subscriber<Integer>() {
-                @Override
-                public void onSubscribe(Subscription s) {
-                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
-                }
 
-                @Override
-                public void onNext(Integer integer) {
-                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
-                }
-
-                @Override
-                public void onError(Throwable t) {
-                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
-                }
-
-                @Override
-                public void onComplete() {
-                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
-                }
-            });
-            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
+            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );*/
 
             /*Observable observableВставкаИзШаблонаВТабкель=    Observable.fromArray(Курсор_СамиДАнные.getCount())
                     .subscribeOn(Schedulers.single())
