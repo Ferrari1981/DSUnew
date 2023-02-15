@@ -77,13 +77,13 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
 
     private void МетодПодключениекСлубе() {
         try{
-        Intent intentОбноразоваяСинхронизациия = new Intent(getApplicationContext(), Service_For_Remote_Async.class);
-        getApplicationContext().    bindService(intentОбноразоваяСинхронизациия, Context.BIND_AUTO_CREATE,executorService , new ServiceConnection() {
+        Intent intentОбноразоваяСинхронизациия = new Intent(context, Service_For_Remote_Async.class);
+        context.    bindService(intentОбноразоваяСинхронизациия, Context.BIND_AUTO_CREATE,executorService , new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 try{
                     messengerWorkManager =new Messenger(service);
-                    Log.d(getApplicationContext().getClass().getName().toString(), "\n"
+                    Log.d(context.getClass().getName().toString(), "\n"
                             + "onServiceConnected  одноразовая messengerActivity  " + messengerWorkManager.getBinder().pingBinder());
                     binder=   messengerWorkManager.getBinder();
                     if (binder.isBinderAlive()) {
@@ -96,13 +96,13 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                     e.printStackTrace();
                     Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                             + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                             Thread.currentThread().getStackTrace()[2].getLineNumber());
                 }
             }
             @Override
             public void onServiceDisconnected(ComponentName name) {
-                Log.d(getApplicationContext().getClass().getName().toString(), "\n"
+                Log.d(context.getClass().getName().toString(), "\n"
                         + "onServiceConnected  одноразовая  messengerActivity  " );
             }
         });
@@ -140,7 +140,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
         Data    myDataОтветОдноразовойСлужбы=null;
  try{
      class_generation_sendBroadcastReceiver_and_firebase_oneSignallass=
-             new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext());
+             new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(context);
      // TODO: 12.10.2022  КТО ЗАПУСТИЛ
       Integer ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle = getInputData().getInt("СообщениеЧатаДляКонктерногоСотрудника",0);
 
@@ -291,12 +291,12 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
              List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессы, String АктивностьЕслиЕстьTOP) {
         try{
                 // TODO: 24.11.2021  ЗАПУСК СИНХРОНИАЗХЦИИ СТРОГОВ ФОНЕ БЕЗ АКТИВТИ
-                РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне = МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити(getApplicationContext());
+                РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне = МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити(context);
 
                 Log.i(context.getClass().getName(), " observableДляWorkmanagerОдноразовойСинхрогнизации "+
                         РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
                 if (РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне > 0) {
-                    Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    Vibrator v2 = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                         v2.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.EFFECT_HEAVY_CLICK));
 
 // TODO: 26.06.2022  ПОСЛЕ УСПЕШНОЙ СИНХРОНИАЗЦИИ ЗАПУСКАМ ONE SIGNAL  И УВЕДОМЛЕНИЯ
@@ -461,7 +461,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
 
 
                 // TODO: 24.11.2021  ЗАПУСК СИНХРОНИАЗХЦИИ СТРОГОВ ФОНЕ БЕЗ АКТИВТИ
-               РезультатЗапускаФоновойСинхронизации=  МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити(getApplicationContext());
+               РезультатЗапускаФоновойСинхронизации=  МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити(context);
 
 
 

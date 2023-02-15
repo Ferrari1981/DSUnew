@@ -3423,8 +3423,7 @@ public class Service_For_Remote_Async extends IntentService {
 
                             ////todo дОПОЛНИТЕЛЬНЫЙ КОД ПОСИКА ДВННЫХ ИЗ ОТВЕТА ОТ СЕРВЕРА
                             РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера =
-                                    МетодАнализОтветаОтСервера(
-                                            РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера, БуферОтправкаДанныхвФоне);
+                                    МетодАнализОтветаОтСервера(БуферОтправкаДанныхвФоне);
                         }
                         ////TODO ответ от сервера РЕЗУЛЬТАТ
                         Log.d(this.getClass().getName(), "Успешный Ответ от сервера ДанныеПришёлВОтветОтМетодаPOST в фоне " + ДанныеПришёлВОтветОтМетодаPOST+"" +
@@ -3458,12 +3457,12 @@ public class Service_For_Remote_Async extends IntentService {
             //TODO get max versrsion data server
 
             @NonNull
-            private Integer МетодАнализОтветаОтСервера
-                    (Integer РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера, StringBuffer БуферОтправкаДанныхвФоне) {
+            private Integer МетодАнализОтветаОтСервера(StringBuffer БуферОтправкаДанныхвФоне) {
+                Long  РезультатУспешнойВставкиИли=0l;
                 try{
                     String ПолучениееыкОтветыОтСервераSQlServerАнализ= БуферОтправкаДанныхвФоне.toString();
                     StringBuffer stringBufferРезульата;
-                    ArrayList<Integer> ФинальныСписокЦифр=new ArrayList();
+                    ArrayList<Long> ФинальныСписокЦифр=new ArrayList();
                     String[] words = ПолучениееыкОтветыОтСервераSQlServerАнализ.split("таблица");
                     for (String word : words) {
                         System.out.println(word);
@@ -3473,15 +3472,15 @@ public class Service_For_Remote_Async extends IntentService {
                             Integer КонецПоискаОригинальноВерсииДанныхОтСервера = word.lastIndexOf(":::")+3;
                             stringBufferРезульата=new StringBuffer();
                             stringBufferРезульата.append(word.substring(КонецПоискаОригинальноВерсииДанныхОтСервера, word.length()).replace(" ","")  );
-                            ФинальныСписокЦифр.add(Integer.parseInt(stringBufferРезульата.toString()));
+                            ФинальныСписокЦифр.add(Long.parseLong(stringBufferРезульата.toString()));
                             ////TODO ответ от сервера РЕЗУЛЬТАТ
                             Log.d(this.getClass().getName(), " word.substring(КонецПоискаОригинальноВерсииДанныхОтСервера, КонецПоискаОригинальноВерсииДанныхОтСервера) "
                                     +  word.substring(КонецПоискаОригинальноВерсииДанныхОтСервера, КонецПоискаОригинальноВерсииДанныхОтСервера));
                         }
                     }
-                    РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера = ФинальныСписокЦифр
+                 РезультатУспешнойВставкиИли = ФинальныСписокЦифр
                             .stream()
-                            .mapToInt(v -> v)
+                            .mapToLong(v -> v)
                             .max().orElse(0);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -3491,7 +3490,7 @@ public class Service_For_Remote_Async extends IntentService {
                     new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                             Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                 }
-                return РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера;
+                return РезультатУспешнойВставкиИли.intValue();
             }
 
         }

@@ -2755,6 +2755,12 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                                     return false;
                                 }
                             })
+                            .doAfterNext(new Consumer<Integer>() {
+                                @Override
+                                public void accept(Integer integer) throws Throwable {
+                                    Курсор_СамиДАнные.moveToNext();
+                                }
+                            })
                             .subscribe(new Observer<Integer>() {
                                 @Override
                                 public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
