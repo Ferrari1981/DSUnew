@@ -161,7 +161,26 @@ public class Service_For_Public extends IntentService {
         }
         return РезультатСинхрониазции;
     }
-
+// TODO: 15.02.2023
+public Cursor МетодПолучениеДанныхЧерезCursorLoader(@NonNull Context context, @NonNull Intent intent) {
+    Cursor cursor=null;
+    try{
+        if( this.context==null){
+            this.context=context;
+        }
+        Log.w(this.getClass().getName(), "   МетодПолучениеДанныхЧерезCursorLoader  " + context);
+        cursor=      (Cursor)     new SubClassCursorLoader(). CursorLoaders(context, intent.getExtras());
+        Log.w(this.getClass().getName(), "   cursor  " + cursor);
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+        Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
+    }
+    return cursor;
+}
 
     // TODO: 28.09.2022  класс заполнения из прошлых месяцев
 
@@ -207,7 +226,7 @@ public class Service_For_Public extends IntentService {
                     bundle.putString("СамЗапрос","  SELECT * FROM  viewtabel WHERE year_tabels=?  AND month_tabels=?   AND status_send!=?");
                     bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(ГодНазадДляЗаполнени), String.valueOf(месяцПростоАнализа),"Удаленная"});
                     bundle.putString("Таблица","viewtabel");
-                    Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)      CursorLoaders(context, bundle);
+                    Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    new SubClassCursorLoader().  CursorLoaders(context, bundle);
                     Log.d(this.getClass().getName(), " Курсор_ВытаскиваемПоследнийМесяцТабеля" + Курсор_ВытаскиваемПоследнийМесяцТабеля);
                     if (Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() > 0) {
                         break;
@@ -276,38 +295,7 @@ public class Service_For_Public extends IntentService {
             }
         }
 
-        // TODO: 25.11.2022 новы метод получение данных для всех
-        public Cursor CursorLoaders(@NonNull Context context, @NonNull Bundle bundle) {
-            Cursor cursor=null;
-            CursorLoader cursorLoader=null;
-            try{
-                cursorLoader=new CursorLoader(context);
-                String[] УсловияВыборки=      bundle.getStringArray("УсловияВыборки");
-                String  СамЗапрос=      bundle.getString("СамЗапрос");
-                String  Таблица=      bundle.getString("Таблица");
-                Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabasecursorloader/" + Таблица + "");
-                cursorLoader.setUri(uri);
-                cursorLoader.setSelection(СамЗапрос);
-                cursorLoader.setSelectionArgs(УсловияВыборки);//МесяцПростоАнализа
-                cursor=    cursorLoader.loadInBackground();
-                if (cursor.getCount() > 0) {
-                    cursor.moveToFirst();
-                    Log.d(this.getClass().getName(), "cursor.getCount() "
-                            + cursor.getCount());
-                    cursorLoader.reset();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
-            }finally {
-                cursorLoader.commitContentChanged();
-            }
-            return  cursor;
-        }
+
 
         private Integer МетодВставкивТаблицуДата_Табель(@NonNull Context context,
                                                         @NonNull Class_GRUD_SQL_Operations class_grud_sql_operationЗаполнениеИзПрошлогоМесяца,
@@ -476,5 +464,38 @@ public class Service_For_Public extends IntentService {
             }
         }
     }
-
+class SubClassCursorLoader {
+    // TODO: 25.11.2022 новы метод получение данных для всех
+    public Cursor CursorLoaders(@NonNull Context context, @NonNull Bundle bundle) {
+        Cursor cursor=null;
+        CursorLoader cursorLoader=null;
+        try{
+            cursorLoader=new CursorLoader(context);
+            String[] УсловияВыборки=      bundle.getStringArray("УсловияВыборки");
+            String  СамЗапрос=      bundle.getString("СамЗапрос");
+            String  Таблица=      bundle.getString("Таблица");
+            Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabasecursorloader/" + Таблица + "");
+            cursorLoader.setUri(uri);
+            cursorLoader.setSelection(СамЗапрос);
+            cursorLoader.setSelectionArgs(УсловияВыборки);//МесяцПростоАнализа
+            cursor=    cursorLoader.loadInBackground();
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                Log.d(this.getClass().getName(), "cursor.getCount() "
+                        + cursor.getCount());
+                cursorLoader.reset();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+            Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
+        }finally {
+            cursorLoader.commitContentChanged();
+        }
+        return  cursor;
+    }
+}
 }

@@ -49,6 +49,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Search_Changes_Data;
 import com.dsy.dsu.Business_logic_Only_Class.Class__Generation_Genetal_Tables;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
+import com.dsy.dsu.Code_For_Services.Service_For_Public;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
 import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
 import com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_App;
@@ -493,6 +494,9 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
                 Log.d(this.getClass().getName(), "  ФИНАЛ после удалание сотрудуника "+"СамоЗначениеUUID"+СамоЗначениеUUID
                         +"СамоЗначениеUUID" +ДляУдалениеUUID+"СамоЗначениеUUID"+НазваниеУдаляемогоТАбеляВЦифровомФормате);
                 try {
+
+                    МетодПолучениеДанныхДляИхУдаления();
+
                     МетодУдалениеСамогоТабеля(СамоЗначениеUUID);
 
                 } catch (Exception e) {
@@ -507,32 +511,19 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
         });
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    private void МетодПолучениеДанныхДляИхУдаления() {
+        try{
+            Service_For_Public  service_for_public=new Service_For_Public();
+            service_for_public.МетодПолучениеДанныхЧерезCursorLoader()
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+    }
+    }
 
 
     ///todo сообщение
@@ -2409,23 +2400,26 @@ try{
                                         @Override
                                         public Object apply(Object o, Long aLong) throws Throwable {
                                             Log.d(this.getClass().getName(), " o " + o+ " aLong " +aLong);
-                                            return o;
+                                            return aLong;
                                         }
                                     }).doOnNext(new Consumer<Object>() {
-                                @Override
-                                public void accept(Object o) throws Throwable {
-                                    // TODO: 22.11.2022  первая часть
-                                    РезультатУдалениеСамихСотрудников[0]
-                                            = new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("data_tabels",
-                                            "uuid_tabel", ДляУдалениеUUID);
-                                    Log.d(this.getClass().getName(), " ДляУдалениеUUID " + ДляУдалениеUUID);
-                                    // TODO: 01.11.2021  само удаление табеля вторая часть
-                                    УдалениеТабеляСамого[0] =
-                                            new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("tabel",
-                                                    "uuid", ДляУдалениеUUID);
-                                    Log.d(this.getClass().getName(), " УдалениеТабеляСамого " + УдалениеТабеляСамого[0]);
-                                }
-                            })
+                                    @Override
+                                    public void accept(Object o) throws Throwable {
+                                        // TODO: 22.11.2022  первая часть
+                                        if(Integer.parseInt(o.toString())==0){
+                                            РезультатУдалениеСамихСотрудников[0]
+                                                    = new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("data_tabels",
+                                                    "uuid_tabel", ДляУдалениеUUID);
+                                            Log.d(this.getClass().getName(), " ДляУдалениеUUID " + ДляУдалениеUUID);
+                                        }else{
+                                            // TODO: 01.11.2021  само удаление табеля вторая часть
+                                            УдалениеТабеляСамого[0] =
+                                                    new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("tabel",
+                                                            "uuid", ДляУдалениеUUID);
+                                            Log.d(this.getClass().getName(), " УдалениеТабеляСамого " + УдалениеТабеляСамого[0]);
+                                        }
+                                    }
+                                })
                                .subscribeOn(AndroidSchedulers.mainThread())
                                     .doOnComplete(new Action() {
                                         @Override
