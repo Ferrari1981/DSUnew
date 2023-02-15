@@ -2754,11 +2754,11 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
             ReentrantLock locker = new ReentrantLock(); // создаем блокировку
             Condition condition = locker.newCondition(); // получаем условие, связанное с блокировкойм
 
-            Disposable ds;
+
             Observable.range(0,5)
-                      .concatMap(i->Observable.just(i).t
-                              .delay(3,TimeUnit.SECONDS))
-                              .subscribe(new Observer<Integer>() {
+                      .concatMap(i->Observable.just(i).delay(3,TimeUnit.SECONDS))
+
+                              .blockingSubscribe(new Observer<Integer>() {
                                   @Override
                                   public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
                                       System.out.println("## result : " + d);
@@ -2781,8 +2781,8 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                               });
 
 
-         /*   Observable.fromArray("0", "1", "2", "3", "4")
-                    .zipWith(Observable.interval(3000L, TimeUnit.MILLISECONDS),
+            Observable.fromArray("0", "1", "2", "3", "4")
+                    .zipWith(Observable.interval(5, TimeUnit.SECONDS),
                             new BiFunction<String, Long, String>() {
 
                         @Override
@@ -2791,7 +2791,6 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                             return s;
                         }
                     })
-                    .throttleLast(5000L, TimeUnit.MILLISECONDS)
                     .blockingSubscribe(new Observer<String>() {
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -2815,39 +2814,9 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                     });
 
 
-            Flowable.range(1, 5)//throttleLast
-                    .observeOn(Schedulers.computation())
-                    .throttleLatest(1, TimeUnit.MINUTES).doOnNext(new Consumer<Integer>() {
-                        @Override
-                        public void accept(Integer integer) throws Throwable {
-                            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
-                        }
-                    }).blockingSubscribe();
-
-// TODO: 29.06.2022  Запускам Добалвение ШАблона в Табель
-            Flowable.range(1, Flowable.bufferSize() * 2)
-                    .doOnNext(new Consumer<Integer>() {
-                        @Override
-                        public void accept(Integer t) {
-                            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
-                        }
-                    }).subscribe();
-            Flowable.range(1, 5)//throttleLast
-                    .throttleLatest(1, TimeUnit.MINUTES).doOnNext(new Consumer<Integer>() {
-                        @Override
-                        public void accept(Integer integer) throws Throwable {
-                            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
-                        }
-                    }).subscribe();
-            Flowable.range(1, 5).take(1, TimeUnit.MINUTES).doOnNext(new Consumer<Integer>() {
-                @Override
-                public void accept(Integer integer) throws Throwable {
-                    Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
-                }
-            }).subscribe();
 
 
-            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );*/
+            Log.d(this.getClass().getName(), "   observableВставкаИзШаблонаВТабкель  " );
 
             /*Observable observableВставкаИзШаблонаВТабкель=    Observable.fromArray(Курсор_СамиДАнные.getCount())
                     .subscribeOn(Schedulers.single())
