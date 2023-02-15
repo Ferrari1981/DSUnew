@@ -169,7 +169,9 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
             this.context=context;
         }
         Log.w(this.getClass().getName(), "   МетодПолучениеДанныхЧерезCursorLoader  " + context);
-        cursor=      (Cursor)     new SubClassCursorLoader(). CursorLoaders(context, intent.getExtras());
+        if (intent.getAction().contentEquals("ДляУдаление")) {
+            cursor=      (Cursor)     new SubClassCursorLoader(). CursorLoaders(context, intent.getExtras());
+        }
         Log.w(this.getClass().getName(), "   cursor  " + cursor);
     } catch (Exception e) {
         e.printStackTrace();
