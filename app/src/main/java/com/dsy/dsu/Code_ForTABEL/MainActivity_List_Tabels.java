@@ -1031,7 +1031,7 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
                                     TextView textView   =  (TextView) СпинерВыборДату.getChildAt(0);
                                     МесяцВСпинореНижней =textView.getText().toString();
 
-                                    Intent ИнтентЗапускаемСуществующийТабель=new Intent(MainActivity_List_Tabels.this, MainActivity_List_Peoples.class);//getApplicationContext()
+                                    Intent ИнтентЗапускаемСуществующийТабель=new Intent(v.getContext(), MainActivity_List_Peoples.class);//getApplicationContext()
                                     String ПередаемСозданнуюДатуНовогоТабеля = (String) ((TextView) СпинерВыборДату.getChildAt(0)).getText();///дата нового табеля
                                     Button ИзКнопкиПолучаемНазваниеТабеля = v;
                                     String ПередаемСозданнуюНазваниеТабеля = ИзКнопкиПолучаемНазваниеТабеля.getText().toString();
@@ -2412,7 +2412,9 @@ try{
                                    Integer     Удаление = new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная(ИзКакойТаблицыУдалять,
                                                     "uuid", ДляУдалениеUUID);
                                             Log.d(this.getClass().getName(), " ДляУдалениеUUID " + ДляУдалениеUUID);
-                                        УдалениеintegerArrayList.add(Удаление);
+                                        if (Удаление>0) {
+                                            УдалениеintegerArrayList.add(Удаление);
+                                        }
                                     }
                                 })
                                 .doAfterNext(new Consumer<Object>() {
@@ -2492,13 +2494,18 @@ try{
                             Integer     Удаление = new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная(ИзКакойТаблицыУдалять,
                                     "uuid", ДляУдалениеUUID);
                             Log.d(this.getClass().getName(), " ДляУдалениеUUID " + ДляУдалениеUUID);
-                            УдалениеintegerArrayList.add(Удаление);
+                            if (Удаление>0) {
+                                УдалениеintegerArrayList.add(Удаление);
+                            }
                         }
                     })
                     .doAfterNext(new Consumer<Object>() {
                         @Override
                         public void accept(Object o) throws Throwable {
-                            progressDialogДляУдаления.setMessage("Удалание..."+УдалениеintegerArrayList.size()+"("+1+")");
+                            context.getMainExecutor().execute(()->{
+                                progressDialogДляУдаления.setMessage("Удалание..."+УдалениеintegerArrayList.size()+"("+УдалениеintegerArrayList.size()+")");
+                            });
+
                         }
                     })
                     .subscribeOn(AndroidSchedulers.mainThread())
@@ -2506,10 +2513,20 @@ try{
                         @Override
                         public void run() throws Throwable {
                             Log.d(this.getClass().getName(), " УдалениеintegerArrayList.size() " +УдалениеintegerArrayList.size());
-                            if ( УдалениеintegerArrayList.size()>0) {
-                                // TODO: 07.10.2022  СИНХронизация
-                                МетодЗапускаСинхрониазцииЕслиБыИзмененияВбАзе();
-                            }
+                            context.getMainExecutor().execute(()->{
+                                if ( УдалениеintegerArrayList.size()>0) {
+                                    // TODO: 07.10.2022  СИНХронизация
+                                    МетодЗапускаСинхрониазцииЕслиБыИзмененияВбАзе();
+                                }
+                            });
+                        }
+                    })
+                    .doOnTerminate(new Action() {
+                        @Override
+                        public void run() throws Throwable {
+                            context.getMainExecutor().execute(()-> {
+                                onStart();
+                            });
                         }
                     })
                     .doOnError(new Consumer<Throwable>() {
