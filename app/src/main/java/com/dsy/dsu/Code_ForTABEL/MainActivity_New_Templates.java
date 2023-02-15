@@ -49,6 +49,7 @@ import com.dsy.dsu.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.util.concurrent.AtomicDouble;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -2741,7 +2742,7 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
 
                     Observable.range(0, КоличествоДанных)
                             .subscribeOn(Schedulers.single())
-                            .concatMap(i -> Observable.just(i).delay(3, TimeUnit.SECONDS))
+                            .concatMap(i -> Observable.just(i).delay(300, TimeUnit.MILLISECONDS))
                             .onErrorComplete(new Predicate<Throwable>() {
                                 @Override
                                 public boolean test(Throwable throwable) throws Throwable {
@@ -2807,14 +2808,13 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                                                         .МетодТретийАвтоматическаяВставкаВыходныхДней(МетодГенерацииUUIDУжеСуществующегоСотрудника, Год, Месяц);
                                         Log.d(this.getClass().getName(), "   РезультатВставкаВыходныхДНей  " + РезультатВставкаВыходныхДНей);
                                         // TODO: 28.01.2022 ПОВЫШАЕМ ВЕРСИЮ  В ТАБЛИЦЕ МОДИФИКАЦИИ КЛИЕНТ
-                                        Long finalВставкиСотрудниковИзШаблона = ВставкиСотрудниковИзШаблона;
                                         ((Activity) КонтекстШаблоны).runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
                                                 progressDialog.setIndeterminate(false);
-                                                progressDialog.setProgress( finalВставкиСотрудниковИзШаблона.intValue());
-                                                progressDialog.setMessage("Добавление сотрудника/ов..." + finalВставкиСотрудниковИзШаблона + " (" + КоличествоДанных + ")");
-                                                Log.d(this.getClass().getName(), " finalВставкиСотрудниковИзШаблона " +finalВставкиСотрудниковИзШаблона);
+                                                progressDialog.setProgress( integer);
+                                                progressDialog.setMessage("Добавление сотрудника/ов..." + integer + " (" + КоличествоДанных + ")");
+                                                Log.d(this.getClass().getName(), " integer " +integer);
                                             }
                                         });
                                     }else{
@@ -2822,8 +2822,9 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                                             @Override
                                             public void run() {
                                                 progressDialog.setIndeterminate(false);
-                                                progressDialog.setMessage("Данный сотрудник уже в  табеле !!!");
-                                                Log.d(this.getClass().getName(), " finalВставкиСотрудниковИзШаблона ");
+                                                progressDialog.setMessage("Cотрудник уже есть в  табеле !!!"+"\n"
+                                                        +integer+ " (" + КоличествоДанных + ")");
+                                                Log.d(this.getClass().getName(), " finalВставкиСотрудниковИзШаблонаinteger  "+integer);
                                             }
                                         });
                                     }
@@ -2909,56 +2910,11 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
                     Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков, Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
             Log.d(this.getClass().getName(), "GetData " + Курсор_ИщемПроверяемЕслиТакойСотрудникУжеЕстьВТабеле);
             // TODO: 25.10.2021  производим ВСТАВКУ ЕСЛИ ТАЕОКГО СОТРУДНИКА ЕЩЕ НЕТ ЕСДИ КУРСОР НЕ ППУСТОЙ
-            if (Курсор_ИщемПроверяемЕслиТакойСотрудникУжеЕстьВТабеле.getCount() == 0) {
-                Log.d(this.getClass().getName(), "ФИОИзАТблицы" + ФИОИзАТблицы);
-                АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("fio", ФИОИзАТблицы);
-                АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("status_send", " ");
-                String СгенерированованныйДатаДляВставки = new Class_Generation_Data(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
-                АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("date_update", СгенерированованныйДатаДляВставки);
-                АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("uuid_tabel", РодительскийUUDТаблицыТабель);
-                Log.d(this.getClass().getName(), "РодительскийUUDТаблицыТабель " + РодительскийUUDТаблицыТабель);
-                // TODO: 08.10.2021 повышаем версию
-                Class_GRUD_SQL_Operations class_grud_sql_operationsПовышаемВерсиюДанныхПриСозданеииИзШаблонаСотрудника = new Class_GRUD_SQL_Operations(getApplicationContext());
-                // TODO: 28.01.2022  вычиляем повышения версии данных
-                Long     РезультатУвеличинаяВерсияДАныхЧата = class_grud_sql_operationsПовышаемВерсиюДанныхПриСозданеииИзШаблонаСотрудника.new ChangesVesionData(getApplicationContext()).
-                        МетодПовышаемВерсииCurrentTable("data_tabels",getApplicationContext(), Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
-                Log.d(this.getClass().getName(), " current_table УВЕЛИЧИВАЕМ ВЕРИСЮ ДАННЫХ ВНУТРИ ТАБЛИЦЫ  РезультатУвеличинаяВерсияДАныхЧата  " + РезультатУвеличинаяВерсияДАныхЧата);
 
-                АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("current_table", РезультатУвеличинаяВерсияДАныхЧата);
-                АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.putNull("_id");
-                Log.d(this.getClass().getName(), "РодительскийUUDТаблицыТабель" + РодительскийUUDТаблицыТабель);
-                class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля = new Class_GRUD_SQL_Operations(getApplicationContext());
-                class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", "SuccessLogin");
-                class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки", "id");
-                class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика", " id IS NOT NULL ");
-                class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеСортировки", "date_update DESC");
-                class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеЛимита", "1");
-                // TODO: 27.08.2021  ПОЛУЧЕНИЕ ДАННЫХ ОТ КЛАССА GRUD-ОПЕРАЦИИ
-                SQLiteCursor     Курсор_ИщемПУбличныйIDКогдаегоНетВстатике = (SQLiteCursor) class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.
-                        new GetData(getApplicationContext()).getdata(class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
-                        Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков, Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
-                Log.d(this.getClass().getName(), "GetData " + Курсор_ИщемПУбличныйIDКогдаегоНетВстатике);
-                int  ПолученныйID=0;
-                // TODO: 07.09.2021  Реузльтат
-                if (Курсор_ИщемПУбличныйIDКогдаегоНетВстатике.getCount() > 0) {
-                    Курсор_ИщемПУбличныйIDКогдаегоНетВстатике.moveToFirst();
-                    ПолученныйID = Курсор_ИщемПУбличныйIDКогдаегоНетВстатике.getInt(0);
-                    Log.d(this.getClass().getName(), " Курсор_ИщемПУбличныйIDКогдаегоНетВстатике " + Курсор_ИщемПУбличныйIDКогдаегоНетВстатике.getCount()+
-                            "  ПолученныйID " +ПолученныйID);
-                }
-                Log.d(this.getClass().getName(), " String.valueOf(ПолученныйID[0]) " + String.valueOf(ПолученныйID));
-                Integer ПолучениПубличныйID = ПолученныйID;
-                АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("user_update", ПолучениПубличныйID);
-                МетодГенерацииUUIDУжеСуществующегоСотрудника = 0l;
-                МетодГенерацииUUIDУжеСуществующегоСотрудника = (Long) new Class_Generation_UUID(getApplicationContext()).МетодГенерацииUUID(getApplicationContext());
-                Log.d(this.getClass().getName(), " МетодГенерацииUUIDУжеСуществующегоСотрудника " + МетодГенерацииUUIDУжеСуществующегоСотрудника);
-                АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("uuid", МетодГенерацииUUIDУжеСуществующегоСотрудника);
-                Log.d(this.getClass().getName(), " current_table УВЕЛИЧИВАЕМ ВЕРИСЮ ДАННЫХ ВНУТРИ ТАБЛИЦЫ  РезультатУвеличинаяВерсияДАныхЧата  " + РезультатУвеличинаяВерсияДАныхЧата);
-            }
+            // TODO: 15.02.2023 заопления даными для шаблона
+            МетодЗаполениеяДаннымиСотрудникаДляШаблонаЕслиОниЕсть(АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель, ФИОИзАТблицы, Курсор_ИщемПроверяемЕслиТакойСотрудникУжеЕстьВТабеле);
         } catch (Exception e) {
-            //  Block of code to handle errors
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
@@ -2967,24 +2923,65 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
         return АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель;
     }
 
+    private void МетодЗаполениеяДаннымиСотрудникаДляШаблонаЕслиОниЕсть(ContentValues АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель,
+                                                                       Long ФИОИзАТблицы, SQLiteCursor Курсор_ИщемПроверяемЕслиТакойСотрудникУжеЕстьВТабеле)
+            throws ExecutionException, InterruptedException {
+        try{
+        Class_GRUD_SQL_Operations class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля;
+        if (Курсор_ИщемПроверяемЕслиТакойСотрудникУжеЕстьВТабеле.getCount() == 0) {
+            Log.d(this.getClass().getName(), "ФИОИзАТблицы" + ФИОИзАТблицы);
+            АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("fio", ФИОИзАТблицы);
+            АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("status_send", " ");
+            String СгенерированованныйДатаДляВставки = new Class_Generation_Data(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
+            АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("date_update", СгенерированованныйДатаДляВставки);
+            АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("uuid_tabel", РодительскийUUDТаблицыТабель);
+            Log.d(this.getClass().getName(), "РодительскийUUDТаблицыТабель " + РодительскийUUDТаблицыТабель);
+            // TODO: 08.10.2021 повышаем версию
+            Class_GRUD_SQL_Operations class_grud_sql_operationsПовышаемВерсиюДанныхПриСозданеииИзШаблонаСотрудника = new Class_GRUD_SQL_Operations(getApplicationContext());
+            // TODO: 28.01.2022  вычиляем повышения версии данных
+            Long     РезультатУвеличинаяВерсияДАныхЧата = class_grud_sql_operationsПовышаемВерсиюДанныхПриСозданеииИзШаблонаСотрудника.new ChangesVesionData(getApplicationContext()).
+                    МетодПовышаемВерсииCurrentTable("data_tabels",getApplicationContext(), Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
+            Log.d(this.getClass().getName(), " current_table УВЕЛИЧИВАЕМ ВЕРИСЮ ДАННЫХ ВНУТРИ ТАБЛИЦЫ  РезультатУвеличинаяВерсияДАныхЧата  " + РезультатУвеличинаяВерсияДАныхЧата);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("current_table", РезультатУвеличинаяВерсияДАныхЧата);
+            АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.putNull("_id");
+            Log.d(this.getClass().getName(), "РодительскийUUDТаблицыТабель" + РодительскийUUDТаблицыТабель);
+            class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля = new Class_GRUD_SQL_Operations(getApplicationContext());
+            class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", "SuccessLogin");
+            class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки", "id");
+            class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика", " id IS NOT NULL ");
+            class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеСортировки", "date_update DESC");
+            class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеЛимита", "1");
+            // TODO: 27.08.2021  ПОЛУЧЕНИЕ ДАННЫХ ОТ КЛАССА GRUD-ОПЕРАЦИИ
+            SQLiteCursor     Курсор_ИщемПУбличныйIDКогдаегоНетВстатике = (SQLiteCursor) class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.
+                    new GetData(getApplicationContext()).getdata(class_grud_sql_operationsЗаполенияДаннымиПередВставкойНовогоТабеля.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
+                    Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков, Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
+            Log.d(this.getClass().getName(), "GetData " + Курсор_ИщемПУбличныйIDКогдаегоНетВстатике);
+            int  ПолученныйID=0;
+            // TODO: 07.09.2021  Реузльтат
+            if (Курсор_ИщемПУбличныйIDКогдаегоНетВстатике.getCount() > 0) {
+                Курсор_ИщемПУбличныйIDКогдаегоНетВстатике.moveToFirst();
+                ПолученныйID = Курсор_ИщемПУбличныйIDКогдаегоНетВстатике.getInt(0);
+                Log.d(this.getClass().getName(), " Курсор_ИщемПУбличныйIDКогдаегоНетВстатике " + Курсор_ИщемПУбличныйIDКогдаегоНетВстатике.getCount()+
+                        "  ПолученныйID " +ПолученныйID);
+            }
+            Log.d(this.getClass().getName(), " String.valueOf(ПолученныйID[0]) " + String.valueOf(ПолученныйID));
+            Integer ПолучениПубличныйID = ПолученныйID;
+            АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("user_update", ПолучениПубличныйID);
+            МетодГенерацииUUIDУжеСуществующегоСотрудника = 0l;
+            МетодГенерацииUUIDУжеСуществующегоСотрудника = (Long) new Class_Generation_UUID(getApplicationContext()).МетодГенерацииUUID(getApplicationContext());
+            Log.d(this.getClass().getName(), " МетодГенерацииUUIDУжеСуществующегоСотрудника " + МетодГенерацииUUIDУжеСуществующегоСотрудника);
+            АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("uuid", МетодГенерацииUUIDУжеСуществующегоСотрудника);
+            Log.d(this.getClass().getName(), " current_table УВЕЛИЧИВАЕМ ВЕРИСЮ ДАННЫХ ВНУТРИ ТАБЛИЦЫ  РезультатУвеличинаяВерсияДАныхЧата  " + РезультатУвеличинаяВерсияДАныхЧата);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+    }
+    }
 
 
     @UiThread
