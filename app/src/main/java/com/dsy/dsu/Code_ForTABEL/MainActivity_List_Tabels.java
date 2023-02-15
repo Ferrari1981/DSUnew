@@ -489,10 +489,10 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
                         // TODO: 15.02.2023 получаем даннеы для удаления
                         Cursor cursorДляУдалениея=    МетодПолучениеДанныхДляИхУдаления(getApplicationContext(),СамоЗначениеUUID);
                         // TODO: 15.02.2023  само удаление по двум таблицам
-                        МетодУдалениеСамогоТабеляИлиСотрудников(СамоЗначениеUUID,"data_tabels",cursorДляУдалениея);
+                        МетодУдалениеСамогоТабеляИлиСотрудников("data_tabels",cursorДляУдалениея);
 
                         МетодУдалениеСамогоТабеляИлиСотрудников(СамоЗначениеUUID,"tabel");
-                        Log.d(this.getClass().getName(), "  ФИНАЛ создание нового сотрудника " + "cursorДляУдалениея " +cursorДляУдалениея);
+                        Log.d(this.getClass().getName(), "  ФИНАЛ создание нового сотрудника " + "cursorДляУдалениея ");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -510,7 +510,7 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
         Cursor cursor=null;
         try{
             Bundle bundle=new Bundle();
-            bundle.putString("СамЗапрос","  SELECT * FROM  data_tabels  WHERE uuid_tabel=?     AND status_send!=?");
+            bundle.putString("СамЗапрос","  SELECT uuid FROM  data_tabels  WHERE uuid_tabel=?     AND status_send!=?");
             bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(СамоЗначениеUUID),"Удаленная"});
             bundle.putString("Таблица","data_tabels");
             Intent intent=new Intent("ДляУдаление");
@@ -2350,7 +2350,7 @@ try{
                         // TODO: 15.02.2023 получаем даннеы для удаления 
                         Cursor cursorДляУдалениея=    МетодПолучениеДанныхДляИхУдаления(getApplicationContext(),СамоЗначениеUUID);
                         // TODO: 15.02.2023  само удаление по двум таблицам
-                         МетодУдалениеСамогоТабеляИлиСотрудников(СамоЗначениеUUID,"data_tabels",cursorДляУдалениея);
+                         МетодУдалениеСамогоТабеляИлиСотрудников("data_tabels",cursorДляУдалениея);
 
                          МетодУдалениеСамогоТабеляИлиСотрудников(СамоЗначениеUUID,"tabel");
                         Log.d(this.getClass().getName(), "  ФИНАЛ создание нового сотрудника " + "cursorДляУдалениея " +cursorДляУдалениея);
@@ -2386,12 +2386,11 @@ try{
 
 
     //todo метод удаление сотрудника из табеля
-    private void МетодУдалениеСамогоТабеляИлиСотрудников(@NotNull  Long ДляУдалениеUUID,
-                                                            @NonNull  String ИзКакойТаблицыУдалять,
+    private void МетодУдалениеСамогоТабеляИлиСотрудников(@NonNull  String ИзКакойТаблицыУдалять,
                                                          @NonNull Cursor cursor) {
         ArrayList<Integer> УдалениеintegerArrayList=new ArrayList<>();
         try{
-            Log.d(this.getClass().getName()," ДляУдалениеUUID " +ДляУдалениеUUID);
+            Log.d(this.getClass().getName()," ДляУдалениеUUID " +ИзКакойТаблицыУдалять);
             progressDialogДляУдаления = new ProgressDialog(activity);
             progressDialogДляУдаления.setTitle("Удаление Табеля");
             progressDialogДляУдаления.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -2413,6 +2412,7 @@ try{
                                     @Override
                                     public void accept(Object o) throws Throwable {
                                         // TODO: 22.11.2022  первая часть
+                                    Long    ДляУдалениеUUID=     cursor.getLong(0);
                                    Integer     Удаление = new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная(ИзКакойТаблицыУдалять,
                                                     "uuid_tabel", ДляУдалениеUUID);
                                             Log.d(this.getClass().getName(), " ДляУдалениеUUID " + ДляУдалениеUUID);
