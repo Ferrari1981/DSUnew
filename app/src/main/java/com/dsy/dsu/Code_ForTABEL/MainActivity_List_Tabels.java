@@ -43,6 +43,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Weekend_For_Tabels;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Search_Changes_Data;
@@ -74,11 +75,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.functions.Predicate;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity_List_Tabels extends AppCompatActivity  {
     private  Spinner СпинерВыборДату;/////спинеры для создание табеляСпинерТабельДепратамент
@@ -112,7 +122,6 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
     private   String ГодТабеляФиналИзВсехСотрудниковВТАбел;
     private   Button    КнопкаНазадВсеТабеля;
     private  CREATE_DATABASE Create_Database_СсылкаНАБазовыйКласс;
-    private    LinkedBlockingQueue<Long> СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником;
     private    Long ПолученнаяUUIDНазванияОрганизации;
     private  TextView textViewКоличествоТабелей;
     private  FloatingActionButton КруглаяКнопкаСозданиеНовогоТабеля;
@@ -474,256 +483,27 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
         final Button MessageBoxUpdateСоздатьТабельВсеравноУдлаитьВместеССотрудникамиТабель = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         MessageBoxUpdateСоздатьТабельВсеравноУдлаитьВместеССотрудникамиТабель.setOnClickListener(new View.OnClickListener() {
             ///MessageBoxUpdate метод CLICK для DIALOBOX
-
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 //удаляем с экрана Диалог
                 alertDialog.dismiss();
-                Log.d(this.getClass().getName(), "  ФИНАЛ после удалание сотрудуника ");
-
-////
-
-                ///
+                Log.d(this.getClass().getName(), "  ФИНАЛ после удалание сотрудуника "+"СамоЗначениеUUID"+СамоЗначениеUUID
+                        +"СамоЗначениеUUID" +ДляУдалениеUUID+"СамоЗначениеUUID"+НазваниеУдаляемогоТАбеляВЦифровомФормате);
                 try {
-                    МетодУдалениеВсехСотрудниковВТАбеле(СамоЗначениеUUID,ДляУдалениеUUID, НазваниеУдаляемогоТАбеляВЦифровомФормате);
-
-                    ///todo команда которая удаляет выбранный табель
-///todo команда которая удаляет выбранный табель
-
-
-
+                    МетодУдалениеСамогоТабеля(СамоЗначениеUUID,ДляУдалениеUUID);
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ///метод запись ошибок в таблицу
                     Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                             " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                           new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                }
-
-                try {
-
-                    ///todo метод для удаления табеля
-                   /* МетодДляУдалениеТабеляЕслиВнемНетСотрудников();
-                    //////
-                    //////
-
-                    ////todo заполение спинера
-                    МетодЗаполненияАлайЛИстаНовымМЕсцевНовогоТабеля();////метод вызаваем все созжданные ТАБЕДЯ ИЗ БАПЗЫ И ДАЛЕЕ ИХ ЗАПИСЫВАЕМ В ОБМЕН
-                    ////todo заполение спинера
-                    //////
-
-
-                    МетодСозданиеСпинераДляДатыНаАктивитиСозданиеИВыборТабеля();*/
-
-                    //
-                    onStart();
-                    //////
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ///метод запись ошибок в таблицу
-                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    // TODO: 01.09.2021 метод вызова
         new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), 
        this.getClass().getName(),
                             Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                 }
-
-                //TODO  второе действие заполенние контентом  в табеля в TableLyзаполения табеля из базы через элемент TableLauy
-                //todo код послеу успешного удаления табеля
-                //todo
             }
         });
-        /////////////
-
-
-
-
-
     }
-
-
-
-
-
-
-    private void МетодУдалениеВсехСотрудниковВТАбеле(Long СамоЗначениеUUID,
-                                                     String ДляУдалениеUUID,
-                                                     int НазваниеУдаляемогоТАбеляВЦифровомФормате) throws ExecutionException, InterruptedException, TimeoutException {
-
-        final long[] РезультатУдалениеВсехСотрудниковСамогоТАбеля = {0};
-
-        /////TODO Дополнительно делаем ФИО поле НУЛЛ
-/*
-        ССылкаНаСозданнуюБазу.
-         ();
-        ССылкаНаСозданнуюБазу.execSQL("UPDATE tabels SET  fio= NULL WHERE fio=-1");
-        ССылкаНаСозданнуюБазу.execSQL("UPDATE fio SET  uuid= NULL WHERE uuid=-1");
-        ССылкаНаСозданнуюБазу.
-         ();
-
-    ;
-*/
-
-        try{
-
-            final Object[] СамоЗначениеUUIDДляУдаланиевсехСотрудников = {null};
-
-                    // TODO: 18.03.2021  если есть содружники
-                    if(СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.size()>0){
-
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            /////
-                            СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.stream().forEachOrdered((ТекущйиUUIDДляУдаления)->{
-
-
-
-
-                                СамоЗначениеUUIDДляУдаланиевсехСотрудников[0] =  ТекущйиUUIDДляУдаления;
-
-                                String  СамоЗначениеUUIDДляУдаланиевсехСотрудникинал= СамоЗначениеUUIDДляУдаланиевсехСотрудников[0].toString();
-
-                                System.out.println(СамоЗначениеUUIDДляУдаланиевсехСотрудников[0].toString());
-
-
-
-                                ///////
-                                int ГодДляУдаления = 0;
-                                ////
-                                int МесяцДляУдаления=0;
-                                ///
-                                Cursor       Курсор_ДляУдаленияПолучаемМесяцИгод=null;
-
-
-
-
-                                // TODO: 26.08.2021 НОВЫЙ ВЫЗОВ НОВОГО КЛАСС GRUD - ОПЕРАЦИИ
-
-
-                                class_grud_sql_operationsДляАктивтиТабель= new Class_GRUD_SQL_Operations(getApplicationContext());
-                                ///
-                                class_grud_sql_operationsДляАктивтиТабель. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы","tabel");
-                                ///////
-                                class_grud_sql_operationsДляАктивтиТабель. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","month_tabels,year_tabels");
-                                //
-                                ////
-                                class_grud_sql_operationsДляАктивтиТабель. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика","  uuid = ? ");
-                                ///"_id > ?   AND _id< ?"
-                                //////
-                                class_grud_sql_operationsДляАктивтиТабель. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1",СамоЗначениеUUID);
-
-                                ////
-                                // TODO: 12.10.2021  Ссылка Менеджер Потоков
-
-                                PUBLIC_CONTENT  Class_Engine_SQLГдеНаходитьсяМенеджерПотоков = null;
-
-                                    Class_Engine_SQLГдеНаходитьсяМенеджерПотоков = new PUBLIC_CONTENT (getApplicationContext());
-
-
-
-                                // TODO: 27.08.2021  ПОЛУЧЕНИЕ ДАННЫХ ОТ КЛАССА GRUD-ОПЕРАЦИИ
-
-
-                                try {
-                                    Курсор_ДляУдаленияПолучаемМесяцИгод= (SQLiteCursor)  class_grud_sql_operationsДляАктивтиТабель.
-                                            new GetData(getApplicationContext()).getdata(class_grud_sql_operationsДляАктивтиТабель. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
-                                            Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
-                                } catch (ExecutionException e) {
-                                    e.printStackTrace();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-
-                                Log.d(this.getClass().getName(), "GetData "+Курсор_ДляУдаленияПолучаемМесяцИгод  );
-
-                                ////
-
-
-                                // TODO: 02.09.2021
-
-                                if(Курсор_ДляУдаленияПолучаемМесяцИгод.getCount()>0){
-
-                                    Курсор_ДляУдаленияПолучаемМесяцИгод.moveToFirst();
-                                    //////
-                                    int ИндексМесяцДляУдаления=Курсор_ДляУдаленияПолучаемМесяцИгод.getColumnIndex("month_tabels")  ;
-                                    ///////
-                                    МесяцДляУдаления=Курсор_ДляУдаленияПолучаемМесяцИгод.getInt(ИндексМесяцДляУдаления);
-                                    //////
-                                    int  ИндексГодДляУдаления=Курсор_ДляУдаленияПолучаемМесяцИгод.getColumnIndex("year_tabels")  ;
-                                    ///////
-                                    ГодДляУдаления=Курсор_ДляУдаленияПолучаемМесяцИгод.getInt(ИндексГодДляУдаления);
-
-
-
-                                }
-
-
-
-                                System.out.println("СамоЗначениеUUIDДляУдаланиевсехСотрудников " + СамоЗначениеUUIDДляУдаланиевсехСотрудников[0]);
-                                /////TODO конец while
-
-
-
-
-
-
-
-                            });
-                        }
-
-
-
-
-
-                    }
-
-
-
-
-
-                //  ССылкаНаСозданнуюБазу.close();
-
-        /*    if (PUBLIC_CONTENT.Отладка==true) {
-                    СообщениеПослеУдаленияСамогоТАбеля("Оповещение Табеля", "Успешное удалание Табеля"
-                            +"\n"+" (с сотрудниками): "
-                            +СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.size(), true,НазваниеУдаляемогоТАбеляВЦифровомФормате);
-                } else {*/
-
-
-                МетодСозданиеСпинераДляДатыНаАктивитиСозданиеИВыборТабеля();
-
-                onStart();
-
-                //
-                ScrollНаАктивтиСозданныхТабелей.forceLayout();
-                /////
-                ScrollНаАктивтиСозданныхТабелей.requestLayout();
-
-                //////
-
-
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ///метод запись ошибок в таблицу
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                   new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
-    }
-////todo конец фильаного сообщения о удалени самого табеля
-
-
-
-
 
 
 
@@ -2572,31 +2352,13 @@ try{
 
 //////todo
                     if (СамоЗначениеUUID>0) {
-
-
-
                         Integer РезультатУдалениеТабеля=
-                                МетодУдалениеСамогоТабеля(ИндификаторUUID,
-                                        СамоЗначениеUUID,НазваниеУдаляемогоТАбеля,
-                                        ПолученноеЗначениеИзСпинераДата,
-                                        НазваниеУдаляемогоТАбеляВЦифровомФормате); //// TODO передаеюм UUID для Удалание
-
-                        ///todo поле удаления табеля
-
-
-
+                                МетодУдалениеСамогоТабеля( СамоЗначениеUUID,ИндификаторUUID); //// TODO передаеюм UUID для Удалание
                         Log.d(this.getClass().getName(), "  ФИНАЛ создание нового сотрудника " + "РезультатУдалениеТабеля " +РезультатУдалениеТабеля);
-
-
-//
-
-
-
                     }
 
                 }
             });
-
             /////////кнопка
             final Button MessageBoxУдалениеСотрудникаИзТабеляОтмена = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
             MessageBoxУдалениеСотрудникаИзТабеляОтмена.setOnClickListener(new View.OnClickListener() {
@@ -2607,8 +2369,6 @@ try{
                     alertDialog.dismiss();
                 }
             });
-
-
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу
@@ -2627,24 +2387,75 @@ try{
 
 
     //todo метод удаление сотрудника из табеля
-    private Integer МетодУдалениеСамогоТабеля(String ДляУдалениеUUID,Long СамоЗначениеUUID,int НазваниеУдаляемогоТАбеля ,
-                                              String ПолученноеЗначениеИзСпинераДата, String НазваниеУдаляемогоТАбеляВЦифровомФормате) {
-        StringBuffer ПрисутстуетСотрудникВУдаляемомоТабеле=new StringBuffer();
-        final Cursor[] Курсор_КоторыйПроверяетПУстойЛиТабеля = {null};
-        Integer РезультатУдаленияТабеля=0;
+    private Integer МетодУдалениеСамогоТабеля(Long ДляУдалениеUUID,
+                                              String СамоЗначениеUUID) {
+        final Integer[] УдалениеТабеляСамого = {0};
+        final Integer[] РезультатУдалениеСамихСотрудников = {0};
         try{
             Log.d(this.getClass().getName()," СамоЗначениеUUID "+СамоЗначениеUUID+ " ДляУдалениеUUID " +ДляУдалениеUUID);
-            long РезультатУдалениеСамогоТАбеля = 0;
-            Log.d(this.getClass().getName()," НазваниеУдаляемогоТАбеля"+ НазваниеУдаляемогоТАбеля);
-            // TODO: 11.06.2021 метод который удялет
-            РезультатУдаленияТабеля=             МетодУдалениеТабеляПриУсловииЧтоНетСотрудниковВнем(ДляУдалениеUUID,
-                    СамоЗначениеUUID, НазваниеУдаляемогоТАбеля, ПрисутстуетСотрудникВУдаляемомоТабеле,
-                    Курсор_КоторыйПроверяетПУстойЛиТабеля,НазваниеУдаляемогоТАбеляВЦифровомФормате);
-            Log.d(this.getClass().getName(), " РезультатУдаленияТабеля " +РезультатУдаленияТабеля);
-            if (РезультатУдаленияТабеля>0) {
-                // TODO: 07.10.2022  СИНХронизация
-                МетодЗапускаСинхрониазцииЕслиБыИзмененияВбАзе();
-            }
+            Observable.fromCallable(new Callable<Object>() {
+                        @Override
+                        public Object call() throws Exception {
+                            // TODO: 22.11.2022  первая часть
+                        РезультатУдалениеСамихСотрудников[0]
+                             = new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("data_tabels",
+                                    "uuid_tabel", ДляУдалениеUUID);
+                            Log.d(this.getClass().getName(), " ДляУдалениеUUID " + ДляУдалениеUUID);
+                            // TODO: 01.11.2021  само удаление табеля вторая часть
+                            УдалениеТабеляСамого[0] =
+                                    new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("tabel",
+                                            "uuid", ДляУдалениеUUID);
+                            Log.d(this.getClass().getName(), " УдалениеТабеляСамого " + УдалениеТабеляСамого[0]);
+                            return УдалениеТабеляСамого[0];
+                        }
+                    })
+                    .subscribeOn(Schedulers.single())
+                            .doOnComplete(new Action() {
+                                @Override
+                                public void run() throws Throwable {
+                                    Log.d(this.getClass().getName(), " УдалениеТабеляСамого[0] " +УдалениеТабеляСамого[0]);
+                                    if ( РезультатУдалениеСамихСотрудников[0]>0 || УдалениеТабеляСамого[0]>0) {
+                                        // TODO: 07.10.2022  СИНХронизация
+                                        МетодЗапускаСинхрониазцииЕслиБыИзмененияВбАзе();
+                                    }
+                                }
+                            })
+                                    .doOnError(new Consumer<Throwable>() {
+                                        @Override
+                                        public void accept(Throwable throwable) throws Throwable {
+                                            Log.d(this.getClass().getName(), " doOnError  МетодУдалениеСамогоТабеля  throwable " +throwable.getMessage());
+                                            ///метод запись ошибок в таблицу
+                                            Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
+                                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                        }
+                                    })
+                                            .onErrorComplete(new Predicate<Throwable>() {
+                                                @Override
+                                                public boolean test(Throwable throwable) throws Throwable {
+                                                    Log.d(this.getClass().getName(), " onErrorComplete  МетодУдалениеСамогоТабеля  throwable " +throwable.getMessage());
+                                                    ///метод запись ошибок в таблицу
+                                                    Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
+                                                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                                    return false;
+                                                }
+                                            }).subscribe(new Consumer<Object>() {
+                        @Override
+                        public void accept(Object o) throws Throwable {
+                            PUBLIC_CONTENT public_contentПрогресВезуализации=new PUBLIC_CONTENT(activity);
+                            progressDialogДляУдаления = new ProgressDialog(activity);
+                            progressDialogДляУдаления.setTitle("Удаление Табеля");
+                            progressDialogДляУдаления.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                            progressDialogДляУдаления.setProgress(0);
+                            progressDialogДляУдаления.setCanceledOnTouchOutside(false);
+                            progressDialogДляУдаления.setMessage("Удалание...");
+                            progressDialogДляУдаления.setMessage("Удалание...");
+                            progressDialogДляУдаления.show();
+                        }
+                    });
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу
@@ -2653,7 +2464,7 @@ try{
             new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
-        return РезультатУдаленияТабеля;
+        return УдалениеТабеляСамого[0]+РезультатУдалениеСамихСотрудников[0];
     }
 
 
@@ -2706,104 +2517,4 @@ try{
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    protected Integer МетодУдалениеТабеляПриУсловииЧтоНетСотрудниковВнем(String ДляУдалениеUUID, Long СамоЗначениеUUID, int НазваниеУдаляемогоТАбеля,
-                                                                         StringBuffer присутстуетСотрудникВУдаляемомоТабеле, Cursor[] курсор_КоторыйПроверяетПУстойЛиТабеля, String НазваниеУдаляемогоТАбеляВЦифровомФормате)
-            throws ExecutionException, InterruptedException, TimeoutException, BrokenBarrierException {
-        String СодержимоеКурсора = null;
-        String СодержимоеКурсораНазваниеТабеля = null;
-        Integer РезультатУдаленияТабеля=0;
-        final Integer[] РезультатУдаленияДатаТАбель = {0};
-        try {
-            Log.d(this.getClass().getName(), " СодержимоеКурсораНазваниеТабеля       " + СодержимоеКурсораНазваниеТабеля);
-            СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником = new LinkedBlockingQueue<Long>();
-                        СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.put(СамоЗначениеUUID);
-                    Log.d(this.getClass().getName(), "  СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником "
-                            + СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.toArray());
-///todo команда которая удаляет выбранный табель
-            PUBLIC_CONTENT public_contentПрогресВезуализации=new PUBLIC_CONTENT(activity);
-            progressDialogДляУдаления = new ProgressDialog(activity);
-            progressDialogДляУдаления.setTitle("Удаление Табеля");
-            progressDialogДляУдаления.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialogДляУдаления.setProgress(0);
-            progressDialogДляУдаления.setMax(СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.size());
-            progressDialogДляУдаления.setCanceledOnTouchOutside(false);
-            progressDialogДляУдаления.setMessage("Удалание...");
-            progressDialogДляУдаления.setMessage("Удалание..." + НазваниеУдаляемогоТАбеляВЦифровомФормате);
-            progressDialogДляУдаления.show();
-            // TODO: 20.09.2021
-            final String ПередаемСозданнуюДатуНовогоТабеля = (String) ((TextView) СпинерВыборДату.getChildAt(0)).getText();///дата нового табеля
-            public_contentПрогресВезуализации.МенеджерПотоков.submit(()-> {
-                // TODO: 26.10.2021
-                Iterator<Long> iteratorДляУдалениеТАбеля = СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.iterator();
-                Integer РезультатУдалениеСамогоТАбеля = null;
-                while (iteratorДляУдалениеТАбеля.hasNext()) {
-                    Long ПолученныйUUIDДляУдалениесотрудникаИЗТабеля = iteratorДляУдалениеТАбеля.next();
-                    Log.d(this.getClass().getName(), " ПолученныйUUIDДляУдалениесотрудникаИЗТабеля" + ПолученныйUUIDДляУдалениесотрудникаИЗТабеля);
-                    // TODO: 22.11.2022  первая часть
-                        РезультатУдалениеСамогоТАбеля = new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("data_tabels",
-                                "uuid_tabel",
-                                ПолученныйUUIDДляУдалениесотрудникаИЗТабеля);
-                        Log.d(this.getClass().getName(), " РезультатУдалениеСамогоТАбеля " + РезультатУдалениеСамогоТАбеля);
-                            // TODO: 01.11.2021  само удаление табеля вторая часть
-                            РезультатУдаленияДатаТАбель[0] =
-                                    new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("tabel",
-                                            "uuid",
-                                            ПолученныйUUIDДляУдалениесотрудникаИЗТабеля);
-                            Log.d(this.getClass().getName(), " РезультатУдалениеСамогоТАбеля " +    РезультатУдаленияДатаТАбель[0]);
-
-                    Log.d(this.getClass().getName(), " РезультатУдалениеСамогоТАбеля " + РезультатУдалениеСамогоТАбеля);
-                    final String finalПередаемСозданнуюДатуНовогоТабеля=ПередаемСозданнуюДатуНовогоТабеля;
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressDialogДляУдаления.setMessage("Удалание..." + НазваниеУдаляемогоТАбеляВЦифровомФормате);
-                            try {
-                                TimeUnit.MILLISECONDS.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                    СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.take();
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressDialogДляУдаления.dismiss();
-                            Log.d(this.getClass().getName(), " МассивДляВыбораВСпинерДата " + МассивДляВыбораВСпинерДата);
-                            МассивДляВыбораВСпинерДата.clear();
-                            СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником.clear();
-                            Log.d(this.getClass().getName(), " СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником " + СодержимоеКурсораUUIDТабеляПриУдалениеиТАбеляилиВместеССотрудником);
-                            ///todo метод для удаления табеля
-                            onStart();
-                        }
-                    });
-                }
-                return РезультатУдалениеСамогоТАбеля+   РезультатУдаленияДатаТАбель[0];
-
-            });
-   РезультатУдаленияТабеля= (Integer) public_contentПрогресВезуализации.МенеджерПотоков.take().get();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
-                    this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
-        return РезультатУдаленияТабеля;
-    }
 }
