@@ -221,41 +221,40 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 // TODO: 22.09.2022
                 Log.d(this.getClass().getName(), "МесяцИзПрошлогоМесяца " + МесяцИзПрошлогоМесяца + " ГодНазадДляЗаполнени " + ГодНазадДляЗаполнени);
                 //TODO ВЫЧИСЛЯЕМ ДАННЫЕ КОТОРЫЕ НА ВСТАВИТЬ
-                Cursor Курсор_ВытаскиваемПоследнийМесяцТабеля=null;
-                for (Integer месяцПростоАнализа = МесяцПростоАнализа; месяцПростоАнализа > 0; месяцПростоАнализа--) {
-                    Log.d(this.getClass().getName(), " месяцПростоАнализа" + месяцПростоАнализа);
-                    Bundle bundle=new Bundle();
-                    bundle.putString("СамЗапрос","  SELECT * FROM  viewtabel WHERE year_tabels=?  AND month_tabels=?   AND status_send!=?");
-                    bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(ГодНазадДляЗаполнени), String.valueOf(месяцПростоАнализа),"Удаленная"});
-                    bundle.putString("Таблица","viewtabel");
-                    Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    new SubClassCursorLoader().  CursorLoaders(context, bundle);
-                    Log.d(this.getClass().getName(), " Курсор_ВытаскиваемПоследнийМесяцТабеля" + Курсор_ВытаскиваемПоследнийМесяцТабеля);
-                    if (Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() > 0) {
-                        Log.d(this.getClass().getName(), "Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() " + Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());
-                        Class_GRUD_SQL_Operations       class_grud_sql_operationЗаполнениеИзПрошлогоМесяца = new Class_GRUD_SQL_Operations(getApplicationContext());
 
-                        МетодЗаопленияДаннымиИзПрошлогоМесяца(context,
-                                UUIDПОискаПредыдущегоМЕсяцаТАбеля, ГодНазадДляЗаполнени,
-                                ВсеОтветыПослеИзПрошлогоМесяца, МесяцИзПрошлогоМесяца
-                                , Курсор_ВытаскиваемПоследнийМесяцТабеля,
-                                class_grud_sql_operationЗаполнениеИзПрошлогоМесяца);
-                        break;
-                    }
-                    if(месяцПростоАнализа==1){
+                // TODO: 15.02.2023 ГОД бежим по ЦИКЛЦУ
+                for ( ГодНазадДляЗаполнени = ГодНазадДляЗаполнени; ГодНазадДляЗаполнени > 0; ГодНазадДляЗаполнени--) {
+                    // TODO: 15.02.2023 месяцы
+                    Cursor     Курсор_ВытаскиваемПоследнийМесяцТабеля = null;
+                    for (Integer месяцПростоАнализа = МесяцПростоАнализа; месяцПростоАнализа > 0; месяцПростоАнализа--) {
                         Log.d(this.getClass().getName(), " месяцПростоАнализа" + месяцПростоАнализа);
-                        ГодНазадДляЗаполнени--;
+                        Bundle bundle=new Bundle();
+                        bundle.putString("СамЗапрос","  SELECT * FROM  viewtabel WHERE year_tabels=?  AND month_tabels=?  AND cfo=?  AND status_send!=?");
+                        bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(ГодНазадДляЗаполнени), String.valueOf(месяцПростоАнализа),String.valueOf(СФОУжеСозданогоТАбеля),"Удаленная"});
+                        bundle.putString("Таблица","viewtabel");
+                        Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    new SubClassCursorLoader().  CursorLoaders(context, bundle);
+                        Log.d(this.getClass().getName(), " Курсор_ВытаскиваемПоследнийМесяцТабеля" + Курсор_ВытаскиваемПоследнийМесяцТабеля);
+                        if (Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() > 0) {
+                            Log.d(this.getClass().getName(), "Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() " + Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());
+                            Class_GRUD_SQL_Operations       class_grud_sql_operationЗаполнениеИзПрошлогоМесяца = new Class_GRUD_SQL_Operations(getApplicationContext());
+
+                            МетодЗаопленияДаннымиИзПрошлогоМесяца(context,
+                                    UUIDПОискаПредыдущегоМЕсяцаТАбеля, ГодНазадДляЗаполнени,
+                                    ВсеОтветыПослеИзПрошлогоМесяца, МесяцИзПрошлогоМесяца
+                                    , Курсор_ВытаскиваемПоследнийМесяцТабеля,
+                                    class_grud_sql_operationЗаполнениеИзПрошлогоМесяца);
+
+                            Log.d(this.getClass().getName(), " Выходим" );
+                            break;
+                        }
                         Log.d(this.getClass().getName(), " месяцПростоАнализа" + месяцПростоАнализа);
+                        Курсор_ВытаскиваемПоследнийМесяцТабеля.close();
                     }
                     if(ГодНазадДляЗаполнени<=2015){
-                        Log.d(this.getClass().getName(), " месяцПростоАнализа" + месяцПростоАнализа);
+                        Log.d(this.getClass().getName(), " ГодНазадДляЗаполнени" + ГодНазадДляЗаполнени);
                         break;
                     }
-
-                    Log.d(this.getClass().getName(), " месяцПростоАнализа" + месяцПростоАнализа);
-                    Курсор_ВытаскиваемПоследнийМесяцТабеля.close();
                 }
-// TODO: 15.02.2023 после обоработчки выходим  
-                     Log.d(this.getClass().getName(), "Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() " + Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());
                     // TODO: 25.11.2022 выход
                     МетодОтображениеОперацииИзПрошлогоМЕсяца(context, "ВыходИзВставкиИзПрошлогоМесяца", ВсеОтветыПослеИзПрошлогоМесяца.stream().reduce(0, (a, b) -> a + b));
             } catch (Exception e) {
@@ -268,10 +267,16 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
             }
         }
 
-        private void МетодЗаопленияДаннымиИзПрошлогоМесяца(@NonNull Context context, Long UUIDПОискаПредыдущегоМЕсяцаТАбеля, Integer ГодНазадДляЗаполнени, ArrayList<Integer> ВсеОтветыПослеИзПрошлогоМесяца, Integer МесяцИзПрошлогоМесяца, Cursor Курсор_ВытаскиваемПоследнийМесяцТабеля, Class_GRUD_SQL_Operations class_grud_sql_operationЗаполнениеИзПрошлогоМесяца) {
-            if (Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() > 0) {
+        private void МетодЗаопленияДаннымиИзПрошлогоМесяца(@NonNull Context context,
+                                                           Long UUIDПОискаПредыдущегоМЕсяцаТАбеля,
+                                                           Integer ГодНазадДляЗаполнени, ArrayList<Integer> ВсеОтветыПослеИзПрошлогоМесяца,
+                                                           Integer МесяцИзПрошлогоМесяца,
+                                                           Cursor Курсор_ВытаскиваемПоследнийМесяцТабеля,
+                                                           Class_GRUD_SQL_Operations class_grud_sql_operationЗаполнениеИзПрошлогоМесяца) {
+            try {
                 ReentrantLock reentrantLock = new ReentrantLock();
                 Condition condition = reentrantLock.newCondition();
+                Курсор_ВытаскиваемПоследнийМесяцТабеля.moveToFirst();
                 do {
                     try {
                         reentrantLock.lock();
@@ -293,7 +298,7 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                             МетодОтображениеОперацииИзПрошлогоМЕсяца(context, "РезультатДобавенияСотрудникаИзПрошлогоМесяца",
                                     ВсеОтветыПослеИзПрошлогоМесяца.size());
                         }
-                        condition.await(500, TimeUnit.MILLISECONDS);
+                        condition.await(300, TimeUnit.MILLISECONDS);
                         condition.signal();
                         Log.d(this.getClass().getName(), "insertData   ");
                     } catch (Exception e) {
@@ -307,8 +312,13 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                         reentrantLock.unlock();
                     }
                 } while (Курсор_ВытаскиваемПоследнийМесяцТабеля.moveToNext());//TODO конец цикла заполения даными
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
             }
         }
 
