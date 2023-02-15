@@ -82,10 +82,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.functions.BiFunction;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Predicate;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -491,7 +493,7 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
                 Log.d(this.getClass().getName(), "  ФИНАЛ после удалание сотрудуника "+"СамоЗначениеUUID"+СамоЗначениеUUID
                         +"СамоЗначениеUUID" +ДляУдалениеUUID+"СамоЗначениеUUID"+НазваниеУдаляемогоТАбеляВЦифровомФормате);
                 try {
-                    МетодУдалениеСамогоТабеля(СамоЗначениеUUID,ДляУдалениеUUID);
+                    МетодУдалениеСамогоТабеля(СамоЗначениеUUID);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2353,7 +2355,7 @@ try{
 //////todo
                     if (СамоЗначениеUUID>0) {
                         Integer РезультатУдалениеТабеля=
-                                МетодУдалениеСамогоТабеля( СамоЗначениеUUID,ИндификаторUUID); //// TODO передаеюм UUID для Удалание
+                                МетодУдалениеСамогоТабеля( СамоЗначениеUUID); //// TODO передаеюм UUID для Удалание
                         Log.d(this.getClass().getName(), "  ФИНАЛ создание нового сотрудника " + "РезультатУдалениеТабеля " +РезультатУдалениеТабеля);
                     }
 
@@ -2387,39 +2389,54 @@ try{
 
 
     //todo метод удаление сотрудника из табеля
-    private Integer МетодУдалениеСамогоТабеля(Long ДляУдалениеUUID,
-                                              String СамоЗначениеUUID) {
+    private Integer МетодУдалениеСамогоТабеля(Long ДляУдалениеUUID) {
         final Integer[] УдалениеТабеляСамого = {0};
         final Integer[] РезультатУдалениеСамихСотрудников = {0};
         try{
-            Log.d(this.getClass().getName()," СамоЗначениеUUID "+СамоЗначениеUUID+ " ДляУдалениеUUID " +ДляУдалениеUUID);
-            Observable.fromCallable(new Callable<Object>() {
-                        @Override
-                        public Object call() throws Exception {
-                            // TODO: 22.11.2022  первая часть
-                        РезультатУдалениеСамихСотрудников[0]
-                             = new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("data_tabels",
-                                    "uuid_tabel", ДляУдалениеUUID);
-                            Log.d(this.getClass().getName(), " ДляУдалениеUUID " + ДляУдалениеUUID);
-                            // TODO: 01.11.2021  само удаление табеля вторая часть
-                            УдалениеТабеляСамого[0] =
-                                    new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("tabel",
-                                            "uuid", ДляУдалениеUUID);
-                            Log.d(this.getClass().getName(), " УдалениеТабеляСамого " + УдалениеТабеляСамого[0]);
-                            return УдалениеТабеляСамого[0];
-                        }
-                    })
-                    .subscribeOn(Schedulers.single())
-                            .doOnComplete(new Action() {
+            Log.d(this.getClass().getName()," ДляУдалениеUUID " +ДляУдалениеUUID);
+            PUBLIC_CONTENT public_contentПрогресВезуализации=new PUBLIC_CONTENT(activity);
+            progressDialogДляУдаления = new ProgressDialog(activity);
+            progressDialogДляУдаления.setTitle("Удаление Табеля");
+            progressDialogДляУдаления.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialogДляУдаления.setProgress(0);
+            progressDialogДляУдаления.setCanceledOnTouchOutside(false);
+            progressDialogДляУдаления.setMessage("Удалание...");
+            progressDialogДляУдаления.setMessage("Удалание...");
+            progressDialogДляУдаления.show();
+                        Observable.range(0,2)
+                                    .subscribeOn(Schedulers.single())
+                                    .zipWith(Observable.interval(1, TimeUnit.SECONDS), new BiFunction<Object, Long, Object>() {
+                                        @Override
+                                        public Object apply(Object o, Long aLong) throws Throwable {
+                                            Log.d(this.getClass().getName(), " o " + o+ " aLong " +aLong);
+                                            return o;
+                                        }
+                                    }).doOnNext(new Consumer<Object>() {
                                 @Override
-                                public void run() throws Throwable {
-                                    Log.d(this.getClass().getName(), " УдалениеТабеляСамого[0] " +УдалениеТабеляСамого[0]);
-                                    if ( РезультатУдалениеСамихСотрудников[0]>0 || УдалениеТабеляСамого[0]>0) {
-                                        // TODO: 07.10.2022  СИНХронизация
-                                        МетодЗапускаСинхрониазцииЕслиБыИзмененияВбАзе();
-                                    }
+                                public void accept(Object o) throws Throwable {
+                                    // TODO: 22.11.2022  первая часть
+                                    РезультатУдалениеСамихСотрудников[0]
+                                            = new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("data_tabels",
+                                            "uuid_tabel", ДляУдалениеUUID);
+                                    Log.d(this.getClass().getName(), " ДляУдалениеUUID " + ДляУдалениеUUID);
+                                    // TODO: 01.11.2021  само удаление табеля вторая часть
+                                    УдалениеТабеляСамого[0] =
+                                            new Class_MODEL_synchronized(getApplicationContext()).УдалениеТолькоПустогоТабеляЧерезКонтейнерУниверсальная("tabel",
+                                                    "uuid", ДляУдалениеUUID);
+                                    Log.d(this.getClass().getName(), " УдалениеТабеляСамого " + УдалениеТабеляСамого[0]);
                                 }
                             })
+                               .subscribeOn(AndroidSchedulers.mainThread())
+                                    .doOnComplete(new Action() {
+                                        @Override
+                                        public void run() throws Throwable {
+                                            Log.d(this.getClass().getName(), " УдалениеТабеляСамого[0] " +УдалениеТабеляСамого[0]);
+                                            if ( РезультатУдалениеСамихСотрудников[0]>0 || УдалениеТабеляСамого[0]>0) {
+                                                // TODO: 07.10.2022  СИНХронизация
+                                                МетодЗапускаСинхрониазцииЕслиБыИзмененияВбАзе();
+                                            }
+                                        }
+                                    })
                                     .doOnError(new Consumer<Throwable>() {
                                         @Override
                                         public void accept(Throwable throwable) throws Throwable {
@@ -2431,31 +2448,21 @@ try{
                                                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                                         }
                                     })
-                                            .onErrorComplete(new Predicate<Throwable>() {
-                                                @Override
-                                                public boolean test(Throwable throwable) throws Throwable {
-                                                    Log.d(this.getClass().getName(), " onErrorComplete  МетодУдалениеСамогоТабеля  throwable " +throwable.getMessage());
-                                                    ///метод запись ошибок в таблицу
-                                                    Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
-                                                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                    return false;
-                                                }
-                                            }).subscribe(new Consumer<Object>() {
-                        @Override
-                        public void accept(Object o) throws Throwable {
-                            PUBLIC_CONTENT public_contentПрогресВезуализации=new PUBLIC_CONTENT(activity);
-                            progressDialogДляУдаления = new ProgressDialog(activity);
-                            progressDialogДляУдаления.setTitle("Удаление Табеля");
-                            progressDialogДляУдаления.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                            progressDialogДляУдаления.setProgress(0);
-                            progressDialogДляУдаления.setCanceledOnTouchOutside(false);
-                            progressDialogДляУдаления.setMessage("Удалание...");
-                            progressDialogДляУдаления.setMessage("Удалание...");
-                            progressDialogДляУдаления.show();
-                        }
-                    });
+                                    .onErrorComplete(new Predicate<Throwable>() {
+                                        @Override
+                                        public boolean test(Throwable throwable) throws Throwable {
+                                            Log.d(this.getClass().getName(), " onErrorComplete  МетодУдалениеСамогоТабеля  throwable " +throwable.getMessage());
+                                            ///метод запись ошибок в таблицу
+                                            Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
+                                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                            return false;
+                                        }
+                                    }).subscribe();;
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу
