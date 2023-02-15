@@ -491,6 +491,10 @@ return  РезультатЗапускаФоновойСинхронизации
      try {
          boolean ФлагРазрешениеРаботысСетьюПользователем = new Class_Find_Setting_User_Network(context).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
          if (ФлагРазрешениеРаботысСетьюПользователем==true) {
+
+             while (serviceForTabelAsync==null){
+                 МетодПодключениекСлубе();
+             }
                  ///////todo запускем синхронизации ОДНОРАЗОВАНАЯ
                        РезультатЗапускаФоновойСинхронизации = serviceForTabelAsync.МетодЗапускаAsyncBackgronudДляWorkManager(context);
                                  Log.d(context.getClass().getName().toString(), "\n"
@@ -499,6 +503,8 @@ return  РезультатЗапускаФоновойСинхронизации
 
              Log.d(this.getClass().getName(), " MyWork_Async_Синхронизация_Одноразовая ФлагРазрешениеРаботысСетьюПользователем "
                      + ФлагРазрешениеРаботысСетьюПользователем);
+
+
          }
      } catch (Exception e) {
          e.printStackTrace();
