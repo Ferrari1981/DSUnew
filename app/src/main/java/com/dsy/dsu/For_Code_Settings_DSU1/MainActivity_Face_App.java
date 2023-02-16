@@ -826,10 +826,8 @@ SubClassTEstКод subClassВторойТЕст=new SubClassTEstКод("А мо�
                             + ЗагрузиласьНоваяВерисяПОПровремяем + "ЗагрузкиФайлаОбновенияПОДополнительный " + ЗагрузкиФайлаОбновенияПОДополнительный
                             + " СервернаяВерсияПОРазмерФайла " + СервернаяВерсияПОРазмерФайла);
                     if (СервернаяВерсияПОРазмерФайла > 0) {
-                        getApplicationContext().getMainExecutor().execute(()->{
                             МетодУстановкиНовойВерсииПОТабельныйУчётПоднимаетЕгоНаActrivity(ЗагрузиласьНоваяВерисяПОПровремяем, ЗагрузкиФайлаОбновенияПОДополнительный);
                             Log.d(this.getClass().getName(), " localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт  intent " + intent);
-                        });
                     }
                     Log.d(this.getClass().getName(), " localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт  intent " + intent);
                 }
@@ -2143,7 +2141,7 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
                 Log.d(this.getClass().getName(), "VersionCode : " + info.versionCode + ", VersionName : " + info.versionName);
                 СервернаяВерсияПОВнутри = info.versionCode;
             }
-            PackageInfo pInfo = getApplication().getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             Long  ЛокальнаяВерсияПОСравнение = pInfo.getLongVersionCode();
             AlertDialog alertDialog = new MaterialAlertDialogBuilder(activity)///       final AlertDialog alertDialog =new AlertDialog.Builder( MainActivity_Face_App.КонтекстFaceApp)
                     .setTitle("Установщик")
@@ -2170,14 +2168,16 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
                     Log.d(this.getClass().getName(), "Установка Обновления .APK СЛУЖБА  ФинальныйПутьДляЗагрузкиФайлаОбновения " + ФинальныйПутьДляЗагрузкиФайлаОбновения);
                     String НазваниеФайлаОбновления = "update_dsu1.apk";
                     ФинальныйПутьДляЗагрузкиФайлаОбновения += НазваниеФайлаОбновления;
-                    Uri URIПутиДляЗагрузкиФайловЧерезПровайдер = FileProvider.getUriForFile(getApplicationContext(),
-                            getApplicationContext().getPackageName() + ".provider",
+                    Uri URIПутиДляЗагрузкиФайловЧерезПровайдер = FileProvider.getUriForFile(context,
+                            context.getPackageName() + ".provider",
                             ЗагрузкиФайлаОбновенияПОДополнительный);
                     Log.d(this.getClass().getName(), "Установка ЗагрузкиФайлаОбновенияПОДополнительный  " + ЗагрузкиФайлаОбновенияПОДополнительный);
                     Intent intentОбновлениеПО = new Intent(Intent.ACTION_INSTALL_PACKAGE);
                     intentОбновлениеПО.setDataAndType(URIПутиДляЗагрузкиФайловЧерезПровайдер, "application/vnd.android.package-archive");
-                    intentОбновлениеПО.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
-                            Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
+                    intentОбновлениеПО.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
+                            Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                            | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
                             | Intent.FLAG_ACTIVITY_NEW_TASK);
                     intentОбновлениеПО.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
                     intentОбновлениеПО.putExtra(Intent.EXTRA_STREAM, URIПутиДляЗагрузкиФайловЧерезПровайдер);
@@ -2188,8 +2188,8 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
                         Log.d(this.getClass().getName(), " СЛУЖБА УСТАНОВКА... ОБНОВЛЕНИЯ НА ТЕЛЕФОН (.APK файл)  МеханизмПроверкиЗапуститьсяНашИнтентИлиНЕт "
                                 + МеханизмПроверкиЗапуститьсяНашИнтентИлиНЕт);
                         ////TODO непосрдствено сам запуск новго .apk файла
-                        startActivity(intentОбновлениеПО);
-                        finishAndRemoveTask(); //// ((Activity) MainActivity_Face_App.КонтекстFaceApp).finish();
+                        activity.   startActivity(intentОбновлениеПО);
+                        activity.     finishAndRemoveTask(); //// ((Activity) MainActivity_Face_App.КонтекстFaceApp).finish();
                         Log.w(this.getClass().getName(), " ура !!!! УРА !!!!  уСПЕШНАЫЙ ЗАПУСК СКАЧЕННОГО ОБНОВЛЕНЕИ ПО " +
                                 "МетодУстановкиНовойВерсииПОТабельныйУчётПоднимаетЕгоНаActrivity  ");
                     } else {
@@ -2233,11 +2233,31 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
         });
        // handler.obtainMessage(0,0,0,new Object()).sendToTarget();
 
-        Message message=Message.obtain(handler,()->{
+       Message handler11=     new Handler().obtainMessage();
+            handler11.getTarget().post(()->{
+                Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
+                        "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
+                        "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
+            });
+            handler11.getTarget().hasCallbacks(new Runnable() {
+                @Override
+                public void run() {
+                    Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
+                            "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
+                            "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
+                }
+            });
+
+
+        Message message=Message.obtain(new Handler(Looper.myLooper()),()->{
             Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
                     "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
                     "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
         });
+
+        Bundle b=new Bundle();
+        b.putString("dddd","555555555555555555555");
+            message.setData(b);
         message.sendToTarget();
     } catch (Exception e) {
         e.printStackTrace();

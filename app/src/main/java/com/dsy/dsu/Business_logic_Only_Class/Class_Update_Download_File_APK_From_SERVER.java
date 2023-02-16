@@ -463,7 +463,7 @@ public class Class_Update_Download_File_APK_From_SERVER {
                         Handler handlerПО=new Handler(Looper.getMainLooper(), new Handler.Callback() {
                             @Override
                             public boolean handleMessage(@NonNull Message msg) {
-                                Toast toast=     Toast.makeText(context, "Загрузка ПО...", Toast.LENGTH_LONG);
+                                Toast toast=     Toast.makeText(context, "Загрузка ПО->", Toast.LENGTH_LONG);
                                 toast.setGravity(Gravity.BOTTOM,0,50);
                     /*    ImageView img=new ImageView(context);
                         // give the drawble resource for the ImageView
