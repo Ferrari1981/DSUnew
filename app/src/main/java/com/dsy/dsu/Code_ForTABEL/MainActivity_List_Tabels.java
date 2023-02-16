@@ -555,36 +555,11 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
                 Log.d(this.getClass().getName(), "  ФИНАЛ после удалание сотрудуника ");
                 //////// todo если успешно удаление табеля то запускаем сообщение
                 if (Статус) {
-
-                    ///TODO попытка открыть экран как full screan
-                    ////////ЗАПОЛНЯЕМ АРАЙЛИСТ
-                    ////////ЗАПОЛНЯЕМ АРАЙЛИСТ
                     try {
-
-                        ///todo метод для удаления табеля
-                /*        МетодДляУдалениеТабеляЕслиВнемНетСотрудников();
-                        //////
-                        //////
-
-                        ////todo заполение спинера
-                        МетодЗаполненияАлайЛИстаНовымМЕсцевНовогоТабеля();////метод вызаваем все созжданные ТАБЕДЯ ИЗ БАПЗЫ И ДАЛЕЕ ИХ ЗАПИСЫВАЕМ В ОБМЕН
-                        ////todo заполение спинера
-                        //////
-
-
-                        МетодСозданиеСпинераДляДатыНаАктивитиСозданиеИВыборТабеля();*/
-
-
                         onStart();
-
-                        //
                         ScrollНаАктивтиСозданныхТабелей.forceLayout();
-
-                        //////
-
                     } catch (Exception e) {
                         e.printStackTrace();
-                        ///метод запись ошибок в таблицу
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                                 " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
                         // TODO: 01.09.2021 метод вызова
@@ -593,38 +568,9 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
                                 Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                     }
                 }
-
-                //TODO  второе действие заполенние контентом  в табеля в TableLyзаполения табеля из базы через элемент TableLauy
-                //todo код послеу успешного удаления табеля
-                //todo
             }
         });
     }
-////todo конец фильаного сообщения о удалени самого табеля
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private void МетодСозданиеСпинераДляДатыНаАктивитиСозданиеИВыборТабеля() {
         try {
@@ -772,38 +718,6 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
         }
         return ПолученыеМесяцНеОбработанный;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////////НАЧАЛО МЕТОД СОЗДАНИЕ ТАБЕЛЯ
-
 
     private void МетодаСозданиеТабеляИзБазы()  {
         SQLiteCursor            Курсор_ПолучаемПубличныйID= null;
@@ -1019,6 +933,10 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
                                 }
 
                             }
+
+
+
+
                             /////TODO метод запуска кода при однократорм нажатии просто загузка сотрудников табель
                             private void МетодПереходимВТабельСотрудники(Button v) {
                                 try{

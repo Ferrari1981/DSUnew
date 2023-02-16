@@ -245,10 +245,17 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                                     class_grud_sql_operationЗаполнениеИзПрошлогоМесяца);
 
                             Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+РезультатВставкиИзПрошлогоМесяца );
-                            break;
+                            if (РезультатВставкиИзПрошлогоМесяца>0) {
+                                Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+РезультатВставкиИзПрошлогоМесяца );
+                                break;
+                            }
                         }
                         Log.d(this.getClass().getName(), " месяцПростоАнализа" + месяцПростоАнализа);
                         Курсор_ВытаскиваемПоследнийМесяцТабеля.close();
+                    }
+                    if (РезультатВставкиИзПрошлогоМесяца>0) {
+                        Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+РезультатВставкиИзПрошлогоМесяца );
+                        break;
                     }
                 }
                     // TODO: 25.11.2022 выход
@@ -291,6 +298,8 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                         // TODO: 21.09.2022 отображае
                         condition.await(300, TimeUnit.MILLISECONDS);
                         condition.signal();
+                        // TODO: 25.11.2022 выход
+                        МетодОтображениеОперацииИзПрошлогоМЕсяца(context, "РезультатДобавенияСотрудникаИзПрошлогоМесяца",integerArrayListВствавкаИзПрошлогоМесяц.size());
                         Log.d(this.getClass().getName(), "insertData   ");
                     } catch (Exception e) {
                         e.printStackTrace();
