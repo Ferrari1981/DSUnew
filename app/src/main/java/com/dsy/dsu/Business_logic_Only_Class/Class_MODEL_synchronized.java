@@ -39,14 +39,11 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import javax.crypto.NoSuchPaddingException;
-
-import okio.Timeout;
 
 
 ///////Универсальный Класс Обмена Данными  Два Стачичных Метода и Плюс Сттичный Курсор
@@ -2733,30 +2730,27 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
     }*/
 
 //TODO МЕТОД ЗАГРУЗНИ НОВОГО СОТРУДНИКА
-    public Cursor МетодЗагружаетЗначенияНовгоСотрудника(Context КонтекстДЛяСотрудника) {
-                    SQLiteCursor            Курсор_ЗагружаетСФОИМесяц = null;
+    public Cursor МетодДанныеДЛяСпинераТАбеля() {
+                    SQLiteCursor            КурсорДляСпинераСамиМЕсяцы = null;
                     try {
                         Class_GRUD_SQL_Operations    class_grud_sql_operationsЗначенияНовгоСотрудник=new Class_GRUD_SQL_Operations(context);
-                  String[] ТаблицыОбработки=new String[]{"tabel","viewtabel"};///"viewtabel",
-                        for (int i = 0; i < ТаблицыОбработки.length; i++) {
-                            class_grud_sql_operationsЗначенияНовгоСотрудник. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы",ТаблицыОбработки[i]);
+                            class_grud_sql_operationsЗначенияНовгоСотрудник. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы","tabel");
                             class_grud_sql_operationsЗначенияНовгоСотрудник. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","month_tabels,year_tabels,cfo");
                             class_grud_sql_operationsЗначенияНовгоСотрудник. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика","status_send!=?  " +
                                     " AND month_tabels IS NOT NULL  AND year_tabels IS NOT NULL");
                             class_grud_sql_operationsЗначенияНовгоСотрудник. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1","Удаленная");
                             class_grud_sql_operationsЗначенияНовгоСотрудник. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПоляГрупировки","month_tabels,year_tabels");
-                            class_grud_sql_operationsЗначенияНовгоСотрудник. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеСортировки","year_tabels DESC ,month_tabels DESC , date_update DESC" );
+                            class_grud_sql_operationsЗначенияНовгоСотрудник. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеСортировки","year_tabels DESC " +
+                                    ",month_tabels DESC " );
                             class_grud_sql_operationsЗначенияНовгоСотрудник. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеЛимита","6");
 
 
-                            Курсор_ЗагружаетСФОИМесяц= (SQLiteCursor)  class_grud_sql_operationsЗначенияНовгоСотрудник.new GetData(context).getdata(class_grud_sql_operationsЗначенияНовгоСотрудник.
+                            КурсорДляСпинераСамиМЕсяцы= (SQLiteCursor)  class_grud_sql_operationsЗначенияНовгоСотрудник.new GetData(context).getdata(class_grud_sql_operationsЗначенияНовгоСотрудник.
                                             concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
                                     Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
-                            if(Курсор_ЗагружаетСФОИМесяц.getCount()>0){
-                                break;
-                            }
-                            Log.d(this.getClass().getName(), "Курсор_ЗагружаетСФОИМесяц " +Курсор_ЗагружаетСФОИМесяц );
-                        }
+
+                            Log.d(this.getClass().getName(), "КурсорДляСпинераСамиМЕсяцы " +КурсорДляСпинераСамиМЕсяцы );
+
                 } catch (Exception e) {
                         e.printStackTrace();
                         ///метод запись ошибок в таблицу
@@ -2765,7 +2759,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                         new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                                 Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                     }
-        return Курсор_ЗагружаетСФОИМесяц;
+        return КурсорДляСпинераСамиМЕсяцы;
     }
 
 
