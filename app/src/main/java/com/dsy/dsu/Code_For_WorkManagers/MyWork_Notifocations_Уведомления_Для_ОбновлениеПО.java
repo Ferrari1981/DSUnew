@@ -161,10 +161,9 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
             String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
 
-            Observable observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK = Observable.interval(10, TimeUnit.SECONDS)
+            Observable observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK = Observable.interval(0, TimeUnit.SECONDS)
                     .take(2, TimeUnit.MINUTES)
-                    .delay(5, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.computation())
+                    .subscribeOn(Schedulers.single())
                     .flatMap((string) -> {
                         PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(context);
                         // TODO: 08.01.2022
@@ -250,84 +249,16 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
         }
         return  СервернаяВерсияПОВнутри;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // TODO: 17.12.2021
-
     private void МетодЗапускаСлужбыУведомленияДляОбновлениеПО() {
-
-
         String ЛокальныйФлагУбратьУведомленияСлужбу=new String();
-
-        // TODO: 15.11.2021
-
-
         try{
-
             Log.i(getApplicationContext().getClass().getName(), "Запуск метода МетодЗапускаСлужбыУведомления СЛУЖБА СЛУЖБАService_UpdateSoft ДЛЯ ЧАТА ДЛЯ ЧАТА  "+new Date());
-
-// TODO: 01.04.2021 данное условие запускает соаздание уведомления с начала своего ниже код только реагирует на нажатие кнопки удалить уведомление и саму служюу отстановить кнопка ЗАКРЫТЬ
-
-
-
-
-
-
             /////////TODO запуск нновую нотификашенс устанолвка
             МетодЗарускаСозданиеУведомленийОбновлениеПо();
-
-
-
-
             Log.d(getApplicationContext().getClass().getName(), " Запуск по Расписанию СЛУЖБА" +
                     "   МетодЗарускаСозданиеУведомленийОбновлениеПо MyWork_Notifocations_Уведомления_Для_ОбновлениеПО " + "  --" + new Date());
-
-
-
-
-            // TODO: 06.04.2021 Определяем рабоает ли Служба КОД ПРОВЕРЯТЕТНЕ ЗАПУЩЕНАЛИ СЛУЖЬБА И ЕСЛИНЕ ЗАПУЩЕНА ТОНЕ НАДО ЕЕ УДАЛЯТЬ ИЗ ПАМЯТИ
-
-
-
-
-            ///////
         } catch (Exception e) {
-            //  Block of code to handle errors
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
@@ -414,58 +345,8 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
         try{
         Log.d(this.getClass().getName(), "Результат Нужно Запускать Уведомления Или Нет СЛУЖБА  true and false :: СервернаяВерсияПОВнутри  " +
                 СервернаяВерсияПОВнутри);
-        ActivityManager ЗапущенныйПроуессыДляУведомленийОбновлениеПО = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+        ActivityManager ЗапущенныйПроуессыДляУведомленийОбновлениеПО = (ActivityManager) getApplicationContext().getSystemService(ACTIVITY_SERVICE);
         if (ЗапущенныйПроуессыДляУведомленийОбновлениеПО!=null) {
-            List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессыДляОбновлениеПО= ЗапущенныйПроуессыДляУведомленийОбновлениеПО.getAppTasks();
-            if (КоличествоЗапущенныйПроуессыДляОбновлениеПО.size() > 0) {
-                Log.i(context.getClass().getName(), "ЗАПУСК    ВНУТРИ метода         " +
-                        "public Result doWork()  MyWork_Notifocations_Уведомления  внутри WORK MANAGER  КоличествоЗапущенныйПроуессыДляОбновлениеПО " + "\n"
-                        + КоличествоЗапущенныйПроуессыДляОбновлениеПО.size());
-                for (ActivityManager.AppTask ТекущаяАктивти : КоличествоЗапущенныйПроуессыДляОбновлениеПО) {
-                    String АктивностьЕслиЕстьTOPДляЧата = null;
-                    if (ТекущаяАктивти!=null) {
-                        Log.i(context.getClass().getName(), "ЗАПУСК    ВНУТРИ метода         " +
-                                "ТекущаяАктивти.getTaskInfo().numActivities  " + "\n"
-                                + ТекущаяАктивти.getTaskInfo().numActivities);
-                        if (ТекущаяАктивти.getTaskInfo().numActivities>0) {
-                            АктивностьЕслиЕстьTOPДляЧата = ТекущаяАктивти.getTaskInfo().topActivity.getClassName().toString();
-                        }
-                        Log.i(context.getClass().getName(), "ТекущаяАктивти " + ТекущаяАктивти +
-                                " АктивностьЕслиЕстьTOPДляЧатаКоличествоЗапущенныйПроуессыДляОбновлениеПО  " + АктивностьЕслиЕстьTOPДляЧата +
-                                "ТекущаяАктивти.getTaskInfo().numActivities  " + "\n"
-                                + ТекущаяАктивти.getTaskInfo().numActivities);
-                    }
-
-                    if (АктивностьЕслиЕстьTOPДляЧата != null) {
-                        if (АктивностьЕслиЕстьTOPДляЧата.equalsIgnoreCase("com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_Start")) {
-                            Log.d(this.getClass().getName(), "ЗАПУСК СЛУЖБА ВНУТРИ startService   " +
-                                    "Вещятеля BroadcastReceiver  Service_Notificatios_Уведомления_ОбновлениеПО  ДЛЯ ЧАТА " + new Date() +
-                                    "\n" + " Build.BRAND " + Build.BRAND.toString() + "\n");
-                            МетодНотификайшенОбнолвениеПО();
-                            Log.d(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
-                        }
-                        if (АктивностьЕслиЕстьTOPДляЧата.equalsIgnoreCase("com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Visible_Async")) {
-                            Boolean ПринудительныйЗапросОбновлениеПО=   getInputData().getBoolean("ПринудительныйЗапросОбновлениеПО",false);
-                            if (ПринудительныйЗапросОбновлениеПО) {
-                                Log.d(this.getClass().getName(), "ЗАПУСК СЛУЖБА ВНУТРИ startService   " +
-                                        "Вещятеля BroadcastReceiver  Service_Notificatios_Уведомления_ОбновлениеПО  ДЛЯ ЧАТА " + new Date() +
-                                        "\n" + " Build.BRAND " + Build.BRAND.toString() + "\n");
-                                МетодНотификайшенОбнолвениеПО();
-                                Log.d(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
-                            }
-
-                        }
-
-                    }else{
-                        МетодНотификайшенОбнолвениеПО();
-                        Log.d(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
-                    }
-                }
-            } else {
-                МетодНотификайшенОбнолвениеПО();
-                Log.d(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
-            }
-        }else{
             МетодНотификайшенОбнолвениеПО();
             Log.d(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
         }

@@ -65,7 +65,7 @@ public class BroadcastReceiver_Sous_Notificatios_UpdateSoft extends BroadcastRec
 
             Handler handlerПО=new Handler(Looper.getMainLooper(), new Handler.Callback() {
                 @Override
-                public boolean handleMessage(@NonNull Message msg) {
+                public boolean handleMessage(@NonNull android.os.Message msg) {
                     Toast toast=     Toast.makeText(context, "Поиск ПО...", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.BOTTOM,0,50);
                     /*    ImageView img=new ImageView(context);
@@ -78,11 +78,18 @@ public class BroadcastReceiver_Sous_Notificatios_UpdateSoft extends BroadcastRec
                     Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
                             "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
                             "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
-                    msg.getTarget().removeCallbacksAndMessages(msg);
+                    //msg.getTarget().removeCallbacksAndMessages(msg);
                     return true;
                 }
             });
             handlerПО.obtainMessage(0,0,0,new Object()).sendToTarget();
+
+            Message message=Message.obtain(handlerПО,()->{
+                Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
+                        "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
+                        "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
+            });
+            message.sendToTarget();
 
 
        Bundle bundleПринудительныйЗапросОбновлениеПО= intent.getExtras();

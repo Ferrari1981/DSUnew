@@ -59,13 +59,13 @@ public class Class_Update_Download_File_APK_From_SERVER {
         preferences = context.getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
     }
     // TODO: 02.04.2021 update service po
-    public void МетодНачалаЗапускаОбновленияПО(Integer СервернаяВерсияПОВнутриИзСлужбы) throws ExecutionException, InterruptedException {
+    public void МетодНачалаЗапускаОбновленияПО(Integer СервернаяВерсияПОВнутриИзСлужбы ,@NonNull Context context) throws ExecutionException, InterruptedException {
         Log.w(this.getClass().getName(), "   МетодНачалаЗапускаОбновленияПО СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
         try {
             СервернаяВерсияПОВнутри = СервернаяВерсияПОВнутриИзСлужбы;
                     Log.i(this.getClass().getName(), "СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри +
                             " СервернаяВерсияПОВнутриИзСлужбы" + СервернаяВерсияПОВнутриИзСлужбы);
-                    МетодОценкииСетиПередЗагрузкойAPKсСервера();
+                    МетодОценкииСетиПередЗагрузкойAPKсСервера(context);
             if (ТипПодключенияИнтернтаДляСлужбы != null) {
                 Log.i(this.getClass().getName(), "ТипПодключенияИнтернтаДляСлужбы " + ТипПодключенияИнтернтаДляСлужбы);
                 if (ТипПодключенияИнтернтаДляСлужбы.equals("WIFI")  || ТипПодключенияИнтернтаДляСлужбы.equals("Mobile")  ) {
@@ -370,9 +370,7 @@ public class Class_Update_Download_File_APK_From_SERVER {
                             Log.d(this.getClass().getName(), "  СЛУЖБА ЗАПУСКАЕМ...  Обновление  ПО .APK " +
                                     " ЛокальнаяВерсияПО " + ЛокальнаяВерсияПО + "СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
                 } catch (Exception e) {
-                    //  Block of code to handle errors
                     e.printStackTrace();
-                    ///метод запись ошибок в таблицу
                     Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                             + Thread.currentThread().getStackTrace()[2].getLineNumber());
                            new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
@@ -385,16 +383,14 @@ public class Class_Update_Download_File_APK_From_SERVER {
     }
 
 
-    private void МетодОценкииСетиПередЗагрузкойAPKсСервера() {
+    private void МетодОценкииСетиПередЗагрузкойAPKсСервера(@NonNull Context context) {
         try {
             /////todo тут МЫ ПОЛУЧАЕМ В КАКОЙ МОМЕНТ ТИП ПОДКЛЮЧЕНИЯ НА ТЕЛЕФОНЕ МОБИЛЯ ИЛИ  WIFI  И В ЗАВИСИМОСТИ ЧТОБЫ ПОНЯТЬ ЧЕ ЗА ДЕЛА
                 ТипПодключенияИнтернтаДляСлужбы = null;
                 ТипПодключенияИнтернтаДляСлужбы = МетодОпределяемКакойТипПодключениеWIFIилиMobileДляСлужбы(context);
                 Log.d(this.getClass().getName(), " ТипПодключенияИнтернтаДляСлужбы  " + ТипПодключенияИнтернтаДляСлужбы);
         } catch (Exception e) {
-            //  Block of code to handle errors
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
                    new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
@@ -433,7 +429,6 @@ public class Class_Update_Download_File_APK_From_SERVER {
             ///////
         } catch (Exception e) {
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
                    new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
