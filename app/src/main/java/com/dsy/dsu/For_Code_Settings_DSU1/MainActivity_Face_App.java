@@ -1491,28 +1491,6 @@ SubClassTEstКод subClassВторойТЕст=new SubClassTEstКод("А мо�
     }
 
 
-    // TODO: 31.12.2022  тест класс
-    private class SubClassTEstКод {
-        private  String Задаение;
-        private  Long ПередаваниеЗначение;
-
-        public SubClassTEstКод(String задаение, Long передаваниеЗначение) {
-            Задаение = задаение;
-            ПередаваниеЗначение = передаваниеЗначение;
-        }
-
-        private  String МетодВычислаемКакоеЗадание(){
-            return  "Установленое !!!!  "+ Задаение+ "\n" + ПередаваниеЗначение.toString();
-        }
-    }
-    // TODO: 31.12.2022  конец  тест класс
-
-    /////////TODO ЗАУСК APK
-
-
-
-
-
 }
 
 
@@ -1656,37 +1634,7 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
 
     }
 
-    private void МетодПослеУдаленияТаблицЗапускаемСледуюЩеЗанимАктивтиИмяИПароль(Intent Интент_Меню) {
-        Intent finalИнтент_Меню = Интент_Меню;
 
-        try {
-        ////////
-        /// КакойРежимСинхрониазции = ИнтентКакаяПоСчетуСинхронизация.getStringExtra("РежимЗапускаСинхронизации");
-        Toast.makeText(getApplicationContext(), " Удаляемая таблица прошло успешно !!! " , Toast.LENGTH_SHORT).show();
-
-        finalИнтент_Меню.putExtra("РежимЗапускаСинхронизации","ПовторныйЗапускСинхронизации");
-
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("РежимЗапускаСинхронизации","ПовторныйЗапускСинхронизации");
-            editor.commit();
-
-        /////TODO ЗАПУСКАМ ОБНОЛВЕНИЕ ДАННЫХ С СЕРВЕРА ПЕРЕРД ЗАПУСКОМ ПРИЛОЖЕНИЯ ВСЕ ПРИЛОЖЕНИЯ ДСУ-1
-        finalИнтент_Меню.setClass(getApplicationContext(), MainActivity_Tabels_Users_And_Passwords.class); //MainActivity_Visible_Async //MainActivity_Face_App
-
-        finalИнтент_Меню.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//////FLAG_ACTIVITY_SINGLE_TOP
-
-        startActivity(finalИнтент_Меню);
-
-        ////TODO ДАННАЯ КОМАНДА ПЕРЕКРЫВАЕТ НЕ ЗАПУСКАЕМОЕ АКТИВТИ А АКТИВТИ КОТОРЕ ЕГО ЗАПУСТИЛО
-        finish();
-
-    } catch (Exception e) {
-        e.printStackTrace();
-///метод запись ошибок в таблицу
-        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-    }
-    }
 
 
     protected class SubClassВызоваАктивтиИзМеню {
@@ -1727,216 +1675,10 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
     }
 }
 
-// TODO: 05.09.2022  тест метод
- void ТестМетод(@NonNull Context context,MaterialCardView КнопкаКонтрольДоступа,
-                @NonNull  BluetoothAdapter adapter,
-                @NonNull TextView textViewКлиент,@NonNull TextView textViewСервер) {
-    try{
-        Log.d(this.getClass().getName(), "ТестМетод: ");
-        textViewКлиент.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try{
-                    adapter.enable();
-                if (adapter != null && adapter.isEnabled()) {
-                    adapter.startDiscovery();
-                    BluetoothLeScanner scanner = adapter.getBluetoothLeScanner();
-                    List<ScanFilter> scanFilters = new ArrayList<>();
-                    ScanSettings scanSettings=      new ScanSettings.Builder()
-                           .setReportDelay(10000)
-                            .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
-                            .setNumOfMatches(ScanSettings.MATCH_NUM_MAX_ADVERTISEMENT)
-                            .setScanMode(ScanSettings.SCAN_MODE_BALANCED).build();
-            ScanCallback scanCallback  =      new ScanCallback() {
-                        @Override
-                        public void onScanResult(int callbackType, ScanResult result) {
-                            super.onScanResult(callbackType, result);
-                            String MAcBluetoots =      result.getDevice().getAddress();
-                            Log.d(this.getClass().getName(), "result" +result +" MAcBluetoots " +MAcBluetoots);
-                            BluetoothDevice deviceтестовый = adapter.getRemoteDevice(MAcBluetoots);
-                            // UUID muuid = result.getDevice().getUuids()[result.getDevice().getUuids().length-1].getUuid();
-                            Log.d(this.getClass().getName(), "result" +result+ " deviceтестовый " +deviceтестовый.getName()
-                                    + "         adapter.   getScanMode() " +        adapter.   getScanMode()+ " \n"
-                                    + "         adapter. getState()" +        adapter.   	getState());
-                        }
-
-                        @Override
-                        public void onBatchScanResults(List<ScanResult> results) {
-                            super.onBatchScanResults(results);
-                            results.forEach(new Consumer<ScanResult>() {
-                                @Override
-                                public void accept(ScanResult scanResult) {
-                                BluetoothDevice deviceтестовый = adapter.getRemoteDevice(scanResult.getDevice().getAddress());
-                                    Log.d(this.getClass().getName()," scanResult.getDevice().getAddress() " +scanResult.getDevice().getAddress()
-                                            + "scanResult.getDevice().getName()"+scanResult.getDevice().getName() );
-                                }
-                            });
-                        }
-                        @Override
-                        public void onScanFailed(int errorCode) {
-                            super.onScanFailed(errorCode);
-                        }
-                    };
-                   scanner.startScan(null, scanSettings,scanCallback );
-                }
-
-    /*                BluetoothAdapter.LeScanCallback leScanCallback= new BluetoothAdapter.LeScanCallback() {
-                    @Override
-                    public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                        Log.d(this.getClass().getName()," scanResult.getDevice().getAddress() " +device.getAddress()
-                                + "scanResult.getDevice().getName()"+device.getName() );
-                    }
-                };*/
-            } catch (Exception e) {
-                e.printStackTrace();
-                ///метод запись ошибок в таблицу
-                Log.e(context.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                        + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                        Thread.currentThread().getStackTrace()[2].getLineNumber());
-                Log.d(context.getClass().getName(), "  Полусаем Ошибку e.toString() " + e.toString());
-
-            }
-            }
-        });
-
-        Log.d(this.getClass().getName(), "ТестМетод  для сервера: ");
-        textViewСервер.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try{
-                    Log.d(this.getClass().getName()," scanResult.getDevice().getAddress() " );
-                    BluetoothLeScanner scanner = adapter.getBluetoothLeScanner();
-                    BluetoothDevice deviceтестовыйcсЕРВЕР = adapter.getRemoteDevice("BC:61:93:E6:E2:63");
-
-                    if (deviceтестовыйcсЕРВЕР!=null) {
-                        Boolean СтатусПолучилосьСвязятьДваДивайса=   deviceтестовыйcсЕРВЕР.createBond();
-                        Log.d(this.getClass().getName()," deviceтестовый.getDevice().getAddress() " +deviceтестовыйcсЕРВЕР.getAddress()  +
-                                "scanResult.getDevice().getName()"+deviceтестовыйcсЕРВЕР.getName()+  " СтатусПолучилосьСвязятьДваДивайса " +СтатусПолучилосьСвязятьДваДивайса);
 
 
-                    CompletionService completionServiceСканированиеBlueTooth=                  new PUBLIC_CONTENT(context).МенеджерПотоков;
-                    completionServiceСканированиеBlueTooth.submit(()->{
-                        UUID uuid=        ParcelUuid.fromString("00000000-0000-1000-8000-00805f9b34fb").getUuid();
-                        Log.d(this.getClass().getName()," deviceтестовый " +deviceтестовыйcсЕРВЕР  + "uuid "+uuid );
-                        BluetoothServerSocket       bluetoothServerSocketСервер=adapter.listenUsingRfcommWithServiceRecord("uuid",uuid);
-
-                            BluetoothSocket bluetoothSocketСервер = bluetoothServerSocketСервер.accept();
-                            Log.d(this.getClass().getName()," deviceтестовый " +deviceтестовыйcсЕРВЕР  + "bluetoothSocketСервер "+bluetoothSocketСервер );
 
 
-                        try (InputStream stream= bluetoothSocketСервер.getInputStream();) {
-                            //Integer i=  stream.read();
-                            Log.d(this.getClass().getName()," deviceтестовый "+ bluetoothSocketСервер + "uuid "+uuid+ " stream " +stream );
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        bluetoothSocketСервер.close();
-
-                        completionServiceСканированиеBlueTooth.poll();
-                        Log.d(this.getClass().getName()," deviceтестовый "+ СтатусПолучилосьСвязятьДваДивайса + "uuid "+uuid );
-                        return  bluetoothServerSocketСервер;
-                    });
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ///метод запись ошибок в таблицу
-                    Log.e(context.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                            Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    Log.d(context.getClass().getName(), "  Полусаем Ошибку e.toString() " + e.toString());
-
-                }
-            }
-        });
-    } catch (Exception e) {
-        e.printStackTrace();
-        ///метод запись ошибок в таблицу
-        Log.e(context.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                Thread.currentThread().getStackTrace()[2].getLineNumber());
-        Log.d(context.getClass().getName(), "  Полусаем Ошибку e.toString() " + e.toString());
-
-    }
-}
-
-    // TODO: 05.09.2022  тест метод
-    void ТестМетодСервер(@NonNull Context context,MaterialCardView КнопкаКонтрольДоступа,
-                   @NonNull  BluetoothAdapter adapter,
-                   @NonNull TextView textViewКлиент,@NonNull TextView textViewСервер) {
-        try{
-            Log.d(this.getClass().getName(), "ТестМетод: ");
-            textViewКлиент.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try{
-                        adapter.enable();
-                        if (adapter != null && adapter.isEnabled()) {
-                            adapter.startDiscovery();
-                            BluetoothLeScanner scanner = adapter.getBluetoothLeScanner();
-                            List<ScanFilter> scanFilters = new ArrayList<>();
-                            ScanSettings scanSettings=      new ScanSettings.Builder()
-                                    .setReportDelay(10000)
-                                    .setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
-                                    .setNumOfMatches(ScanSettings.MATCH_NUM_MAX_ADVERTISEMENT)
-                                    .setScanMode(ScanSettings.SCAN_MODE_BALANCED).build();
-                            ScanCallback scanCallback  =      new ScanCallback() {
-                                @Override
-                                public void onScanResult(int callbackType, ScanResult result) {
-                                    super.onScanResult(callbackType, result);
-                                    String MAcBluetoots =      result.getDevice().getAddress();
-                                    Log.d(this.getClass().getName(), "result" +result +" MAcBluetoots " +MAcBluetoots);
-                                    BluetoothDevice deviceтестовый = adapter.getRemoteDevice(MAcBluetoots);
-                                    // UUID muuid = result.getDevice().getUuids()[result.getDevice().getUuids().length-1].getUuid();
-                                    Log.d(this.getClass().getName(), "result" +result+ " deviceтестовый " +deviceтестовый.getName() );
-                                }
-
-                                @Override
-                                public void onBatchScanResults(List<ScanResult> results) {
-                                    super.onBatchScanResults(results);
-                                    results.forEach(new Consumer<ScanResult>() {
-                                        @Override
-                                        public void accept(ScanResult scanResult) {
-                                            BluetoothDevice deviceтестовый = adapter.getRemoteDevice(scanResult.getDevice().getAddress());
-                                            Log.d(this.getClass().getName()," scanResult.getDevice().getAddress() " +scanResult.getDevice().getAddress()
-                                                    + "scanResult.getDevice().getName()"+scanResult.getDevice().getName() );
-                                        }
-                                    });
-                                }
-                                @Override
-                                public void onScanFailed(int errorCode) {
-                                    super.onScanFailed(errorCode);
-                                }
-                            };
-                            scanner.startScan(null, scanSettings,scanCallback );
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        ///метод запись ошибок в таблицу
-                        Log.e(context.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        Log.d(context.getClass().getName(), "  Полусаем Ошибку e.toString() " + e.toString());
-
-                    }
-                }
-            });
-            ///todo ТЕСТОВЫЙ КОД ТОЛЬКО ДЛЯ 1С
-        } catch (Exception e) {
-            e.printStackTrace();
-            ///метод запись ошибок в таблицу
-            Log.e(context.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-            Log.d(context.getClass().getName(), "  Полусаем Ошибку e.toString() " + e.toString());
-
-        }
-    }
 
     private Service_Async_1C service_Async_СинхронизацияОБЩАЯ1С;
     ServiceConnection connectionОБЩЕЙ1СGet = new ServiceConnection() {
@@ -2244,20 +1986,13 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
         });
        // handler.obtainMessage(0,0,0,new Object()).sendToTarget();
 
-       Message handler11=     new Handler().obtainMessage();
+       Message handler11=     new Handler(Looper.myLooper()).obtainMessage();
             handler11.getTarget().post(()->{
                 Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
                         "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
                         "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
             });
-            handler11.getTarget().hasCallbacks(new Runnable() {
-                @Override
-                public void run() {
-                    Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
-                            "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
-                            "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
-                }
-            });
+
 
 
         Message message=Message.obtain(new Handler(Looper.myLooper()),()->{
@@ -2278,5 +2013,11 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
     }
     }
+
+}
+// TODO: 16.02.2023 кЛАСС ОБНОВЛЕНИЕ ПО
+class SubClassUpdatePO{
+
+
 
 }
