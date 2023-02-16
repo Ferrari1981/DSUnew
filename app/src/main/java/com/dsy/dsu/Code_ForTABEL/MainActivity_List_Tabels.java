@@ -367,70 +367,7 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
 
     ///todo сообщение
     @UiThread
-    protected void СообщениеПослеУдаленияСотрудникаИзТабеля(String ШабкаДиалога, String СообщениеДиалога, boolean Статус , Long СамоЗначениеUUID,String ДляУдалениеUUID,int НазваниеУдаляемогоТАбеляВЦифровомФормате) {
-        ///////СОЗДАЕМ ДИАЛОГ ДА ИЛИ НЕТ///////СОЗДАЕМ ДИАЛОГ ДА ИЛИ НЕТ
-//////сам вид
-        int Значек;
-        if (Статус){
-            Значек  =R.drawable.icon_dsu1_tabel_info;
-        }else{
-            Значек  =R.drawable.icon_dsu1_delete_customer;///
-        }
-        final AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)
-                .setTitle(ШабкаДиалога)
-                .setMessage(СообщениеДиалога)
-                .setPositiveButton("Удалить", null)
-                .setNegativeButton("Нет", null)
-                .setIcon(Значек)
-                .show();
-/////////кнопка
-        final Button MessageBoxUpdateСоздатьТабель = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        MessageBoxUpdateСоздатьТабель.setOnClickListener(new View.OnClickListener() {
-            ///MessageBoxUpdate метод CLICK для DIALOBOX
 
-            @Override
-            public void onClick(View v) {
-                //удаляем с экрана Диалог
-                alertDialog.dismiss();
-                Log.d(this.getClass().getName(), "  ФИНАЛ после удалание сотрудуника ");
-
-                //TODO  второе действие заполенние контентом  в табеля в TableLyзаполения табеля из базы через элемент TableLauy
-                //todo код послеу успешного удаления табеля
-                //todo
-            }
-        });
-        /////////////
-
-
-        final Button MessageBoxUpdateСоздатьТабельВсеравноУдлаитьВместеССотрудникамиТабель = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        MessageBoxUpdateСоздатьТабельВсеравноУдлаитьВместеССотрудникамиТабель.setOnClickListener(new View.OnClickListener() {
-            ///MessageBoxUpdate метод CLICK для DIALOBOX
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                //удаляем с экрана Диалог
-                alertDialog.dismiss();
-                Log.d(this.getClass().getName(), "  ФИНАЛ после удалание сотрудуника "+"СамоЗначениеUUID"+СамоЗначениеUUID
-                        +"СамоЗначениеUUID" +ДляУдалениеUUID+"СамоЗначениеUUID"+НазваниеУдаляемогоТАбеляВЦифровомФормате);
-                try {
-                    if (СамоЗначениеUUID>0) {
-                        // TODO: 15.02.2023 получаем даннеы для удаления
-                        Cursor cursorДляУдалениея=    МетодПолучениеДанныхДляИхУдаления(getApplicationContext(),СамоЗначениеUUID);
-                        // TODO: 15.02.2023  само удаление по двум таблицам
-                        МетодУдалениеСамогоТабеляИлиСотрудников(СамоЗначениеUUID,"data_tabels",cursorДляУдалениея);
-                        Log.d(this.getClass().getName(), "  ФИНАЛ создание нового сотрудника " + "cursorДляУдалениея ");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), 
-       this.getClass().getName(),
-                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                }
-            }
-        });
-    }
 
     private Cursor МетодПолучениеДанныхДляИхУдаления(@NonNull Context context ,@NonNull Long СамоЗначениеUUID) {
         Cursor cursor=null;
@@ -2060,12 +1997,13 @@ try{
                     alertDialog.dismiss();
                     Log.d(this.getClass().getName(), "  ФИНАЛ создание нового сотрудника " + "ИндификаторUUID " + " СамоЗначениеUUID " + СамоЗначениеUUID+"  "+ПолученноеЗначениеИзСпинераДата);
                     if (СамоЗначениеUUID>0) {
-                        // TODO: 15.02.2023 получаем даннеы для удаления 
+                        // TODO: 15.02.2023 получаем даннеы для удаления
                         Cursor cursorДляУдалениея=    МетодПолучениеДанныхДляИхУдаления(getApplicationContext(),СамоЗначениеUUID);
                         // TODO: 15.02.2023  само удаление по двум таблицам
-                        МетодУдалениеСамогоТабеляИлиСотрудников(СамоЗначениеUUID,"tabel");
-                        Log.d(this.getClass().getName(), "  ФИНАЛ создание нового сотрудника " + "cursorДляУдалениея " +cursorДляУдалениея);
+                        МетодУдалениеСамогоТабеляИлиСотрудников(СамоЗначениеUUID,"data_tabels",cursorДляУдалениея);
+                        Log.d(this.getClass().getName(), "  ФИНАЛ создание нового сотрудника " + "cursorДляУдалениея ");
                     }
+
 
                 }
             });
