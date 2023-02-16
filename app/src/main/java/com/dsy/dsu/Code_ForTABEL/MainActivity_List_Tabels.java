@@ -87,7 +87,6 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
     private   String КакойКонтекст;
     private  ScrollView ScrollНаАктивтиСозданныхТабелей;
     private  LinearLayout LinearLayoutСозданныхТабелей;
-    private  LinearLayout LinearLayoutДляЛинии;
     private   ProgressDialog progressDialogДляУдаления;
     private  boolean РежимыПросмотраДанныхЭкрана;
     private  EditText ПрослойкаМеждуТабелей;
@@ -295,34 +294,13 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            ///TODO СООБЩЕНИЕ О РЕЗУЛЬТАТОВ
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LinearLayoutСозданныхТабелей.forceLayout();
+        LinearLayoutСозданныхТабелей.refreshDrawableState();
+    }
+///TODO СООБЩЕНИЕ О РЕЗУЛЬТАТОВ
 
 
 
@@ -461,6 +439,7 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
                 // TODO: 21.09.2021  НЕТ ДАННЫХ  НЕТ ТАБЕЛЬ
                 МассивДляВыбораВСпинерДата.add("Не созданно");
                 МетодКогдаДанныхСамихТабелйНет(МассивДляВыбораВСпинерДата);
+                ПолученноеЗначениеИзСпинераДата=null;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -522,10 +501,19 @@ public class MainActivity_List_Tabels extends AppCompatActivity  {
                     }
                 }
 
-               if (    ПолученноеЗначениеИзСпинераДата!=null && view !=null) {
-                   Log.d(this.getClass().getName(), " ((TextView) parent.getChildAt(0)).getText()  " + ((TextView) parent.getChildAt(0)).getText());
-                           МетодаСозданиеТабеляИзБазы(); /////МЕТОД ЗАГРУЗКИ СОЗДАННЫХ ТАБЕЛЕЙ ИЗ БАЗ
+               if (    ПолученноеЗначениеИзСпинераДата!=null && view !=null && Курсор_ДанныеДляСпинераДаты.getCount()>0) {
+                   Log.d(this.getClass().getName(), " ((TextView) parent.getChildAt(0)).getText()  " + ((TextView) parent.getChildAt(0)).getText()+
+                            " ПолученноеЗначениеИзСпинераДата "+ПолученноеЗначениеИзСпинераДата);
+                       МетодаСозданиеТабеляИзБазы(); /////МЕТОД ЗАГРУЗКИ СОЗДАННЫХ ТАБЕЛЕЙ ИЗ БАЗ
+                   }else{
+                   ((TextView) parent.getChildAt(0)).setText("Не созданно");
+                   ((TextView) parent.getChildAt(0)).forceLayout();
+                   ((TextView) parent.getChildAt(0)).refreshDrawableState();
+                   Log.d(this.getClass().getName(), " ((TextView) parent.getChildAt(0)).getText()  " + ((TextView) parent.getChildAt(0)).getText()+
+                           " ПолученноеЗначениеИзСпинераДата "+ПолученноеЗначениеИзСпинераДата);
+
                }
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -1685,6 +1673,7 @@ try{
             }while (Курсор_ДанныеДляСпинераДаты.moveToPrevious());
             // TODO: 14.11.2022
             Log.d(this.getClass().getName(),"    МассивДляВыбораВСпинерДата " +МассивДляВыбораВСпинерДата);
+            Курсор_ДанныеДляСпинераДаты.close();
         }else {
             Log.d(this.getClass().getName(),"  Нет двнных    МассивДляВыбораВСпинерДата " +МассивДляВыбораВСпинерДата);
         }
@@ -2046,7 +2035,7 @@ try{
             progressDialogДляУдаления.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialogДляУдаления.setProgress(0);
             progressDialogДляУдаления.setCanceledOnTouchOutside(false);
-            progressDialogДляУдаления.setMessage("Удалание...");
+            progressDialogДляУдаления.setMessage("Удаление...");
             progressDialogДляУдаления.show();
             Integer СтрочкиОбработки=cursor.getCount();
                         Observable.range(0,СтрочкиОбработки)
