@@ -505,37 +505,43 @@ public class Class_Update_Download_File_APK_From_SERVER {
                                             "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
                                             "\n" + "     УниверсальныйБуферAPKФайлаПОсСервераВнутри[0] " + УниверсальныйБуферAPKФайлаПОсСервераВнутри[0] +
                                             "\n" + " Thread.currentThread().getName() " + Thread.currentThread().getName());
-                                    if (УниверсальныйБуферAPKФайлаПОсСервераВнутри[0].length() > 0) {
-                                        try {
-// TODO: 25.03.2022 ТУТ МЫ ОТПРВЯЛЕМ ВЕРИСЮ ДАННЫХ И ФАЙЛ ПРИУСТАВНВОЕ по ТАБЕЛЬНЫЙ УЧЁТ
-                                            Intent intentДляУстановеПО = new Intent();
-                                            intentДляУстановеПО.setAction("CompletePO");
-                                            Bundle bundleУстановитьПО = new Bundle();
-                                            bundleУстановитьПО.putInt("СервернаяВерсияПОВнутри", СервернаяВерсияПОВнутри);
-                                            bundleУстановитьПО.putSerializable("СервернаяВерсияПОCамФайлДляПередачи", УниверсальныйБуферAPKФайлаПОсСервераВнутри[0]);
-                                            bundleУстановитьПО.putLong("СервернаяВерсияПОРазмерФайла", УниверсальныйБуферAPKФайлаПОсСервераВнутри[0].length());
-                                            intentДляУстановеПО.putExtras(bundleУстановитьПО);
-                                            Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск   bundleУстановитьПО  " + bundleУстановитьПО);
-                                            LocalBroadcastManager localBroadcastManagerОтправляемНаActivityFaceApp = LocalBroadcastManager.getInstance(context);
-                                            localBroadcastManagerОтправляемНаActivityFaceApp.sendBroadcast(intentДляУстановеПО);
-                                            Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри localBroadcastManagerОтправляемНаActivityFaceApp " + localBroadcastManagerОтправляемНаActivityFaceApp
-                                                    + " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
-                   /*                 Activity activity = null;
-                                    ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-                                    List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-                                        String namaa = taskInfo.get(0).topActivity.getClassName().toString();
-                                        Class<?> myClass = Class.forName(namaa);
-                                        activity = (Activity) myClass.newInstance();*/
+                                    context.getMainExecutor().execute(()->{
+                                        if (УниверсальныйБуферAPKФайлаПОсСервераВнутри[0]!=null) {
+                                            if (УниверсальныйБуферAPKФайлаПОсСервераВнутри[0].length() > 0) {
+                                                try {
+                                                    // TODO: 25.03.2022 ТУТ МЫ ОТПРВЯЛЕМ ВЕРИСЮ ДАННЫХ И ФАЙЛ ПРИУСТАВНВОЕ по ТАБЕЛЬНЫЙ УЧЁТ
+                                                    Intent intentДляУстановеПО = new Intent();
+                                                    intentДляУстановеПО.setAction("CompletePO");
+                                                    Bundle bundleУстановитьПО = new Bundle();
+                                                    bundleУстановитьПО.putInt("СервернаяВерсияПОВнутри", СервернаяВерсияПОВнутри);
+                                                    bundleУстановитьПО.putSerializable("СервернаяВерсияПОCамФайлДляПередачи", УниверсальныйБуферAPKФайлаПОсСервераВнутри[0]);
+                                                    bundleУстановитьПО.putLong("СервернаяВерсияПОРазмерФайла", УниверсальныйБуферAPKФайлаПОсСервераВнутри[0].length());
+                                                    intentДляУстановеПО.putExtras(bundleУстановитьПО);
+                                                    Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск   bundleУстановитьПО  " + bundleУстановитьПО);
+                                                    LocalBroadcastManager localBroadcastManagerОтправляемНаActivityFaceApp = LocalBroadcastManager.getInstance(context);
+                                                    localBroadcastManagerОтправляемНаActivityFaceApp.sendBroadcast(intentДляУстановеПО);
+                                                    Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри localBroadcastManagerОтправляемНаActivityFaceApp " + localBroadcastManagerОтправляемНаActivityFaceApp
+                                                            + " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
+                       /*                 Activity activity = null;
+                                        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                                        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+                                            String namaa = taskInfo.get(0).topActivity.getClassName().toString();
+                                            Class<?> myClass = Class.forName(namaa);
+                                            activity = (Activity) myClass.newInstance();*/
 
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                            ///метод запись ошибок в таблицу
-                                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                    ///метод запись ошибок в таблицу
+                                                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                                    new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                                            Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                                }
+                                            }
                                         }
-                                    }
+
+                                    });
+
                                 }
                             })
                                     .onErrorComplete(new Predicate<Throwable>() {

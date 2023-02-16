@@ -264,7 +264,7 @@ SubClassTEstКод subClassВторойТЕст=new SubClassTEstКод("А мо�
             // TODO: 16.02.2023 Обновление ПО
           new BisssenssLogicFaceApp(getApplicationContext(),activity,handlerПО).  МетодАнализJsonОбновлениеПО();
             new BisssenssLogicFaceApp(getApplicationContext(),activity,handlerПО).   МетодЗагрузкиНовогоПО();
-            new BisssenssLogicFaceApp(getApplicationContext(),activity,handlerПО). ТестКодHandler();
+            //new BisssenssLogicFaceApp(getApplicationContext(),activity,handlerПО). ТестКодHandler();
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -2032,6 +2032,8 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
                 @Override
                 public void onClick(View v) {
                     Log.d(this.getClass().getName(), "Установка Обновления .APK СЛУЖБА");
+                    alertDialog.dismiss();
+                    alertDialog.cancel();
                     String ФинальныйПутьДляЗагрузкиФайлаОбновения = null;
                     ////
                     Log.d(this.getClass().getName(), " СервернаяВерсияПОВнутри" + finalСервернаяВерсияПОВнутри);
@@ -2055,9 +2057,6 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
                     }
                     Log.i(context.getClass().getName(), " УЖЕ ЗАГРУзили ПО ПОЛЬЗОВАТЕЛЬ НАЖАЛ НА КОНОПКУ ЗАГУРДИТЬ   " +
                             "Service_Notifocations_Для_Чата (intent.getAction()   СЛУЖБА" + finalСервернаяВерсияПОВнутри + " время запуска  " + new Date());
-
-                    alertDialog.dismiss();
-                    alertDialog.cancel();
                 }
             });
             final Button MessageBoxUpdateНеуСтанавливатьПО = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
