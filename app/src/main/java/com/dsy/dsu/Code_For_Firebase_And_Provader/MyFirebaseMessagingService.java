@@ -19,6 +19,7 @@ import javax.inject.Inject;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
   private Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal class_generation_sendBroadcastReceiver_and_firebase_oneSignal;
     // TODO: 02.12.2021
+
     public MyFirebaseMessagingService() {
         super();
         try{
@@ -28,7 +29,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+        new Class_Generation_Errors(getApplication()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
 
     }
@@ -52,7 +53,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
       super.onMessageReceived(remoteMessage);
         try{
-            class_generation_sendBroadcastReceiver_and_firebase_oneSignal   =    new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext());
+            class_generation_sendBroadcastReceiver_and_firebase_oneSignal   =    new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplication());
         Log.d(this.getClass().getName(), " onMessageReceived ПРИШЛО СООБЩЕНИЕ УВЕДОМЛЕНИЯ  С САЙТА ONESIGNAL !!!!!!!!!!!!  " +
                 " MyFirebaseMessagingService   metod onNewToken "+remoteMessage.getMessageId()+"\n"+
               "  remoteMessage.getMessageType() "+  remoteMessage.getMessageType()+"\n"+
@@ -72,14 +73,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             // TODO: 21.12.2022  запускас ONESINGLE FIREBASE
          if (entry.getValue().matches("(.*)android(.*)")) {
                     Log.d(this.getClass().getName(),  " value ЕСЛИ ЕСТЬ СООБЩЕНИ НАПИСАННО ДРУГИМ ПОЛЬОВАТЛЕМ ТО УДАЛЯЕМ УВЕДОМЛЕНИ И СОЗАДЕМ НОВЫЙ СЛУЖЮА BRODCAST"+value+"\n"+ " key " +key);
-             Integer  ПубличныйIDДляОдноразовойСинхрониазции=   new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplicationContext());
+             Integer  ПубличныйIDДляОдноразовойСинхрониазции=   new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplication());
              Log.d(this.getClass().getName(), "ПубличныйIDДляФрагмента  ИЗ ВСЕХ ТАБЕЛЕЙ ПубличныйIDДляОдноразовойСинхрониазции " + ПубличныйIDДляОдноразовойСинхрониазции);
             class_generation_sendBroadcastReceiver_and_firebase_oneSignal.
-                    МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(getApplicationContext(),ПубличныйIDДляОдноразовойСинхрониазции);
+                    МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(getApplication(),ПубличныйIDДляОдноразовойСинхрониазции);
                     Log.d(this.getClass().getName(),  "   ЗАПУСК ОДНОРАЗОВОЙ СИНХРОНИАЗЦИИ" +
-                            "      new  Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext()).МетодПовторногоЗапускаВсехWorkManagerОДНОРАЗОВОЙСинхрониазцииданных()  " +
+                            "      new  Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplication()).МетодПовторногоЗапускаВсехWorkManagerОДНОРАЗОВОЙСинхрониазцииданных()  " +
                             "ПОСЛЕ ЗАПУСКА БРОДКАСТЕРА ПОСЛЕ СИСТЕМНОГО УЕДОМДЕНИЯ КОТОРЫЙ И ЗАПУСТИЛ ЭТО  И СОЗАДЕМ НОВЫЙ СЛУЖЮА BRODCAST  FAREBASE " +
-                            " МетодОдноразовыйЗапускВоерМенеджера(getApplicationContext(),ПубличныйIDДляОдноразовойСинхрониазции"+value+"\n" );
+                            " МетодОдноразовыйЗапускВоерМенеджера(getApplication(),ПубличныйIDДляОдноразовойСинхрониазции"+value+"\n" );
                     break;
            }
         }
@@ -87,7 +88,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+        new Class_Generation_Errors(getApplication()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
     }
     }
@@ -132,7 +133,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         ///метод запись ошибок в таблицу
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+        new Class_Generation_Errors(getApplication()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
 
         // TODO: 11.05.2021 запись ошибок

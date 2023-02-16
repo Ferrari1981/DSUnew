@@ -103,6 +103,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -110,6 +111,17 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import javax.inject.Inject;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.CompletableSource;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.functions.Predicate;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /////////////////////////////////////////////////////////////////////////
 public class MainActivity_Face_App extends AppCompatActivity {
@@ -1429,37 +1441,58 @@ SubClassTEstКод subClassВторойТЕст=new SubClassTEstКод("А мо�
 
     //TODO метод состоит из двух операцию удаление любой уже скаченой версии программы и обновление новой ПО
     private void МетодОбновленияПОИзДвухДействийСначалоУдалениеЛюбойВерсииИЗатемСкачиваемЗановоИОбновляемПО() {
+        final Boolean[] ПингПередСинхронизациейИлиОбновлениеПО = {false};
             try{
-                // TODO: 09.04.2021 запуск синхронизации фоновой по расписанию
                 boolean РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию=
                         new  Class_Find_Setting_User_Network(getApplicationContext()).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
-                //TODO ФУТУРЕ ЗАВЕРШАЕМ
-                Log.d(this.getClass().getName(), "  РезультатПроВеркиУстановкиПользователяРежимРаботыСети " + РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию);
                 if (РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию==true) {
-                    //TODO конец выполения кода через Callble  , отправляем его в главный менеджер пОТОКОВ
-                    final Boolean[] РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции = {false};
-                    // TODO: 16.12.2021 НЕПОСРЕДСТВЕННЫЙ ПИНГ СИСТЕНМ ИНТРЕНАТ НА НАЛИЧЕНИ СВАЗИ С БАЗОЙ SQL SERVER
-                    РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции[0]  =
-                            new Class_Connections_Server(getApplicationContext()).МетодПингаСервераРаботаетИлиНет(getApplicationContext());
-                    //TODO ФУТУРЕ ЗАВЕРШАЕМ
-                    Log.d(this.getClass().getName(), "  РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции[0]  " + РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции[0] );
-                        ///todo ПИНГ СЕРВЕРА ПЛЮС ПИНГ САМИХ ДАННЫХ SQL SERVER
-                                if (РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции[0] == true) {
-                                    // TODO: 12.11.2021  ПЕРВАЯ ОПЕРАЦИЯ УДАЛЕНИЕ ЛЮБОЙ УЖЕ СУЩЕСТВУЮЩЩИЙ ЛОКАЛЬНОЙ ВЕРИСИЙ ПРОГРАММЫ
-                                    МЕтодЗапускСЛУЖБЫОбновленияПО(true);
-                                    // TODO: 28.12.2021   Метод  ДАННЫЙ МЕТОД ВСЕГДА ПОСЛЕДНИЙ  если пришло Новоое Обновление По табельный УЧЁТ ПО ЗАПУСКАЕМ ЕГО ВСТАВКИ ПОКАЗЫВАЕМ ПОЛЬЗОВАТЕЛЮ
-                                    Log.d(this.getClass().getName(), "        МетодВActivityFaveApp_УстанавливаетПрограммноеОбеспечениеПОТабельныйУчёт(); ");
-                                } else {
-                                    activity.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast toast = Toast.makeText(getApplicationContext(), "Нет связи c Cервер !!!", Toast.LENGTH_LONG);
-                                            toast.setGravity(Gravity.BOTTOM, 0, 40);
-                                            toast.show();
-                                            Log.d(this.getClass().getName(), "  НЕТ СВЯЗИ С СЕРВЕРОМ  МетодВActivityFaveApp_УстанавливаетПрограммноеОбеспечениеПОТабельныйУчёт();  ");
-                                        }
-                                    });
+
+
+
+
+                    Completable.fromSingle(new Single<Object>() {
+                        @Override
+                        protected void subscribeActual(@io.reactivex.rxjava3.annotations.NonNull SingleObserver<? super Object> observer) {
+                            ПингПередСинхронизациейИлиОбновлениеПО[0] =
+                                    new Class_Connections_Server(getApplicationContext()).МетодПингаСервераРаботаетИлиНет(getApplicationContext());
+                            Log.w(context.getClass().getName(), " ПингПередСинхронизациейИлиОбновлениеПО[0] "+ПингПередСинхронизациейИлиОбновлениеПО[0]);
+                        }
+                    })
+                            .subscribeOn(Schedulers.single())
+                            .doOnError(new io.reactivex.rxjava3.functions.Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Throwable {
+                            Log.d(this.getClass().getName(), "  НЕТ СВЯЗИ С СЕРВЕРОМ  МетодВActivityFaveApp_УстанавливаетПрограммноеОбеспечениеПОТабельныйУчёт();  ");
+                        }
+                    })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnComplete(new Action() {
+                                @Override
+                                public void run() throws Throwable {
+                                    if (ПингПередСинхронизациейИлиОбновлениеПО[0] == true) {
+                                        МЕтодЗапускСЛУЖБЫОбновленияПО(ПингПередСинхронизациейИлиОбновлениеПО[0]);
+                                        Log.d(this.getClass().getName(), "        МетодВActivityFaveApp_УстанавливаетПрограммноеОбеспечениеПОТабельныйУчёт(); ");
+                                    } else {
+                                        activity.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast toast = Toast.makeText(getApplicationContext(), "Нет связи c Cервер !!!", Toast.LENGTH_LONG);
+                                                toast.setGravity(Gravity.BOTTOM, 0, 40);
+                                                toast.show();
+                                                Log.d(this.getClass().getName(), "  НЕТ СВЯЗИ С СЕРВЕРОМ  МетодВActivityFaveApp_УстанавливаетПрограммноеОбеспечениеПОТабельныйУчёт();  ");
+                                            }
+                                        });
+                                    }
                                 }
+                            })
+                            .onErrorComplete(new Predicate<Throwable>() {
+                                @Override
+                                public boolean test(Throwable throwable) throws Throwable {
+                                    Log.d(this.getClass().getName(), "  НЕТ СВЯЗИ С СЕРВЕРОМ  МетодВActivityFaveApp_УстанавливаетПрограммноеОбеспечениеПОТабельныйУчёт();  ");
+                                    return false;
+                                }
+                            })
+                            .blockingSubscribe();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

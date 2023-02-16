@@ -563,86 +563,40 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
     // TODO: 24.12.2021  МетодПолучение Статуса Ключа От Сервера OneSignal
 
     private void МетодПолучениеКлючаОтСервераONESIGNALЕслиОЕстьКОнечноВНЕСКОЛЬКОПОпыток(@NonNull String КлючДляFirebaseNotification) {
-        
         try{
-        // TODO: 23.12.2021
-    //    if (ПоулчаемДляТекущегоПользователяIDОтСЕРВРЕРАOneSignal ==null) {
-
             //TODO srating......  oneSignal
             Log.d(this.getClass().getName(), "  КЛЮЧ ДЛЯ  OneSignal........  2a1819db-60c8-4ca3-a752-1b6cd9cadfa1 "+ КлючДляFirebaseNotification +"\n");
-            // Enable verbose OneSignal logging to debug issues if needed.
-
             OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
-
             //String КлючДляFirebaseNotification="2a1819db-60c8-4ca3-a752-1b6cd9cadfa1";
-
-
             // todo OneSignal Initialization
             OneSignal.initWithContext(context);
-
             ///////todo srating Google Notifications wits PUblic Key
             OneSignal.setAppId(КлючДляFirebaseNotification);
-
-
             OneSignal.disablePush(false);
-
-
-            // TODO: 13.12.2021
-
-
             //TODO srating.......... firebase cloud --ПРИШЛО СООБЩЕНИЕ
-
             FirebaseMessagingService firebaseMessagingService =new MyFirebaseMessagingService();
-
-
-
             //TODO srating......  oneSignal
             Log.d(this.getClass().getName(), "  FirebaseMessagingService"  );
-
-
             // TODO: 07.12.2021
             firebaseMessagingService.onNewToken("Сообщения от Firebase Cloud Google ");
-
             Log.d(this.getClass().getName(), "  КЛЮЧ ДЛЯ  КОНЕЦ  OneSignal........  2a1819db-60c8-4ca3-a752-1b6cd9cadfa1 " );
-
-
-            // TODO: 15.12.2021 настройки onesigmnal
-
-
             Map<String, String> params = new HashMap<String, String>();
-
             OneSignal.sendTag("Authorization", "Basic 2a1819db-60c8-4ca3-a752-1b6cd9cadfa1");
-
             OneSignal.sendTag("Content-type", "application/json");
-
             OneSignal.sendTag("grp_msg", "android");
-
             OneSignal.sendTag("android_background_data", "true");
-
             OneSignal.sendTag("content_available", "true");
-
-            // TODO: 13.12.2021
-
-
             //TODO srating......  oneSignal
-
+        String ПушТОкен=    OneSignal.getDeviceState().getPushToken();
             ПоулчаемДляТекущегоПользователяIDОтСЕРВРЕРАOneSignal = OneSignal.getDeviceState().getUserId();
             // TODO: 15.12.2021
             Log.d(this.getClass().getName(), "  ПОСЛЕ КЛЮЧ ДЛЯ  OneSignal........  2a1819db-60c8-4ca3-a752-1b6cd9cadfa1 "+"\n"+
 
                     "   OneSignal.getTriggerValueForKey(\"GT_PLAYER_ID\"); " + OneSignal.getTriggerValueForKey("GT_PLAYER_ID")+
                     "     OneSignal.getTriggers() " +   OneSignal.getTriggers()+"\n"+
-                    "    ПоулчаемДляТекущегоПользователяIDОтСЕРВРЕРАOneSignal ОТ СЕРВЕРА ::: " + ПоулчаемДляТекущегоПользователяIDОтСЕРВРЕРАOneSignal);
-            // TODO: 13.12.2021
-
-            
-       //}
-
-
-
+                    "    ПоулчаемДляТекущегоПользователяIDОтСЕРВРЕРАOneSignal ОТ СЕРВЕРА ::: " + ПоулчаемДляТекущегоПользователяIDОтСЕРВРЕРАOneSignal+ "\n"+ПушТОкен);
     } catch (Exception e) {
         e.printStackTrace();
-        ///метод запись ошибок в таблицу
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
         new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(),
