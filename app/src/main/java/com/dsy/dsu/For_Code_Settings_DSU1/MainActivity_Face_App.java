@@ -209,7 +209,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
             МетодПовторныйЗапускУведомений();
             МетодБоковаяПанельОткрытьЗАкрыть();
             // TODO: 17.02.2023 ЗапускАнализа Наличитие Новой Версии ПО
-            subClassUpdatePOОбновлениеПО.МетодЗапускАнализаПО(false);
+            subClassUpdatePOОбновлениеПО.МетодЗапускАнализаПО(false,2000);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -435,7 +435,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                             Log.w(getPackageName().getClass().getName(), "item.getItemId() МЕНЮ ОБНОВЛЕНИЕ ПО    " + item.getItemId() + "\n"+item);/////////
                             try {
                                 // TODO: 07.10.2022 ЗАПУСК АНАЛИЗА ПО
-                                new SubClassUpdatePOОбновлениеПО(getApplicationContext(), activity, handlerFaceAPP).МетодЗапускАнализаПО(true);
+                                new SubClassUpdatePOОбновлениеПО(getApplicationContext(), activity, handlerFaceAPP).МетодЗапускАнализаПО(true,100);
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"

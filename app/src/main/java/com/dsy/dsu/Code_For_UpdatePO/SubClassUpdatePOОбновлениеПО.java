@@ -323,7 +323,7 @@ public class SubClassUpdatePOОбновлениеПО {
     }
 
     //TODO метод состоит из двух операцию удаление любой уже скаченой версии программы и обновление новой ПО
-    public void МетодЗапускАнализаПО(@NonNull Boolean РежимОбновленияЯвныйИлиНет) {
+    public void МетодЗапускАнализаПО(@NonNull Boolean РежимОбновленияЯвныйИлиНет,@NonNull Integer ЗадержаВыполения) {
         Boolean[] ПингПередСинхронизациейИлиОбновлениеПО = {false};
         try {
             handler.postDelayed(() -> {
@@ -365,7 +365,7 @@ public class SubClassUpdatePOОбновлениеПО {
                     new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                             Thread.currentThread().getStackTrace()[2].getLineNumber());
                 }
-            },1000);
+            },ЗадержаВыполения);
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу

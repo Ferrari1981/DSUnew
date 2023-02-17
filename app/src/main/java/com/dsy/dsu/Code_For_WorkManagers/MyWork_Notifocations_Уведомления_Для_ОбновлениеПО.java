@@ -159,8 +159,8 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
             String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
 
-            Observable observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK = Observable.interval(2, TimeUnit.SECONDS)
-                    .take(2, TimeUnit.MINUTES)
+            Observable observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK = Observable.interval(1, TimeUnit.SECONDS)
+                    .take(20, TimeUnit.SECONDS)
                     .subscribeOn(Schedulers.single())
                     .flatMap((string) -> {
                         PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(getApplicationContext());
