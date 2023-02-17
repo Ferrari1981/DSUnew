@@ -150,16 +150,6 @@ public class Class_Update_Download_File_APK_From_SERVER {
 
     }
 
-
-
-
-
-
-
-
-
-
-
     private void МетодНепостредственннойЗагрузкиAPKФайлов(File файлыДляОбновлениеПО, PackageInfo info) throws IOException {
         try {
             String Adress_String;
@@ -172,11 +162,13 @@ public class Class_Update_Download_File_APK_From_SERVER {
                         case 0:
                             Toast toast=     Toast.makeText(context, "Загрузка ПО...", Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.BOTTOM,0,50);
-                            ImageView img=new ImageView(context);
+                            toast.show();
+                            Log.w(this.getClass().getName(), "Загрузка ПО... " );
                             break;
                         case 1:
-                            context.getMainExecutor().execute(()->{
-                            File    FileAPK  = (File) msg.obj;
+                            Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск   bundleУстановитьПО  " + msg);
+                              Bundle b=  msg.getData();
+                                File    FileAPK  = (File )   b.getSerializable("DOWNAPK");
                                 if (FileAPK !=null) {
                                     if (FileAPK.length() > 0) {
                                         try {
@@ -203,8 +195,12 @@ public class Class_Update_Download_File_APK_From_SERVER {
                                                     Thread.currentThread().getStackTrace()[2].getLineNumber());
                                         }
                                     }
+                                }else {
+                                   toast=     Toast.makeText(context, "Нет файла ПО...", Toast.LENGTH_LONG);
+                                    toast.setGravity(Gravity.BOTTOM,0,50);
+                                    toast.show();
+                                    Log.w(this.getClass().getName(), "Загрузка ПО... " );
                                 }
-                            });
                             break;
                     }
                     return true;
@@ -227,7 +223,11 @@ public class Class_Update_Download_File_APK_From_SERVER {
                             context, ИмяСерверИзХранилица ,ПортСерверИзХранилица);
             Log.w(this.getClass().getName(), "FileAPK "+ FileAPK);
 
-            handlerСообщение.obtainMessage(1,0,0,FileAPK).sendToTarget();
+            Bundle bundle=new Bundle();
+            bundle.putSerializable("DOWNAPK",FileAPK);
+         Message message=   handlerСообщение.obtainMessage(1,0,0,FileAPK);
+         message.setData(bundle);
+            handlerСообщение.sendMessage(message);
 
         } catch (Exception e) {
             e.printStackTrace();
