@@ -111,6 +111,7 @@ public class Class_Update_Download_File_APK_From_SERVER {
 
                 }
             }).complete(null);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -119,10 +120,7 @@ public class Class_Update_Download_File_APK_From_SERVER {
                             Thread.currentThread().getStackTrace()[2].getLineNumber());
                 }
     }
-
     ////TODO АНАЛИЗИРУЕМ ПРИШЕДШИЙ ФАЙЛ И ПРИНИМАЕМ РЕШЕНИЕ НА СКАЧИВАНЕИ ФАЙЛА ИЛИ НЕТ
-
-
     ////TODO
     protected void МетодЗагрузкиФайлаAPK() {
         try {
@@ -214,6 +212,7 @@ public class Class_Update_Download_File_APK_From_SERVER {
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
 
 
+            // TODO: 17.02.2023
             new SubClass_Delete_File_FOr_MainActivity_Face_App().МетодДополнительногоУдалениеФайлов(context);
 
             // TODO: 19.12.2021  загрузка файда  .apk    УниверсальныйБуферAPKФайлаПОсСервера("dsu1.glassfish/update_android_dsu1/app-release.apk", "update_dsu1.apk",
