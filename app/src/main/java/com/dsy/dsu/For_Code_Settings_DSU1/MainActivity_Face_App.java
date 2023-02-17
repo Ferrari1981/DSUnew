@@ -1,5 +1,6 @@
 package com.dsy.dsu.For_Code_Settings_DSU1;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -37,6 +38,7 @@ import androidx.annotation.UiThread;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
@@ -100,7 +102,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
     private DrawerLayout drawerLayoutFaceApp;
     private NavigationView navigationViewFaceApp;
     private ConstraintLayout constraintLayoutFaceApp;
-    private TextView textViewСканированиеBluetooth;
     @Inject
     private Service_Notificatios_Для_Согласования.LocalBinderДляСогласования binderСогласования1C;
     private Service_for_AdminissionMaterial.LocalBinderДляПолучениеМатериалов binderМатериалы;
@@ -112,7 +113,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
     protected Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binderAsyns;
     protected SharedPreferences preferences;
     private Service_Async_1C service_Async_СинхронизацияОБЩАЯ1С;
-    private SubClassUpdatePOОбновлениеПО subClassUpdatePOОбновлениеПО;
 
     // TODO: 03.11.2022 FaceApp
     @Override
@@ -152,22 +152,18 @@ public class MainActivity_Face_App extends AppCompatActivity {
             progressCommitpay.setVisibility(View.INVISIBLE);
 
             // TODO: 17.02.2023 дополнительеные методы которые зарускаются только один раз
+            МЕтодУстанавливаемРазрешенияДляОновлениеПО();
             // TODO: 06.04.2022
             МетодОбратногоПолучениеБиндигаСлужб();
             МетодДляСлушательБоковойПанелиFaceApp();
             // TODO: 03.11.2022 биндинг служб
-            МетодБиндингМатериалы();
-            МетодБиндингаСогласования();
-            МетодБиндингAsync();
-            МетодБиндингаОбновлениеПО();
+           // МетодБиндингМатериалы();
+         //   МетодБиндингаСогласования();
+        //    МетодБиндингAsync();
+           МетодБиндингаОбновлениеПО();
             Handlers();
             // TODO: 16.11.2022  ПОСЛЕ УСТАНОВКИ РАБОТАЕТ ОДИН РАЗ ПРИ СТАРТЕ ЗАРУСК ОБЩЕГО WORK MANAGER
             new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext()).МетодЗапускаетОБЩУЮСинхронизацию();
-            // TODO: 16.02.2023 Обновление ПО
-            subClassUpdatePOОбновлениеПО=new SubClassUpdatePOОбновлениеПО(getApplicationContext(), activity, handlerFaceAPP);
-            subClassUpdatePOОбновлениеПО.МЕтодУстанавливаемРазрешенияДляОновлениеПО();
-            subClassUpdatePOОбновлениеПО.МетодФиналСлушательУстановщикПО();
-            subClassUpdatePOОбновлениеПО.МетодСлушательПрелагаетЗагрузитьПО();
             // TODO: 17.02.2023 другие методы
             МетодЗапускПоступлениеМатериалов();
             МетодFaceApp_СлушательПриНажатииНаКнопки();
@@ -213,7 +209,22 @@ public class MainActivity_Face_App extends AppCompatActivity {
             МетодПовторныйЗапускУведомений();
             МетодБоковаяПанельОткрытьЗАкрыть();
             // TODO: 17.02.2023 ЗапускАнализа Наличитие Новой Версии ПО
-            subClassUpdatePOОбновлениеПО.МетодЗапускАнализаПО(false,3000);
+     /*       Message obtainMessage=     new Handler(Looper.myLooper()).obtainMessage();
+         Handler callback= obtainMessage.getTarget();
+            callback.hasCallbacks(new Runnable() {
+                @Override
+                public void run() {
+                    Log.w(getPackageName().getClass().getName(), "drawerLayoutFaceApp    " + drawerLayoutFaceApp +
+                            "  navigationViewFaceApp " + navigationViewFaceApp);/////////
+                    localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,3000,activity);
+                }
+            });*/
+            Message message=Message.obtain(new Handler(Looper.myLooper()),()->{
+                Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
+                        "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
+                        "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -439,7 +450,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                             Log.w(getPackageName().getClass().getName(), "item.getItemId() МЕНЮ ОБНОВЛЕНИЕ ПО    " + item.getItemId() + "\n"+item);/////////
                             try {
                                 // TODO: 07.10.2022 ЗАПУСК АНАЛИЗА ПО
-                                new SubClassUpdatePOОбновлениеПО(getApplicationContext(), activity, handlerFaceAPP).МетодЗапускАнализаПО(true,100);
+                                localBinderОбновлениеПО.getService().МетодЗапускАнализаПО(true,100,activity);
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -473,7 +484,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
     // TODO: 02.08.2022  код ля биндинга службы одноразовой синхронизации
     public void МетодБиндингМатериалы() {
         try {
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
             ServiceConnection    serviceConnectionМатериалы = new ServiceConnection() {
                     @Override
                     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -487,8 +497,8 @@ public class MainActivity_Face_App extends AppCompatActivity {
                                         + "    onServiceDisconnected  Service_for_AdminissionMaterial" + " binderСогласованияbinderМатериалы.isBinderAlive() "
                                         + binderМатериалы.isBinderAlive());
                                 binderМатериалы.queryLocalInterface("МетодБиндингМатериалы");
+                                ;
                             }
-                            executorService.shutdown();
                         } catch (Exception e) {
                             e.printStackTrace();
                             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -498,7 +508,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
                             // TODO: 11.05.2021 запись ошибок
                         }
                     }
-
                     @Override
                     public void onServiceDisconnected(ComponentName name) {
                         try {
@@ -524,8 +533,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                             Context.BIND_ALLOW_OOM_MANAGEMENT |
                             Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_IMPORTANT );*/
                 Intent intentЗапускСлужюыыСинхрониазцииБиндинг = new Intent(getApplicationContext(), Service_for_AdminissionMaterial.class);
-                bindService(intentЗапускСлужюыыСинхрониазцииБиндинг, Context.BIND_AUTO_CREATE , executorService, serviceConnectionМатериалы);
-            executorService.awaitTermination(1, TimeUnit.MINUTES);
+                bindService(intentЗапускСлужюыыСинхрониазцииБиндинг,  serviceConnectionМатериалы,Context.BIND_AUTO_CREATE );
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -538,7 +546,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
     // TODO: 29.03.2022  метод регмстарцмии локального брод кастера доля смен задачи
     private void МетодБиндингаОбновлениеПО() {
         try {
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
             ServiceConnection   connectionСогласования = new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
@@ -547,8 +554,12 @@ public class MainActivity_Face_App extends AppCompatActivity {
                         if (localBinderОбновлениеПО.isBinderAlive()) {
                             Log.i(getApplicationContext().getClass().getName(), "    onServiceConnected  localBinderОбновлениеПО)"
                                     + localBinderОбновлениеПО.isBinderAlive());
+                            Message obtainMessage=     new Handler(Looper.myLooper()).obtainMessage();
+                            Bundle bundle=new Bundle();
+                            bundle.putBinder("localBinderОбновлениеПО",localBinderОбновлениеПО);
+                            obtainMessage.setData(bundle);
+                            obtainMessage.sendToTarget();
                         }
-                        executorService.shutdown();
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -562,7 +573,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                 public void onServiceDisconnected(ComponentName name) {
                     try {
                         Log.i(getApplicationContext().getClass().getName(), "    onServiceDisconnected  binder.isBinderAlive()" + binderСогласования1C.isBinderAlive());
-                        binderСогласования1C = null;
+                        localBinderОбновлениеПО = null;
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -573,9 +584,8 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     }
                 }
             };
-            Intent intentЗапускСлужюыыСинхрониазцииБиндинг1C = new Intent(getApplicationContext(), Service_Notificatios_Для_Согласования.class);
-            bindService(intentЗапускСлужюыыСинхрониазцииБиндинг1C, Context.BIND_AUTO_CREATE , executorService, connectionСогласования);
-            executorService.awaitTermination(1,TimeUnit.MINUTES);
+            Intent intentЗапускСлужбыОбновлениеПО = new Intent(getApplicationContext(), ServiceОбновлениеПО.class);
+            bindService(intentЗапускСлужбыОбновлениеПО, connectionСогласования,Context.BIND_AUTO_CREATE );
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -588,7 +598,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
 
     private void МетодБиндингаСогласования() {
         try {
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
             ServiceConnection       connectionСогласования = new ServiceConnection() {
                     @Override
                     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -598,7 +607,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
                                 Log.i(getApplicationContext().getClass().getName(), "    onServiceConnected  binderСогласованияbinderМатериалы.isBinderAlive()"
                                         + binderСогласования1C.isBinderAlive());
                             }
-                            executorService.shutdown();
                         } catch (Exception e) {
                             e.printStackTrace();
                             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -624,10 +632,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     }
                 };
                 Intent intentЗапускСлужюыыСинхрониазцииБиндинг1C = new Intent(getApplicationContext(), Service_Notificatios_Для_Согласования.class);
-                bindService(intentЗапускСлужюыыСинхрониазцииБиндинг1C, Context.BIND_AUTO_CREATE |
-                        Context.BIND_ALLOW_OOM_MANAGEMENT |
-                        Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_IMPORTANT, executorService, connectionСогласования);
-                executorService.awaitTermination(1,TimeUnit.MINUTES);
+                bindService(intentЗапускСлужюыыСинхрониазцииБиндинг1C, connectionСогласования,Context.BIND_AUTO_CREATE );
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -1154,10 +1159,38 @@ public class MainActivity_Face_App extends AppCompatActivity {
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
     }
     }
+    public void МЕтодУстанавливаемРазрешенияДляОновлениеПО() {
+        try {
+            //////////////////////TODO SERVICE
+            String[] permissions = new String[]{
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.VIBRATE,
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.REQUEST_INSTALL_PACKAGES,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS,
+                    Manifest.permission.MANAGE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                    Manifest.permission.ACCESS_NETWORK_STATE,
+                    Manifest.permission.ACCESS_MEDIA_LOCATION,
+                    Manifest.permission.INSTALL_PACKAGES,
+                    Manifest.permission.WRITE_SETTINGS,
+                    Manifest.permission.WRITE_SECURE_SETTINGS
+            };
+            ActivityCompat.requestPermissions(activity, permissions, 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+
+        }
+    }
 }
 
-
-// TODO: 23.02.2022 ВТОРОЙ SUB СЛАСС
-
-// TODO: 16.02.2023 кЛАСС ОБНОВЛЕНИЕ ПО
 
