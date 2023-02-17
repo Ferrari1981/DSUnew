@@ -896,7 +896,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".Code_For_Services.Service_Notificatios_Для_ОбновлениеПО"
+            android:name=".Code_For_Services.ServiceОбновлениеПО"
             android:enabled="true"
             android:exported="true"
             android:directBootAware="true"

@@ -12,11 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteCursor;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,7 +21,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.preference.PreferenceManager;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -34,14 +29,12 @@ import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
-import com.dsy.dsu.Business_logic_Only_Class.Class_Update_Download_File_APK_From_SERVER;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
-import com.dsy.dsu.Code_For_Services.Service_Notificatios_Для_ОбновлениеПО;
+import com.dsy.dsu.Code_For_Services.ServiceОбновлениеПО;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
@@ -460,7 +453,7 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
         try {
 
             Intent notificationIntentДляУведомленийОбновлениеПоЗагрузить;
-            notificationIntentДляУведомленийОбновлениеПоЗагрузить = new Intent(getApplicationContext(), Service_Notificatios_Для_ОбновлениеПО.class);
+            notificationIntentДляУведомленийОбновлениеПоЗагрузить = new Intent(getApplicationContext(), ServiceОбновлениеПО.class);
             notificationIntentДляУведомленийОбновлениеПоЗагрузить.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             notificationIntentДляУведомленийОбновлениеПоЗагрузить.setAction("ЗагрузитьНовоеПо");
             Log.i(getApplicationContext().getClass().getName(), "СервернаяВерсияПОВнутри  " + СервернаяВерсияПОВнутри);
@@ -502,7 +495,7 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
         try {
             Intent notificationIntentДляУведомленийОбновлениеЗакрываем;
             // TODO: 17.11.2021
-            notificationIntentДляУведомленийОбновлениеЗакрываем = new Intent(getApplicationContext(), Service_Notificatios_Для_ОбновлениеПО.class);
+            notificationIntentДляУведомленийОбновлениеЗакрываем = new Intent(getApplicationContext(), ServiceОбновлениеПО.class);
             notificationIntentДляУведомленийОбновлениеЗакрываем.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             //notificationIntentЗакрыть.addCategory(Intent.CATEGORY_LAUNCHER);
             notificationIntentДляУведомленийОбновлениеЗакрываем.setAction("ЗакрываемУведомлениеоНовомПО");
