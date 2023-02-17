@@ -8,19 +8,14 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -49,7 +44,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
-import androidx.multidex.BuildConfig;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
@@ -72,14 +66,11 @@ import com.dsy.dsu.Code_For_Services.Service_Notificatios_Для_Согласо�
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
 import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
 import com.dsy.dsu.Code_For_Services.ServiceОбновлениеПО;
-import com.dsy.dsu.Code_For_UpdatePO.SubClassUpdatePOОбновлениеПО;
-import com.dsy.dsu.Code_Shipment_of_Materials_ОтгрузкаМатериалов.Fragment1_List_Shipment_of_Materials;
 import com.dsy.dsu.R;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -722,88 +713,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
-    void МетодПредлагаемЗаргузитьНовыюВерсиюПО(@NonNull Integer СервернаяВерсияПОВнутри) {
-        try {
-            File ФайлыДляОбновлениеВычисляемНомерВерсииПО = null;
-            final PackageManager pm =context. getPackageManager();
-            String apkName = "update_dsu1.apk";
-            String fullPath = Environment.getExternalStorageDirectory() + "/" + apkName;
-            if (Build.VERSION.SDK_INT >= 30) {
-                fullPath = Environment.getExternalStorageState() + "/" + apkName;
-            } else {
-                fullPath = Environment.getExternalStorageDirectory() + "/" + apkName;
-            }
-            fullPath = Environment.DIRECTORY_DOWNLOADS + "/" + apkName;
-            PackageInfo info = pm.getPackageArchiveInfo(fullPath, 0);
-            if (info != null) {
-                Log.d(this.getClass().getName(), "VersionCode : " + info.versionCode + ", VersionName : " + info.versionName);
-                СервернаяВерсияПОВнутри = info.versionCode;
-            }
-            // TODO: 02.04.2022
-            final Object ТекущаяВерсияПрограммы = BuildConfig.VERSION_CODE;
-            Integer ЛокальнаяВерсияПОСравнение = Integer.parseInt(ТекущаяВерсияПрограммы.toString());
-            AlertDialog alertDialog = new MaterialAlertDialogBuilder(activity)///       final AlertDialog alertDialog =new AlertDialog.Builder( MainActivity_Face_App.КонтекстFaceApp)
-                    .setTitle("Загрущик")
-                    .setMessage("Пришло Обновление,"
-                            + "\n" + "Союз-Автодор ПО ,"
-                            + "\n" + "новая версия. " + СервернаяВерсияПОВнутри + ","//TODO old          + "\n" + "локальная версия. " + ЛокальнаяВерсияПОСравнение + ","
-                            + "\n")
-                    .setPositiveButton("Загрузить", null)
-                    .setNegativeButton("Позже", null)
-                    .setIcon(R.drawable.icon_dsu1_update_success)
-                    .show();
-/////////кнопка
-            final Button MessageBoxUpdateОбновитьПО = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            Integer finalСервернаяВерсияПОВнутри = СервернаяВерсияПОВнутри;
-            MessageBoxUpdateОбновитьПО.setOnClickListener(new View.OnClickListener() {
-                ///MessageBoxUpdate метод CLICK для DIALOBOX
-                @Override
-                public void onClick(View v) {
-                    Log.d(this.getClass().getName(), "Установка Обновления .APK СЛУЖБА");
-                    String ФинальныйПутьДляЗагрузкиФайлаОбновения = null;
-                    ////
-                    Log.d(this.getClass().getName(), " СервернаяВерсияПОВнутри" + finalСервернаяВерсияПОВнутри);
-                    Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                    v2.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
-                    //TODO ПЕРЕД СОЗДАНИЕМ НОВОГО СООБЕЩНИЯ ОБНУЛЯЕМ ПРДЫДУЩЕЕ
-                    Class_Update_Download_File_APK_From_SERVER class_update_download_file_apk_from_server
-                            = new Class_Update_Download_File_APK_From_SERVER(getApplicationContext(), null);
-                    try {
-                        class_update_download_file_apk_from_server.МетодНачалаЗапускаОбновленияПО(finalСервернаяВерсияПОВнутри, context);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    }
-                    Log.i(getApplicationContext().getClass().getName(), " УЖЕ ЗАГРУзили ПО ПОЛЬЗОВАТЕЛЬ НАЖАЛ НА КОНОПКУ ЗАГУРДИТЬ   " +
-                            "Service_Notifocations_Для_Чата (intent.getAction()   СЛУЖБА" + finalСервернаяВерсияПОВнутри + " время запуска  " + new Date());
 
-                    alertDialog.dismiss();
-                    alertDialog.cancel();
-                }
-            });
-            final Button MessageBoxUpdateНеуСтанавливатьПО = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-            MessageBoxUpdateНеуСтанавливатьПО.setOnClickListener(new View.OnClickListener() {
-                ///MessageBoxUpdate метод CLICK для DIALOBOX
-                @Override
-                public void onClick(View v) {
-                    //удаляем с экрана Диалог
-                    alertDialog.dismiss();
-                    Log.d(this.getClass().getName(), "MessageBoxUpdateНеуСтанавливатьПО  ОТМЕНА УСТАНВОКИ НОВГО ПО   dismiss ");
-                    alertDialog.cancel();
-                    // activity.finishAndRemoveTask(); //// ((Activity) MainActivity_Face_App.КонтекстFaceApp).finish();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
-    }
     
     void МетодFaceApp_СлушательПриНажатииНаКнопки() {
         try {
