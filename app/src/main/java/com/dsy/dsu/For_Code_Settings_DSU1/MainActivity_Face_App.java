@@ -1201,7 +1201,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
 
 // TODO: 23.02.2022 ВТОРОЙ SUB СЛАСС
 
-class SubClassUpdatePOОбновлениеПО extends  MainActivity_Face_App {
+class SubClassUpdatePOОбновлениеПО  {
 
     Context context;
     // TODO: 23.02.2022
