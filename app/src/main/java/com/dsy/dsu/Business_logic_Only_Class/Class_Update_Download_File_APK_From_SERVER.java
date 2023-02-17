@@ -27,6 +27,10 @@ import androidx.preference.PreferenceManager;
 
 import com.dsy.dsu.R;
 
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -37,9 +41,18 @@ import java.util.concurrent.ExecutionException;
 
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.CompletableObserver;
+import io.reactivex.rxjava3.core.CompletableSource;
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Predicate;
+import io.reactivex.rxjava3.functions.Supplier;
+import io.reactivex.rxjava3.observers.DisposableCompletableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
@@ -448,116 +461,111 @@ public class Class_Update_Download_File_APK_From_SERVER {
 
 
     private void МетодНепостредственннойЗагрузкиAPKФайлов(File файлыДляОбновлениеПО, PackageInfo info) throws IOException {
+        final File[] FileAPK = {null};
         try {
             String Adress_String;
 /////TODO  загрузка ФАЙЛ.APK ФАЙЛАv
-           /* LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.custom_layout, null);
-            toast.setView(view);
-            toast.show();*/
-            final File[] УниверсальныйБуферAPKФайлаПОсСервераВнутри = {null};
-            Observable УниверсальныйБуферAPKФайлаПОсСервера = Observable.fromCallable(new Callable<File>() {
+            Handler handlerПО=new Handler(Looper.getMainLooper(), new Handler.Callback() {
                 @Override
-                public File call() throws Exception {
-
-                        Handler handlerПО=new Handler(Looper.getMainLooper(), new Handler.Callback() {
-                            @Override
-                            public boolean handleMessage(@NonNull Message msg) {
-                                Toast toast=     Toast.makeText(context, "Загрузка ПО->", Toast.LENGTH_LONG);
-                                toast.setGravity(Gravity.BOTTOM,0,50);
-                    /*    ImageView img=new ImageView(context);
-                        // give the drawble resource for the ImageView
-                        img.setImageResource(R.drawable.icon_dsu1_download);
-                        toast.setView(img);*/
-                                toast.show();
-                                Log.i(this.getClass().getName(), "Запускаем только начало  Observable УниверсальныйБуферAPKФайлаПОсСервера=Observable.fromCallable............ ");
-                                ////TODO НАЧИНАЕМ ЗАГРУЗКИ С ИНТРЕНТА ФАЙЛ А ЕСЛИ ТОЛЬКО ЕГО НЕТ УЖЕ НА КЛИЕНТЕ
-                                Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
-                                        "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
-                                        "\n" + "     УниверсальныйБуферAPKФайлаПОсСервераВнутри[0] " + УниверсальныйБуферAPKФайлаПОсСервераВнутри[0] +
-                                        "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
-                                             msg.getTarget().removeCallbacksAndMessages(msg);
-                                return true;
-                            }
-                        });
-                    handlerПО.obtainMessage(0,0,0,new Object()).sendToTarget();
-                    //todo конец главного потока
-                    PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(context);
-                 String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
-                Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
-                    // TODO: 19.12.2021  загрузка файда  .apk    УниверсальныйБуферAPKФайлаПОсСервера("dsu1.glassfish/update_android_dsu1/app-release.apk", "update_dsu1.apk",
-                    УниверсальныйБуферAPKФайлаПОсСервераВнутри[0] = new Class_MODEL_synchronized(context).
-                            УниверсальныйБуферAPKФайлаПОсСервера(new PUBLIC_CONTENT(context).getСсылкаНаРежимСервера()+ "/update_android_dsu1/app-release.apk", "update_dsu1.apk",
-                                    context, ИмяСерверИзХранилица ,ПортСерверИзХранилица);
-                    Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск   Observable УниверсальныйБуферAPKФайлаПОсСервера = Observable.fromCallable(new Callable<File>()  " +
-                            "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
-                            "\n" + "     УниверсальныйБуферAPKФайлаПОсСервераВнутри[0] " + УниверсальныйБуферAPKФайлаПОсСервераВнутри[0] +
-                            "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
-                    return УниверсальныйБуферAPKФайлаПОсСервераВнутри[0];
+                public boolean handleMessage(@NonNull Message msg) {
+                    Toast toast=     Toast.makeText(context, "Загрузка ПО...", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM,0,50);
+                    ImageView img=new ImageView(context);
+                    // give the drawble resource for the ImageView
+                    img.setImageResource(R.drawable.icon_dsu1_download);
+                    toast.setView(img);
+                    toast.show();
+                    return true;
                 }
-            })
+            });
+            handlerПО.obtainMessage(0,0,0,new Object()).sendToTarget();
+            Flowable.fromSupplier(new Supplier<Object>() {
+                        @Override
+                        public Object get() throws Throwable {
+                            try{
+                                //todo конец главного потока
+                                PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(context);
+                                String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
+                                Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
+                                // TODO: 19.12.2021  загрузка файда  .apk    УниверсальныйБуферAPKФайлаПОсСервера("dsu1.glassfish/update_android_dsu1/app-release.apk", "update_dsu1.apk",
+                                FileAPK[0] = new Class_MODEL_synchronized(context).
+                                        УниверсальныйБуферAPKФайлаПОсСервера(new PUBLIC_CONTENT(context).getСсылкаНаРежимСервера()+ "/update_android_dsu1/app-release.apk",
+                                                "update_dsu1.apk",
+                                                context, ИмяСерверИзХранилица ,ПортСерверИзХранилица);
+                                Log.w(this.getClass().getName(), "FileAPK "+ FileAPK[0]);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                        + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                        Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            }
+                            return  null;
+                        }
+                    })
+                    .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
+                        @Override
+                        public Publisher<?> apply(Flowable<Object> objectFlowable) throws Throwable {
+                            Log.w(this.getClass().getName(), "repeatWhen   Flowable.empty(   FileAPK[0] ");
+                            new SubClass_Delete_File_FOr_MainActivity_Face_App().МетодДополнительногоУдалениеФайлов(context);
+                            return objectFlowable;
+                        }
+                    })
                     .subscribeOn(Schedulers.single())
-                    .observeOn(AndroidSchedulers.mainThread())
-                            .doOnComplete(new Action() {
-                                @Override
-                                public void run() throws Throwable {
-                                    Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск    onComplete" +
-                                            "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
-                                            "\n" + "     УниверсальныйБуферAPKФайлаПОсСервераВнутри[0] " + УниверсальныйБуферAPKФайлаПОсСервераВнутри[0] +
-                                            "\n" + " Thread.currentThread().getName() " + Thread.currentThread().getName());
-                                    context.getMainExecutor().execute(()->{
-                                        if (УниверсальныйБуферAPKФайлаПОсСервераВнутри[0]!=null) {
-                                            if (УниверсальныйБуферAPKФайлаПОсСервераВнутри[0].length() > 0) {
-                                                try {
-                                                    // TODO: 25.03.2022 ТУТ МЫ ОТПРВЯЛЕМ ВЕРИСЮ ДАННЫХ И ФАЙЛ ПРИУСТАВНВОЕ по ТАБЕЛЬНЫЙ УЧЁТ
-                                                    Intent intentДляУстановеПО = new Intent();
-                                                    intentДляУстановеПО.setAction("CompletePO");
-                                                    Bundle bundleУстановитьПО = new Bundle();
-                                                    bundleУстановитьПО.putInt("СервернаяВерсияПОВнутри", СервернаяВерсияПОВнутри);
-                                                    bundleУстановитьПО.putSerializable("СервернаяВерсияПОCамФайлДляПередачи", УниверсальныйБуферAPKФайлаПОсСервераВнутри[0]);
-                                                    bundleУстановитьПО.putLong("СервернаяВерсияПОРазмерФайла", УниверсальныйБуферAPKФайлаПОсСервераВнутри[0].length());
-                                                    intentДляУстановеПО.putExtras(bundleУстановитьПО);
-                                                    Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск   bundleУстановитьПО  " + bundleУстановитьПО);
-                                                    LocalBroadcastManager localBroadcastManagerОтправляемНаActivityFaceApp = LocalBroadcastManager.getInstance(context);
-                                                    localBroadcastManagerОтправляемНаActivityFaceApp.sendBroadcast(intentДляУстановеПО);
-                                                    Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри localBroadcastManagerОтправляемНаActivityFaceApp " + localBroadcastManagerОтправляемНаActivityFaceApp
-                                                            + " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
-                       /*                 Activity activity = null;
-                                        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-                                        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-                                            String namaa = taskInfo.get(0).topActivity.getClassName().toString();
-                                            Class<?> myClass = Class.forName(namaa);
-                                            activity = (Activity) myClass.newInstance();*/
+                    .blockingSubscribe(new Subscriber<Object>() {
+                @Override
+                public void onSubscribe(Subscription s) {
+                    Log.w(this.getClass().getName(), "onSubscribe   Flowable.empty(   FileAPK[0] ");
 
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                    ///метод запись ошибок в таблицу
-                                                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                    new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                                            Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                }
-                                            }
-                                        }
+                }
 
-                                    });
+                @Override
+                public void onNext(Object o) {
+                    Log.w(this.getClass().getName(), "onNext   Flowable.empty(   FileAPK[0] ");
+                }
 
+                @Override
+                public void onError(Throwable t) {
+                    t.printStackTrace();
+                    Log.e(this.getClass().getName(), "Ошибка " + t + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(t.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                            Thread.currentThread().getStackTrace()[2].getLineNumber());
+                }
+
+                @Override
+                public void onComplete() {
+                    context.getMainExecutor().execute(()->{
+                        if (FileAPK[0] !=null) {
+                            if (FileAPK[0].length() > 0) {
+                                try {
+                                    // TODO: 25.03.2022 ТУТ МЫ ОТПРВЯЛЕМ ВЕРИСЮ ДАННЫХ И ФАЙЛ ПРИУСТАВНВОЕ по ТАБЕЛЬНЫЙ УЧЁТ
+                                    Intent intentДляУстановеПО = new Intent();
+                                    intentДляУстановеПО.setAction("CompletePO");
+                                    Bundle bundleУстановитьПО = new Bundle();
+                                    bundleУстановитьПО.putInt("СервернаяВерсияПОВнутри", СервернаяВерсияПОВнутри);
+                                    bundleУстановитьПО.putSerializable("СервернаяВерсияПОCамФайлДляПередачи", FileAPK[0]);
+                                    bundleУстановитьПО.putLong("СервернаяВерсияПОРазмерФайла", FileAPK[0].length());
+                                    intentДляУстановеПО.putExtras(bundleУстановитьПО);
+                                    Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск   bundleУстановитьПО  " + bundleУстановитьПО);
+                                    LocalBroadcastManager localBroadcastManagerОтправляемНаActivityFaceApp = LocalBroadcastManager.getInstance(context);
+                                    localBroadcastManagerОтправляемНаActivityFaceApp.sendBroadcast(intentДляУстановеПО);
+                                    Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри localBroadcastManagerОтправляемНаActivityFaceApp "
+                                            + localBroadcastManagerОтправляемНаActivityFaceApp
+                                            + " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                    new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                            Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                            Thread.currentThread().getStackTrace()[2].getLineNumber());
                                 }
-                            })
-                                    .onErrorComplete(new Predicate<Throwable>() {
-                                        @Override
-                                        public boolean test(Throwable throwable) throws Throwable {
-                                            Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" +
-                                                    Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(throwable.toString(),
-                                                    this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                            return false;
-                                        }
-                                    });
-            УниверсальныйБуферAPKФайлаПОсСервера.subscribe();
-            // TODO: 18.12.2021
+                            }
+                        }
+                    });
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"

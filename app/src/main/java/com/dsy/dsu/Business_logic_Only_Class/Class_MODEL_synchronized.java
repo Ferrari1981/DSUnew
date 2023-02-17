@@ -12,6 +12,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.dsy.dsu.Business_logic_Only_Class.DATE.Class_Generation_Data;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.FileUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -3261,7 +3262,11 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
 
     // TODO: 09.04.2021 ПОЛУЧЕНИЕ ПОСЛЕ JSON ПОЛУЧАЕМ САМ ФАЙЛ APK
     // TODO: 09.04.2021 ПОЛУЧЕНИЕ ПОСЛЕ JSON ПОЛУЧАЕМ САМ ФАЙЛ APK
-    public File УниверсальныйБуферAPKФайлаПОсСервера(String АдресЗагрузки, String НазваниеФайлаКоторыйНадоЗагрузить, Context context, String ИмяСервера, Integer ИмяПорта)
+    public File УниверсальныйБуферAPKФайлаПОсСервера(@NonNull  String АдресЗагрузки,
+                                                     @NonNull     String НазваниеФайлаКоторыйНадоЗагрузить,
+                                                     @NonNull     Context context,
+                                                     @NonNull      String ИмяСервера,
+                                                     @NonNull     Integer ИмяПорта)
             throws IOException, ExecutionException, InterruptedException,
             TimeoutException, NoSuchAlgorithmException, KeyManagementException, InvalidKeyException, NoSuchPaddingException {
                 File СамФайлAPKВнутри = null;
@@ -3328,20 +3333,8 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                             +lenghtOfFile);
                     ////TODO И ЕСЛИ ПРИШЕЛ ОТ СЕРВЕРА ОТВЕТ ПОЛОЖИТЕЛЬНО ТО ТОГДА ЗАПУСКАМ ПРОЧТЕНИЯ ПОТОКА ПРИШЕДШЕГО С СЕРВЕРА
                     if (ПодключениеИнтернетДляЗагрузкеAPKФайла.getResponseCode() == 200 && lenghtOfFile>1) {
-                        ByteArrayOutputStream buffer = null;
-                        // TODO: 12.05.2021 запускаем если файл пришел
-                        if (lenghtOfFile > 0) {
                             Log.e(this.getClass().getName(), " ПРИШЕЛ ФАЙЛ УСПЕХ ПРИШЛОЙ ФАЙЛ СЛУЖБА ЗАГРУЗКА ОБНОВЛЕНИЯ  ДЛИНА ФАЙЛА : " + lenghtOfFile);
-                            InputStream input = null;
-                            input = ПодключениеИнтернетДляЗагрузкеAPKФайла.getInputStream();
-                            Log.i(this.getClass().getName(), " ПРИШЛОЙ ФАЙЛ СЛУЖБА ЗАГРУЗКА ОБНОВЛЕНИЯ  ДЛИНА ФАЙЛА : " + lenghtOfFile);
-                            buffer = new ByteArrayOutputStream();
-                            int nRead;
-                            byte[] data = new byte[lenghtOfFile];///8192 //512
-                            while ((nRead = input.read(data, 0, data.length)) != -1) {
-                                buffer.write(data, 0, nRead);
-                                Log.d(context.getClass().getName(), "NEW NEW NEW .APK nRead "+nRead);
-                            }
+                            InputStream   input = ПодключениеИнтернетДляЗагрузкеAPKФайла.getInputStream();
                         File ПутькФайлу = null;
                         if (Build.VERSION.SDK_INT >= 30) {
                             ПутькФайлу = context.getExternalFilesDir( Environment.DIRECTORY_DOWNLOADS);
@@ -3355,24 +3348,15 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                             }
                         if (СамФайлAPKВнутри.createNewFile()) {
                             Log.d(context.getClass().getName(), "Будущий файл успешно создалься , далее запись на диск новго APk файла ");
-                            FileOutputStream fos = null;
-                                fos = new FileOutputStream(СамФайлAPKВнутри);
-                                buffer.writeTo(fos);
+                            FileUtils.copyInputStreamToFile(input, СамФайлAPKВнутри);
+                            Log.d(context.getClass().getName(), "Будущий файл успешно создалься , далее запись на диск новго APk файла СамФайлAPKВнутри "+ СамФайлAPKВнутри);
 
-                            fos.flush();
-                            buffer.flush();
-                            buffer.close();
-                            fos.close();
                         } else {
-                            System.out.println(" Ошибка не создалься Будущий файл успешно создалься , далее запись на диск новго APk файла ");
-
                             Log.e(context.getClass().getName(), "Ошибка не создалься Будущий файл успешно создалься , далее запись на диск новго APk файла  СЛУЖБА ");
                         }
+                        input.close();
                     } else {
                         Log.e(this.getClass().getName(), "Ошибка не создалься Будущий файл успешно создалься , далее запись на диск новго APk файла  СЛУЖБА ");
-                    }
-                    }  else {
-                        Log.e(this.getClass().getName(), " нулевой файл  ошибка ПРИШЛОЙ ФАЙЛ СЛУЖБА ЗАГРУЗКА ОБНОВЛЕНИЯ  ДЛИНА ФАЙЛА : " + lenghtOfFile);
                     }
                 } catch (IOException ex) {
                     ex.printStackTrace();
