@@ -326,7 +326,7 @@ public class SubClassUpdatePOОбновлениеПО {
     public void МетодЗапускАнализаПО(@NonNull Boolean РежимОбновленияЯвныйИлиНет) {
         Boolean[] ПингПередСинхронизациейИлиОбновлениеПО = {false};
         try {
-            handler.post(() -> {
+            handler.postDelayed(() -> {
                 try {
                     boolean РежимСетиВыбраныйПользователем =
                             new Class_Find_Setting_User_Network(context).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
@@ -365,7 +365,7 @@ public class SubClassUpdatePOОбновлениеПО {
                     new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                             Thread.currentThread().getStackTrace()[2].getLineNumber());
                 }
-            });
+            },1000);
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу
