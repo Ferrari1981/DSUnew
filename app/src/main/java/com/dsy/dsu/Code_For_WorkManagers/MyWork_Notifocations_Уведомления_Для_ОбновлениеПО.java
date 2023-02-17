@@ -58,7 +58,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class MyWork_Notifocations_Уведомления_Для_ОбновлениеПО extends Worker {
-    private  Context context;
    private WorkerParameters workerParams;
     private   NotificationManager mNotificationManagerДляОбновлен=null;
     private  Integer СервернаяВерсияПОВнутри=0;
@@ -79,7 +78,6 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
 
     public MyWork_Notifocations_Уведомления_Для_ОбновлениеПО(@NonNull Context context, @NonNull WorkerParameters workerParamsвнутри) {
         super(context, workerParamsвнутри);
-        this.context =context;
         workerParams=workerParamsвнутри;
         Class_Engine_SQLГдеНаходитьсяМенеджерПотоков =new     PUBLIC_CONTENT(context);
         class_grud_sql_operationsIDпользоввателяДляСлужб=new Class_GRUD_SQL_Operations(context);
@@ -94,7 +92,7 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
     @NonNull
     @Override
     public Executor getBackgroundExecutor() {
-        Log.i(context.getClass().getName(),
+        Log.i(getApplicationContext().getClass().getName(),
                 "public Executor getBackgroundExecutor() {");
         return  Executors.newSingleThreadExecutor();
     }
@@ -104,7 +102,7 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
     @Override
     public Result doWork() {
         try {
-            Create_Database_СсылкаНАБазовыйКласс=new CREATE_DATABASE(context);
+            Create_Database_СсылкаНАБазовыйКласс=new CREATE_DATABASE(getApplicationContext());
             МетодЗапукаВоркМенеджераБезАктивити();
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,14 +127,14 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
       // TODO: 11.05.2021 ЗПУСКАЕМ СЛУЖБУ ОБНОВЛЕНИЕ ПО
       Log.i(this.getClass().getName(), "       МетодДополнительногоУдалениеJSONФайлов();   удалаение JSON файла АНАЛИЗ ВЕРСИИЯ КАКАЯ ВЕРСИЯ ы");
       СервернаяВерсияПОВнутри = МетодАнализаВерсииПОJSON();
-      Log.w(context.getClass().getName(), "              " +
+      Log.w(getApplicationContext().getClass().getName(), "              " +
               "new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext()).МетодПовторногоЗапускаВсехWorkManagerДляОбновленияПО();" +
               "\n" + "СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
     } catch (Exception e ) {
         e.printStackTrace();
       Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
               + Thread.currentThread().getStackTrace()[2].getLineNumber());
-      new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+      new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
               Thread.currentThread().getStackTrace()[2].getLineNumber());
   }}
 
@@ -148,40 +146,40 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
         try {
             Log.d(this.getClass().getName(), " СЛУЖБА ... МЕТОД АНАЛИЗА ДАННЫХ РАБОТАЕТ......" + new Date());
             //TODO УДАЛЕНИЕ ФАЙЛОВ ПОЛЕ АНАЛИЗА
-            Log.w(context.getClass().getName(), " СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " + Thread.currentThread().getName());
+            Log.w(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " + Thread.currentThread().getName());
             // TODO: 02.04.2022 передполучаем веприсю ПО  удаляем файцл
             // TODO: 02.04.2022 зпускаем работут по анализу  СКАЧКИ ПРОГРАММЫ ТАБЕЛТНЫЙ УЧЁТ С СЕРВЕРА
             // TODO: 02.04.2022  #1
             new Class_Update_Download_File_APK_From_SERVER(getApplicationContext(), null).МетодУдалениеИнформационогоТекстовогоФайлаJSONДляПО();
             //TODO УДАЛЕНИЕ ФАЙЛОВ ПОЛЕ АНАЛИЗА
-            Log.w(context.getClass().getName(), " СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " + Thread.currentThread().getName());
+            Log.w(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " + Thread.currentThread().getName());
             // TODO: 02.04.2022 передполучаем веприсю ПО  удаляем файцл
             СервернаяВерсияПОВнутри = 0;
             // TODO: 17.12.2021 RXJAVA ПОЛУЧАЕМ JSON  ФАЙЛ ВЕРСИИ ПОРГРАМНОГО ПО ТАБЕЛЬНЫЙ УЧЁТ
             String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
 
-            Observable observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK = Observable.interval(0, TimeUnit.SECONDS)
+            Observable observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK = Observable.interval(2, TimeUnit.SECONDS)
                     .take(2, TimeUnit.MINUTES)
                     .subscribeOn(Schedulers.single())
                     .flatMap((string) -> {
-                        PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(context);
+                        PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(getApplicationContext());
                         // TODO: 08.01.2022
-                        СервернаяВерсияПОВнутри = new Class_MODEL_synchronized(context).
+                        СервернаяВерсияПОВнутри = new Class_MODEL_synchronized(getApplicationContext()).
                              //   УниверсальныйБуферJSONВерсииПОсСервера("dsu1.glassfish/update_android_dsu1/output-metadata.json", Контекст, public_content.getАдресСервера() , public_content.getПортСервера());
-                                УниверсальныйБуферJSONВерсииПОсСервера(new PUBLIC_CONTENT(context).getСсылкаНаРежимСервера()+"/update_android_dsu1/output-metadata.json",
-                                     context, ИмяСерверИзХранилица ,ПортСерверИзХранилица);
-                        Log.w(context.getClass().getName(), " doOnNext observableVesrionServerSoft   СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО " +СервернаяВерсияПОВнутри+ "\n"+
+                                УниверсальныйБуферJSONВерсииПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервера()+"/update_android_dsu1/output-metadata.json",
+                                     getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица);
+                        Log.w(getApplicationContext().getClass().getName(), " doOnNext observableVesrionServerSoft   СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО " +СервернаяВерсияПОВнутри+ "\n"+
                                 "  observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK " +
                                 "СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " +Thread.currentThread().getName());
-                        Log.w(context.getClass().getName(), " flatMap" +
+                        Log.w(getApplicationContext().getClass().getName(), " flatMap" +
                                 "СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " +Thread.currentThread().getName());
                         return Observable.fromArray(string).doOnComplete(System.out::println);
                     })
                     .doOnError(new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Throwable {
-                            Log.e(context.getClass().getName(), "  doOnError observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK."  +"\n"+
+                            Log.e(getApplicationContext().getClass().getName(), "  doOnError observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK."  +"\n"+
                                     " Thread.currentThread().getName() " +Thread.currentThread().getName()+"\n"+
                                      " throwable " +throwable.getStackTrace());
                         }
@@ -189,10 +187,10 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
                     .takeWhile(new Predicate<Object>() {
                         @Override
                         public boolean test(Object o) throws Throwable {
-                            Log.w(context.getClass().getName(), "   takeWhile observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK"  +"\n"+
+                            Log.w(getApplicationContext().getClass().getName(), "   takeWhile observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK"  +"\n"+
                                     " Thread.currentThread().getName() " +Thread.currentThread().getName()+ "  o " +o);
                             if (   СервернаяВерсияПОВнутри>0) {
-                                Log.w(context.getClass().getName(), "СервернаяВерсияПОВнутри  observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK ::::" +
+                                Log.w(getApplicationContext().getClass().getName(), "СервернаяВерсияПОВнутри  observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK ::::" +
                                         "  "+"\n"
                                         +СервернаяВерсияПОВнутри  +"\n"+
                                         " Thread.currentThread().getName() " +Thread.currentThread().getName());
@@ -202,74 +200,53 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
                             }
                         }
                     })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorComplete(new Predicate<Throwable>() {
+                        @Override
+                        public boolean test(Throwable throwable) throws Throwable {
+                            Log.e(getApplicationContext().getClass().getName(), "  onErrorComplete observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK."  +"\n"+
+                                    " Thread.currentThread().getName() " +Thread.currentThread().getName()+"\n"+
+                                    " throwable " +throwable.getStackTrace());
+                            return false;
+                        }
+                    })
                     .doOnComplete(new Action() {
                         @Override
                         public void run() throws Throwable {
                             ///TODO РАБОТА НЕПОСТРДСТВЕННО УЖЕ С .apk
                             if (СервернаяВерсияПОВнутри>0 ) {
-                                Log.w(context.getClass().getName(), " doOnComplete  observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK.  ЗАПУСК ОБНОВЛЕНИЕ ПОСЛЕ  " +
+                                Log.w(getApplicationContext().getClass().getName(), " doOnComplete  observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK.  ЗАПУСК ОБНОВЛЕНИЕ ПОСЛЕ  " +
                                         " МетодОпределнияВерсийПОСервераКлиентаИПринятиеРешенияНаСкачиваниеОбновлениеПО " + "\n" +
                                         " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри + " +Thread.currentThread().getName() " + Thread.currentThread().getName());
                                 ///////todo код запуска уведомлений для чата
-                                МетодЗапускаСлужбыУведомленияДляОбновлениеПО();
+                                МетодЗарускаСозданиеУведомленийОбновлениеПо();
+                                Log.d(getApplicationContext().getClass().getName(), " Запуск по Расписанию СЛУЖБА" +
+                                        "   МетодЗарускаСозданиеУведомленийОбновлениеПо MyWork_Notifocations_Уведомления_Для_ОбновлениеПО " + "  --" + new Date());
                                 ///////todo код запуска уведомлений для чата
-                                    Log.i(context.getClass().getName(), "Метод ВНУТРИ РАБОТА... С АКТИВТИ ДЕЙСТВУЩИМ УВЕДОМНИЯ ОБНОВЛЕНИЯ ПО ОТРАБОТАЛ ВНУТРИ метода ЗАПУСКАЕМ БЕЗ activity      " +
+                                    Log.i(getApplicationContext().getClass().getName(), "Метод ВНУТРИ РАБОТА... С АКТИВТИ ДЕЙСТВУЩИМ УВЕДОМНИЯ ОБНОВЛЕНИЯ ПО ОТРАБОТАЛ ВНУТРИ метода ЗАПУСКАЕМ БЕЗ activity      " +
                                             "   public Result doWork()  MyWork_УВЕДОМНИЯ ОБНОВЛЕНИЯ ПО  внутри WORK MANAGER MyWork_Notifocations_Уведомления_Для_ОбновлениеПО   "
                                             + new Date() + " СТАТУС WORKMANAGER MyWork_Notifocations_Уведомления_Для_ОбновлениеПО" +
                                             " ОБНОВЛЕНИЯ ПО внутри WORK MANAGER "
-                                            + WorkManager.getInstance(context).getWorkInfosByTag(ИмяСлужбыУведомленияДляОбновлениеПО).get().get(0).getProgress() +
+                                            + WorkManager.getInstance(getApplicationContext()).getWorkInfosByTag(ИмяСлужбыУведомленияДляОбновлениеПО).get().get(0).getProgress() +
                                             " WorkManager Synchronizasiy_Data  " + " РАБОТАЮЩИЙ ПРОЦЕСС  КоличествоЗапущенныйПроуессыДляОбновлениеПО.size()" +
                                             "" +
                                             "" + " +Thread.currentThread().getName() " + Thread.currentThread().getName());
                                 // TODO: 09.01.2022
                             }
                         }
-                    })
-              .observeOn(AndroidSchedulers.mainThread());
+                    });
 // TODO: 07.01.2022 GREAT OPERATIONS подпииска на данные
-            observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK.subscribe(СервернаяВерсияПОВнутриКонец ->{
-                Log.i(context.getClass().getName(), "      observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK.subscribe " +
-                        "СервернаяВерсияПОВнутри"+"\n"+
-                        " СервернаяВерсияПОВнутри  " +СервернаяВерсияПОВнутри +"\n"+
-                        " СервернаяВерсияПОВнутриКонец  " + СервернаяВерсияПОВнутриКонец + "\n" +
-                        "" + " +Thread.currentThread().getName() " + Thread.currentThread().getName());
-            });
-            ///   observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK.toFuture().get();
-            Log.i(context.getClass().getName(), "      observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK.subscribe " +
-                    "СервернаяВерсияПОВнутри" + "\n" +
-                    " СервернаяВерсияПОВнутри  " + СервернаяВерсияПОВнутри + "\n" +
-                    "" + " +Thread.currentThread().getName() " + Thread.currentThread().getName());
-            Log.w(context.getClass().getName(), " СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО " +СервернаяВерсияПОВнутри);
+            observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK.subscribe();
         } catch (Exception e ) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
-        return  СервернаяВерсияПОВнутри;
-    }
-    private void МетодЗапускаСлужбыУведомленияДляОбновлениеПО() {
-        String ЛокальныйФлагУбратьУведомленияСлужбу=new String();
-        try{
-            Log.i(getApplicationContext().getClass().getName(), "Запуск метода МетодЗапускаСлужбыУведомления СЛУЖБА СЛУЖБАService_UpdateSoft ДЛЯ ЧАТА ДЛЯ ЧАТА  "+new Date());
-            /////////TODO запуск нновую нотификашенс устанолвка
-            МетодЗарускаСозданиеУведомленийОбновлениеПо();
-            Log.d(getApplicationContext().getClass().getName(), " Запуск по Расписанию СЛУЖБА" +
-                    "   МетодЗарускаСозданиеУведомленийОбновлениеПо MyWork_Notifocations_Уведомления_Для_ОбновлениеПО " + "  --" + new Date());
-        } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
-            NotificationManager notificationManager = (NotificationManager)
-                    getApplicationContext().getSystemService(NOTIFICATION_SERVICE);///update_android_dsu1
-
-
         }
-
+        return  СервернаяВерсияПОВнутри;
     }
+
 
 
     /////////////////
@@ -277,7 +254,7 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
 
     private void МетодЗарускаСозданиеУведомленийОбновлениеПо( ) {
         try{
-                Log.i(context.getClass().getName(),
+                Log.i(getApplicationContext().getClass().getName(),
                         " СервернаяВерсияПОВнутри  WORK manager "+ СервернаяВерсияПОВнутри);
             ////TODO получаем и записываем локальную верисю ПО
             PackageInfo pInfo = null;
@@ -326,9 +303,6 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
                 Log.d(getApplicationContext().getClass().getName(), " Определили Результат НужноЗапускать Уведомления Или Нет  СЛУЖБА"
                         + "--" + РезультатНужноЗапускатьУведомленияИлиНет);/////
             Log.d(this.getClass().getName(), "AsyncРезультатНужноЗапускатьУведомленияИлиНет " );
-
- /*       //////TODO МЕТОД КОТОРЫЙ ЗАПУСКАЕТ УВЕДОМЛЕНИЯ ПОСЛЕ АНАЛИЗА ДАТ
-            МетодКоторыйЗапускаетУвеломленияПослеАнализа(intent, РезультатНужноЗапускатьУведомленияИлиНет);*/
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу
@@ -424,75 +398,29 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
 
     private void МетодНотификайшенОбнолвениеПО() {
         try {
-
             Log.d(getApplicationContext().getClass().getName(), " Создание Уведомлеения СЛУЖБА СЛУЖБА Service_Notificatios_Уведомления_ОбновлениеПО ");
-///
-
             PackageManager pm = getApplicationContext().getPackageManager();
-
             builder_СлужбаОбновлениеПо = null;
-
-
-            // TODO: 27.03.2022  запускаем обновление ПО табкльный учет
-
-
             PendingIntent ЗапускаемОбновлениеПо = МетодЗапускаОбновленияПОИзУведомления(pm);
-
-
-            ///////TODO ЗАкрыкть  обновление табельный учет
-
-
             PendingIntent ЗапускЗакрываемУведомлениеПоОбновление = ЗакрываемУведомленияПоОбновлениПО(pm);
-
-
-            Log.i(context.getClass().getName(), "ЗАПУСК MyWork_Notifocations_Уведомления_ДляОбновлнение ПО  СЛУЖБА     " +
+            Log.i(getApplicationContext().getClass().getName(), "ЗАПУСК MyWork_Notifocations_Уведомления_ДляОбновлнение ПО  СЛУЖБА     " +
                     "           Service_Notifocations_Для_Чата.enqueueWork(getApplicationContext(),intentСлужбаУведомленийДЛЯЧата);;");
-
-
-            // TODO: 27.03.2022 update PO
-
             Log.d(this.getClass().getName()," СервернаяВерсияПОВнутри"+ СервернаяВерсияПОВнутри);
-
-
-            // TODO: 21.11.2021 НЕПОСТРЕДСТВЕННО СОЗДАНИЕ УВЕДОМЛЕНИЯ ДЛЯ ЧАТА СОЗДАНИЕ И ЗАПОЛЕНИЕ
-
             NotificationManager notificationManager = (NotificationManager)
                     getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 
-
-
-
-
-
-
-
-
-            // TODO: 21.12.2021
-
             Boolean СтатустУведомленияЧистаяОбновлениПО=false;
-
                     StatusBarNotification[] statusBarNotificationОбновлениПО=      notificationManager.getActiveNotifications();
             // TODO: 21.12.2021
             for(StatusBarNotification statusBarNotification1: statusBarNotificationОбновлениПО){
-
                 // TODO: 21.12.2021
-
               if (statusBarNotification1.getId()==Integer.parseInt(PROCESS_ID_UpdateSoft)){
-
                   // TODO: 21.12.2021
                 СтатустУведомленияЧистаяОбновлениПО=   statusBarNotification1.isClearable();
                   // TODO: 21.12.2021
-
                   Log.d(this.getClass().getName()," СтатустУведомленияЧистаяОбновлениПО"+ СтатустУведомленияЧистаяОбновлениПО);
-
-
-
               }
-
-
             }
-
-
             if (СервернаяВерсияПОВнутри>0 && СтатустУведомленияЧистаяОбновлениПО==false) {
                 String СообщениеОтоМЧТоЕчтьНоваяВерсияПоОтСервера="Вышла новая версия ПО "+"\n"
                         +" Табельный учёт " +"\n"+
@@ -521,13 +449,6 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
             Log.d(getApplicationContext().getClass().getName(), " Стоп СЛУЖБА СЛУЖБАService_Notifications ДЛЯ ЧАТА  onDestroy() Exception ");
         }
     }
-
-
-
-
-
-
-
 
     @androidx.annotation.Nullable
     private PendingIntent МетодЗапускаОбновленияПОИзУведомления(PackageManager pm) {

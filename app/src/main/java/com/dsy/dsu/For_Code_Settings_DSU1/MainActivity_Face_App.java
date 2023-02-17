@@ -676,7 +676,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
     void МетодПредлагаемЗаргузитьНовыюВерсиюПО(@NonNull Integer СервернаяВерсияПОВнутри) {
         try {
             File ФайлыДляОбновлениеВычисляемНомерВерсииПО = null;
-            final PackageManager pm = getPackageManager();
+            final PackageManager pm =context. getPackageManager();
             String apkName = "update_dsu1.apk";
             String fullPath = Environment.getExternalStorageDirectory() + "/" + apkName;
             if (Build.VERSION.SDK_INT >= 30) {
@@ -693,7 +693,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
             // TODO: 02.04.2022
             final Object ТекущаяВерсияПрограммы = BuildConfig.VERSION_CODE;
             Integer ЛокальнаяВерсияПОСравнение = Integer.parseInt(ТекущаяВерсияПрограммы.toString());
-            AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)///       final AlertDialog alertDialog =new AlertDialog.Builder( MainActivity_Face_App.КонтекстFaceApp)
+            AlertDialog alertDialog = new MaterialAlertDialogBuilder(activity)///       final AlertDialog alertDialog =new AlertDialog.Builder( MainActivity_Face_App.КонтекстFaceApp)
                     .setTitle("Загрущик")
                     .setMessage("Пришло Обновление,"
                             + "\n" + "Союз-Автодор ПО ,"
