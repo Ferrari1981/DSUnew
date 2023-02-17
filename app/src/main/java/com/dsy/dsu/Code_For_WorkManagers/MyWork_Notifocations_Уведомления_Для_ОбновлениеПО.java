@@ -145,13 +145,6 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
     Integer МетодАнализаВерсииПОJSON() {
         try {
             Log.d(this.getClass().getName(), " СЛУЖБА ... МЕТОД АНАЛИЗА ДАННЫХ РАБОТАЕТ......" + new Date());
-            //TODO УДАЛЕНИЕ ФАЙЛОВ ПОЛЕ АНАЛИЗА
-            Log.w(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " + Thread.currentThread().getName());
-            // TODO: 02.04.2022 передполучаем веприсю ПО  удаляем файцл
-            // TODO: 02.04.2022 зпускаем работут по анализу  СКАЧКИ ПРОГРАММЫ ТАБЕЛТНЫЙ УЧЁТ С СЕРВЕРА
-            // TODO: 02.04.2022  #1
-            new Class_Update_Download_File_APK_From_SERVER(getApplicationContext(), null).МетодУдалениеИнформационогоТекстовогоФайлаJSONДляПО();
-            //TODO УДАЛЕНИЕ ФАЙЛОВ ПОЛЕ АНАЛИЗА
             Log.w(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " + Thread.currentThread().getName());
             // TODO: 02.04.2022 передполучаем веприсю ПО  удаляем файцл
             СервернаяВерсияПОВнутри = 0;

@@ -3266,9 +3266,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                                      @NonNull     String НазваниеФайлаКоторыйНадоЗагрузить,
                                                      @NonNull     Context context,
                                                      @NonNull      String ИмяСервера,
-                                                     @NonNull     Integer ИмяПорта)
-            throws IOException, ExecutionException, InterruptedException,
-            TimeoutException, NoSuchAlgorithmException, KeyManagementException, InvalidKeyException, NoSuchPaddingException {
+                                                     @NonNull     Integer ИмяПорта) {
                 File СамФайлAPKВнутри = null;
                 String ОшибкаТекущегоМетода;
                 try {
@@ -3358,7 +3356,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                     } else {
                         Log.e(this.getClass().getName(), "Ошибка не создалься Будущий файл успешно создалься , далее запись на диск новго APk файла  СЛУЖБА ");
                     }
-                } catch (IOException ex) {
+                } catch (IOException | ExecutionException | InterruptedException ex) {
                     ex.printStackTrace();
                     ОшибкаТекущегоМетода = ex.toString();
                     if (!ОшибкаТекущегоМетода.toString().matches("(.*)java.io.EOFException(.*)") &&

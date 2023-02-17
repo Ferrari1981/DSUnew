@@ -708,17 +708,16 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     v2.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
                     //TODO ПЕРЕД СОЗДАНИЕМ НОВОГО СООБЕЩНИЯ ОБНУЛЯЕМ ПРДЫДУЩЕЕ
-                    Class_Update_Download_File_APK_From_SERVER class_update_download_file_apk_from_server = new Class_Update_Download_File_APK_From_SERVER(getApplicationContext(), null);
-                    class_update_download_file_apk_from_server.МетодУдалениеИнформационогоТекстовогоФайлаJSONДляПО();
-                    Log.i(getApplicationContext().getClass().getName(), " ЗАПУСКАЕМ МетодУдалениеИнформационогоТекстовогоФайлаJSONДляПО();  ");
-                    class_update_download_file_apk_from_server.МетодУдалениеСамогоФайлаПрограммыПОТальныйУчётПО_APK();
-                    Log.i(getApplicationContext().getClass().getName(), " ЗАПУСКАЕМ МетодУдалениеСамогоФайлаПрограммыПОТальныйУчётПО_APK();  ");
+                    Class_Update_Download_File_APK_From_SERVER class_update_download_file_apk_from_server
+                            = new Class_Update_Download_File_APK_From_SERVER(getApplicationContext(), null);
                     try {
                         class_update_download_file_apk_from_server.МетодНачалаЗапускаОбновленияПО(finalСервернаяВерсияПОВнутри, context);
-                    } catch (ExecutionException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                Thread.currentThread().getStackTrace()[2].getLineNumber());
                     }
                     Log.i(getApplicationContext().getClass().getName(), " УЖЕ ЗАГРУзили ПО ПОЛЬЗОВАТЕЛЬ НАЖАЛ НА КОНОПКУ ЗАГУРДИТЬ   " +
                             "Service_Notifocations_Для_Чата (intent.getAction()   СЛУЖБА" + finalСервернаяВерсияПОВнутри + " время запуска  " + new Date());

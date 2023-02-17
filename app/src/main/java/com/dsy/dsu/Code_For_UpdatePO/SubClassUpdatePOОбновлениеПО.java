@@ -64,7 +64,7 @@ public class SubClassUpdatePOОбновлениеПО {
             File ФайлыДляОбновлениеВычисляемНомерВерсииПО = null;
             final PackageManager pm = context.getPackageManager();
             String apkName = "update_dsu1.apk";
-            String fullPath = Environment.getExternalStorageDirectory() + "/" + apkName;
+            String fullPath;
             if (Build.VERSION.SDK_INT >= 30) {
                 fullPath = Environment.getExternalStorageState() + "/" + apkName;
             } else {
@@ -96,32 +96,24 @@ public class SubClassUpdatePOОбновлениеПО {
                 ///MessageBoxUpdate метод CLICK для DIALOBOX
                 @Override
                 public void onClick(View v) {
+                    try {
                     Log.d(this.getClass().getName(), "Установка Обновления .APK СЛУЖБА");
                     alertDialog.dismiss();
                     alertDialog.cancel();
-                    String ФинальныйПутьДляЗагрузкиФайлаОбновения = null;
-                    ////
                     Log.d(this.getClass().getName(), " СервернаяВерсияПОВнутри" + finalСервернаяВерсияПОВнутри);
                     Vibrator v2 = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                     v2.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
                     //TODO ПЕРЕД СОЗДАНИЕМ НОВОГО СООБЕЩНИЯ ОБНУЛЯЕМ ПРДЫДУЩЕЕ
-                    Class_Update_Download_File_APK_From_SERVER class_update_download_file_apk_from_server = new Class_Update_Download_File_APK_From_SERVER(context, null);
-                    class_update_download_file_apk_from_server.МетодУдалениеИнформационогоТекстовогоФайлаJSONДляПО();
-                    Log.i(context.getClass().getName(), " ЗАПУСКАЕМ МетодУдалениеИнформационогоТекстовогоФайлаJSONДляПО();  ");
-                    class_update_download_file_apk_from_server.МетодУдалениеСамогоФайлаПрограммыПОТальныйУчётПО_APK();
-                    Log.i(context.getClass().getName(), " ЗАПУСКАЕМ МетодУдалениеСамогоФайлаПрограммыПОТальныйУчётПО_APK();  ");
-                    try {
                         // TODO: 16.02.2023  НАчинаем Саму загрузки
-                        class_update_download_file_apk_from_server.МетодНачалаЗапускаОбновленияПО(finalСервернаяВерсияПОВнутри, context);
+                        new Class_Update_Download_File_APK_From_SERVER(context, activity).МетодНачалаЗапускаОбновленияПО(finalСервернаяВерсияПОВнутри, context);
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                Thread.currentThread().getStackTrace()[2].getMethodName(),
                                 Thread.currentThread().getStackTrace()[2].getLineNumber());
                     }
-                    Log.i(context.getClass().getName(), " УЖЕ ЗАГРУзили ПО ПОЛЬЗОВАТЕЛЬ НАЖАЛ НА КОНОПКУ ЗАГУРДИТЬ   " +
-                            "Service_Notifocations_Для_Чата (intent.getAction()   СЛУЖБА" + finalСервернаяВерсияПОВнутри + " время запуска  " + new Date());
                 }
             });
             final Button MessageBoxUpdateНеуСтанавливатьПО = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);

@@ -142,13 +142,6 @@ public class Service_Notificatios_Для_ОбновлениеПО extends Servic
                 // TODO: 02.04.2022 первое действие удалем и текстовой информациный файл и сам файл .APK  обновлкение ПО
                 Class_Update_Download_File_APK_From_SERVER class_update_download_file_apk_from_server=new Class_Update_Download_File_APK_From_SERVER(getApplicationContext(),null);
                 // TODO: 02.04.2022  #1
-                class_update_download_file_apk_from_server.МетодУдалениеИнформационогоТекстовогоФайлаJSONДляПО();
-                // TODO: 02.04.2022
-                Log.i(getApplicationContext().getClass().getName(), " ЗАПУСКАЕМ МетодУдалениеИнформационогоТекстовогоФайлаJSONДляПО();  ");
-                // TODO: 02.04.2022 #2
-                class_update_download_file_apk_from_server.МетодУдалениеСамогоФайлаПрограммыПОТальныйУчётПО_APK();
-                // TODO: 02.04.2022
-                Log.i(getApplicationContext().getClass().getName(), " ЗАПУСКАЕМ МетодУдалениеСамогоФайлаПрограммыПОТальныйУчётПО_APK();  ");
                 // TODO: 02.04.2022 зпускаем работут по анализу  СКАЧКИ ПРОГРАММЫ ТАБЕЛТНЫЙ УЧЁТ С СЕРВЕРА
                 class_update_download_file_apk_from_server.МетодНачалаЗапускаОбновленияПО(СервернаяВерсияПОВнутри,getApplicationContext());
                 Log.i(getApplicationContext().getClass().getName(), " УЖЕ ЗАГРУзили ПО ПОЛЬЗОВАТЕЛЬ НАЖАЛ НА КОНОПКУ ЗАГУРДИТЬ   " +
