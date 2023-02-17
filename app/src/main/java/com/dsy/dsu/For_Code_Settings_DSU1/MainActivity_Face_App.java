@@ -209,7 +209,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
             МетодПовторныйЗапускУведомений();
             МетодБоковаяПанельОткрытьЗАкрыть();
             // TODO: 17.02.2023 ЗапускАнализа Наличитие Новой Версии ПО
-            subClassUpdatePOОбновлениеПО.МетодЗапускАнализаПО(false,2000);
+            subClassUpdatePOОбновлениеПО.МетодЗапускАнализаПО(false,3000);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
