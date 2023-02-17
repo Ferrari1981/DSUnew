@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,13 +38,19 @@ import java.util.concurrent.ExecutionException;
 
 
 public class ServiceОбновлениеПО extends IntentService {////Service
+
+    public ServiceОбновлениеПО.localBinderОбновлениеПО binder = new ServiceОбновлениеПО.localBinderОбновлениеПО();
     Integer СервернаяВерсияПОВнутри = 0;
+
     String ИмяСлужбыУведомленияДляОбновление = "WorkManager NOtofocationforUpdateSoft";
     private String PROCESS_IDSoftUpdate = "19";
     private   String ТипПодключенияИнтернтаДляСлужбы;
+
     private  Integer ЛокальнаяВерсияПО = 0;
+
     private String PROCESS_ID_UpdateSoft = "19";
     private Context context;
+
     private Activity activity;
     private SharedPreferences preferences;
 
@@ -87,21 +94,47 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        Log.d(context.getClass().getName(), "\n"
+                + " время: " + new Date()+"\n+" +
+                " Класс в процессе... " +  this.getClass().getName()+"\n"+
+                " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName());
+        //   return super.onBind(intent);
+        return   binder;
     }
-
+    public class localBinderОбновлениеПО extends Binder {
+        public ServiceОбновлениеПО getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return ServiceОбновлениеПО.this;
+        }
+    }
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         try{
+            МетодГлавныйЗапускаОбновлениеПО(intent);
+            Log.i(getApplicationContext().getClass().getName(), " ServiceОбновлениеПО  МетодГлавныйЗапускаОбновлениеПО  " + " время запуска  " + new Date());
+        } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+        Log.e(getApplicationContext().getClass().getName(), "С ОШИБКОЙ  Стоп СЛУЖБА СЛУЖБАService_Notifications   Обновление ПО  onDestroy() время " + new Date());
+
+    }
+    }
+
+    public void МетодГлавныйЗапускаОбновлениеПО(@Nullable Intent intent)
+            throws ExecutionException, InterruptedException {
+        try {
         СервернаяВерсияПОВнутри = intent.getIntExtra("НоваяВерсияСерверногоПОПОслеУспешнойЗагрузки", 0);
 
-            // TODO: 17.02.2023  Загрузка Новый Код Обновление ПО
+        // TODO: 17.02.2023  Загрузка Новый Код Обновление ПО
         if(intent.getAction().contentEquals("АнализЗагрузкаAPK")){
             МетодНачалаЗапускаОбновленияПО(СервернаяВерсияПОВнутри,getApplicationContext());
             Log.i(getApplicationContext().getClass().getName(), " УЖЕ ЗАГРУзили ПО ПОЛЬЗОВАТЕЛЬ НАЖАЛ НА КОНОПКУ ЗАГУРДИТЬ   " +
                     "Service_Notifocations_Для_Чата (intent.getAction()   СЛУЖБА" + (intent.getAction().toString()) + " время запуска  " + new Date());
         }
-        
+
         // TODO: 18.04.2021 запувскает широковещатель
         if (intent.getAction().equals("ЗакрываемУведомлениеоНовомПО")) {
             Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -136,9 +169,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             NotificationManager notificationManager = (NotificationManager)
                     getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
             notificationManager.cancel(Integer.parseInt(PROCESS_ID_UpdateSoft));*/
-
         }
-
     } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -149,6 +180,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
 
     }
     }
+
     public void МетодНачалаЗапускаОбновленияПО(Integer СервернаяВерсияПОВнутриИзСлужбы ,@NonNull Context context)
             throws ExecutionException, InterruptedException {
         Log.w(this.getClass().getName(), "   МетодНачалаЗапускаОбновленияПО СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
