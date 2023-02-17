@@ -113,6 +113,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
     protected Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binderAsyns;
     protected SharedPreferences preferences;
     private Service_Async_1C service_Async_СинхронизацияОБЩАЯ1С;
+    private   Message message;
 
     // TODO: 03.11.2022 FaceApp
     @Override
@@ -151,6 +152,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
             progressBarTabel.setVisibility(View.INVISIBLE);
             progressCommitpay.setVisibility(View.INVISIBLE);
 
+
             // TODO: 17.02.2023 дополнительеные методы которые зарускаются только один раз
             МЕтодУстанавливаемРазрешенияДляОновлениеПО();
             // TODO: 06.04.2022
@@ -161,7 +163,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
          //   МетодБиндингаСогласования();
         //    МетодБиндингAsync();
            МетодБиндингаОбновлениеПО();
-            Handlers();
             // TODO: 16.11.2022  ПОСЛЕ УСТАНОВКИ РАБОТАЕТ ОДИН РАЗ ПРИ СТАРТЕ ЗАРУСК ОБЩЕГО WORK MANAGER
             new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext()).МетодЗапускаетОБЩУЮСинхронизацию();
             // TODO: 17.02.2023 другие методы
@@ -208,21 +209,14 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     "  navigationViewFaceApp " + navigationViewFaceApp);/////////
             МетодПовторныйЗапускУведомений();
             МетодБоковаяПанельОткрытьЗАкрыть();
+
+
             // TODO: 17.02.2023 ЗапускАнализа Наличитие Новой Версии ПО
-     /*       Message obtainMessage=     new Handler(Looper.myLooper()).obtainMessage();
-         Handler callback= obtainMessage.getTarget();
-            callback.hasCallbacks(new Runnable() {
-                @Override
-                public void run() {
-                    Log.w(getPackageName().getClass().getName(), "drawerLayoutFaceApp    " + drawerLayoutFaceApp +
-                            "  navigationViewFaceApp " + navigationViewFaceApp);/////////
-                    localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,3000,activity);
-                }
-            });*/
-            Message message=Message.obtain(new Handler(Looper.myLooper()),()->{
-                Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
-                        "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
-                        "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
+            message=Message.obtain(new Handler(Looper.myLooper()),()->{
+                Bundle bundle=   message.getData();
+               localBinderОбновлениеПО=(ServiceОбновлениеПО.localBinderОбновлениеПО) bundle.getBinder("localBinderОбновлениеПО");
+                Log.i(this.getClass().getName(), "bundle " +bundle);
+                localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,3000,activity);
             });
 
         } catch (Exception e) {
@@ -554,11 +548,10 @@ public class MainActivity_Face_App extends AppCompatActivity {
                         if (localBinderОбновлениеПО.isBinderAlive()) {
                             Log.i(getApplicationContext().getClass().getName(), "    onServiceConnected  localBinderОбновлениеПО)"
                                     + localBinderОбновлениеПО.isBinderAlive());
-                            Message obtainMessage=     new Handler(Looper.myLooper()).obtainMessage();
                             Bundle bundle=new Bundle();
                             bundle.putBinder("localBinderОбновлениеПО",localBinderОбновлениеПО);
-                            obtainMessage.setData(bundle);
-                            obtainMessage.sendToTarget();
+                            message.setData(bundle);
+                            message.sendToTarget();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -1117,48 +1110,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
         }
     }
 
-    void Handlers(){
-        try{
-            handlerFaceAPP=new Handler(Looper.getMainLooper(), new Handler.Callback() {
-            @Override
-            public boolean handleMessage(@NonNull Message msg) {
-                ////TODO НАЧИНАЕМ ЗАГРУЗКИ С ИНТРЕНТА ФАЙЛ А ЕСЛИ ТОЛЬКО ЕГО НЕТ УЖЕ НА КЛИЕНТЕ
-                Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
-                        "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
-                        "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
-               /// msg.getTarget().removeCallbacksAndMessages(msg);
-                return true;
-            }
-        });
-       // handler.obtainMessage(0,0,0,new Object()).sendToTarget();
-
-/*       Message handler11=     new Handler(Looper.myLooper()).obtainMessage();
-            handler11.getTarget().post(()->{
-                Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
-                        "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
-                        "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
-            });
-
-
-
-        Message message=Message.obtain(new Handler(Looper.myLooper()),()->{
-            Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
-                    "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
-                    "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
-        });
-
-        Bundle b=new Bundle();
-        b.putString("dddd","555555555555555555555");
-            message.setData(b);
-        message.sendToTarget();*/
-    } catch (Exception e) {
-        e.printStackTrace();
-        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                Thread.currentThread().getStackTrace()[2].getLineNumber());
-    }
-    }
     public void МЕтодУстанавливаемРазрешенияДляОновлениеПО() {
         try {
             //////////////////////TODO SERVICE

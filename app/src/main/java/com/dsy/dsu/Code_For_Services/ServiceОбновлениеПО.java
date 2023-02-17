@@ -300,7 +300,10 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     @NonNull
     private void МетодДляHandler() {
         try {
-        Handler handlerСообщение=new Handler(Looper.getMainLooper(), new Handler.Callback() {
+            Log.w(this.getClass().getName(), "МетодДляHandler" );
+
+
+   /*     Handler handlerСообщение=new Handler(Looper.getMainLooper(), new Handler.Callback() {
             @Override
             public boolean handleMessage(@NonNull Message msg) {
 
@@ -351,7 +354,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                 }
                 return true;
             }
-        });
+        });*/
     } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -777,7 +780,6 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         Boolean[] ПингПередСинхронизациейИлиОбновлениеПО = {false};
         try {
             this.activity=activity;
-            handlerСлужбаОбновлениеПО.postDelayed(() -> {
                 try {
                     boolean РежимСетиВыбраныйПользователем =
                             new Class_Find_Setting_User_Network(context).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
@@ -816,7 +818,6 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                             Thread.currentThread().getStackTrace()[2].getLineNumber());
                 }
-            },ЗадержаВыполения);
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу
