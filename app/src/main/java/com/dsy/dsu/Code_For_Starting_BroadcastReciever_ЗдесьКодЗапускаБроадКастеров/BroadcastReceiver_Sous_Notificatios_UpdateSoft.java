@@ -39,10 +39,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class BroadcastReceiver_Sous_Notificatios_UpdateSoft extends BroadcastReceiver {
-
-    //WorkManager workManagerДЛяСлужбПроекта;
-
-
     public BroadcastReceiver_Sous_Notificatios_UpdateSoft() {
         super();
         Log.i(this.getClass().getName(), " ЗАПУСК  КОНСТРКТОР  BroadcastReceiver_Sous_Notificatios_UpdateSoft   " +
@@ -53,45 +49,7 @@ public class BroadcastReceiver_Sous_Notificatios_UpdateSoft extends BroadcastRec
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        ////
-        Log.i(this.getClass().getName(), " ЗАПУСК BroadcastReceiver_Sous_Notificatios_UpdateSoft  " +
-                "  public void onReceive(Context context, Intent intent) ........ СНАРУЖИ  BroadcastReceiver_Sous_Notificatios_UpdateSoft  (intent.getAction()   СЛУЖБА"
-                + (intent.getAction().toString()) + " время запуска  " + new Date() + "\n" +
-                " Build.BRAND.toString() Название Телефона " + Build.BRAND.toString());
-
         try {
-            Log.i(this.getClass().getName(), " ЗАПУСК BroadcastReceiver_Sous_Notificatios_UpdateSoft    public void onReceive(Context context, Intent intent) " +
-                    "........ СНАРУЖИ  BroadcastReceiver_Sous_Notificatios_UpdateSoft  (intent.getAction()   СЛУЖБА" + (intent.getAction().toString()) + " время запуска  " + new Date());
-
-            Handler handlerПО=new Handler(Looper.getMainLooper(), new Handler.Callback() {
-                @Override
-                public boolean handleMessage(@NonNull android.os.Message msg) {
-                    Toast toast=     Toast.makeText(context, "Поиск ПО...", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.BOTTOM,0,50);
-                    /*    ImageView img=new ImageView(context);
-                        // give the drawble resource for the ImageView
-                        img.setImageResource(R.drawable.icon_dsu1_download);
-                        toast.setView(img);*/
-                    toast.show();
-                    Log.i(this.getClass().getName(), "Запускаем только начало  Observable УниверсальныйБуферAPKФайлаПОсСервера=Observable.fromCallable............ ");
-                    ////TODO НАЧИНАЕМ ЗАГРУЗКИ С ИНТРЕНТА ФАЙЛ А ЕСЛИ ТОЛЬКО ЕГО НЕТ УЖЕ НА КЛИЕНТЕ
-                    Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
-                            "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
-                            "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
-                    //msg.getTarget().removeCallbacksAndMessages(msg);
-                    return true;
-                }
-            });
-            handlerПО.obtainMessage(0,0,0,new Object()).sendToTarget();
-
-            Message message=Message.obtain(handlerПО,()->{
-                Log.i(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск     УниверсальныйБуферAPKФайлаПОсСервера.subscribe  " +
-                        "  УниверсальныйБуферAPKФайлаПОсСервераВнутри " +
-                        "\n"+ " Thread.currentThread().getName() " +Thread.currentThread().getName());
-            });
-            message.sendToTarget();
-
-
        Bundle bundleПринудительныйЗапросОбновлениеПО= intent.getExtras();
                     Boolean ПринудительныйЗапросОбновлениеПО=bundleПринудительныйЗапросОбновлениеПО.getBoolean("ПринудительныйЗапросОбновлениеПО",false);
                     // TODO: 29.09.2021     ЗАПУСК BROADCAST УВЕДОМЕЛНИЯ  ТОЛЬКО ДЛЯ ЧАТА
@@ -104,10 +62,8 @@ public class BroadcastReceiver_Sous_Notificatios_UpdateSoft extends BroadcastRec
                             +(intent.getAction().toString())+"\n"+
                             " Build.BRAND.toString() Название Телефона " +Build.BRAND.toString());
 
-
         } catch (Exception e) {
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new   Class_Generation_Errors(context.getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
@@ -117,7 +73,6 @@ public class BroadcastReceiver_Sous_Notificatios_UpdateSoft extends BroadcastRec
 
 
         }
-
 
     }
 

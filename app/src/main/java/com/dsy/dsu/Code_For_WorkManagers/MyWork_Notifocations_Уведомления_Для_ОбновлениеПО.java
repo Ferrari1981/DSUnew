@@ -275,6 +275,14 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
 
 ///////////TODO ПРИСТУПАЕМ К ЗАПУСКУ ОБНОВЛЕНИЕ ФАЙЛА . APK ТОЛЬКО КОГДА ВЕРСИЯ ДАННЫХ НА СЕРВЕРЕ БОЛЬШЕ ЧЕМ НА КЛИЕНТЕ (Android)
             if (СервернаяВерсияПОВнутри >ЛокальнаяВерсияПО ) {
+                getApplicationContext().getMainExecutor().execute(()->{
+                    Boolean ПринудительныйЗапросОбновлениеПО=   getInputData().getBoolean("ПринудительныйЗапросОбновлениеПО",false);
+                    if (ПринудительныйЗапросОбновлениеПО) {
+                        Toast toast = Toast.makeText(getApplicationContext(), "Поиск ПО...", Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.BOTTOM, 0, 40);
+                        toast.show();
+                    }
+                });
                     //////TODO МЕТОД КОТОРЫЙ ЗАПУСКАЕТ УВЕДОМЛЕНИЯ ПОСЛЕ АНАЛИЗА ДАТ
                     МетодКоторыйЗапускаетУвеломленияПослеАнализа(СервернаяВерсияПОВнутри);//  //ФлагКтоЗапустилСлужбу
                 // TODO: 04.01.2022

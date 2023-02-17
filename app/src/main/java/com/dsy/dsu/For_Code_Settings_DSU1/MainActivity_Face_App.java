@@ -1551,7 +1551,7 @@ class SubClassUpdatePOОбновлениеПО extends  MainActivity_Face_App {
                     Long СервернаяВерсияПОРазмерФайла = bundle.getLong("СервернаяВерсияПОРазмерФайла", 0l);
                     context.getMainExecutor().execute(()->{
                         if (СервернаяВерсияПОРазмерФайла > 0) {
-                            МетодФиналУстановкаПО(ЗагрузиласьНоваяВерисяПОПровремяем, ЗагрузкиФайлаОбновенияПОДополнительный);
+                            МетодФиналУстановкаПО(ЗагрузиласьНоваяВерисяПОПровремяем, ЗагрузкиФайлаОбновенияПОДополнительный,context);
                             Log.d(this.getClass().getName(), " МетодФиналСлушательУстановщикПО" );
                         }
                         Log.d(this.getClass().getName(), " МетодФиналСлушательУстановщикПО ");
@@ -1589,7 +1589,7 @@ class SubClassUpdatePOОбновлениеПО extends  MainActivity_Face_App {
                     context.getMainExecutor().execute(()->{
                         if (СервернаяВерсияПОРазмерФайла > 0) {
                             // TODO: 17.02.2023  загрузка ПО
-                            МетодПредлагаемЗаргузитьНовыюВерсиюПО(СервернаяВерсияПОРазмерФайла);
+                            МетодПредлагаемЗаргузитьНовыюВерсиюПО(СервернаяВерсияПОРазмерФайла,context);
                         }
                         Log.d(this.getClass().getName(), " МетодСлушательПрелагаетЗагрузитьПО " + intent);
                     });
@@ -1610,10 +1610,11 @@ class SubClassUpdatePOОбновлениеПО extends  MainActivity_Face_App {
     //todo Финальный метод в ОБНОВЛЕНИИ ПО УСТАВНКА НЕПОСРЕДСВЕННО ФАЙЛА НА АКТИВТИ ПОЛЬЗОВАТЛЕМ
     @UiThread
     private void МетодФиналУстановкаПО(@NonNull Integer СервернаяВерсияПОВнутри,
-                                       @NonNull File ЗагрузкиФайлаОбновенияПОДополнительный) {
+                                       @NonNull File ЗагрузкиФайлаОбновенияПОДополнительный,
+                                       @NonNull Context context) {
         try {
             File ФайлыДляОбновлениеВычисляемНомерВерсииПО = null;
-            final PackageManager pm = getPackageManager();
+            final PackageManager pm = context.getPackageManager();
             String apkName = "update_dsu1.apk";
             String fullPath = Environment.getExternalStorageDirectory() + "/" + apkName;
             if (Build.VERSION.SDK_INT >= 30) {
@@ -1629,7 +1630,7 @@ class SubClassUpdatePOОбновлениеПО extends  MainActivity_Face_App {
             }
             final Object ТекущаяВерсияПрограммы = BuildConfig.VERSION_CODE;
             Integer ЛокальнаяВерсияПОСравнение = Integer.parseInt(ТекущаяВерсияПрограммы.toString());
-            AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)///       final AlertDialog alertDialog =new AlertDialog.Builder( MainActivity_Face_App.КонтекстFaceApp)
+            AlertDialog alertDialog = new MaterialAlertDialogBuilder(activity)///       final AlertDialog alertDialog =new AlertDialog.Builder( MainActivity_Face_App.КонтекстFaceApp)
                     .setTitle("Установщик")
                     .setMessage("Пришло Обновление,"
                             + "\n" + "Союз-Автодор ПО ,"
@@ -1672,8 +1673,8 @@ class SubClassUpdatePOОбновлениеПО extends  MainActivity_Face_App {
                         Log.d(this.getClass().getName(), " СЛУЖБА УСТАНОВКА... ОБНОВЛЕНИЯ НА ТЕЛЕФОН (.APK файл)  МеханизмПроверкиЗапуститьсяНашИнтентИлиНЕт "
                                 + МеханизмПроверкиЗапуститьсяНашИнтентИлиНЕт);
                         ////TODO непосрдствено сам запуск новго .apk файла
-                        startActivity(intentОбновлениеПО);
-                        finishAndRemoveTask(); //// ((Activity) MainActivity_Face_App.КонтекстFaceApp).finish();
+                      activity.  startActivity(intentОбновлениеПО);
+                        activity.    finishAndRemoveTask(); //// ((Activity) MainActivity_Face_App.КонтекстFaceApp).finish();
                         Log.w(this.getClass().getName(), " ура !!!! УРА !!!!  уСПЕШНАЫЙ ЗАПУСК СКАЧЕННОГО ОБНОВЛЕНЕИ ПО " +
                                 "МетодУстановкиНовойВерсииПОТабельныйУчётПоднимаетЕгоНаActrivity  ");
                     } else {
