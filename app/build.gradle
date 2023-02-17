@@ -176,4 +176,5 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'com.android.support:design:23.4.0'
     //todo find in Spinner
+    implementation files('com.sous.mylibrary')
 }
