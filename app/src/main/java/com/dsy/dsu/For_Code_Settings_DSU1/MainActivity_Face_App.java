@@ -3,15 +3,6 @@ package com.dsy.dsu.For_Code_Settings_DSU1;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -32,7 +23,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.ParcelUuid;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -97,19 +87,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -147,6 +132,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
     protected Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binderAsyns;
     protected SharedPreferences preferences;
     private  Handler handlerПО;
+    private Service_Async_1C service_Async_СинхронизацияОБЩАЯ1С;
     // TODO: 03.11.2022 FaceApp
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1491,26 +1477,6 @@ SubClassTEstКод subClassВторойТЕст=new SubClassTEstКод("А мо�
     }
 
 
-}
-
-
-
-// TODO: 23.02.2022 ВТОРОЙ SUB СЛАСС
-
-class BisssenssLogicFaceApp extends MainActivity_Face_App {
-
-    Context context;
-    // TODO: 23.02.2022
-    Activity activity;
-    Handler handler;
-
-    public BisssenssLogicFaceApp(Context context, Activity activity,Handler handler) {
-        this.context = context;
-        // TODO: 23.02.2022
-        this.activity = activity;
-        this.handler=handler;
-    }
-
     ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ
     @UiThread
     protected void МетодДиалогаДляМеню(String ШаблонСообщения, String Самообщение) {
@@ -1634,8 +1600,50 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
 
     }
 
-
-
+    void ВиндингСлужбы1С(){
+   try{
+        ServiceConnection connectionОБЩЕЙ1СGet = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                try{
+                    Service_Async_1C.LocalBinderGET1С binder = ( Service_Async_1C.LocalBinderGET1С) service;
+                    if (binder.isBinderAlive()==true) {
+                        Log.i(context.getClass().getName(), "    onServiceConnected  " +
+                                "service_Async_СинхронизацияОБЩАЯ1С" +service_Async_СинхронизацияОБЩАЯ1С);
+                        service_Async_СинхронизацияОБЩАЯ1С= binder.getService();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                            this.getClass().getName(),
+                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                }
+            }
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                try{
+                    Log.i(getApplicationContext().getClass().getName(), "    onServiceDisconnected  " +
+                            "service_Async_СинхронизацияОБЩАЯ1С" +service_Async_СинхронизацияОБЩАЯ1С);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                            this.getClass().getName(),
+                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                }
+            }
+        };
+    } catch (Exception e) {
+           e.printStackTrace();
+           Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                   + Thread.currentThread().getStackTrace()[2].getLineNumber());
+           new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                   Thread.currentThread().getStackTrace()[2].getLineNumber());
+       }
+    }
 
     protected class SubClassВызоваАктивтиИзМеню {
 
@@ -1674,80 +1682,27 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
         }
     }
 }
+}
 
 
 
+// TODO: 23.02.2022 ВТОРОЙ SUB СЛАСС
 
+class BisssenssLogicFaceApp extends MainActivity_Face_App {
 
+    Context context;
+    // TODO: 23.02.2022
+    Activity activity;
+    Handler handler;
 
-    private Service_Async_1C service_Async_СинхронизацияОБЩАЯ1С;
-    ServiceConnection connectionОБЩЕЙ1СGet = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            try{
-                Service_Async_1C.LocalBinderGET1С binder = ( Service_Async_1C.LocalBinderGET1С) service;
-                 service_Async_СинхронизацияОБЩАЯ1С= binder.getService();
-                Log.i(context.getClass().getName(), "    onServiceConnected  service_Async_СинхронизацияОБЩАЯ1С" +service_Async_СинхронизацияОБЩАЯ1С);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
-                        this.getClass().getName(),
-                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-            }
-        }
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            try{
-                Log.i(getApplicationContext().getClass().getName(), "    onServiceDisconnected  service_Async_СинхронизацияОБЩАЯ1С" +service_Async_СинхронизацияОБЩАЯ1С);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
-                        this.getClass().getName(),
-                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-            }
-        }
-    };
-    // TODO: 14.09.2022
-    void МетодАнализJsonОбновлениеПО() {
-        try {
-
-            Log.d(this.getClass().getName(), "  МетодЗапускПослеНажатияНАНовойФормеНАКнопкуУстановитьПослеУспешнойЗагрузкиНовогоПОТабельныйУчётПоказываемЕгоПользователю");
-            // TODO: 25.03.2022 Создание Локального БродКстаера
-            LocalBroadcastManager localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт;
-            BroadcastReceiver broadcastReceiverУстановкаПО;
-            localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт = LocalBroadcastManager.getInstance(context);
-            broadcastReceiverУстановкаПО = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                        // TODO: 16.02.2023
-                        Log.d(this.getClass().getName(), " localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт  intent " + intent);
-                        Bundle bundle = intent.getExtras();
-                        Log.d(this.getClass().getName(), " localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт  bundle " + bundle);
-                        Integer СервернаяВерсияПОРазмерФайла = bundle.getInt("СервернаяВерсияПОВнутри", 0);
-                        Log.d(this.getClass().getName(), " СервернаяВерсияПОРазмерФайла " + СервернаяВерсияПОРазмерФайла);
-                        if (СервернаяВерсияПОРазмерФайла > 0) {
-                            МетодПредлагаемЗаргузитьНовыюВерсиюПО(СервернаяВерсияПОРазмерФайла,context);
-                        }
-                        Log.d(this.getClass().getName(), " localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт  intent " + intent);
-                }
-            };
-            // TODO: 25.03.2022 установливам настройки Фильмо к Локальному БродКсстеру
-            IntentFilter intentFilterУстановка = new IntentFilter();
-            // TODO: 25.03.2022
-            intentFilterУстановка.addAction("AfterDownloadPO");
-            localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт.registerReceiver(broadcastReceiverУстановкаПО, intentFilterУстановка);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
+    public BisssenssLogicFaceApp(Context context, Activity activity,Handler handler) {
+        this.context = context;
+        // TODO: 23.02.2022
+        this.activity = activity;
+        this.handler=handler;
     }
+
+
     private void МетодПредлагаемЗаргузитьНовыюВерсиюПО(@NonNull Integer СервернаяВерсияПОВнутри, @NonNull Context context) {
         try {
             File ФайлыДляОбновлениеВычисляемНомерВерсииПО = null;
@@ -2016,8 +1971,48 @@ class BisssenssLogicFaceApp extends MainActivity_Face_App {
 
 }
 // TODO: 16.02.2023 кЛАСС ОБНОВЛЕНИЕ ПО
-class SubClassUpdatePO{
+class SubClassUpdatePO extends BisssenssLogicFaceApp{
 
 
+    public SubClassUpdatePO(Context context, Activity activity, Handler handler) {
+        super(context, activity, handler);
+    }
 
+    // TODO: 14.09.2022
+    void МетодАнализJsonОбновлениеПО() {
+        try {
+
+            Log.d(this.getClass().getName(), "  МетодЗапускПослеНажатияНАНовойФормеНАКнопкуУстановитьПослеУспешнойЗагрузкиНовогоПОТабельныйУчётПоказываемЕгоПользователю");
+            // TODO: 25.03.2022 Создание Локального БродКстаера
+            LocalBroadcastManager localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт;
+            BroadcastReceiver broadcastReceiverУстановкаПО;
+            localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт = LocalBroadcastManager.getInstance(context);
+            broadcastReceiverУстановкаПО = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                        // TODO: 16.02.2023
+                        Log.d(this.getClass().getName(), " localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт  intent " + intent);
+                        Bundle bundle = intent.getExtras();
+                        Log.d(this.getClass().getName(), " localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт  bundle " + bundle);
+                        Integer СервернаяВерсияПОРазмерФайла = bundle.getInt("СервернаяВерсияПОВнутри", 0);
+                        Log.d(this.getClass().getName(), " СервернаяВерсияПОРазмерФайла " + СервернаяВерсияПОРазмерФайла);
+                        if (СервернаяВерсияПОРазмерФайла > 0) {
+                            МетодПредлагаемЗаргузитьНовыюВерсиюПО(СервернаяВерсияПОРазмерФайла,context);
+                        }
+                        Log.d(this.getClass().getName(), " localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт  intent " + intent);
+                }
+            };
+            // TODO: 25.03.2022 установливам настройки Фильмо к Локальному БродКсстеру
+            IntentFilter intentFilterУстановка = new IntentFilter();
+            // TODO: 25.03.2022
+            intentFilterУстановка.addAction("AfterDownloadPO");
+            localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт.registerReceiver(broadcastReceiverУстановкаПО, intentFilterУстановка);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+        }
+    }
 }
