@@ -53,10 +53,18 @@ public class ServiceОбновлениеПО extends IntentService {////Service
 
     private Activity activity;
     private SharedPreferences preferences;
+    private String ИмяПотока="binderupdatepo";
 
-    public ServiceОбновлениеПО() {
-        super("ServiceОбновлениеПО");
+    /**
+     * Creates an IntentService.  Invoked by your subclass's constructor.
+     *
+     * @param name Used to name the worker thread, important only for debugging.
+     */
+    public ServiceОбновлениеПО(String name) {
+        super(name);
     }
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -79,7 +87,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         super.onDestroy();
         try{
         Log.i(getApplicationContext().getClass().getName(), "Стоп Стоп  Стоп !!!!!!!!!!! СЛУЖБА СЛУЖБАService_Notifications  ДЛЯ Обновление ПО  ДЛЯ ЧАТА onDestroy() время "+new Date());
-            preferences = context.getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
+            preferences = getApplicationContext().getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
         } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -94,7 +102,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(context.getClass().getName(), "\n"
+        Log.d(getApplicationContext().getClass().getName(), "\n"
                 + " время: " + new Date()+"\n+" +
                 " Класс в процессе... " +  this.getClass().getName()+"\n"+
                 " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName());
@@ -104,6 +112,10 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     public class localBinderОбновлениеПО extends Binder {
         public ServiceОбновлениеПО getService() {
             // Return this instance of LocalService so clients can call public methods
+            Log.d(getApplicationContext().getClass().getName(), "\n"
+                    + " время: " + new Date()+"\n+" +
+                    " Класс в процессе... " +  this.getClass().getName()+"\n"+
+                    " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName());
             return ServiceОбновлениеПО.this;
         }
     }
@@ -188,7 +200,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             СервернаяВерсияПОВнутри = СервернаяВерсияПОВнутриИзСлужбы;
             Log.i(this.getClass().getName(), "СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри +
                     " СервернаяВерсияПОВнутриИзСлужбы" + СервернаяВерсияПОВнутриИзСлужбы);
-            ТипПодключенияИнтернтаДляСлужбы = МетодОпределяемКакойТипПодключениеWIFIилиMobileДляСлужбы(context);
+            ТипПодключенияИнтернтаДляСлужбы = МетодОпределяемКакойТипПодключениеWIFIилиMobileДляСлужбы(getApplicationContext());
 
             if (ТипПодключенияИнтернтаДляСлужбы != null) {
                 Log.i(this.getClass().getName(), "ТипПодключенияИнтернтаДляСлужбы " + ТипПодключенияИнтернтаДляСлужбы);
@@ -204,7 +216,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
@@ -220,7 +232,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
 
@@ -236,7 +248,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
 
                     switch (msg.what){
                         case 0:
-                            Toast toast=     Toast.makeText(context, "Загрузка ПО...", Toast.LENGTH_LONG);
+                            Toast toast=     Toast.makeText(getApplicationContext(), "Загрузка ПО...", Toast.LENGTH_LONG);
                             toast.setGravity(Gravity.BOTTOM,0,50);
                             toast.show();
                             Log.w(this.getClass().getName(), "Загрузка ПО... " );
@@ -257,7 +269,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                                         bundleУстановитьПО.putLong("СервернаяВерсияПОРазмерФайла", FileAPK.length());
                                         intentДляУстановеПО.putExtras(bundleУстановитьПО);
                                         Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри файл записалься на диск   bundleУстановитьПО  " + bundleУстановитьПО);
-                                        LocalBroadcastManager localBroadcastManagerОтправляемНаActivityFaceApp = LocalBroadcastManager.getInstance(context);
+                                        LocalBroadcastManager localBroadcastManagerОтправляемНаActivityFaceApp = LocalBroadcastManager.getInstance(getApplicationContext());
                                         localBroadcastManagerОтправляемНаActivityFaceApp.sendBroadcast(intentДляУстановеПО);
                                         Log.w(this.getClass().getName(), "УниверсальныйБуферAPKФайлаПОсСервераВнутри localBroadcastManagerОтправляемНаActivityFaceApp "
                                                 + localBroadcastManagerОтправляемНаActivityFaceApp
@@ -266,13 +278,13 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                                         e.printStackTrace();
                                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                                                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                                                 Thread.currentThread().getStackTrace()[2].getMethodName(),
                                                 Thread.currentThread().getStackTrace()[2].getLineNumber());
                                     }
                                 }
                             }else {
-                                toast=     Toast.makeText(context, "Нет файла ПО...", Toast.LENGTH_LONG);
+                                toast=     Toast.makeText(getApplicationContext(), "Нет файла ПО...", Toast.LENGTH_LONG);
                                 toast.setGravity(Gravity.BOTTOM,0,50);
                                 toast.show();
                                 Log.w(this.getClass().getName(), "Загрузка ПО... " );
@@ -285,18 +297,18 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             handlerСообщение.obtainMessage(0,0,0,new Object()).sendToTarget();
 
             //todo конец главного потока
-            PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(context);
+            PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(getApplicationContext());
             String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
 
             // TODO: 17.02.2023 удалеение файлов
-            МетодДополнительногоУдалениеФайлов(context);
+            МетодДополнительногоУдалениеФайлов(getApplicationContext());
 
             // TODO: 19.12.2021  загрузка файда  .apk    УниверсальныйБуферAPKФайлаПОсСервера("dsu1.glassfish/update_android_dsu1/app-release.apk", "update_dsu1.apk",
-            File  FileAPK = new Class_MODEL_synchronized(context).
-                    УниверсальныйБуферAPKФайлаПОсСервера(new PUBLIC_CONTENT(context).getСсылкаНаРежимСервера()+ "/update_android_dsu1/app-release.apk",
+            File  FileAPK = new Class_MODEL_synchronized(getApplicationContext()).
+                    УниверсальныйБуферAPKФайлаПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервера()+ "/update_android_dsu1/app-release.apk",
                             "update_dsu1.apk",
-                            context, ИмяСерверИзХранилица ,ПортСерверИзХранилица);
+                            getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица);
             Log.w(this.getClass().getName(), "FileAPK "+ FileAPK);
 
             Bundle bundle=new Bundle();
@@ -309,7 +321,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
@@ -333,7 +345,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
         return null;
@@ -345,7 +357,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             File ФайлыДляОбновлениеПОУдалениеПриАнализеJSONВерсии;
             if (Build.VERSION.SDK_INT >= 30) {
                 // TODO: 10.04.2022
-                ФайлыДляОбновлениеПОУдалениеПриАнализеJSONВерсии = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+                ФайлыДляОбновлениеПОУдалениеПриАнализеJSONВерсии = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
             } else {
                 ФайлыДляОбновлениеПОУдалениеПриАнализеJSONВерсии = Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_DOWNLOADS);
@@ -383,7 +395,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
             Log.d(this.getClass().getName(), " ошибка  faceapp из меню МетодДополнительногоУдалениеФайлов Обновление ПО ");
         }
