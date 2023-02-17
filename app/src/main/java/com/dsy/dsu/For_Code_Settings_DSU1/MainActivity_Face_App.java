@@ -85,6 +85,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.util.concurrent.AtomicDouble;
 
 import java.io.File;
 import java.util.Date;
@@ -196,7 +197,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
             subClassUpdatePOОбновлениеПО.МЕтодУстанавливаемРазрешенияДляОновлениеПО();
             subClassUpdatePOОбновлениеПО.МетодФиналСлушательУстановщикПО();
             subClassUpdatePOОбновлениеПО.МетодСлушательПрелагаетЗагрузитьПО();
-            subClassUpdatePOОбновлениеПО.МетодЗапускАнализаПО(false);
             // TODO: 17.02.2023 другие методы
             МетодЗапускПоступлениеМатериалов();
             МетодFaceApp_СлушательПриНажатииНаКнопки();
@@ -219,6 +219,8 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     "  navigationViewFaceApp " + navigationViewFaceApp);/////////
             МетодПовторныйЗапускУведомений();
             МетодБоковаяПанельОткрытьЗАкрыть();
+            // TODO: 17.02.2023 ЗапускАнализа Наличитие Новой Версии ПО
+            subClassUpdatePOОбновлениеПО.МетодЗапускАнализаПО(false);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
