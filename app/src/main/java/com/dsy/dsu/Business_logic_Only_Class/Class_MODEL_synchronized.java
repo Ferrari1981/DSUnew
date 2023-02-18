@@ -3331,7 +3331,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                             +lenghtOfFile);
                     ////TODO И ЕСЛИ ПРИШЕЛ ОТ СЕРВЕРА ОТВЕТ ПОЛОЖИТЕЛЬНО ТО ТОГДА ЗАПУСКАМ ПРОЧТЕНИЯ ПОТОКА ПРИШЕДШЕГО С СЕРВЕРА
                     if (ПодключениеИнтернетДляЗагрузкеAPKФайла.getResponseCode() == 200 && lenghtOfFile>1) {
-                            Log.e(this.getClass().getName(), " ПРИШЕЛ ФАЙЛ УСПЕХ ПРИШЛОЙ ФАЙЛ СЛУЖБА ЗАГРУЗКА ОБНОВЛЕНИЯ  ДЛИНА ФАЙЛА : " + lenghtOfFile);
+                            Log.i(this.getClass().getName(), " ПРИШЕЛ ФАЙЛ УСПЕХ ПРИШЛОЙ ФАЙЛ СЛУЖБА ЗАГРУЗКА ОБНОВЛЕНИЯ  ДЛИНА ФАЙЛА : " + lenghtOfFile);
                             InputStream   input = ПодключениеИнтернетДляЗагрузкеAPKФайла.getInputStream();
                         File ПутькФайлу = null;
                         if (Build.VERSION.SDK_INT >= 30) {
@@ -3347,7 +3347,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                         if (СамФайлAPKВнутри.createNewFile()) {
                             Log.d(context.getClass().getName(), "Будущий файл успешно создалься , далее запись на диск новго APk файла ");
                             FileUtils.copyInputStreamToFile(input, СамФайлAPKВнутри);
-                            Log.d(context.getClass().getName(), "Будущий файл успешно создалься , далее запись на диск новго APk файла СамФайлAPKВнутри "+ СамФайлAPKВнутри);
+                            Log.d(context.getClass().getName(), "FileUtils.copyInputStreamToFile Будущий файл успешно создалься , далее запись на диск новго APk файла СамФайлAPKВнутри "+ СамФайлAPKВнутри);
 
                         } else {
                             Log.e(context.getClass().getName(), "Ошибка не создалься Будущий файл успешно создалься , далее запись на диск новго APk файла  СЛУЖБА ");

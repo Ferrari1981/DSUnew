@@ -143,7 +143,8 @@ public class MainActivity_Face_App extends AppCompatActivity {
             progressBarTabel.setVisibility(View.INVISIBLE);
             progressCommitpay.setVisibility(View.INVISIBLE);
 
-
+         // TODO: 18.02.2023 инициализвции message
+            МетодИнициализацииMessage();
             // TODO: 18.02.2023   Инициализация Хандлера
             HadlerИнициализация();
             // TODO: 18.02.2023 установки для Обновленеи ПО
@@ -549,14 +550,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
             bindService(intentЗапускСлужбыОбновлениеПО,Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT
                     | Context.BIND_INCLUDE_CAPABILITIES,Executors.newCachedThreadPool(), connectionСогласования );
 
-            message=Message.obtain(new Handler(Looper.myLooper()),()->{
-                Bundle bundle=   message.getData();
-                // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,0,activity);
-                localBinderОбновлениеПО.getService().МетодГлавныйОбновленияПО(false,activity);
-                Log.i(this.getClass().getName(),  " Атоманически установкаОбновление ПО "+ Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
-                Log.i(this.getClass().getName(), "bundle " +bundle);
-            });
-            message.setAsynchronous(true);
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -565,6 +559,27 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     this.getClass().getName(),
                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
+    }
+
+    private void МетодИнициализацииMessage() {
+        try{
+        message=Message.obtain(new Handler(Looper.myLooper()),()->{
+            Bundle bundle=   message.getData();
+            // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,0,activity);
+            localBinderОбновлениеПО.getService().МетодГлавныйОбновленияПО(false,activity);
+            Log.i(this.getClass().getName(),  " Атоманически установкаОбновление ПО "+ Thread.currentThread().getStackTrace()[2].getMethodName()+
+                    " время " +new Date().toLocaleString() );
+            Log.i(this.getClass().getName(), "bundle " +bundle);
+        });
+        message.setAsynchronous(true);
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+    }
     }
 
     private void МетодБиндингаСогласования() {
