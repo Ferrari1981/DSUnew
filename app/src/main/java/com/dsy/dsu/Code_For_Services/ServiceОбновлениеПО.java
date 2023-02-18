@@ -322,9 +322,6 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     try {
 // TODO: 18.02.2023 Загрузка Нового файла APK
             activity.runOnUiThread(()->{
-            Toast toast = Toast.makeText(getApplicationContext(), "Загрузка ПО ▼  ", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.BOTTOM, 0, 40);
-            toast.show();
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setIndeterminate(true);
                 ((Button)v).setEnabled(false);
@@ -421,13 +418,6 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                 fullPath = Environment.getExternalStorageDirectory() + "/" + apkName;
             }
             fullPath = Environment.DIRECTORY_DOWNLOADS + "/" + apkName;
-            PackageInfo info = pm.getPackageArchiveInfo(fullPath, 0);
-            if (info != null) {
-                Log.d(this.getClass().getName(), "VersionCode : " + info.versionCode + ", VersionName : " + info.versionName);
-                СервернаяВерсияПОВнутри = info.versionCode;
-            }
-            PackageInfo pInfo = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0);
-            Long ЛокальнаяВерсияПОСравнение = pInfo.getLongVersionCode();
             AlertDialog alertDialog = new MaterialAlertDialogBuilder(activity)///       final AlertDialog alertDialog =new AlertDialog.Builder( MainActivity_Face_App.КонтекстFaceApp)
                     .setTitle("Установщик")
                     .setMessage("Обновление ПО"
@@ -438,11 +428,16 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     .setIcon(R.drawable.icon_dsu1_updates_po_success)
                     .show();
 /////////кнопка
-            final Button MessageBoxUpdateОбновитьПО = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            MessageBoxUpdateОбновитьПО.setOnClickListener(new View.OnClickListener() {
+            final Button MessageBoxУстановкаНовогоПО = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            MessageBoxУстановкаНовогоПО.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(this.getClass().getName(), "Установка Обновления .APK СЛУЖБА");
+                    activity.runOnUiThread(()->{
+                        ((Button)v).setEnabled(false);
+                        Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        v2.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+                    });
+                    Log.i(this.getClass().getName(),  "Установка Обновления .APK СЛУЖБА "+ Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
                     String ФинальныйПутьДляЗагрузкиФайлаОбновения = null;
                     if (Build.VERSION.SDK_INT >= 30) {
                         ФинальныйПутьДляЗагрузкиФайлаОбновения = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/";  //null
@@ -467,19 +462,12 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     intentОбновлениеПО.putExtra(Intent.EXTRA_STREAM, URIПутиДляЗагрузкиФайловЧерезПровайдер);
                     PackageManager МеханизмПроверкиЗапуститьсяНашИнтентИлиНЕт = activity.getPackageManager();
                     if (intentОбновлениеПО.resolveActivity(МеханизмПроверкиЗапуститьсяНашИнтентИлиНЕт) != null) {
-                        //////todo запуск установкика .apk
-                        ///     context. startActivity(intent); ////   ((Activity) MainActivity_Face_App.КонтекстFaceApp). startActivity(intent);//  MainActivity_Face_App.КонтекстFaceApp. startActivity(intent);
-                        Log.d(this.getClass().getName(), " СЛУЖБА УСТАНОВКА... ОБНОВЛЕНИЯ НА ТЕЛЕФОН (.APK файл)  МеханизмПроверкиЗапуститьсяНашИнтентИлиНЕт "
-                                + МеханизмПроверкиЗапуститьсяНашИнтентИлиНЕт);
-                        ////TODO непосрдствено сам запуск новго .apk файла
                         activity.startActivity(intentОбновлениеПО);
-                        activity.finishAndRemoveTask(); //// ((Activity) MainActivity_Face_App.КонтекстFaceApp).finish();
-                        Log.w(this.getClass().getName(), " ура !!!! УРА !!!!  уСПЕШНАЫЙ ЗАПУСК СКАЧЕННОГО ОБНОВЛЕНЕИ ПО " +
-                                "МетодУстановкиНовойВерсииПОТабельныйУчётПоднимаетЕгоНаActrivity  ");
+                        activity.finishAndRemoveTask();
+
                     } else {
-                        ///////TODO ОСТАНАВЛИВАЕМ СЛУЖБУ ЧЕРЕЗ 20 СЕКУНД
-                        Log.d(this.getClass().getName(), "Ошибка файл .APK не устнаовлен ОШИБКА СЛУЖБА ОБНОВЛЕНИЯ ...  "
-                                + new Date() + " МеханизмПроверкиЗапуститьсяНашИнтентИлиНЕт " + МеханизмПроверкиЗапуститьсяНашИнтентИлиНЕт);
+
+                        Log.i(this.getClass().getName(),  " "+ Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
                     }
                 }
             });
@@ -497,45 +485,6 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
-    }
-
-
-    public void МетодФиналСлушательУстановщикПО() {
-        try {
-            Log.d(this.getClass().getName(), "  МетодЗапускПослеНажатияНАНовойФормеНАКнопкуУстановитьПослеУспешнойЗагрузкиНовогоПОТабельныйУчётПоказываемЕгоПользователю");
-            // TODO: 25.03.2022 Создание Локального БродКстаера
-            LocalBroadcastManager localBroadcastManagerУстановщикПО;
-            BroadcastReceiver broadcastReceiverУстановкаПО;
-            localBroadcastManagerУстановщикПО = LocalBroadcastManager.getInstance(  getApplicationContext());
-            broadcastReceiverУстановкаПО = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    Log.d(this.getClass().getName(), " localBroadcastManagerУстановщикПО  intent " + intent);
-                    Bundle bundle = intent.getExtras();
-                    Log.d(this.getClass().getName(), " localBroadcastManagerУстановщикПО  bundle " + bundle);
-                    Integer ЗагрузиласьНоваяВерисяПОПровремяем = bundle.getInt("СервернаяВерсияПОВнутри", 0);
-                    File ЗагрузкиФайлаОбновенияПОДополнительный = (File) bundle.getSerializable("СервернаяВерсияПОCамФайлДляПередачи");
-                    Long СервернаяВерсияПОРазмерФайла = bundle.getLong("СервернаяВерсияПОРазмерФайла", 0l);
-                    context.getMainExecutor().execute(() -> {
-                        if (СервернаяВерсияПОРазмерФайла > 0) {
-                            МетодФиналУстановкаПО(ЗагрузиласьНоваяВерисяПОПровремяем, ЗагрузкиФайлаОбновенияПОДополнительный, context);
-                            Log.d(this.getClass().getName(), " МетодФиналСлушательУстановщикПО");
-                        }
-                        Log.d(this.getClass().getName(), " МетодФиналСлушательУстановщикПО ");
-                    });
-                }
-            };
-            // TODO: 25.03.2022 установливам настройки Фильмо к Локальному БродКсстеру
-            IntentFilter intentFilterУстановка = new IntentFilter();
-            intentFilterУстановка.addAction("CompletePO");
-            localBroadcastManagerУстановщикПО.registerReceiver(broadcastReceiverУстановкаПО, intentFilterУстановка);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(  getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
@@ -661,10 +610,10 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     }).repeatWhen(new Function<Observable<Object>, ObservableSource<?>>() {
                         @Override
                         public ObservableSource<?> apply(Observable<Object> objectObservable) throws Throwable {
-                            activity.runOnUiThread(()->{
+                          /*  activity.runOnUiThread(()->{
                                 Toast toast = Toast.makeText(getApplicationContext(), "Поиск ПО ▼", Toast.LENGTH_LONG);
                                 toast.setGravity(Gravity.BOTTOM, 0, 40);
-                                toast.show();});
+                                toast.show();});*/
                             return objectObservable;
                         }
                     })
