@@ -300,6 +300,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             View promptsView = li.inflate(R.layout.activity_insertdata, null);
             ProgressBar progressBar=promptsView.findViewById(R.id.prograssbarupdatepo);
             progressBar.setIndeterminate(false);
+            progressBar.setVisibility(View.GONE);
             promptsView.forceLayout();
             promptsView.refreshDrawableState();
             AlertDialog alertDialog = new MaterialAlertDialogBuilder(activity)///       final AlertDialog alertDialog =new AlertDialog.Builder( MainActivity_Face_App.КонтекстFaceApp)
@@ -324,11 +325,13 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             Toast toast = Toast.makeText(getApplicationContext(), "Загрузка ПО ▼  ", Toast.LENGTH_LONG);
             toast.setGravity(Gravity.BOTTOM, 0, 40);
             toast.show();
+                progressBar.setVisibility(View.VISIBLE);
                 progressBar.setIndeterminate(true);
+                ((Button)v).setEnabled(false);
+                Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                v2.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
             });
             Log.i(this.getClass().getName(),  "Установщик ПО..." + Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
-            Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-            v2.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
                         Flowable.fromCallable(new Callable<Object>() {
                                     @Override
                                     public Object call() throws Exception {

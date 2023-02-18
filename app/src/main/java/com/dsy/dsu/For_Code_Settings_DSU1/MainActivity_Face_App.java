@@ -143,6 +143,9 @@ public class MainActivity_Face_App extends AppCompatActivity {
             progressBarTabel.setVisibility(View.INVISIBLE);
             progressCommitpay.setVisibility(View.INVISIBLE);
 
+
+            // TODO: 18.02.2023   Инициализация Хандлера
+            HadlerИнициализация();
             // TODO: 18.02.2023 установки для Обновленеи ПО
             МЕтодУстанавливаемРазрешенияДляОновлениеПО();
             // TODO: 06.04.2022
@@ -696,7 +699,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
     
     void МетодFaceApp_СлушательПриНажатииНаКнопки() {
         try {
-
             КнопкаТабель.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -713,12 +715,10 @@ public class MainActivity_Face_App extends AppCompatActivity {
                         Интент_ЗапускТабельногоУчётаПервыйШаг.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         Log.d(this.getClass().getName(), "" + "    КнопкаТабельныйУчёт.setOnClickListener(new View.OnClickListener() {");
                         startActivity(Интент_ЗапускТабельногоУчётаПервыйШаг);
-                        context = null;
                         handlerFaceAPP.postDelayed(() -> {
                             progressBarTabel.setVisibility(View.INVISIBLE);
                             КнопкаТабель.setBackgroundColor(Color.parseColor("#FFFFFF"));
                         }, 3000);
-                        context = null;
                     } catch (Exception e) {
                         e.printStackTrace();
                         ///метод запись ошибок в таблицу
@@ -1072,6 +1072,17 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
 
         }
+    }
+
+    void HadlerИнициализация(){
+        handlerFaceAPP=new Handler(Looper.myLooper(), new Handler.Callback() {
+            @Override
+            public boolean handleMessage(@NonNull Message msg) {
+                return true;
+            }
+        }){
+
+        };
     }
 
 }
