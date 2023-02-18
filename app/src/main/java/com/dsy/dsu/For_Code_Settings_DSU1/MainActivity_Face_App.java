@@ -179,16 +179,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     "  navigationViewFaceApp " + navigationViewFaceApp);/////////
             МетодПовторныйЗапускУведомений();
             МетодБоковаяПанельОткрытьЗАкрыть();
-
             // TODO: 17.02.2023 ЗапускАнализа Наличитие Новой Версии ПО
-
-            message=Message.obtain(new Handler(Looper.myLooper()),()->{
-                Bundle bundle=   message.getData();
-               // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,0,activity);
-                localBinderОбновлениеПО.getService().МетодГлавныйОбновленияПО(false,activity);
-                Log.i(this.getClass().getName(), "bundle " +bundle);
-            });
-            message.setAsynchronous(true);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -412,8 +403,9 @@ public class MainActivity_Face_App extends AppCompatActivity {
                             item.setChecked(true);
                             Log.w(getPackageName().getClass().getName(), "item.getItemId() МЕНЮ ОБНОВЛЕНИЕ ПО    " + item.getItemId() + "\n"+item);/////////
                             try {
-                                // TODO: 07.10.2022 ЗАПУСК АНАЛИЗА ПО
-                              //  localBinderОбновлениеПО.getService().МетодЗапускАнализаПО(true,100,activity);
+                                // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,0,activity);
+                                localBinderОбновлениеПО.getService().МетодГлавныйОбновленияПО(false,activity);
+                                Log.i(this.getClass().getName(),  " Из меню установкаОбновление ПО "+ Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -556,6 +548,15 @@ public class MainActivity_Face_App extends AppCompatActivity {
             intentЗапускСлужбыОбновлениеПО.setAction("com.ServiceОбновлениеПО");
             bindService(intentЗапускСлужбыОбновлениеПО,Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT
                     | Context.BIND_INCLUDE_CAPABILITIES,Executors.newCachedThreadPool(), connectionСогласования );
+
+            message=Message.obtain(new Handler(Looper.myLooper()),()->{
+                Bundle bundle=   message.getData();
+                // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,0,activity);
+                localBinderОбновлениеПО.getService().МетодГлавныйОбновленияПО(false,activity);
+                Log.i(this.getClass().getName(),  " Атоманически установкаОбновление ПО "+ Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
+                Log.i(this.getClass().getName(), "bundle " +bundle);
+            });
+            message.setAsynchronous(true);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
