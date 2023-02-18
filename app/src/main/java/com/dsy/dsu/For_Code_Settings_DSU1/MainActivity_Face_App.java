@@ -162,7 +162,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
            // МетодБиндингМатериалы();
          //   МетодБиндингаСогласования();
         //    МетодБиндингAsync();
-           МетодБиндингаОбновлениеПО();
+          // МетодБиндингаОбновлениеПО();
             // TODO: 16.11.2022  ПОСЛЕ УСТАНОВКИ РАБОТАЕТ ОДИН РАЗ ПРИ СТАРТЕ ЗАРУСК ОБЩЕГО WORK MANAGER
             new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext()).МетодЗапускаетОБЩУЮСинхронизацию();
             // TODO: 17.02.2023 другие методы
@@ -216,7 +216,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                 Bundle bundle=   message.getData();
                localBinderОбновлениеПО=(ServiceОбновлениеПО.localBinderОбновлениеПО) bundle.getBinder("localBinderОбновлениеПО");
                 Log.i(this.getClass().getName(), "bundle " +bundle);
-                localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,3000,activity);
+               // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,3000,activity);
             });
 
         } catch (Exception e) {
