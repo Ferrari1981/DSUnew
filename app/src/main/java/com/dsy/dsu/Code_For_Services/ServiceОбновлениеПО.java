@@ -167,7 +167,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
 
         // TODO: 17.02.2023  Загрузка Новый Код Обновление ПО
         if(intent.getAction().contentEquals("АнализЗагрузкаAPK")){
-            МетодНачалаЗапускаОбновленияПО(СервернаяВерсияПОВнутри,getApplicationContext());
+            //МетодНачалаЗапускаОбновленияПО(СервернаяВерсияПОВнутри,getApplicationContext());
             Log.i(getApplicationContext().getClass().getName(), " УЖЕ ЗАГРУзили ПО ПОЛЬЗОВАТЕЛЬ НАЖАЛ НА КОНОПКУ ЗАГУРДИТЬ   " +
                     "Service_Notifocations_Для_Чата (intent.getAction()   СЛУЖБА" + (intent.getAction().toString()) + " время запуска  " + new Date());
         }
@@ -218,13 +218,8 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     }
     }
 
-    public void МетодНачалаЗапускаОбновленияПО(Integer СервернаяВерсияПОВнутриИзСлужбы ,@NonNull Context context)
-            throws ExecutionException, InterruptedException {
-        Log.w(this.getClass().getName(), "   МетодНачалаЗапускаОбновленияПО СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри);
+    public void МетодНачалаЗапускаОбновленияПО(Boolean РежимРаботыСлужбыОбновлениеПО ,@NonNull Activity  activity){
         try {
-            СервернаяВерсияПОВнутри = СервернаяВерсияПОВнутриИзСлужбы;
-            Log.i(this.getClass().getName(), "СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри +
-                    " СервернаяВерсияПОВнутриИзСлужбы" + СервернаяВерсияПОВнутриИзСлужбы);
             ТипПодключенияИнтернтаДляСлужбы = МетодОпределяемКакойТипПодключениеWIFIилиMobileДляСлужбы(getApplicationContext());
 
             if (ТипПодключенияИнтернтаДляСлужбы != null) {
@@ -485,7 +480,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     v2.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
                     //TODO ПЕРЕД СОЗДАНИЕМ НОВОГО СООБЕЩНИЯ ОБНУЛЯЕМ ПРДЫДУЩЕЕ
 
-                    МетодНачалаЗапускаОбновленияПО(finalСервернаяВерсияПОВнутри, context);
+                  //  МетодНачалаЗапускаОбновленияПО(finalСервернаяВерсияПОВнутри, context);
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -566,7 +561,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                         v2.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
                         //TODO ПЕРЕД СОЗДАНИЕМ НОВОГО СООБЕЩНИЯ ОБНУЛЯЕМ ПРДЫДУЩЕЕ
                         // TODO: 16.02.2023  НАчинаем Саму загрузки
-                        МетодНачалаЗапускаОбновленияПО(finalСервернаяВерсияПОВнутри, context);
+                     //   МетодНачалаЗапускаОбновленияПО(finalСервернаяВерсияПОВнутри, context);
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"

@@ -777,14 +777,7 @@ public class FragmentAdmissionMaterialsDetailing extends Fragment {
                                 }
                                 // TODO: 21.11.2022  запускаем удаление
                             }
-                            Intent intentУдалениеСтатусаУдаленияТабеля=new Intent();
-                            intentУдалениеСтатусаУдаленияТабеля.setClass(getContext(), Service_For_Public.class);
-                            intentУдалениеСтатусаУдаленияТабеля.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
-                            getActivity(). startService(intentУдалениеСтатусаУдаленияТабеля);
-                            WorkManager.getInstance(getContext()).cancelUniqueWork(ИмяСлужбыСинхронизациОдноразовая);
-                            Log.d(this.getClass().getName(), "  МетодСоздаенияСлушателяДляПолучениеМатериалаWorkMAnager " +
-                                    СтастусWorkMangerДляФрагментаЧитатьИПисать.getState().name()+  "CallBaskОтWorkManagerОдноразового "
-                                    +CallBaskОтWorkManagerОдноразового);
+
                         }
                         if(СтастусWorkMangerДляФрагментаЧитатьИПисать.getState().compareTo(WorkInfo.State.SUCCEEDED) == 0
                         || СтастусWorkMangerДляФрагментаЧитатьИПисать.getState().compareTo(WorkInfo.State.FAILED) == 0) {

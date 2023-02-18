@@ -771,11 +771,6 @@ public class FragmentAdmissionMaterials extends Fragment {
                                        onResume();
                                        // TODO: 21.11.2022  запускаем удаление
                                    }
-                                   Intent intentУдалениеСтатусаУдаленияТабеля=new Intent();
-                                   intentУдалениеСтатусаУдаленияТабеля.setClass(getContext(), Service_For_Public.class);
-                                   intentУдалениеСтатусаУдаленияТабеля.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
-                                   getActivity(). startService(intentУдалениеСтатусаУдаленияТабеля);
-                                   WorkManager.getInstance(getContext()).cancelUniqueWork(ИмяСлужбыСинхронизациОдноразовая);
                                }
                                     }
                                     progressBarСканирование.setVisibility(View.INVISIBLE);

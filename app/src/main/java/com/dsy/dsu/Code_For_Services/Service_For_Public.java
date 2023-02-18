@@ -463,7 +463,7 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                     @Override
                     protected void onDeleteComplete(int token, Object cookie, int result) {
                         super.onDeleteComplete(token, cookie, result);
-                        Log.w(this.getClass().getName(), "   onDeleteComplete  "+Thread.currentThread().getName().toString()+ " result " +result);
+                        Log.w(this.getClass().getName(), "  Удаление СТрок onDeleteComplete РЕЗУЛЬТАТ   result "+result + " ПОТОК" +Thread.currentThread().getName().toString()+ " result " +result);
                     }
 
                     @Override

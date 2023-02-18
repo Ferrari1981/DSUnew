@@ -190,7 +190,8 @@ public class MainActivity_Face_App extends AppCompatActivity {
             // TODO: 17.02.2023 ЗапускАнализа Наличитие Новой Версии ПО
             message=Message.obtain(new Handler(Looper.myLooper()),()->{
                 Bundle bundle=   message.getData();
-                localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,0,activity);
+               // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,0,activity);
+                localBinderОбновлениеПО.getService().  МетодНачалаЗапускаОбновленияПО(false,activity);
                 Log.i(this.getClass().getName(), "bundle " +bundle);
                 message.setAsynchronous(true);
 
@@ -798,7 +799,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
             progressDialogДляСинхронизации.setMessage("Обмен данными ....");
             progressDialogДляСинхронизации.show();
 
-            МетодОдноразновгоWorkmnaager();
+
 
             asyncTaskLoader = new AsyncTaskLoader(getApplicationContext()) {
                 @Nullable
@@ -873,56 +874,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
 
         }
     }
-
-    void МетодОдноразновгоWorkmnaager() {
-        try {
-            LifecycleOwner lifecycleOwner = this;
-            lifecycleOwner.getLifecycle().addObserver(new LifecycleEventObserver() {
-                @Override
-                public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
-                    source.getLifecycle().getCurrentState();
-                    event.getTargetState().name();
-                }
-            });
-            String ИмяСлужбыСинхронизациОдноразовая = "WorkManager Synchronizasiy_Data Disposable";
-            WorkManager.getInstance(getApplicationContext()).getWorkInfosByTagLiveData(ИмяСлужбыСинхронизациОдноразовая).observe(lifecycleOwner, new Observer<List<WorkInfo>>() {
-                @Override
-                public void onChanged(List<WorkInfo> workInfos) {
-                    workInfos.forEach((СтастусWorkMangerДляФрагментаЧитатьИПисать) -> {
-                        try {
-                            if (СтастусWorkMangerДляФрагментаЧитатьИПисать.getState().compareTo(WorkInfo.State.SUCCEEDED) == 0) {
-                                Long CallBaskОтWorkManagerОдноразового =
-                                        СтастусWorkMangerДляФрагментаЧитатьИПисать.getOutputData().getLong("ОтветПослеВыполения_MyWork_Async_Синхронизация_Одноразовая",
-                                                0l);
-                                // TODO: 22.11.2022 удаление
-                                Intent intentУдалениеСтатусаУдаленияТабеля = new Intent();
-                                intentУдалениеСтатусаУдаленияТабеля.setClass(getApplicationContext(), Service_For_Public.class);
-                                intentУдалениеСтатусаУдаленияТабеля.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
-                                startService(intentУдалениеСтатусаУдаленияТабеля);
-                                WorkManager.getInstance(getApplicationContext()).cancelUniqueWork(ИмяСлужбыСинхронизациОдноразовая);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        }
-                    });
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ///метод запись ошибок в таблицу
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-
-        }
-    }
-
 
     ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ    ///MESSGABOX ДЛЯ ГЛАВНОГО МЕНЮ
     @UiThread
