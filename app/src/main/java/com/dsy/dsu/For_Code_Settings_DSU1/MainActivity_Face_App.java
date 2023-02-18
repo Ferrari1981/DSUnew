@@ -28,7 +28,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -76,9 +75,9 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -113,7 +112,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
     protected Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binderAsyns;
     protected SharedPreferences preferences;
     private Service_Async_1C service_Async_СинхронизацияОБЩАЯ1С;
-    private   Message message;
 
     // TODO: 03.11.2022 FaceApp
     @Override
@@ -152,17 +150,16 @@ public class MainActivity_Face_App extends AppCompatActivity {
             progressBarTabel.setVisibility(View.INVISIBLE);
             progressCommitpay.setVisibility(View.INVISIBLE);
 
-
-            // TODO: 17.02.2023 дополнительеные методы которые зарускаются только один раз
+            // TODO: 18.02.2023 установки для Обновленеи ПО
             МЕтодУстанавливаемРазрешенияДляОновлениеПО();
             // TODO: 06.04.2022
             МетодОбратногоПолучениеБиндигаСлужб();
             МетодДляСлушательБоковойПанелиFaceApp();
             // TODO: 03.11.2022 биндинг служб
-           // МетодБиндингМатериалы();
-         //   МетодБиндингаСогласования();
-        //    МетодБиндингAsync();
-          // МетодБиндингаОбновлениеПО();
+              МетодБиндингМатериалы();
+            МетодБиндингаСогласования();
+            МетодБиндингAsync();
+           МетодБиндингаОбновлениеПО();
             // TODO: 16.11.2022  ПОСЛЕ УСТАНОВКИ РАБОТАЕТ ОДИН РАЗ ПРИ СТАРТЕ ЗАРУСК ОБЩЕГО WORK MANAGER
             new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext()).МетодЗапускаетОБЩУЮСинхронизацию();
             // TODO: 17.02.2023 другие методы
@@ -209,16 +206,8 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     "  navigationViewFaceApp " + navigationViewFaceApp);/////////
             МетодПовторныйЗапускУведомений();
             МетодБоковаяПанельОткрытьЗАкрыть();
-
-
+           // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,3000,activity);
             // TODO: 17.02.2023 ЗапускАнализа Наличитие Новой Версии ПО
-            message=Message.obtain(new Handler(Looper.myLooper()),()->{
-                Bundle bundle=   message.getData();
-               localBinderОбновлениеПО=(ServiceОбновлениеПО.localBinderОбновлениеПО) bundle.getBinder("localBinderОбновлениеПО");
-                Log.i(this.getClass().getName(), "bundle " +bundle);
-               // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,3000,activity);
-            });
-
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -490,7 +479,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
                                         " onServiceConnected  метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
                                         + "    onServiceDisconnected  Service_for_AdminissionMaterial" + " binderСогласованияbinderМатериалы.isBinderAlive() "
                                         + binderМатериалы.isBinderAlive());
-                                binderМатериалы.queryLocalInterface("МетодБиндингМатериалы");
                                 ;
                             }
                         } catch (Exception e) {
@@ -526,8 +514,12 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     context. bindService(intentЗапускСлужюыыСинхрониазцииБиндинг, serviceConnection, Context.BIND_AUTO_CREATE |
                             Context.BIND_ALLOW_OOM_MANAGEMENT |
                             Context.BIND_ADJUST_WITH_ACTIVITY | Context.BIND_IMPORTANT );*/
-                Intent intentЗапускСлужюыыСинхрониазцииБиндинг = new Intent(getApplicationContext(), Service_for_AdminissionMaterial.class);
-                bindService(intentЗапускСлужюыыСинхрониазцииБиндинг,  serviceConnectionМатериалы,Context.BIND_AUTO_CREATE );
+            Intent intentЗапускСлужюыыСинхрониазцииБиндинг = new Intent(getApplicationContext(), Service_for_AdminissionMaterial.class);
+            intentЗапускСлужюыыСинхрониазцииБиндинг.setAction("com.Service_for_AdminissionMaterial");
+            bindService(intentЗапускСлужюыыСинхрониазцииБиндинг,Context.BIND_AUTO_CREATE, Executors.newCachedThreadPool(), serviceConnectionМатериалы);
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -548,10 +540,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
                         if (localBinderОбновлениеПО.isBinderAlive()) {
                             Log.i(getApplicationContext().getClass().getName(), "    onServiceConnected  localBinderОбновлениеПО)"
                                     + localBinderОбновлениеПО.isBinderAlive());
-                            Bundle bundle=new Bundle();
-                            bundle.putBinder("localBinderОбновлениеПО",localBinderОбновлениеПО);
-                            message.setData(bundle);
-                            message.sendToTarget();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -577,8 +565,11 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     }
                 }
             };
+            /*Intent intentЗапускСлужбыОбновлениеПО = new Intent(getApplicationContext(), ServiceОбновлениеПО.class);
+            bindService(intentЗапускСлужбыОбновлениеПО, connectionСогласования,Context.BIND_AUTO_CREATE );*/
             Intent intentЗапускСлужбыОбновлениеПО = new Intent(getApplicationContext(), ServiceОбновлениеПО.class);
-            bindService(intentЗапускСлужбыОбновлениеПО, connectionСогласования,Context.BIND_AUTO_CREATE );
+            intentЗапускСлужбыОбновлениеПО.setAction("com.ServiceОбновлениеПО");
+            bindService(intentЗапускСлужбыОбновлениеПО,Context.BIND_AUTO_CREATE,Executors.newCachedThreadPool(), connectionСогласования );
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -625,7 +616,9 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     }
                 };
                 Intent intentЗапускСлужюыыСинхрониазцииБиндинг1C = new Intent(getApplicationContext(), Service_Notificatios_Для_Согласования.class);
-                bindService(intentЗапускСлужюыыСинхрониазцииБиндинг1C, connectionСогласования,Context.BIND_AUTO_CREATE );
+                intentЗапускСлужюыыСинхрониазцииБиндинг1C.setAction("com.Service_Notificatios_Для_Согласования");
+                bindService(intentЗапускСлужюыыСинхрониазцииБиндинг1C, Context.BIND_AUTO_CREATE,Executors.newCachedThreadPool(), connectionСогласования);
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -682,8 +675,11 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     }
                 }
             };
+         /*   Intent intentЗапускСлужюыыСинхрониазцииБиндинг = new Intent(context, Service_ДляЗапускаодноразовойСинхронизации.class);
+            context.bindService(intentЗапускСлужюыыСинхрониазцииБиндинг, connectionДляОдноразовойСинхронизации, Context.BIND_AUTO_CREATE);*/
             Intent intentЗапускСлужюыыСинхрониазцииБиндинг = new Intent(context, Service_ДляЗапускаодноразовойСинхронизации.class);
-            context.bindService(intentЗапускСлужюыыСинхрониазцииБиндинг, connectionДляОдноразовойСинхронизации, Context.BIND_AUTO_CREATE);
+            intentЗапускСлужюыыСинхрониазцииБиндинг.setAction("com.Service_ДляЗапускаодноразовойСинхронизации");
+            context.bindService(intentЗапускСлужюыыСинхрониазцииБиндинг,  Context.BIND_AUTO_CREATE,Executors.newCachedThreadPool(),connectionДляОдноразовойСинхронизации);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -692,7 +688,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
-
 
 
 
@@ -1142,6 +1137,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
 
         }
     }
+
 }
 
 

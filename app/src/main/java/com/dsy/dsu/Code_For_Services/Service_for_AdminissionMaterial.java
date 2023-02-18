@@ -248,6 +248,7 @@ public class Service_for_AdminissionMaterial extends IntentService {
 
         @Override
         public boolean pingBinder() {
+
             return super.pingBinder();
         }
 
