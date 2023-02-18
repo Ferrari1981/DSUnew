@@ -16,9 +16,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -42,7 +40,6 @@ import com.dsy.dsu.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +61,6 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     private  Integer ЛокальнаяВерсияПО = 0;
     private SharedPreferences preferences;
     private String ИмяПотока="binderupdatepo";
-    Handler handlerСлужбаОбновлениеПО;
     private  Activity activity;
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -83,8 +79,6 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     public void onCreate() {
         super.onCreate();
         try{
-            /////TODO  загрузка ФАЙЛ.APK ФАЙЛАv
-            МетодДляHandler();
         Log.d(getApplicationContext().getClass().getName(), "ServiceОбновлениеПО "
                 + " время: "
                 + new Date());
@@ -188,52 +182,30 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
-    protected void МетодЗагрузкиФайлаAPK() {
-        try {
-            Log.d(this.getClass().getName(), " СЛУЖБА ... МЕТОД ОБНОВЛЕНИЯ ПО РАБОТАЕТ......"+new Date());
-            File ФайлыДляОбновлениеПО=null;
-            Log.d(this.getClass().getName(), "    ПУТИ В ФАЙЛУ   " + "\n"+ ФайлыДляОбновлениеПО);
-            PackageInfo ИнформацияОФайле =null;
-            МетодНепостредственннойЗагрузкиAPKФайлов(ФайлыДляОбновлениеПО, ИнформацияОФайле);
-            ///////
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
 
-    }
 
-    private void МетодНепостредственннойЗагрузкиAPKФайлов(File файлыДляОбновлениеПО, PackageInfo info) throws IOException {
+    private File МетодЗагрузкиAPK()  {
+        File  FileAPK = null;
         try {
-            handlerСлужбаОбновлениеПО.obtainMessage(0,0,0,new Object()).sendToTarget();
-            //todo конец главного потока
-            PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(getApplicationContext());
+            Log.d(this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName()+"Загружаем Файл APK."+new Date());
             String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
-
             // TODO: 19.12.2021  загрузка файда  .apk    УниверсальныйБуферAPKФайлаПОсСервера("dsu1.glassfish/update_android_dsu1/app-release.apk", "update_dsu1.apk",
-            File  FileAPK = new Class_MODEL_synchronized(getApplicationContext()).
-                    УниверсальныйБуферAPKФайлаПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервера()+ "/update_android_dsu1/app-release.apk",
+            FileAPK = new Class_MODEL_synchronized(getApplicationContext()).
+                    УниверсальныйБуферAPKФайлаПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).
+                                    getСсылкаНаРежимСервера()+ "/update_android_dsu1/app-release.apk",
                             "update_dsu1.apk",
                             getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица);
             Log.w(this.getClass().getName(), "FileAPK "+ FileAPK);
-
-            Bundle bundle=new Bundle();
-            bundle.putSerializable("DOWNAPK",FileAPK);
-            Message message=   handlerСлужбаОбновлениеПО.obtainMessage(1,0,0,FileAPK);
-            message.setData(bundle);
-            handlerСлужбаОбновлениеПО.sendMessage(message);
-
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                    this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
+        return FileAPK;
     }
 
     @NonNull
@@ -460,10 +432,10 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
-    private void МетодПредлагаемЗаргузитьНовыюВерсиюПО(@NonNull Integer СервернаяВерсияПОВнутри, @NonNull Context context) {
+    private void МетодСообщенияЗагрузкиФайлаAPK(@NonNull Integer СервернаяВерсияПОВнутри) {
         try {
             File ФайлыДляОбновлениеВычисляемНомерВерсииПО = null;
-            final PackageManager pm = context.getPackageManager();
+            final PackageManager pm = getApplicationContext().getPackageManager();
             String apkName = "update_dsu1.apk";
             String fullPath;
             if (Build.VERSION.SDK_INT >= 30) {
@@ -478,7 +450,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                 СервернаяВерсияПОВнутри = info.versionCode;
             }
             // TODO: 02.04.2022
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            PackageInfo pInfo = getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0);
             Long ЛокальнаяВерсияПОСравнение = pInfo.getLongVersionCode();
             AlertDialog alertDialog = new MaterialAlertDialogBuilder(activity)///       final AlertDialog alertDialog =new AlertDialog.Builder( MainActivity_Face_App.КонтекстFaceApp)
                     .setTitle("Загрущик")
@@ -502,7 +474,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                         alertDialog.dismiss();
                         alertDialog.cancel();
                         Log.d(this.getClass().getName(), " СервернаяВерсияПОВнутри" + finalСервернаяВерсияПОВнутри);
-                        Vibrator v2 = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                        Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                         v2.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
                         //TODO ПЕРЕД СОЗДАНИЕМ НОВОГО СООБЕЩНИЯ ОБНУЛЯЕМ ПРДЫДУЩЕЕ
                         // TODO: 16.02.2023  НАчинаем Саму загрузки
@@ -511,7 +483,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                         e.printStackTrace();
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                                 Thread.currentThread().getStackTrace()[2].getMethodName(),
                                 Thread.currentThread().getStackTrace()[2].getLineNumber());
                     }
@@ -533,7 +505,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
@@ -696,7 +668,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     Integer СервернаяВерсияПОРазмерФайла = bundle.getInt("СервернаяВерсияПОВнутри", 0);
                     Log.d(this.getClass().getName(), " СервернаяВерсияПОРазмерФайла " + СервернаяВерсияПОРазмерФайла);
                     if (СервернаяВерсияПОРазмерФайла > 0) {
-                        МетодПредлагаемЗаргузитьНовыюВерсиюПО(СервернаяВерсияПОРазмерФайла, context);
+                        МетодСообщенияЗагрузкиФайлаAPK(СервернаяВерсияПОРазмерФайла);
                     }
                     Log.d(this.getClass().getName(), " localBroadcastManagerДляФинальнойУстановкиПОТабельныйУчёт  intent " + intent);
                 }
@@ -774,7 +746,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     context.getMainExecutor().execute(() -> {
                         if (СервернаяВерсияПОРазмерФайла > 0) {
                             // TODO: 17.02.2023  загрузка ПО
-                            МетодПредлагаемЗаргузитьНовыюВерсиюПО(СервернаяВерсияПОРазмерФайла, context);
+                            МетодСообщенияЗагрузкиФайлаAPK(СервернаяВерсияПОРазмерФайла);
                         }
                         Log.d(this.getClass().getName(), " МетодСлушательПрелагаетЗагрузитьПО " + intent);
                     });
@@ -905,7 +877,8 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                         // TODO: 08.01.2022
                         СервернаяВерсияПОВнутри[0] = new Class_MODEL_synchronized(getApplicationContext()).
                                 //   УниверсальныйБуферJSONВерсииПОсСервера("dsu1.glassfish/update_android_dsu1/output-metadata.json", Контекст, public_content.getАдресСервера() , public_content.getПортСервера());
-                                        УниверсальныйБуферJSONВерсииПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервера()+"/update_android_dsu1/output-metadata.json",
+                                        УниверсальныйБуферJSONВерсииПОсСервера(new PUBLIC_CONTENT(getApplicationContext())
+                                                .getСсылкаНаРежимСервера()+"/update_android_dsu1/output-metadata.json",
                                         getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица);
                         Log.w(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри" + СервернаяВерсияПОВнутри[0] + "+" +Thread.currentThread().getName());
                         return Observable.fromArray(string).doOnComplete(System.out::println);
@@ -946,7 +919,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                             }
                         }
                     })
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(Schedulers.single())
                     .onErrorComplete(new Predicate<Throwable>() {
                         @Override
                         public boolean test(Throwable throwable) throws Throwable {
@@ -961,14 +934,10 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     .doOnComplete(new Action() {
                         @Override
                         public void run() throws Throwable {
-                            ///TODO РАБОТА НЕПОСТРДСТВЕННО УЖЕ С .apk
-                            if (СервернаяВерсияПОВнутри[0] >0 ) {
                                 Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
-                                        " СервернаяВерсияПОВнутри  " + Thread.currentThread().getName());
-                                ///////todo код запуска уведомлений для чата
+                                        СервернаяВерсияПОВнутри[0]+   " СервернаяВерсияПОВнутри  " + Thread.currentThread().getName());
+                            // TODO: 18.02.2023 Анализ Версии
                                 МетодАнализВерсийЛокальнаяИСерверная(СервернаяВерсияПОВнутри[0]);
-
-                            }
                         }
                     });
 // TODO: 07.01.2022 GREAT OPERATIONS подпииска на данные
@@ -990,12 +959,13 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         String version = pInfo.versionName;//Version Name
         Integer ЛокальнаяВерсияПО = pInfo.versionCode;//Version Code
         if (СервернаяВерсияПОВнутри >ЛокальнаяВерсияПО ) {
-            Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
-                    " СервернаяВерсияПОВнутри  " + Thread.currentThread().getName());
 
+         File   FileAPK=  МетодЗагрузкиAPK();
+            Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
+                    " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+  " СервернаяВерсияПОВнутри  "+СервернаяВерсияПОВнутри + " POOLS" + Thread.currentThread().getName()+ " FileAPK " +FileAPK.length());
         }else{
             Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
-                " СервернаяВерсияПОВнутри  " + Thread.currentThread().getName());
+                    " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+  " СервернаяВерсияПОВнутри  "+СервернаяВерсияПОВнутри + " POOLS" + Thread.currentThread().getName());
             activity.runOnUiThread(()->{
                 Toast toast = Toast.makeText(getApplicationContext(), "У Вас последняя версия ПО !!! ", Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.BOTTOM, 0, 40);
@@ -1006,7 +976,8 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(),
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
     }
     }
