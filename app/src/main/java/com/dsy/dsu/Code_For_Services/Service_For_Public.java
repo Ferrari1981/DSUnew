@@ -429,56 +429,14 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
             try{
                 Integer Toren=new Random().nextInt();
                 Stream<String> streamУдалениеСтатусаУдаленный=Stream.of("data_tabels","tabel","get_materials_data");
-                AsyncQueryHandler asyncQueryHandler=new AsyncQueryHandler(context.getContentResolver()) {
-                    @Override
-                    protected Handler createHandler(Looper looper) {
-                        Log.w(this.getClass().getName(), "   handleMessage  ");
-                        return super.createHandler(looper);
-                    }
-
-                    @Override
-                    public void startQuery(int token, Object cookie, Uri uri, String[] projection, String selection, String[] selectionArgs, String orderBy) {
-                        super.startQuery(token, cookie, uri, projection, selection, selectionArgs, orderBy);
-                        Log.w(this.getClass().getName(), "   handleMessage  ");
-                    }
-
-                    @Override
-                    protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-                        super.onQueryComplete(token, cookie, cursor);
-                        Log.w(this.getClass().getName(), "   handleMessage  ");
-                    }
-
-                    @Override
-                    protected void onInsertComplete(int token, Object cookie, Uri uri) {
-                        super.onInsertComplete(token, cookie, uri);
-                        Log.w(this.getClass().getName(), "   handleMessage  ");
-                    }
-
-                    @Override
-                    protected void onUpdateComplete(int token, Object cookie, int result) {
-                        super.onUpdateComplete(token, cookie, result);
-                        Log.w(this.getClass().getName(), "   handleMessage  ");
-                    }
-
-                    @Override
-                    protected void onDeleteComplete(int token, Object cookie, int result) {
-                        super.onDeleteComplete(token, cookie, result);
-                        Log.w(this.getClass().getName(), "  Удаление СТрок onDeleteComplete РЕЗУЛЬТАТ   result "+result + " ПОТОК" +Thread.currentThread().getName().toString()+ " result " +result);
-                    }
-
-                    @Override
-                    public void handleMessage(Message msg) {
-                        super.handleMessage(msg);
-                        Log.w(this.getClass().getName(), "   handleMessage  "+msg+" " +Thread.currentThread().getName().toString());
-                    }
-                };
                 streamУдалениеСтатусаУдаленный.forEachOrdered(new Consumer<String>() {
                     @Override
                     public void accept(String Таблица) {
                         uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + Таблица + "");
-                        // asyncQueryHandler.startDelete( Toren,new Object(),uri,"_id>? AND  status_send=?",new String[]{"0","Удаленная"});
-                        asyncQueryHandler.startDelete( Toren,new Object(),uri,"status_send=?",new String[]{"Удаленная"});
-                        Log.w(this.getClass().getName(), "   НазваниеОбрабоатываемойТаблицы  " +Таблица);
+                        ContentResolver resolver = context.getContentResolver();
+                      Integer  УдалениеДанныхСоСтатусомУдаленная=   resolver.delete(uri,"status_send=?",new String[]{"Удаленная"});
+                        Log.i(this.getClass().getName(),  "УдалениеДанныхСоСтатусомУдаленная  "+УдалениеДанныхСоСтатусомУдаленная
+                                + Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
                     }
                 });
             } catch (Exception e) {

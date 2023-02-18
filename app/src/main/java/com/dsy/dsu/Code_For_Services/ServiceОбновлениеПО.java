@@ -21,8 +21,10 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,7 +45,10 @@ import org.reactivestreams.Publisher;
 
 import java.io.File;
 import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
@@ -290,12 +295,19 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     @UiThread
     void МетодСообщениеЗапускЗагрущикаПо(@NonNull Integer СервернаяВерсияПОВнутри) {
         try {
+
+            LayoutInflater li = LayoutInflater.from(getApplicationContext());
+            View promptsView = li.inflate(R.layout.activity_insertdata, null);
+            ProgressBar progressBar=promptsView.findViewById(R.id.prograssbarupdatepo);
+            progressBar.setIndeterminate(false);
+            promptsView.forceLayout();
+            promptsView.refreshDrawableState();
             AlertDialog alertDialog = new MaterialAlertDialogBuilder(activity)///       final AlertDialog alertDialog =new AlertDialog.Builder( MainActivity_Face_App.КонтекстFaceApp)
                     .setTitle("Загрущик")
+                    .setView(promptsView)
                     .setMessage("Обновление ПО"
                             + "\n" + "ООО Союз-Автодор"
-                            + "\n"  +"версия. " + СервернаяВерсияПОВнутри
-                            + "\n")
+                            + "\n"  +"версия. " + СервернаяВерсияПОВнутри)
                     .setPositiveButton("Загрузить", null)
                     .setNegativeButton("Позже", null)
                     .setIcon(R.drawable.icon_dsu1_update_success)
@@ -308,46 +320,61 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                 public void onClick(View v) {
                     try {
 // TODO: 18.02.2023 Загрузка Нового файла APK
-                        Completable.complete()
+            activity.runOnUiThread(()->{
+            Toast toast = Toast.makeText(getApplicationContext(), "Загрузка ПО ▼  ", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.BOTTOM, 0, 40);
+            toast.show();
+                progressBar.setIndeterminate(true);
+            });
+            Log.i(this.getClass().getName(),  "Установщик ПО..." + Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
+            Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+            v2.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+                        Flowable.fromCallable(new Callable<Object>() {
+                                    @Override
+                                    public Object call() throws Exception {
+                                        File   FileAPK=  МетодЗагрузкиAPK();
+                                        Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
+                                                " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+  " СервернаяВерсияПОВнутри  "+СервернаяВерсияПОВнутри + " POOLS" +
+                                                Thread.currentThread().getName());
+                                        return FileAPK;
+                                    }
+                                })
                                 .subscribeOn(Schedulers.single())
-                                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-                            @Override
-                            public Publisher<?> apply(Flowable<Object> objectFlowable) throws Throwable {
-                                activity.runOnUiThread(()->{
-                                    Toast toast = Toast.makeText(getApplicationContext(), "Загрузка ПО ▼  ", Toast.LENGTH_LONG);
-                                    toast.setGravity(Gravity.BOTTOM, 0, 40);
-                                    toast.show();
-                                });
-                                Log.i(this.getClass().getName(),  "Установщик ПО..." + Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
-                                Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                                v2.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
-                                return objectFlowable;
-                            }
-                        })
-                                .subscribeOn(Schedulers.single())
-                                .blockingSubscribe(new CompletableObserver() {
-                            @Override
-                            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-                                File   FileAPK=  МетодЗагрузкиAPK();
-                                Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
-                                        " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+  " СервернаяВерсияПОВнутри  "+СервернаяВерсияПОВнутри + " POOLS" +
-                                        Thread.currentThread().getName()+ " FileAPK " +FileAPK.length());
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                Log.i(this.getClass().getName(),  " "+ Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
-                            }
-
-                            @Override
-                            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                        + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                        Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                        Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            }
-                        });
+                                .doOnError(new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Throwable {
+                                        Log.e(this.getClass().getName(), "Ошибка " + throwable+ " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
+                                                Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                                Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                    }
+                                })
+                                .onErrorComplete(new Predicate<Throwable>() {
+                                    @Override
+                                    public boolean test(Throwable throwable) throws Throwable {
+                                        Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
+                                                Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                                Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                        return false;
+                                    }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnComplete(new Action() {
+                                    @Override
+                                    public void run() throws Throwable {
+                                        progressBar.setIndeterminate(false);
+                                        alertDialog.dismiss();
+                                        alertDialog.cancel();
+                                        Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
+                                                " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+  " СервернаяВерсияПОВнутри  "+СервернаяВерсияПОВнутри + " POOLS" );
+                                    }
+                                })
+                                .subscribe();
+                        Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
+                                " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+  " СервернаяВерсияПОВнутри  "+СервернаяВерсияПОВнутри + " POOLS" );
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -356,11 +383,6 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                                 this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                                 Thread.currentThread().getStackTrace()[2].getLineNumber());
                     }
-                    Log.i(getApplicationContext().getClass().getName(), " УЖЕ ЗАГРУзили ПО ПОЛЬЗОВАТЕЛЬ НАЖАЛ НА КОНОПКУ ЗАГУРДИТЬ   " +
-                            "Service_Notifocations_Для_Чата (intent.getAction()   СЛУЖБА" + finalСервернаяВерсияПОВнутри + " время запуска  " + new Date());
-
-                    alertDialog.dismiss();
-                    alertDialog.cancel();
                 }
             });
             final Button MessageBoxUpdateНеуСтанавливатьПО = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);

@@ -160,7 +160,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.8.1'
-    implementation group: 'io.reactivex', name: 'rxandroid', version: '1.2.1'
+    implementation group: 'io.reactivex.rxjava3', name: 'rxandroid', version: '3.0.2'
+
+
     ///todo matetialDisain
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.google.android.material:material:1.1.0-alpha06'
