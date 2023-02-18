@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -36,9 +35,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.multidex.BuildConfig;
+import androidx.work.WorkManager;
 
-import com.dsy.dsu.Business_logic_Only_Class.Class_Connections_Server;
-import com.dsy.dsu.Business_logic_Only_Class.Class_Find_Setting_User_Network;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
@@ -49,10 +47,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.functions.Predicate;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class ServiceОбновлениеПО extends IntentService {////Service
@@ -62,7 +65,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
 
     String ИмяСлужбыУведомленияДляОбновление = "WorkManager NOtofocationforUpdateSoft";
     private String PROCESS_IDSoftUpdate = "19";
-    private   String ТипПодключенияИнтернтаДляСлужбы;
+
 
     private  Integer ЛокальнаяВерсияПО = 0;
 
@@ -218,25 +221,39 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     }
     }
 
-    public void МетодНачалаЗапускаОбновленияПО(Boolean РежимРаботыСлужбыОбновлениеПО ,@NonNull Activity  activity){
+    public void МетодГлавныйОбновленияПО(@NonNull Boolean РежимРаботыСлужбыОбновлениеПО , @NonNull Activity  activity){
         try {
-            ТипПодключенияИнтернтаДляСлужбы = МетодОпределяемКакойТипПодключениеWIFIилиMobileДляСлужбы(getApplicationContext());
+            this.activity=activity;
+          String  РежимРаботыСети = МетодУзнаемРежимСетиWIFiMobile(getApplicationContext());
 
-            if (ТипПодключенияИнтернтаДляСлужбы != null) {
-                Log.i(this.getClass().getName(), "ТипПодключенияИнтернтаДляСлужбы " + ТипПодключенияИнтернтаДляСлужбы);
-                if (ТипПодключенияИнтернтаДляСлужбы.equals("WIFI")  || ТипПодключенияИнтернтаДляСлужбы.equals("Mobile")  ) {
+                if (РежимРаботыСети.equals("WIFI")  || РежимРаботыСети.equals("Mobile")  ) {
+                    Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ "РежимРаботыСети " + РежимРаботыСети);
+
+
                     // TODO: 17.02.2023 ЗАгрущка
-                    МетодЗагрузкиФайлаAPK();
+                 ///   МетодЗагрузкиФайлаAPK();
                     Log.i(this.getClass().getName(), "МетодОпределнияВерсийПОСервераКлиентаИПринятиеРешенияНаСкачиваниеОбновлениеПО " );
                 }else {
-                    Log.e(this.getClass().getName(), "неТ СВЯЗИ ДЛЯ ЗАГРУЗКИ ПО ТипПодключенияИнтернтаДляСлужбы "  +ТипПодключенияИнтернтаДляСлужбы  );
+                    Log.e(this.getClass().getName(), "неТ СВЯЗИ ДЛЯ ЗАГРУЗКИ ПО ТипПодключенияИнтернтаДляСлужбы "  + РежимРаботыСети);
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (РежимРаботыСлужбыОбновлениеПО == true) {
+                                Toast toast = Toast.makeText(context, "Нет связи c Cервер !!!", Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.BOTTOM, 0, 40);
+                                toast.show();
+                                Log.d(context.getClass().getName(), "  НЕТ СВЯЗИ С СЕРВЕРОМ  МетодВActivityFaveApp_УстанавливаетПрограммноеОбеспечениеПОТабельныйУчёт();  ");
+                            }
+                        }
+                    });
                 }
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                    Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
@@ -360,7 +377,8 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     }
 
     ////TODO метод который отпредеяеть КАКОЙ ТИП ПОДКЛЮЧЕНИ К ИНТРЕНТУ ЧЕРЕЗ WIFI ИЛИ MOBILE
-    private String МетодОпределяемКакойТипПодключениеWIFIилиMobileДляСлужбы(Context КонтекстКоторыйДляСинхронизации) {
+    private String МетодУзнаемРежимСетиWIFiMobile(Context КонтекстКоторыйДляСинхронизации) {
+        String  РежимРаботыСети = new String();
         try{
             ConnectivityManager cm = (ConnectivityManager) КонтекстКоторыйДляСинхронизации.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -381,7 +399,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
-        return null;
+        return РежимРаботыСети;
     }
     public Integer МетодДополнительногоУдалениеФайлов(Context context) {
         Integer РезультатУдаления = 0;
@@ -770,57 +788,8 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         }
     }
 
-    //TODO метод состоит из двух операцию удаление любой уже скаченой версии программы и обновление новой ПО
-    public void МетодЗапускАнализаПО(@NonNull Boolean РежимОбновленияЯвныйИлиНет,@NonNull Integer ЗадержаВыполения,@NonNull Activity activity) {
-        Boolean[] ПингПередСинхронизациейИлиОбновлениеПО = {false};
-        try {
-            this.activity=activity;
-                try {
-                    boolean РежимСетиВыбраныйПользователем =
-                            new Class_Find_Setting_User_Network(context).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
-                    if (РежимСетиВыбраныйПользователем == true) {
-                        CompletionService completionService = new ExecutorCompletionService(Executors.newSingleThreadExecutor());
-                        completionService.submit(() -> {
-                            ПингПередСинхронизациейИлиОбновлениеПО[0] =
-                                    new Class_Connections_Server(context).МетодПингаСервераРаботаетИлиНет(context);
-                            Log.w(context.getClass().getName(), " ПингПередСинхронизациейИлиОбновлениеПО[0] " + ПингПередСинхронизациейИлиОбновлениеПО[0]);
-                            return ПингПередСинхронизациейИлиОбновлениеПО[0];
-                        });
-                        ПингПередСинхронизациейИлиОбновлениеПО[0] = (Boolean) completionService.take().get();
-                        Log.w(context.getClass().getName(), " ПингПередСинхронизациейИлиОбновлениеПО[0]  " + ПингПередСинхронизациейИлиОбновлениеПО[0]);
-                        if (ПингПередСинхронизациейИлиОбновлениеПО[0] == true) {
-                            new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(context).
-                                    МетодЗапускаУведомленияОбновленияПО(РежимОбновленияЯвныйИлиНет, context);
-                            Log.w(context.getClass().getName(), " ПингПередСинхронизациейИлиОбновлениеПО[0]  " + ПингПередСинхронизациейИлиОбновлениеПО[0]);
-                        } else {
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (РежимОбновленияЯвныйИлиНет == true) {
-                                        Toast toast = Toast.makeText(context, "Нет связи c Cервер !!!", Toast.LENGTH_LONG);
-                                        toast.setGravity(Gravity.BOTTOM, 0, 40);
-                                        toast.show();
-                                        Log.d(context.getClass().getName(), "  НЕТ СВЯЗИ С СЕРВЕРОМ  МетодВActivityFaveApp_УстанавливаетПрограммноеОбеспечениеПОТабельныйУчёт();  ");
-                                    }
-                                }
-                            });
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                            Thread.currentThread().getStackTrace()[2].getLineNumber());
-                }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
-    }
+
+
 
     public void МетодФиналСлушательУстановщикПО() {
         try {
@@ -992,4 +961,128 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         }
     }
 
+    Integer МетодАнализаВерсииПОJSON() {
+        try {
+            Log.d(this.getClass().getName(), " СЛУЖБА ... МЕТОД АНАЛИЗА ДАННЫХ РАБОТАЕТ......" + new Date());
+            Log.w(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " + Thread.currentThread().getName());
+            // TODO: 02.04.2022 передполучаем веприсю ПО  удаляем файцл
+            СервернаяВерсияПОВнутри = 0;
+            // TODO: 17.12.2021 RXJAVA ПОЛУЧАЕМ JSON  ФАЙЛ ВЕРСИИ ПОРГРАМНОГО ПО ТАБЕЛЬНЫЙ УЧЁТ
+            String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
+            Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
+
+            Observable observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK = Observable.interval(1, TimeUnit.SECONDS)
+                    .take(20, TimeUnit.SECONDS)
+                    .subscribeOn(Schedulers.single())
+                    .flatMap((string) -> {
+                        PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(getApplicationContext());
+                        // TODO: 08.01.2022
+                        СервернаяВерсияПОВнутри = new Class_MODEL_synchronized(getApplicationContext()).
+                                //   УниверсальныйБуферJSONВерсииПОсСервера("dsu1.glassfish/update_android_dsu1/output-metadata.json", Контекст, public_content.getАдресСервера() , public_content.getПортСервера());
+                                        УниверсальныйБуферJSONВерсииПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервера()+"/update_android_dsu1/output-metadata.json",
+                                        getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица);
+                        Log.w(getApplicationContext().getClass().getName(), " doOnNext observableVesrionServerSoft   СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО " +СервернаяВерсияПОВнутри+ "\n"+
+                                "  observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK " +
+                                "СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " +Thread.currentThread().getName());
+                        Log.w(getApplicationContext().getClass().getName(), " flatMap" +
+                                "СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " +Thread.currentThread().getName());
+                        return Observable.fromArray(string).doOnComplete(System.out::println);
+                    })
+                    .doOnError(new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Throwable {
+                            Log.e(getApplicationContext().getClass().getName(), "  doOnError observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK."  +"\n"+
+                                    " Thread.currentThread().getName() " +Thread.currentThread().getName()+"\n"+
+                                    " throwable " +throwable.getStackTrace());
+                        }
+                    })
+                    .takeWhile(new Predicate<Object>() {
+                        @Override
+                        public boolean test(Object o) throws Throwable {
+                            Log.w(getApplicationContext().getClass().getName(), "   takeWhile observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK"  +"\n"+
+                                    " Thread.currentThread().getName() " +Thread.currentThread().getName()+ "  o " +o);
+                            if (   СервернаяВерсияПОВнутри>0) {
+                                Log.w(getApplicationContext().getClass().getName(), "СервернаяВерсияПОВнутри  observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK ::::" +
+                                        "  "+"\n"
+                                        +СервернаяВерсияПОВнутри  +"\n"+
+                                        " Thread.currentThread().getName() " +Thread.currentThread().getName());
+                                return false;
+                            }else {
+                                return true;
+                            }
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorComplete(new Predicate<Throwable>() {
+                        @Override
+                        public boolean test(Throwable throwable) throws Throwable {
+                            Log.e(getApplicationContext().getClass().getName(), "  onErrorComplete observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK."  +"\n"+
+                                    " Thread.currentThread().getName() " +Thread.currentThread().getName()+"\n"+
+                                    " throwable " +throwable.getStackTrace());
+                            return false;
+                        }
+                    })
+                    .doOnComplete(new Action() {
+                        @Override
+                        public void run() throws Throwable {
+                            ///TODO РАБОТА НЕПОСТРДСТВЕННО УЖЕ С .apk
+                            if (СервернаяВерсияПОВнутри>0 ) {
+                                Log.w(getApplicationContext().getClass().getName(), " doOnComplete  observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK.  ЗАПУСК ОБНОВЛЕНИЕ ПОСЛЕ  " +
+                                        " МетодОпределнияВерсийПОСервераКлиентаИПринятиеРешенияНаСкачиваниеОбновлениеПО " + "\n" +
+                                        " СервернаяВерсияПОВнутри " + СервернаяВерсияПОВнутри + " +Thread.currentThread().getName() " + Thread.currentThread().getName());
+                                ///////todo код запуска уведомлений для чата
+                                МетодЗарускаСозданиеУведомленийОбновлениеПо();
+                                Log.d(getApplicationContext().getClass().getName(), " Запуск по Расписанию СЛУЖБА" +
+                                        "   МетодЗарускаСозданиеУведомленийОбновлениеПо MyWork_Notifocations_Уведомления_Для_ОбновлениеПО " + "  --" + new Date());
+                                ///////todo код запуска уведомлений для чата
+                                Log.i(getApplicationContext().getClass().getName(), "Метод ВНУТРИ РАБОТА... С АКТИВТИ ДЕЙСТВУЩИМ УВЕДОМНИЯ ОБНОВЛЕНИЯ ПО ОТРАБОТАЛ ВНУТРИ метода ЗАПУСКАЕМ БЕЗ activity      " +
+                                        "   public Result doWork()  MyWork_УВЕДОМНИЯ ОБНОВЛЕНИЯ ПО  внутри WORK MANAGER MyWork_Notifocations_Уведомления_Для_ОбновлениеПО   "
+                                        + new Date() + " СТАТУС WORKMANAGER MyWork_Notifocations_Уведомления_Для_ОбновлениеПО" +
+                                        " ОБНОВЛЕНИЯ ПО внутри WORK MANAGER "
+                                        + WorkManager.getInstance(getApplicationContext()).getWorkInfosByTag(ИмяСлужбыУведомленияДляОбновлениеПО).get().get(0).getProgress() +
+                                        " WorkManager Synchronizasiy_Data  " + " РАБОТАЮЩИЙ ПРОЦЕСС  КоличествоЗапущенныйПроуессыДляОбновлениеПО.size()" +
+                                        "" +
+                                        "" + " +Thread.currentThread().getName() " + Thread.currentThread().getName());
+                                // TODO: 09.01.2022
+                            }
+                        }
+                    });
+// TODO: 07.01.2022 GREAT OPERATIONS подпииска на данные
+            observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK.subscribe();
+        } catch (Exception e ) {
+            e.printStackTrace();
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+        }
+        return  СервернаяВерсияПОВнутри;
+    }
+
+    private void МетодЗарускаСозданиеУведомленийОбновлениеПо() {
+  try{
+      PackageInfo    pInfo = getApplicationContext(). getPackageManager().getPackageInfo(getApplicationContext(). getPackageName(), 0);
+        String version = pInfo.versionName;//Version Name
+        Integer ЛокальнаяВерсияПО = pInfo.versionCode;//Version Code
+        if (СервернаяВерсияПОВнутри >ЛокальнаяВерсияПО ) {
+            getApplicationContext().getMainExecutor().execute(()->{
+                    Toast toast = Toast.makeText(getApplicationContext(), "Поиск ПО...", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, 40);
+                    toast.show();
+            });
+        }else{
+            getApplicationContext().getMainExecutor().execute(()->{
+                    Toast toast = Toast.makeText(getApplicationContext(), "У Вас последняя версия ПО !!! ", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, 40);
+                    toast.show();
+            });
+        }
+    } catch (Exception e ) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                Thread.currentThread().getStackTrace()[2].getLineNumber());
+    }
+    }
 }

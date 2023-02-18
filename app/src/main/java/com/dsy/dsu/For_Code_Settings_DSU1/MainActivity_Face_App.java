@@ -17,7 +17,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.Messenger;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -40,14 +39,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleEventObserver;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
 
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Clears_Tables;
@@ -63,7 +57,6 @@ import com.dsy.dsu.Code_For_AdmissionMaterials_ПоступлениеМатер�
 import com.dsy.dsu.Code_For_Commit_Payments_КодДля_Согласование.MainActivity_CommitPay;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
 import com.dsy.dsu.Code_For_Services.Service_Async_1C;
-import com.dsy.dsu.Code_For_Services.Service_For_Public;
 import com.dsy.dsu.Code_For_Services.Service_Notificatios_Для_Согласования;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
 import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
@@ -74,10 +67,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
@@ -188,14 +178,14 @@ public class MainActivity_Face_App extends AppCompatActivity {
             МетодБоковаяПанельОткрытьЗАкрыть();
 
             // TODO: 17.02.2023 ЗапускАнализа Наличитие Новой Версии ПО
+
             message=Message.obtain(new Handler(Looper.myLooper()),()->{
                 Bundle bundle=   message.getData();
                // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,0,activity);
-                localBinderОбновлениеПО.getService().  МетодНачалаЗапускаОбновленияПО(false,activity);
+                localBinderОбновлениеПО.getService().МетодГлавныйОбновленияПО(false,activity);
                 Log.i(this.getClass().getName(), "bundle " +bundle);
-                message.setAsynchronous(true);
-
             });
+            message.setAsynchronous(true);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -204,7 +194,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -421,7 +410,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                             Log.w(getPackageName().getClass().getName(), "item.getItemId() МЕНЮ ОБНОВЛЕНИЕ ПО    " + item.getItemId() + "\n"+item);/////////
                             try {
                                 // TODO: 07.10.2022 ЗАПУСК АНАЛИЗА ПО
-                                localBinderОбновлениеПО.getService().МетодЗапускАнализаПО(true,100,activity);
+                              //  localBinderОбновлениеПО.getService().МетодЗапускАнализаПО(true,100,activity);
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
