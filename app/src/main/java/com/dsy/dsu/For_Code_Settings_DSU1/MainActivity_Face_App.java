@@ -405,7 +405,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                             Log.w(getPackageName().getClass().getName(), "item.getItemId() МЕНЮ ОБНОВЛЕНИЕ ПО    " + item.getItemId() + "\n"+item);/////////
                             try {
                                 // localBinderОбновлениеПО.getService().  МетодЗапускАнализаПО(false,0,activity);
-                                localBinderОбновлениеПО.getService().МетодГлавныйОбновленияПО(false,activity);
+                                localBinderОбновлениеПО.getService().МетодГлавныйОбновленияПО(true,activity);
                                 Log.i(this.getClass().getName(),  " Из меню установкаОбновление ПО "+ Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
                             } catch (Exception e) {
                                 e.printStackTrace();

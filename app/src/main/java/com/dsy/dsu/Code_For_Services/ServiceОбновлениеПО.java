@@ -2,6 +2,7 @@ package com.dsy.dsu.Code_For_Services;
 
 import android.app.Activity;
 import android.app.IntentService;
+import android.companion.BluetoothLeDeviceFilter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -73,6 +74,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     private SharedPreferences preferences;
     private String ИмяПотока="binderupdatepo";
     private  Activity activity;
+    private  Boolean РежимРаботыСлужбыОбновлениеПО=false;
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
@@ -160,6 +162,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                                          @NonNull Activity  activity){
         try {
             this.activity=activity;
+            this.РежимРаботыСлужбыОбновлениеПО=РежимРаботыСлужбыОбновлениеПО;
           String  РежимРаботыСети = МетодУзнаемРежимСетиWIFiMobile(getApplicationContext());
             preferences = getApplicationContext().getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
                 if (РежимРаботыСети.equals("WIFI")  || РежимРаботыСети.equals("Mobile")  ) {
@@ -600,9 +603,11 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
                     " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+  " СервернаяВерсияПОВнутри  "+СервернаяВерсияПОВнутри + " POOLS" + Thread.currentThread().getName());
             activity.runOnUiThread(()->{
-                Toast toast = Toast.makeText(getApplicationContext(), "У Вас последняя версия ПО !!! ", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.BOTTOM, 0, 40);
-                toast.show();
+                if (РежимРаботыСлужбыОбновлениеПО==true) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "У Вас последняя версия ПО !!! ", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.BOTTOM, 0, 40);
+                    toast.show();
+                }
             });
         }
     } catch (Exception e ) {
