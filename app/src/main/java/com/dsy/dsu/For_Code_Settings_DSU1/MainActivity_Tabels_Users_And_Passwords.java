@@ -288,9 +288,12 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                     ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе = e.toString();
-                                    ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
                                     Log.d(this.getClass().getName(), "ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе "
                                             + ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе);
+                                    ПрогрессБарДляВходаСистему.setIndeterminate(false);
+                                    ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
+                                    Snackbar snackbar = Snackbar.make(v, " " +"Сервер не ответил !!!" , Snackbar.LENGTH_LONG);
+                                    snackbar.show();
                                 }
                             }
 
