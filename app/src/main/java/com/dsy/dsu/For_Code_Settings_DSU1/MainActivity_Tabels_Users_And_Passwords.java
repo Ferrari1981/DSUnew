@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -262,9 +263,12 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                         // TODO: 10.03.2023 Логин И Пароль для Аунтификайии с Сервером
                             ПодключениекСерверуАунтификация.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
                            ПодключениекСерверуАунтификация.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);  //"dsu1getsession"
-                           ПодключениекСерверуАунтификация.setRequestProperty("public_clientandroid", ПубличноеIDПолученныйИзСервлетаДляUUID.toString());  //"dsu1getsession"
-
-                            Log.d(this.getClass().getName(), "  ПубличноеИмяПользовательДлСервлета  " + ПубличноеИмяПользовательДлСервлета + "\n" + " ПубличноеПарольДлСервлета    " + ПубличноеПарольДлСервлета);
+                        String ANDROID_ID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                        ПодключениекСерверуАунтификация.setRequestProperty("id_device_androis", ANDROID_ID);  //"dsu1getsession"
+                             Log.d(this.getClass().getName(), "  ПубличноеИмяПользовательДлСервлета  "
+                                    + ПубличноеИмяПользовательДлСервлета +
+                                    "\n" + " ПубличноеПарольДлСервлета    " + ПубличноеПарольДлСервлета+
+                                    "  ПубличноеIDПолученныйИзСервлетаДляUUID " +ПубличноеIDПолученныйИзСервлетаДляUUID);
                             if (ПубличноеИмяПользовательДлСервлета.length()>0 && ПубличноеПарольДлСервлета.length()>0) {
                                 try {
                                     ПодключениекСерверуАунтификация.connect(); /////////////ТОЛЬКО СОЕДИНЕНИЕ
