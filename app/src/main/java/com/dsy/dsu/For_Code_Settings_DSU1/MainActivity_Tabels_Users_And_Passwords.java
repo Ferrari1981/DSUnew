@@ -20,10 +20,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
 
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Connections_Server;
@@ -45,6 +47,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.zip.GZIPInputStream;
@@ -67,6 +70,9 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
     private  CREATE_DATABASE   Create_Database_СсылкаНАБазовыйКласс;
     private  StringBuffer   БуферПолученнниеДанныхПолученияIDотСервера=new StringBuffer();
     private SharedPreferences preferences;
+    private  AsyncTaskLoader asyncTaskLoaderАунтиф;
+    private   String ОшибкиПришлиПослеПингаОтСервера = null;
+    private  View v;
     ////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,15 +182,14 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                     if (ПубличноеИмяПользовательДлСервлета.length() > 0 &&  ПубличноеПарольДлСервлета.length() > 0) {
                         boolean РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию =
                                 new Class_Find_Setting_User_Network(getApplicationContext()).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
-                        //TODO ФУТУРЕ ЗАВЕРШАЕМ
-                        Log.d(this.getClass().getName(), "  РезультатПроВеркиУстановкиПользователяРежимРаботыСети "
-                                + РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию);
-                        Log.d(this.getClass().getName(), " РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию  "
-                                +РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию);
                         if (РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию == true) {
-                            ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// при нажатии делаем видимый програсссбар
-                            //TODO запукаем метод аунтификции
-                            МетодАунтификацииПользователяПриВходевПрограммуДСУ1(v);//// данный метод в будущем будет запускаться с  кнопк
+                            Boolean РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных =
+                                    new Class_Connections_Server(getApplicationContext()).         МетодПингаСервераРаботаетИлиНет(getApplicationContext());
+                            if (РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных==true) {
+                                ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// при нажатии делаем видимый програсссбар
+                                //TODO запукаем метод аунтификции
+                                МетодАунтификацииПользователяПриВходевПрограммуДСУ1(v);//// данный метод в будущем будет запускаться с  кнопк
+                            }
                         } else {
                             Log.d(this.getClass().getName(), " Вы не заполнили Логин/Пароль ") ;
                             ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
@@ -214,23 +219,14 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
     ////TODO САМ МЕТОД АУНТИФИКАЦИИ С СЕРВЕРОМ
     private void МетодАунтификацииПользователяПриВходевПрограммуДСУ1(View v) {
 
-        Class_GRUD_SQL_Operations class_grud_sql_operationsАунтификацияПользователя=new Class_GRUD_SQL_Operations(getApplicationContext());
+        Class_GRUD_SQL_Operations class_grud_sql_operationsАунтификация=new Class_GRUD_SQL_Operations(getApplicationContext());
 
         try {
             //////
             //////TODO Запуск асинхроного ЛОУДОРА ДЛЯ АУНТИФТИКАЦИИ ПОЛЬЗОВАТЕЛЯ
-            class_grud_sql_operationsАунтификацияПользователя.asyncTaskLoaderАунтификацияПользователя = new AsyncTaskLoader(КонтекстСинхроДляАунтификации) {
+            this.v=v;
+           asyncTaskLoaderАунтиф = new AsyncTaskLoader(КонтекстСинхроДляАунтификации) {
                 HttpURLConnection ПодключениекСерверуАунтификация = null;
-                String ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе = null;
-                @Override
-                protected void onStartLoading() {
-                    super.onStartLoading();
-                   // ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// по умолчанию прогресс бар делаем не видеым
-                    Log.d(this.getClass().getName(), " onStartLoading() asyncTaskLoaderАунтификацияПользователя ");
-                    ////TODO запускаем BACkground
-                    forceLoad();
-                }
-
                 @Nullable
                 @Override
                 public Object loadInBackground() {
@@ -238,8 +234,6 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                     BufferedReader БуферПодключениеJSONВерсияSQlserver = null;
                     try {
                         Log.d(this.getClass().getName(), " loadInBackground() asyncTaskLoaderАунтификацияПользователя ");
-                        Boolean РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных =
-                                new Class_Connections_Server(getApplicationContext()).         МетодПингаСервераРаботаетИлиНет(getApplicationContext());
                         PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(getApplicationContext());
                         String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
                         Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
@@ -275,12 +269,12 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                     ///todo ping
                                     ПодключениекСерверуАунтификация.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
                                     Log.d(this.getClass().getName(), "ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе "
-                                            + ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе);
+                                            + ОшибкиПришлиПослеПингаОтСервера);
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе = e.toString();
+                                    ОшибкиПришлиПослеПингаОтСервера = e.toString();
                                     Log.d(this.getClass().getName(), "ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе "
-                                            + ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе);
+                                            + ОшибкиПришлиПослеПингаОтСервера);
                                     ПрогрессБарДляВходаСистему.setIndeterminate(false);
                                     ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
                                     Snackbar snackbar = Snackbar.make(v, " " +"Сервер не ответил !!!" , Snackbar.LENGTH_LONG);
@@ -307,44 +301,12 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                             " БуферПолученнниеДанныхПолученияIDотСервера " +БуферПолученнниеДанныхПолученияIDотСервера.toString());
                                 }
                                 /////////////САМ ЦИКЛ ЗАПОЛЕНИЯ ИЗ JSON В СТРО
-                                if (БуферПолученнниеДанныхПолученияIDотСервера.length() > 0) {
-                                    Log.d(this.getClass().getName(), " ПроверкаПришёлЛиОтветОтСервлетаДляАунтификацииПользователя"
-                                            + ПроверкаПришёлЛиОтветОтСервлетаДляАунтификацииПользователя);
-                                    ////TODO ДАННЫЙ КОД ОПРЕДЕЛЯЕТ ПРИСЛАЛ ЛИ ОШИБКУ СЕРВЕР НА НЕПРАВИЛЬНЫЙ И ПОЛНОСТЬ ОТСУТВУЮЩИЕ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ, КОТОРЫЙ ХОТЕЛ ЗАЙТИ В  СИСТЕМУ
-                                    if (!БуферПолученнниеДанныхПолученияIDотСервера.toString().trim().equalsIgnoreCase("Server Running...... Don't Login and Password") ) {
-                                        // TODO: 21.04.2021 успешная унфтикация
-                                       ПубличноеIDПолученныйИзСервлетаДляUUID =Integer.parseInt(БуферПолученнниеДанныхПолученияIDотСервера.toString());
-                                        ///ИЗ ОТВЕТА ПОЛУЧАЕМ ID ПОЛЬЗОВАТЕЛЯ ДЛЯ ГЕНЕРАЦИИ  UUID//
-                                        Log.d(this.getClass().getName(), "  ПроверкаПришёлЛиОтветОтСервлетаДляАунтификацииПользователя "
-                                                + БуферПолученнниеДанныхПолученияIDотСервера + "  ПубличноеIDПолученныйИзСервлетаДляUUID " +ПубличноеIDПолученныйИзСервлетаДляUUID);
-                                        Integer ПолученинныйПубличныйIDДлчЗаписиВБАзу=Integer.parseInt(БуферПолученнниеДанныхПолученияIDотСервера.toString());
-                                        ////////
-                                        Log.d(this.getClass().getName(), " ПолученинныйПубличныйIDДлчЗаписиВБАзу " +ПолученинныйПубличныйIDДлчЗаписиВБАзу);
-                                        //todo метод после успешной аунтифтфикации записываем саупешное получение данных в базу после успешного вписаниеи пароля и логина
-                                        МетодПослеУспешнойАунтификацииЗаписиваемИзменияВБАзуВДвеТаблицы_successlogin_И_Дополнительно_И_таблицуsettings_tabels(ПолученинныйПубличныйIDДлчЗаписиВБАзу);
-
-
-                                        //TODO не прошёл аунтификайию
-
-                                    }else{
-
-                                        ПрогрессБарДляВходаСистему.setIndeterminate(false);
-                                        ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
-                                        Snackbar snackbar = Snackbar.make(v, " " +"Логин и Пароль не правильный !!!" , Snackbar.LENGTH_LONG);
-                                        snackbar.show();
-
-                                        //TODO ПОСЛЕ ПИНГА ВИЗУАЛИЗАЦИЯ
-                                        МетодВизуализацииПоложительныхИлиОтрицательныхПопытокАунтификации(v);
-
-
-                                    }
-                                }
                         // TODO: 03.10.2021   close
                     } catch (Exception e) {
                         Log.w(this.getClass().getName(), "ПодключениекСерверуДляАунтификацииПользователяПриВходе.getResponseCode() "
-                                + "       ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе"+     ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе );
+                                + "       ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе"+ ОшибкиПришлиПослеПингаОтСервера);
                         ///метод запись ошибок в таблицу
-                        ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе = e.toString();
+                        ОшибкиПришлиПослеПингаОтСервера = e.toString();
                         ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
                         //////////TODO когда ошибка то увеличичваем счетчик ошибок
                         ПодсчетОтрицательныйРезультатовАунтификации++;///подсчитываем ошибки для точго чтобы приложение пошло спать
@@ -356,7 +318,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                     ПрогрессБарДляВходаСистему.setIndeterminate(false);
                                     Snackbar snackbar;
                                     ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
-                                    if (ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе.matches("(.*)For input string(.*)")) {
+                                    if (ОшибкиПришлиПослеПингаОтСервера.matches("(.*)For input string(.*)")) {
                                         snackbar = Snackbar.make(v, "Логин/Пароль не правильный !!! " +
                                                 "(" + "\n" + ПубличноеИмяПользовательДлСервлета.trim()
                                                 + "  " + ПубличноеПарольДлСервлета.trim() + ") ", Snackbar.LENGTH_LONG);
@@ -371,7 +333,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                         ПрогрессБарДляВходаСистему.setIndeterminate(false);
                                         ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
                                         //TODO ПОСЛЕ ПИНГА ВИЗУАЛИЗАЦИЯ
-                                        МетодВизуализацииПоложительныхИлиОтрицательныхПопытокАунтификации(v);
+                                        МетодВизуализацииПоложительныхИлиОтрицательныхПопытокАунтификации();
 
                                 }
                             });
@@ -401,140 +363,49 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                     return БуферПолученнниеДанныхПолученияIDотСервера;  ///ПодсчетОтрицательныйРезультатовАунтификации
                 }
 
-
-
-
-
-
-
-
-
-
-                private void МетодПослеУспешнойАунтификацииЗаписиваемИзменияВБАзуВДвеТаблицы_successlogin_И_Дополнительно_И_таблицуsettings_tabels(Integer ПолученинныйПубличныйIDДлчЗаписиВБАзу )
-                        throws ExecutionException, InterruptedException {
-                    //// todo после успешного получение имени и пароля записываем их в базу ЗАПУСК МЕТОДА ВСТАВКИ ИМЕНИ И ПАРОЛЯ ПРИ АУНТИФИКАЦИИ БОЛЕЕ 7 ДНЕЙ
-                    try{
-                       //todo ЗАПИСЬ ="SUCCENLOGIN";
-                        Long результатЗаписиНовогоПароляПользователявБазцуsuccesslogin=
-                                new SubClassWriterPUBLICIDtoDatabase().
-                                        МетодЗапипиВБАзуПубличногоID(getApplicationContext(),ПолученинныйПубличныйIDДлчЗаписиВБАзу,ПубличноеИмяПользовательДлСервлета,ПубличноеПарольДлСервлета);
-                    if (результатЗаписиНовогоПароляПользователявБазцуsuccesslogin>0) {
-                        /// TODO: 22.02.2022 ЗАПИСЬ ="settings_tabels";
-                        Long РезультатЗаписиНовгоIDБАзуВТаблицеНАСТРОЕКПОЛЬЗОВТЕЛЯ_ДЛяЗАПИСИВТаблицу_settings_tabels=
-                                new Class_MODEL_synchronized(getApplicationContext()).  МетодЗАписиПолученогоОтСервреаIDПубличногоВТАблицу_settings_tabels(
-                                        ПолученинныйПубличныйIDДлчЗаписиВБАзу);
-                        // TODO: 10.09.2021  РЕЗУЛЬТАТ ЗАПИСИ СОТРУДНИКА ЗАПИСИ В БАЗУ
-                        Log.d(this.getClass().getName(), " БуферПолученнниеДанныхПолученияIDотСервера "
-                                +БуферПолученнниеДанныхПолученияIDотСервера.toString() +
-                                " УСПЕШАЯ ЗАПИСЬ ПУБЛИЧНОГО id SUCCEESS !!!!  " +
-                                "ТАБЛИЦА settings_tabels  РезультатЗаписиНовгоIDБАзуВТаблицеНАСТРОЕКПОЛЬЗОВТЕЛЯ_ДЛяЗАПИСИВТаблицу_settings_tabels "
-                                + РезультатЗаписиНовгоIDБАзуВТаблицеНАСТРОЕКПОЛЬЗОВТЕЛЯ_ДЛяЗАПИСИВТаблицу_settings_tabels+
-                                " ПолученинныйПубличныйIDДлчЗаписиВБАзу " +ПолученинныйПубличныйIDДлчЗаписиВБАзу);
-
-
-                        МетодВходаВПриложениеПослеУспешногоЛогирования();
-
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                        ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
-                    ///метод запись ошибок в таблицу
-                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    // TODO: 01.09.2021 метод вызова
-                    new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                }
-
-                }
-
-                private void МетодВходаВПриложениеПослеУспешногоЛогирования() {
-                    try{
-                    Log.d(this.getClass().getName(), " stopLoading() asyncTaskLoaderАунтификацияПользователя ");
-                    Intent Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации = new Intent();
-                    Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.putExtra("РежимЗапускаСинхронизации","СамыйПервыйЗапускСинхронизации");
-                    Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.putExtra("ПубличноеIDПолученныйИзСервлетаДляUUID",ПубличноеIDПолученныйИзСервлетаДляUUID);
-                    Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.putExtra("ПубличноеИмяПользовательДлСервлета",ПубличноеИмяПользовательДлСервлета);
-                    Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.putExtra("ПубличноеПарольДлСервлета",ПубличноеПарольДлСервлета);
-                    Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.putExtra("СтрокаСвязиСсервером",СтрокаСвязиСсервером);
-                    Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.setClass(getApplication(), MainActivity_Visible_Async.class);
-                    Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);/// FLAG_ACTIVITY_SINGLE_TOP
-                        // TODO: 01.12.2022 записываем режим синъронизации
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("РежимЗапускаСинхронизации","СамыйПервыйЗапускСинхронизации");
-                        editor.commit();
-                        startActivity(Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации);
-                    finish();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                        ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
-                    ///метод запись ошибок в таблицу
-                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    // TODO: 01.09.2021 метод вызова
-                    new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                }
-                }
-
-
-                ///todo метод визуализацци успешных и не успешных аунтифиуаци пользоватле
-                private void МетодВизуализацииПоложительныхИлиОтрицательныхПопытокАунтификации(View v) {
-                    MainActivity_Tabels_Users_And_Passwords.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            Log.d(this.getClass().getName(), " handlerВизуализацияАунтификации ");
-                            try {
-                                Log.d(this.getClass().getName(), " ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе " + ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе
-                                        + " БуферПолученнниеДанныхПолученияIDотСервера" + БуферПолученнниеДанныхПолученияIDотСервера.length());
-                                if (ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе != null
-                                        && БуферПолученнниеДанныхПолученияIDотСервера.length() == 0) {////полученный результат обрабатываем для принятия решения прошел ли пользователь аунтификацию
-///TODO КОГДА 4 ПОПЫТКИ ПРОШЛИ НЕ УСПЕШНО И МЫ ЗАСЫВАЕМ ПРИЛОЖЕНИЯ НА 30 СЕКУНД
-                                    if (ПодсчетОтрицательныйРезультатовАунтификации > 4) {////ПОПЫТКИ НЕ УДАЧНОГО ВХОДА В ПРОГРАММУ СВЫШЕ 5  СООБШАЕМ ПОЛЬЗОВАТЛЮ ЧТО ЕГО ИММ ЯИ ИЛИ ПАРОЛЬ НЕ ПРАВИЛЬНЫЙ И ПРИЛОЖЕНИЕ ОПРАЫЛЕМ В СОН
-                                        ПодсчетОтрицательныйРезультатовАунтификации = 0;
-                                                System.out.println("Another thread was executed");
-                                                //TODO ЗАПУСКАЕМ ФУТУРЕ
-                                                MainActivity_Tabels_Users_And_Passwords.this.runOnUiThread(new Runnable() {
-                                                    public void run() {
-                                                        ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// при нажатии делаем видимый програсссбар
-                                                        Snackbar.make(v, " Сон на 10 секунд.....", Snackbar.LENGTH_LONG).show();
-                                                        КнопкаВходавСистему.setEnabled(false);
-                                                        КнопкаВходавСистему.setClickable(false);
-                                                        КнопкаВходавСистему.setBackgroundColor(Color.GRAY);
-                                                            ((Activity) КонтекстСинхроДляАунтификации).runOnUiThread(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    ПрогрессБарДляВходаСистему.postDelayed(()->{
-                                                                        ПрогрессБарДляВходаСистему .setVisibility(View.INVISIBLE);
-                                                                        КнопкаВходавСистему.setEnabled(true);
-                                                                        КнопкаВходавСистему.setClickable(true);
-                                                                        КнопкаВходавСистему.setBackgroundColor(Color.parseColor("#00ACC1"));
-                                                                    },10000);// по умолчанию прогресс бар делаем не видеым
-
-                                                                    // TODO: 13.10.2021
-                                                                }
-                                                            });
-                                                    }
-                                                });
-                                    }
-                                }
-                            } catch (Exception e) {
-                                ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
-                                e.printStackTrace();
-                                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
-                                        this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                        Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            }
-                        }
-                    });
-                }
-
             };
             ///TODO запускаем asyncTaskLoader для акнтификации пользователя проверки этот ли пользователь
-            class_grud_sql_operationsАунтификацияПользователя.asyncTaskLoaderАунтификацияПользователя    .startLoading();
+           asyncTaskLoaderАунтиф  .startLoading();
+           asyncTaskLoaderАунтиф.forceLoad();
+           asyncTaskLoaderАунтиф.registerListener(new Random().nextInt(), new Loader.OnLoadCompleteListener() {
+               @Override
+               public void onLoadComplete(@NonNull Loader loader, @Nullable Object data) {
+         try{
+             if (БуферПолученнниеДанныхПолученияIDотСервера.length() > 0) {
+                 ////TODO ДАННЫЙ КОД ОПРЕДЕЛЯЕТ ПРИСЛАЛ ЛИ ОШИБКУ СЕРВЕР НА НЕПРАВИЛЬНЫЙ И ПОЛНОСТЬ ОТСУТВУЮЩИЕ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ, КОТОРЫЙ ХОТЕЛ ЗАЙТИ В  СИСТЕМУ
+                 if (!БуферПолученнниеДанныхПолученияIDотСервера.toString().trim().equalsIgnoreCase("Server Running...... Don't Login and Password") ) {
+                     // TODO: 21.04.2021 успешная унфтикация
+                     ПубличноеIDПолученныйИзСервлетаДляUUID =Integer.parseInt(БуферПолученнниеДанныхПолученияIDотСервера.toString());
+                     ///ИЗ ОТВЕТА ПОЛУЧАЕМ ID ПОЛЬЗОВАТЕЛЯ ДЛЯ ГЕНЕРАЦИИ  UUID//
+                     Log.d(this.getClass().getName(), "  ПроверкаПришёлЛиОтветОтСервлетаДляАунтификацииПользователя "
+                             + БуферПолученнниеДанныхПолученияIDотСервера + "  ПубличноеIDПолученныйИзСервлетаДляUUID " +ПубличноеIDПолученныйИзСервлетаДляUUID);
+                     Integer ПолученинныйПубличныйIDДлчЗаписиВБАзу=Integer.parseInt(БуферПолученнниеДанныхПолученияIDотСервера.toString());
+                     ////////
+                     Log.d(this.getClass().getName(), " ПолученинныйПубличныйIDДлчЗаписиВБАзу " +ПолученинныйПубличныйIDДлчЗаписиВБАзу);
+                     //todo метод после успешной аунтифтфикации записываем саупешное получение данных в базу после успешного вписаниеи пароля и логина
+                     МетодПослеУспешнойАунтификацииЗаписиваемИзменияВБАзуВДвеТаблицы_successlogin_И_Дополнительно_И_таблицуsettings_tabels(ПолученинныйПубличныйIDДлчЗаписиВБАзу);
+                     //TODO не прошёл аунтификайию
+                 }else{
+                     ПрогрессБарДляВходаСистему.setIndeterminate(false);
+                     ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
+                     Snackbar snackbar = Snackbar.make(v, " " +"Логин и Пароль не правильный !!!" , Snackbar.LENGTH_LONG);
+                     snackbar.show();
+                     //TODO ПОСЛЕ ПИНГА ВИЗУАЛИЗАЦИЯ
+                     МетодВизуализацииПоложительныхИлиОтрицательныхПопытокАунтификации();
+
+
+                 }
+             }
+               } catch (Exception e) {
+                   e.printStackTrace();
+                   Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                           " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                   new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                           this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                           Thread.currentThread().getStackTrace()[2].getLineNumber());
+               }
+               }
+           });
 
             ///////TODO КОНЕЦ ASYNCTASKLOADER АУНТИФИКАЦИИЯ
         } catch (Exception e) {
@@ -547,6 +418,136 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
+
+
+
+
+    private void МетодПослеУспешнойАунтификацииЗаписиваемИзменияВБАзуВДвеТаблицы_successlogin_И_Дополнительно_И_таблицуsettings_tabels(Integer ПолученинныйПубличныйIDДлчЗаписиВБАзу )
+            throws ExecutionException, InterruptedException {
+        //// todo после успешного получение имени и пароля записываем их в базу ЗАПУСК МЕТОДА ВСТАВКИ ИМЕНИ И ПАРОЛЯ ПРИ АУНТИФИКАЦИИ БОЛЕЕ 7 ДНЕЙ
+        try{
+            //todo ЗАПИСЬ ="SUCCENLOGIN";
+            Long результатЗаписиНовогоПароляПользователявБазцуsuccesslogin=
+                    new SubClassWriterPUBLICIDtoDatabase().
+                            МетодЗапипиВБАзуПубличногоID(getApplicationContext(),ПолученинныйПубличныйIDДлчЗаписиВБАзу,ПубличноеИмяПользовательДлСервлета,ПубличноеПарольДлСервлета);
+            if (результатЗаписиНовогоПароляПользователявБазцуsuccesslogin>0) {
+                /// TODO: 22.02.2022 ЗАПИСЬ ="settings_tabels";
+                Long РезультатЗаписиНовгоIDБАзуВТаблицеНАСТРОЕКПОЛЬЗОВТЕЛЯ_ДЛяЗАПИСИВТаблицу_settings_tabels=
+                        new Class_MODEL_synchronized(getApplicationContext()).  МетодЗАписиПолученогоОтСервреаIDПубличногоВТАблицу_settings_tabels(
+                                ПолученинныйПубличныйIDДлчЗаписиВБАзу);
+                // TODO: 10.09.2021  РЕЗУЛЬТАТ ЗАПИСИ СОТРУДНИКА ЗАПИСИ В БАЗУ
+                Log.d(this.getClass().getName(), " БуферПолученнниеДанныхПолученияIDотСервера "
+                        +БуферПолученнниеДанныхПолученияIDотСервера.toString() +
+                        " УСПЕШАЯ ЗАПИСЬ ПУБЛИЧНОГО id SUCCEESS !!!!  " +
+                        "ТАБЛИЦА settings_tabels  РезультатЗаписиНовгоIDБАзуВТаблицеНАСТРОЕКПОЛЬЗОВТЕЛЯ_ДЛяЗАПИСИВТаблицу_settings_tabels "
+                        + РезультатЗаписиНовгоIDБАзуВТаблицеНАСТРОЕКПОЛЬЗОВТЕЛЯ_ДЛяЗАПИСИВТаблицу_settings_tabels+
+                        " ПолученинныйПубличныйIDДлчЗаписиВБАзу " +ПолученинныйПубличныйIDДлчЗаписиВБАзу);
+
+
+                МетодВходаВПриложениеПослеУспешногоЛогирования();
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
+            ///метод запись ошибок в таблицу
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            // TODO: 01.09.2021 метод вызова
+            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+        }
+
+    }
+
+    private void МетодВходаВПриложениеПослеУспешногоЛогирования() {
+        try{
+            Log.d(this.getClass().getName(), " stopLoading() asyncTaskLoaderАунтификацияПользователя ");
+            Intent Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации = new Intent();
+            Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.putExtra("РежимЗапускаСинхронизации","СамыйПервыйЗапускСинхронизации");
+            Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.putExtra("ПубличноеIDПолученныйИзСервлетаДляUUID",ПубличноеIDПолученныйИзСервлетаДляUUID);
+            Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.putExtra("ПубличноеИмяПользовательДлСервлета",ПубличноеИмяПользовательДлСервлета);
+            Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.putExtra("ПубличноеПарольДлСервлета",ПубличноеПарольДлСервлета);
+            Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.putExtra("СтрокаСвязиСсервером",СтрокаСвязиСсервером);
+            Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.setClass(getApplication(), MainActivity_Visible_Async.class);
+            Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);/// FLAG_ACTIVITY_SINGLE_TOP
+            // TODO: 01.12.2022 записываем режим синъронизации
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("РежимЗапускаСинхронизации","СамыйПервыйЗапускСинхронизации");
+            editor.commit();
+            startActivity(Интент_ЗапускСамогоПриложенияЕслиПользовательПослеУспешнойаунтификации);
+            finish();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
+            ///метод запись ошибок в таблицу
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            // TODO: 01.09.2021 метод вызова
+            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+        }
+    }
+
+
+    ///todo метод визуализацци успешных и не успешных аунтифиуаци пользоватле
+    private void МетодВизуализацииПоложительныхИлиОтрицательныхПопытокАунтификации() {
+        MainActivity_Tabels_Users_And_Passwords.this.runOnUiThread(new Runnable() {
+            public void run() {
+                Log.d(this.getClass().getName(), " handlerВизуализацияАунтификации ");
+                try {
+                    Log.d(this.getClass().getName(), " ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе "
+                            + " БуферПолученнниеДанныхПолученияIDотСервера" + БуферПолученнниеДанныхПолученияIDотСервера.length());
+                    if (ОшибкиПришлиПослеПингаОтСервера != null
+                            && БуферПолученнниеДанныхПолученияIDотСервера.length() == 0) {////полученный результат обрабатываем для принятия решения прошел ли пользователь аунтификацию
+///TODO КОГДА 4 ПОПЫТКИ ПРОШЛИ НЕ УСПЕШНО И МЫ ЗАСЫВАЕМ ПРИЛОЖЕНИЯ НА 30 СЕКУНД
+                        if (ПодсчетОтрицательныйРезультатовАунтификации > 4) {////ПОПЫТКИ НЕ УДАЧНОГО ВХОДА В ПРОГРАММУ СВЫШЕ 5  СООБШАЕМ ПОЛЬЗОВАТЛЮ ЧТО ЕГО ИММ ЯИ ИЛИ ПАРОЛЬ НЕ ПРАВИЛЬНЫЙ И ПРИЛОЖЕНИЕ ОПРАЫЛЕМ В СОН
+                            ПодсчетОтрицательныйРезультатовАунтификации = 0;
+                            System.out.println("Another thread was executed");
+                            //TODO ЗАПУСКАЕМ ФУТУРЕ
+                            MainActivity_Tabels_Users_And_Passwords.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// при нажатии делаем видимый програсссбар
+                                    Snackbar.make(v, " Сон на 10 секунд.....", Snackbar.LENGTH_LONG).show();
+                                    КнопкаВходавСистему.setEnabled(false);
+                                    КнопкаВходавСистему.setClickable(false);
+                                    КнопкаВходавСистему.setBackgroundColor(Color.GRAY);
+                                    ((Activity) КонтекстСинхроДляАунтификации).runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ПрогрессБарДляВходаСистему.postDelayed(()->{
+                                                ПрогрессБарДляВходаСистему .setVisibility(View.INVISIBLE);
+                                                КнопкаВходавСистему.setEnabled(true);
+                                                КнопкаВходавСистему.setClickable(true);
+                                                КнопкаВходавСистему.setBackgroundColor(Color.parseColor("#00ACC1"));
+                                            },10000);// по умолчанию прогресс бар делаем не видеым
+
+                                            // TODO: 13.10.2021
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                } catch (Exception e) {
+                    ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
+                    e.printStackTrace();
+                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                            this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                            Thread.currentThread().getStackTrace()[2].getLineNumber());
+                }
+            }
+        });
+    }
+
+
+
+
+
     boolean МетодГлавныйСинхронизацииДанныхКлиентСервер(Context КонтекстКоторыйДляСинхронизации) throws ExecutionException, InterruptedException, TimeoutException {
         /////=----СИНХРОНИЗАЦИЯ
         ///TODO СИНХРОНИЗАЦИЯ ///TODO СИНХРОНИЗАЦИЯ при запуске прилиложения
