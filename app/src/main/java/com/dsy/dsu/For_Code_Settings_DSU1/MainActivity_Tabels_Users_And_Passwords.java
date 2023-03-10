@@ -262,6 +262,8 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                         // TODO: 10.03.2023 Логин И Пароль для Аунтификайии с Сервером
                             ПодключениекСерверуАунтификация.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
                            ПодключениекСерверуАунтификация.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);  //"dsu1getsession"
+                           ПодключениекСерверуАунтификация.setRequestProperty("public_clientandroid", ПубличноеIDПолученныйИзСервлетаДляUUID.toString());  //"dsu1getsession"
+
                             Log.d(this.getClass().getName(), "  ПубличноеИмяПользовательДлСервлета  " + ПубличноеИмяПользовательДлСервлета + "\n" + " ПубличноеПарольДлСервлета    " + ПубличноеПарольДлСервлета);
                             if (ПубличноеИмяПользовательДлСервлета.length()>0 && ПубличноеПарольДлСервлета.length()>0) {
                                 try {
