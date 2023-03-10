@@ -3,6 +3,7 @@ package com.dsy.dsu.Business_logic_Only_Class;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.se.omapi.Session;
 import android.util.Log;
 
 import androidx.lifecycle.Observer;
@@ -23,6 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLServerSocketFactory;
 
 public class Class_Generation_WORK_MANGER_DIRECT {
     Context contextДляКлассаВремени;
@@ -58,6 +61,7 @@ public class Class_Generation_WORK_MANGER_DIRECT {
                 WorkManager.getInstance(context.getApplicationContext()).enqueueUniquePeriodicWork(ИмяСлужбыСинхронизации,
                         ExistingPeriodicWorkPolicy.REPLACE, periodicWorkRequestСинхронизация);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу

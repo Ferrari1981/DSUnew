@@ -328,7 +328,6 @@ public class ContentProviderForDataBase extends ContentProvider {
                                 if (Create_Database_СамаБАзаSQLite.inTransaction()) {
                                     Create_Database_СамаБАзаSQLite.endTransaction();
                                 }
-
                                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" +
                                         Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                                         + Thread.currentThread().getStackTrace()[2].getLineNumber());
@@ -377,7 +376,6 @@ public class ContentProviderForDataBase extends ContentProvider {
             if (Create_Database_СамаБАзаSQLite.inTransaction()) {
                 Create_Database_СамаБАзаSQLite.endTransaction();
             }
-
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new Class_Generation_Errors(getContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),
