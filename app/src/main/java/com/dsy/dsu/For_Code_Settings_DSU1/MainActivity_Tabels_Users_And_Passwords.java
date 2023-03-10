@@ -23,11 +23,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.loader.content.AsyncTaskLoader;
-import androidx.preference.PreferenceManager;
 
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Connections_Server;
-import com.dsy.dsu.Business_logic_Only_Class.Class_Encryption_Decryption_Login_Password;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Find_Setting_User_Network;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
@@ -221,7 +219,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
             //////
             //////TODO Запуск асинхроного ЛОУДОРА ДЛЯ АУНТИФТИКАЦИИ ПОЛЬЗОВАТЕЛЯ
             class_grud_sql_operationsАунтификацияПользователя.asyncTaskLoaderАунтификацияПользователя = new AsyncTaskLoader(КонтекстСинхроДляАунтификации) {
-                HttpURLConnection ПодключениекСерверуДляАунтификацииПользователяПриВходе = null;
+                HttpURLConnection ПодключениекСерверуАунтификация = null;
                 String ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе = null;
                 @Override
                 protected void onStartLoading() {
@@ -251,38 +249,25 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                             СтрокаСвязиСсервером = СтрокаСвязиСсервером.replace(" ", "%20");
                             Log.d(this.getClass().getName(), " СтрокаСвязиСсервером " +СтрокаСвязиСсервером);
                             URL Adress = new URL(СтрокаСвязиСсервером); //
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе = null;
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе = (HttpURLConnection) (Adress).openConnection();/////САМ ФАЙЛ JSON C ДАННЫМИ
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе.setRequestProperty("Content-Type", "application/text; charset=UTF-8");
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе.setRequestProperty("Accept-Encoding", "gzip,deflate,sdch");
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе.setRequestProperty("Connection", "Keep-Alive");
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе.setRequestProperty("Accept-Language", "ru-RU");
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе.setRequestMethod("GET"); ////GET //ПРОВЕРЯЕМ ЕСЛИ ПОДКЛЮЧЕНИЕ К СЕВРЛЕТУ С АНДРОЙДА НА SQL SERVER
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе.setReadTimeout(5000); //todo чтение потока до 5 секунд
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе.setConnectTimeout(2000);//todo таймайт подключение к самому серверу если вообще подключения
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе.setUseCaches(false);
-                            ////////
-                            Log.d(this.getClass().getName(), " ПроверкаПришёлЛиОтветОтСервлетаДляАунтификацииПользователя  " + ПроверкаПришёлЛиОтветОтСервлетаДляАунтификацииПользователя);
-                            // TODO: 11.11.2021  ПЕРЕДОТПРАВКОЙ ШИФРУЕМ ДАННЫЕ \
-                            String ЗашифрованныйЛогин=new Class_Encryption_Decryption_Login_Password(getApplicationContext()).МетодПреобразованиеBase64Данных(ПубличноеИмяПользовательДлСервлета);
-                            Log.d(this.getClass().getName(), " ЗашифрованныйЛогин  " + ЗашифрованныйЛогин);
-                            // TODO: 12.11.2021 ППЕРОБРАЗОВАНИЯ ПАРОЛЬЯ ЧЕРЕЗ BASE64 ПАРОЛЯ ВАРИАНТ 1
-                            String ЗашифрованныйПароль=new Class_Encryption_Decryption_Login_Password(getApplicationContext()).МетодПреобразованиеBase64Данных(ПубличноеПарольДлСервлета);
-                            Log.d(this.getClass().getName(), " ЗашифрованныйПароль  " + ЗашифрованныйПароль);
-                            /////// TODO set login pasword
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе.setRequestProperty("p_identifier",
-                                    ЗашифрованныйПароль);  //"dsu1getsession"
-                            ////Dalvik/2.1.0 (Linux; U; Android 7.0; Android SDK built for x86 Build/NYC)
-                            ///////посылаем сашифрованные хэдэры
-                            ПодключениекСерверуДляАунтификацииПользователяПриВходе.setRequestProperty("identifier",
-                                    ЗашифрованныйЛогин  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
-                            Log.d(this.getClass().getName(), "  ПубличноеИмяПользовательДлСервлета  " + ПубличноеИмяПользовательДлСервлета + "\n" +
-                                    " ПубличноеПарольДлСервлета    " + ПубличноеПарольДлСервлета);
+                            ПодключениекСерверуАунтификация = null;
+                            ПодключениекСерверуАунтификация = (HttpURLConnection) (Adress).openConnection();/////САМ ФАЙЛ JSON C ДАННЫМИ
+                            ПодключениекСерверуАунтификация.setRequestProperty("Content-Type", "application/text; charset=UTF-8");
+                            ПодключениекСерверуАунтификация.setRequestProperty("Accept-Encoding", "gzip,deflate,sdch");
+                            ПодключениекСерверуАунтификация.setRequestProperty("Connection", "Keep-Alive");
+                            ПодключениекСерверуАунтификация.setRequestProperty("Accept-Language", "ru-RU");
+                            ПодключениекСерверуАунтификация.setRequestMethod("GET"); ////GET //ПРОВЕРЯЕМ ЕСЛИ ПОДКЛЮЧЕНИЕ К СЕВРЛЕТУ С АНДРОЙДА НА SQL SERVER
+                            ПодключениекСерверуАунтификация.setReadTimeout(5000); //todo чтение потока до 5 секунд
+                            ПодключениекСерверуАунтификация.setConnectTimeout(2000);//todo таймайт подключение к самому серверу если вообще подключения
+                            ПодключениекСерверуАунтификация.setUseCaches(false);
+                        // TODO: 10.03.2023 Логин И Пароль для Аунтификайии с Сервером
+                            ПодключениекСерверуАунтификация.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
+                           ПодключениекСерверуАунтификация.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);  //"dsu1getsession"
+                            Log.d(this.getClass().getName(), "  ПубличноеИмяПользовательДлСервлета  " + ПубличноеИмяПользовательДлСервлета + "\n" + " ПубличноеПарольДлСервлета    " + ПубличноеПарольДлСервлета);
                             if (ПубличноеИмяПользовательДлСервлета.length()>0 && ПубличноеПарольДлСервлета.length()>0) {
                                 try {
-                                    ПодключениекСерверуДляАунтификацииПользователяПриВходе.connect(); /////////////ТОЛЬКО СОЕДИНЕНИЕ
+                                    ПодключениекСерверуАунтификация.connect(); /////////////ТОЛЬКО СОЕДИНЕНИЕ
                                     ///todo ping
-                                    ПодключениекСерверуДляАунтификацииПользователяПриВходе.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
+                                    ПодключениекСерверуАунтификация.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
                                     Log.d(this.getClass().getName(), "ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе "
                                             + ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе);
                                 } catch (IOException e) {
@@ -298,14 +283,14 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                             }
 
                         Log.d(this.getClass().getName(), "ПодключениекСерверуДляАунтификацииПользователяПриВходе.getContentLength() "
-                                + ПодключениекСерверуДляАунтификацииПользователяПриВходе.getHeaderField("stream_size"));
-                        Long РазмерПришедшегоПотока = Long.parseLong(ПодключениекСерверуДляАунтификацииПользователяПриВходе.getHeaderField("stream_size"));
+                                + ПодключениекСерверуАунтификация.getHeaderField("stream_size"));
+                        Long РазмерПришедшегоПотока = Long.parseLong(ПодключениекСерверуАунтификация.getHeaderField("stream_size"));
                         Log.d(this.getClass().getName(), "РазмерПришедшегоПотока " + РазмерПришедшегоПотока);
                             /////ПОЛУЧАЕМ ЦИФРОВУЮ ВЕРСИЮ  ИМЕНИ ПОЛЬЗЛВАТЕЛЯ ВВ ИДЕ ЦИРЫ С SQL SERVERs
-                            if (ПодключениекСерверуДляАунтификацииПользователяПриВходе.getResponseCode() == 200 && РазмерПришедшегоПотока > 0) {/////ЗАХОДИМ В ФАЙЛ ТОЛЬКО КОГДА НЕТ ОШИБКОВ В ПОТОКА ОТ SQL SEVER
+                            if (ПодключениекСерверуАунтификация.getResponseCode() == 200 && РазмерПришедшегоПотока > 0) {/////ЗАХОДИМ В ФАЙЛ ТОЛЬКО КОГДА НЕТ ОШИБКОВ В ПОТОКА ОТ SQL SEVER
                                 ////TODO буфера проверки пользователя
                                 БуферПодключениеJSONВерсияSQlserver =
-                                        new BufferedReader(new InputStreamReader(new GZIPInputStream(ПодключениекСерверуДляАунтификацииПользователяПриВходе.getInputStream()), StandardCharsets.UTF_16));
+                                        new BufferedReader(new InputStreamReader(new GZIPInputStream(ПодключениекСерверуАунтификация.getInputStream()), StandardCharsets.UTF_16));
                                 ///TODO ПЕРВЫЙ ВАРАНТ РАСПАРСИВАНИЯ ПРИШЕДШЕГО JSON ПОТОКА С СЕРВРА
                             БуферПолученнниеДанныхПолученияIDотСервера = БуферПодключениеJSONВерсияSQlserver.lines()
                                      .collect(StringBuffer::new, (sb, i) -> sb.append(i),

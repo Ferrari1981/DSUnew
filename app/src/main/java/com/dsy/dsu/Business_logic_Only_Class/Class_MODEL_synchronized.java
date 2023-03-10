@@ -170,140 +170,64 @@ import javax.crypto.NoSuchPaddingException;
                             Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
 
                     if(Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getCount()>0){
-                        ///
                         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.moveToFirst();
-
-                        /////
-              ПубличноеИмяПользовательДлСервлета=         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
-
-                        /////
+                         ПубличноеИмяПользовательДлСервлета=         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
                         ПубличноеПарольДлСервлета=           Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
                     }
-
-
-
-
                     Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " +ПубличноеИмяПользовательДлСервлета +
                             " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета);
 
-
-                        // TODO: 11.11.2021  ПЕРЕДОТПРАВКОЙ ШИФРУЕМ ДАННЫЕ \
-                        String ЗашифрованныйЛогин=new Class_Encryption_Decryption_Login_Password(context).МетодПреобразованиеBase64Данных(ПубличноеИмяПользовательДлСервлета);
-                        Log.d(this.getClass().getName(), " ЗашифрованныйЛогин  " + ЗашифрованныйЛогин);
-                        // TODO: 12.11.2021 ППЕРОБРАЗОВАНИЯ ПАРОЛЬЯ ЧЕРЕЗ BASE64 ПАРОЛЯ ВАРИАНТ 1
-                        String ЗашифрованныйПароль=new Class_Encryption_Decryption_Login_Password(context).МетодПреобразованиеBase64Данных(ПубличноеПарольДлСервлета);
-                        Log.d(this.getClass().getName(), " ЗашифрованныйПароль  " + ЗашифрованныйПароль);
-
-                        // TODO: 12.11.2021 КАШИРОВАНИЯ ПАРОЛЯ ВАРИАНТ 2
-
-                        /////// TODO set login pasword
-                        ПодключениеПолученияДанныхсСервер.setRequestProperty("p_identifier",
-                                ЗашифрованныйПароль);  //"dsu1getsession"
-
-                        ПодключениеПолученияДанныхсСервер.setRequestProperty("identifier",
-                                ЗашифрованныйЛогин  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
-
-
+                        ПодключениеПолученияДанныхсСервер.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);  //"dsu1getsession"
+                        ПодключениеПолученияДанныхсСервер.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
                     ПодключениеПолученияДанныхсСервер.connect(); /////////////ТОЛЬКО СОЕДИНЕНИЕ
-                    //ПодключениеПолученияДанныхсСервер.getResponseCode();///ВАЖНАЯ КОМАНДА  СТУЧИТЬСЯ В СЕРВЛЕТ ECLIPSE СТУЧИМСЯ ВТОРОЙ РАЗ ЧТОБЫ ПОЛУЧИТЬ УЖЕ САМ JSON
                    ПодключениеПолученияДанныхсСервер.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
 
 
             Log.d(this.getClass().getName(), "ПодключениеИнтернетДляОтправкиНаСервер.getContentLength() " + ПодключениеПолученияДанныхсСервер.getHeaderField("stream_size"));
-
             Long РазмерПришедшегоПотока = Long.parseLong(ПодключениеПолученияДанныхсСервер.getHeaderField("stream_size"));
-
             Log.d(this.getClass().getName(), "РазмерПришедшегоПотока " + РазмерПришедшегоПотока);
-
             Log.d(this.getClass().getName(), "ФлагТОлькоДлПолученияСтрочекТаблицыССерера " + ФлагТОлькоДлПолученияСтрочекТаблицыССерера);
-
-
-            ///
-         //   HttpURLConnection finalПодключениеПолученияДанныхсСервер = ПодключениеПолученияДанныхсСервер;
-
             Object finalОшибкаТекущегоМетода = ОшибкаТекущегоМетода;
-
             Object finalОшибкаТекущегоМетода1 = ОшибкаТекущегоМетода;
-
             String finalФлагТОлькоДлПолученияСтрочекТаблицыССерера = ФлагТОлькоДлПолученияСтрочекТаблицыССерера;
-
             Integer finalРазмерПришедшегоОбщееКоличествоСтрочекJSONДляТаблицы = РазмерПришедшегоОбщееКоличествоСтрочекJSONДляТаблицы;
-            /////////
-
                     ////TODO И ЕСЛИ ПРИШЕЛ ОТ СЕРВЕРА ОТВЕТ ПОЛОЖИТЕЛЬНО ТО ТОГДА ЗАПУСКАМ ПРОЧТЕНИЯ ПОТОКА ПРИШЕДШЕГО С СЕРВЕРА
-             
                         if (ПодключениеПолученияДанныхсСервер.getResponseCode() == 200 && РазмерПришедшегоПотока > 0) {
-                            //TODO шифровани
-                            // Log.d(this.getClass().getName(), "  ПолитикаРасшифровки  " +PUBLIC_CONTENT. ПолитикаРасшифровки);
-
-
                             Log.d(Class_MODEL_synchronized.class.getName(), "  СЛУЖБА СИНХРОНИЗАЦИИ РАЗМЕР ПОТОКА КОТОРЫЙ ПРИШЁЛ ... " + "\n" +
                                     " ПУбличныйИмяТаблицыОтАндройдаВнутриПотока  ::::::  " + ПУбличныйИмяТаблицыОтАндройдаВнутриПотока + "\n" +
                                     " ПодключениеИнтернетДляОтправкиНаСервер.getContentLength()  " + ПодключениеПолученияДанныхсСервер.getHeaderField("stream_size"));//  "   ПодключениеИнтернетДляОтправкиНаСервер.getHeaderField(Content-Length "+
-
-
-
-                                //////тест шифрование
                                 GZIPПотокОтСЕРВЕРА = new GZIPInputStream(ПодключениеПолученияДанныхсСервер.getInputStream());
-                                ///// todo получаем данные с сервера
-                                //GZIPInputStream GZIPПотокОтСЕРВЕРА = new GZIPInputStream(ПодключениеИнтернетДляОтправкиНаСервер[0].getInputStream(),Deflater.BEST_COMPRESSION);///byte[] data = new byte[512];
                                 РидерОтСервераМетодаGET = new BufferedReader(new InputStreamReader(GZIPПотокОтСЕРВЕРА, StandardCharsets.UTF_16));//
-
-
-                            ///
                             Log.d(this.getClass().getName(), "finalФлагТОлькоДлПолученияСтрочекТаблицыССерера " + finalФлагТОлькоДлПолученияСтрочекТаблицыССерера+
                                     "  КонкретнаяТаблицаВПотокеВнутриПотока " +КонкретнаяТаблицаВПотокеВнутриПотока);
-
-
-                            // TODO: 14.09.2021  через движок
-
-                            BufferedReader finalРидерОтСервераМетодаGET = РидерОтСервераМетодаGET;
-                            /////
-
                                             // TODO: 14.05.2021 получаем данные с сервера
                                     /////НАЗВАНИЕ ПОТОКА
                                     Log.i(this.getClass().getName(), "РазмерПришедшегоПотока " + РазмерПришедшегоПотока);
-
                                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-
-
-
                                         ///TODO ПЕРВЫЙ ВАРАНТ РАСПАРСИВАНИЯ ПРИШЕДШЕГО JSON ПОТОКА С СЕРВРА
                                         БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера
-                                            = finalРидерОтСервераМетодаGET.lines().collect(StringBuffer::new, (sb, i) -> sb.append(i),
+                                            = РидерОтСервераМетодаGET.lines().collect(StringBuffer::new, (sb, i) -> sb.append(i),
                                             StringBuffer::append);
-
-
-
                                             /////НАЗВАНИЕ ПОТОКА
                                             Log.i(this.getClass().getName(), "НАЗВАНИЕ ПОТОКА В aSYNSTASK " + Thread.currentThread().getName().toUpperCase() + " БуферПолученнниеДанныхОтМетодаGET "
                                                     + БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString()+"\n"+
                                                      "  БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.length() "
                                                     +БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.length());
-
-
                                     }else {
                                         ///TODO ПЕРВЫЙ ВАРАНТ РАСПАРСИВАНИЯ ПРИШЕДШЕГО JSON ПОТОКА С СЕРВРА
-                                        БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.append(finalРидерОтСервераМетодаGET.readLine());
-
-
+                                        БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.append(РидерОтСервераМетодаGET.readLine());
                                         /////НАЗВАНИЕ ПОТОКА
                                         Log.i(this.getClass().getName(), "НАЗВАНИЕ ПОТОКА В aSYNSTASK " + Thread.currentThread().getName().toUpperCase() + " БуферПолученнниеДанныхОтМетодаGET "
                                                 + БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString()+"\n"+
                                                 "  БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.length() "
                                                 +БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.length());
-
                                     }
-
                                     ///
                                     Log.d(this.getClass().getName(), " БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString()"
                                             + БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString());/////
 
-
-
                                     if (БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера != null &&
                                             БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString().length() > 0) {
-                                        ///
                                         /////НАЗВАНИЕ ПОТОКА
                                         Log.i(this.getClass().getName(), "НАЗВАНИЕ ПОТОКА В aSYNSTASK " + Thread.currentThread().getName().toUpperCase() + " БуферПолученнниеДанныхОтМетодаGET "
                                                 + БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString());
@@ -455,15 +379,8 @@ import javax.crypto.NoSuchPaddingException;
             }
             Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " +ПубличноеИмяПользовательДлСервлета +
                     " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета);
-                String ЗашифрованныйЛогин=new Class_Encryption_Decryption_Login_Password(context).МетодПреобразованиеBase64Данных(ПубличноеИмяПользовательДлСервлета);
-                Log.d(this.getClass().getName(), " ЗашифрованныйЛогин  " + ЗашифрованныйЛогин);
-                String ЗашифрованныйПароль=new Class_Encryption_Decryption_Login_Password(context).МетодПреобразованиеBase64Данных(ПубличноеПарольДлСервлета);
-                Log.d(this.getClass().getName(), " ЗашифрованныйПароль  " + ЗашифрованныйПароль);
-                /////// TODO set login pasword
-                ПодключениеПолученияДанныхсСервер.setRequestProperty("p_identifier",
-                        ЗашифрованныйПароль);
-                ПодключениеПолученияДанныхсСервер.setRequestProperty("identifier",
-                        ЗашифрованныйЛогин  );
+                ПодключениеПолученияДанныхсСервер.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );
+               ПодключениеПолученияДанныхсСервер.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);
                 ПодключениеПолученияДанныхсСервер.connect(); /////////////ТОЛЬКО СОЕДИНЕНИЕ
                 ПодключениеПолученияДанныхсСервер.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
                 РазмерПришедшегоПотока  = Integer.parseInt(ПодключениеПолученияДанныхсСервер.getHeaderField("stream_size"));
@@ -498,6 +415,7 @@ import javax.crypto.NoSuchPaddingException;
                 new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(ex.toString(), Class_MODEL_synchronized.class.getName(),
                         Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
             }
+
         }
 
         return РазмерПришедшегоПотока;
@@ -608,18 +526,10 @@ import javax.crypto.NoSuchPaddingException;
                             }
                             Log.i(this.getClass().getName(), " PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета " + ПубличноеИмяПользовательДлСервлета +
                                     " PUBLIC_CONTENT.ПубличноеПарольДлСервлета   " +ПубличноеПарольДлСервлета);
-                            String ЗашифрованныйЛогин=new Class_Encryption_Decryption_Login_Password(context).МетодПреобразованиеBase64Данных(ПубличноеИмяПользовательДлСервлета);
-                            Log.d(this.getClass().getName(), " ЗашифрованныйЛогин  " + ЗашифрованныйЛогин);
-                            String ЗашифрованныйПароль=new Class_Encryption_Decryption_Login_Password(context).МетодПреобразованиеBase64Данных(ПубличноеПарольДлСервлета);
-                            Log.d(this.getClass().getName(), " ЗашифрованныйПароль  " + ЗашифрованныйПароль);
-                            ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("p_identifier",
-                                    ЗашифрованныйПароль);
-                            ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("identifier",
-                                    ЗашифрованныйЛогин  );
+                            ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );
+                            ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);
                             ПодключениеИнтернетДляОтправкиНаСервер.connect();
                     //////TODO ОТПРАВЛЕМ ДАННЫЕ НА СЕРВЕР ЕЛСИ ДАННЫЕ НОВЫЕ КАК ОТПАРВЯЕМ ТО ОБНЦЛЕМ БУФЕР С JSON АГА !!!!
-
-
                     try ( BufferedWriter БуферПосылаемМетодуPOSTJSONФайл = new BufferedWriter(new OutputStreamWriter(
                             new GZIPOutputStream(ПодключениеИнтернетДляОтправкиНаСервер.getOutputStream()), StandardCharsets.UTF_16));){
                         // TODO: 09.09.2022  отправляем
@@ -3311,19 +3221,9 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                     }
                     Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " +ПубличноеИмяПользовательДлСервлета +
                             " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета);
-                    String ЗашифрованныйЛогин=new Class_Encryption_Decryption_Login_Password(this.context).МетодПреобразованиеBase64Данных(ПубличноеИмяПользовательДлСервлета);
-                    Log.d(this.getClass().getName(), " ЗашифрованныйЛогин  " + ЗашифрованныйЛогин);
-                    // TODO: 12.11.2021 ППЕРОБРАЗОВАНИЯ ПАРОЛЬЯ ЧЕРЕЗ BASE64 ПАРОЛЯ ВАРИАНТ 1
-                    String ЗашифрованныйПароль=new Class_Encryption_Decryption_Login_Password(this.context).МетодПреобразованиеBase64Данных(ПубличноеПарольДлСервлета);
-                    Log.d(this.getClass().getName(), " ЗашифрованныйПароль  " + ЗашифрованныйПароль);
+                    ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("identifier", ПубличноеПарольДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
                     /////// TODO set login pasword
-                    ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("p_identifier",
-                            ЗашифрованныйПароль);  //"dsu1getsession"
-                    ////Dalvik/2.1.0 (Linux; U; Android 7.0; Android SDK built for x86 Build/NYC)
-                    ///////посылаем сашифрованные хэдэры
-                    ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("identifier",
-                            ЗашифрованныйЛогин  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
-
+                    ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("p_identifier", ПубличноеИмяПользовательДлСервлета);  //"dsu1getsession"
                     ПодключениеИнтернетДляЗагрузкеAPKФайла.connect(); /////////////ТОЛЬКО СОЕДИНЕНИЕ
                     ПодключениеИнтернетДляЗагрузкеAPKФайла.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
                     int lenghtOfFile = ПодключениеИнтернетДляЗагрузкеAPKФайла.getContentLength();
@@ -3441,16 +3341,11 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                     Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " +ПубличноеИмяПользовательДлСервлета +
                             " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета);
                     // TODO: 11.11.2021  ПЕРЕДОТПРАВКОЙ ШИФРУЕМ ДАННЫЕ \
-                    String ЗашифрованныйЛогин=new Class_Encryption_Decryption_Login_Password(this.context).МетодПреобразованиеBase64Данных(ПубличноеИмяПользовательДлСервлета);
-                    Log.d(this.getClass().getName(), " ЗашифрованныйЛогин  " + ЗашифрованныйЛогин);
-                    String ЗашифрованныйПароль=new Class_Encryption_Decryption_Login_Password(this.context).МетодПреобразованиеBase64Данных(ПубличноеПарольДлСервлета);
-                    Log.d(this.getClass().getName(), " ЗашифрованныйПароль  " + ЗашифрованныйПароль);
-                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("p_identifier",
-                            ЗашифрованныйПароль);  //"dsu1getsession"
-                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("identifier",
-                            ЗашифрованныйЛогин  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
+                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
+                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);  //"dsu1getsession"
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.connect();
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
+
                     int ДлинаФайлаJSONВерсииДанныхЧисло = ПодключениеИнтернетДляJSONВерсииФайлаAPK.getContentLength();
                     Log.w(this.getClass().getName(), "  ДлинаФайлаJSONВерсииДанныхЧисло  JSON ВЕРСИЯ ФАЙЛА НА СЕРВЕРА " + ДлинаФайлаJSONВерсииДанныхЧисло);
                     ////TODO И ЕСЛИ ПРИШЕЛ ОТ СЕРВЕРА ОТВЕТ ПОЛОЖИТЕЛЬНО ТО ТОГДА ЗАПУСКАМ ПРОЧТЕНИЯ ПОТОКА ПРИШЕДШЕГО С СЕРВЕРА
