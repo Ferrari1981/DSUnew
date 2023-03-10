@@ -89,20 +89,23 @@ public Gson gson = new GsonBuilder()
 
     private   String  СсылкаНаРежимСервера;
     public String getСсылкаНаРежимСервера() {
-        СсылкаНаРежимСервера="dsu1.glassfish.atomic";//TODO РЕЛИЗ
+    //   СсылкаНаРежимСервера="dsu1.glassfish.atomic";//TODO РЕЛИЗ
+        СсылкаНаРежимСервера="jboss-1.0-SNAPSHOT/dsu1.glassfish.atomic";//TODO РЕЛИЗ
         return СсылкаНаРежимСервера.trim();
     }
 
 
     public LinkedHashMap<Integer,String> getМассивПортовСервера() {
 
-      /*  МассивПортовСервера.putIfAbsent(8080,"192.168.254.40");// TODO: 10.11.2022 Debug
+        МассивПортовСервера.putIfAbsent(8080,"192.168.254.40");// TODO: 10.11.2022 Debug
         МассивПортовСервера.putIfAbsent(8084,"192.168.254.40");// TODO: 10.11.2022 Debug
-        МассивПортовСервера.putIfAbsent(8085,"192.168.254.40");// TODO: 10.11.2022 Debug*/
+        МассивПортовСервера.putIfAbsent(8085,"192.168.254.40");// TODO: 10.11.2022 Debug
 
+/*
       МассивПортовСервера.putIfAbsent(8888,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз
        МассивПортовСервера.putIfAbsent(8889,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз
         МассивПортовСервера.putIfAbsent(8890,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз
+*/
 
 
         return МассивПортовСервера;
