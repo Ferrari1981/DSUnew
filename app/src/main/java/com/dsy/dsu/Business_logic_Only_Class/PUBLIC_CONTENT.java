@@ -90,6 +90,7 @@ public Gson gson = new GsonBuilder()
     private   String  СсылкаНаРежимСервера;
     public String getСсылкаНаРежимСервера() {
     //   СсылкаНаРежимСервера="dsu1.glassfish.atomic";//TODO РЕЛИЗ
+        //СсылкаНаРежимСервера="jboss-1.0-SNAPSHOT/dsu1.glassfish.atomic";//TODO РЕЛИЗ
         СсылкаНаРежимСервера="jboss-1.0-SNAPSHOT/dsu1.glassfish.atomic";//TODO РЕЛИЗ
         return СсылкаНаРежимСервера.trim();
     }
