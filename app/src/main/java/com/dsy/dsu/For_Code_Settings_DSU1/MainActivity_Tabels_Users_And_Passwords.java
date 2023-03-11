@@ -48,9 +48,13 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.zip.GZIPInputStream;
+
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
     ////todo аунтификация
@@ -179,13 +183,28 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                  ПубличноеПарольДлСервлета = ПарольДляВходаСистему.getText().toString().trim();///////получаем из формы пароль для того чтобы постучаться на сервер
                     Log.d(getPackageName().getClass().getName(), "ПубличноеПарольДлСервлета " +ПубличноеПарольДлСервлета);
                     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
                     if (ПубличноеИмяПользовательДлСервлета.length() > 0 &&  ПубличноеПарольДлСервлета.length() > 0) {
+
                         boolean РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию =
                                 new Class_Find_Setting_User_Network(getApplicationContext()).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
+
                         if (РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию == true) {
-                            Boolean РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных =
-                                    new Class_Connections_Server(getApplicationContext()).         МетодПингаСервераРаботаетИлиНет(getApplicationContext());
-                            if (РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных==true) {
+
+                            final Boolean[] РеальныйПингСервера = {false};
+                            Completable completable=Completable.fromCallable(new Callable<Object>() {
+                                @Override
+                                public Object call() throws Exception {
+                                    РеальныйПингСервера[0] =
+                                            new Class_Connections_Server(getApplicationContext()).         МетодПингаСервераРаботаетИлиНет(getApplicationContext());
+                                    Log.d(this.getClass().getName(), " РеальныйПингСервера "+ РеальныйПингСервера[0]) ;
+                                    return РеальныйПингСервера[0];
+                                }
+                            })
+                                    .subscribeOn(Schedulers.single());
+                            completable.blockingSubscribe();
+
+                            if (РеальныйПингСервера[0] ==true) {
                                 ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// при нажатии делаем видимый програсссбар
                                 //TODO запукаем метод аунтификции
                                 МетодАунтификацииПользователяПриВходевПрограммуДСУ1(v);//// данный метод в будущем будет запускаться с  кнопк
