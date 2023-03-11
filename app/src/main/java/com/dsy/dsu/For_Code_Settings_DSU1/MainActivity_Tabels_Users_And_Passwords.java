@@ -433,10 +433,12 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                             КнопкаВходавСистему.setEnabled(false);
                             КнопкаВходавСистему.setClickable(false);
                             КнопкаВходавСистему.setBackgroundColor(Color.GRAY);
+                            ПрогрессБарДляВходаСистему.setBackgroundColor(Color.GRAY);
                             ((Activity) КонтекстСинхроДляАунтификации).runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     ПрогрессБарДляВходаСистему.postDelayed(() -> {
+                                        ПрогрессБарДляВходаСистему.setBackgroundColor(Color.parseColor("FFD81B60"));
                                         ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
                                         КнопкаВходавСистему.setEnabled(true);
                                         КнопкаВходавСистему.setClickable(true);
