@@ -265,13 +265,13 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                 Request newRequest = builder.build();
                                 return chain.proceed(newRequest);
                             }
-                        }).connectTimeout(10, TimeUnit.SECONDS)
+                        }).connectTimeout(5, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS).build();
                 ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
                 Request requestGET = new Request.Builder().get().url(Adress).build();
                 Log.d(this.getClass().getName(), "  request  " + requestGET);
                 // TODO  Call callGET = client.newCall(requestGET);
-                //Dispatcher dispatcherПроверкаЛогиниПароль = okHttpClientИмяиПароль.dispatcher();
+                Dispatcher dispatcherПроверкаЛогиниПароль = okHttpClientИмяиПароль.dispatcher();
                 okHttpClientИмяиПароль.newCall(requestGET).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -281,7 +281,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                         new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), Class_MODEL_synchronized.class.getName(),
                                 Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                         // TODO: 31.05.2022
-                      //  dispatcherПроверкаЛогиниПароль.executorService().shutdown();
+                        dispatcherПроверкаЛогиниПароль.executorService().shutdown();
                         // TODO: 11.03.2023  ПОСЛЕ ПИНГА ПЕРЕХОДИМ
                         МетодПослеАунтификациисСервером(v);
                         //TODO закрываем п отоки
@@ -297,7 +297,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                             Long РазмерПришедшегоПотока = Long.parseLong(   response.header("stream_size"));
                             Log.d(this.getClass().getName(), "БуферПолученнниеДанныхПолученияIDотСервера " + БуферПолученнниеДанныхПолученияIDотСервера +  " РазмерПришедшегоПотока " +РазмерПришедшегоПотока);
                             // TODO: 31.05.2022
-                          //  dispatcherПроверкаЛогиниПароль.executorService().shutdown();
+                            dispatcherПроверкаЛогиниПароль.executorService().shutdown();
                             // TODO: 11.03.2023  ПОСЛЕ ПИНГА ПЕРЕХОДИМ
                             МетодПослеАунтификациисСервером(v);
                         }
