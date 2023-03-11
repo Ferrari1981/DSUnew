@@ -192,7 +192,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                         if (РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию == true) {
 
                             final Boolean[] РеальныйПингСервера = {false};
-                            Completable completable=Completable.fromCallable(new Callable<Object>() {
+                           Completable completable=Completable.fromCallable(new Callable<Object>() {
                                 @Override
                                 public Object call() throws Exception {
                                     РеальныйПингСервера[0] =
@@ -204,11 +204,11 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                     .subscribeOn(Schedulers.single());
                             completable.blockingSubscribe();
 
-                            if (РеальныйПингСервера[0] ==true) {
+
                                 ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// при нажатии делаем видимый програсссбар
                                 //TODO запукаем метод аунтификции
                                 МетодАунтификацииПользователяПриВходевПрограммуДСУ1(v);//// данный метод в будущем будет запускаться с  кнопк
-                            }
+
                         } else {
                             Log.d(this.getClass().getName(), " Вы не заполнили Логин/Пароль ") ;
                             ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
@@ -270,8 +270,8 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                             ПодключениекСерверуАунтификация.setRequestProperty("Connection", "Keep-Alive");
                             ПодключениекСерверуАунтификация.setRequestProperty("Accept-Language", "ru-RU");
                             ПодключениекСерверуАунтификация.setRequestMethod("GET"); ////GET //ПРОВЕРЯЕМ ЕСЛИ ПОДКЛЮЧЕНИЕ К СЕВРЛЕТУ С АНДРОЙДА НА SQL SERVER
-                            ПодключениекСерверуАунтификация.setReadTimeout(5000); //todo чтение потока до 5 секунд
-                            ПодключениекСерверуАунтификация.setConnectTimeout(2000);//todo таймайт подключение к самому серверу если вообще подключения
+                            ПодключениекСерверуАунтификация.setReadTimeout(5000000); //todo чтение потока до 5 секунд
+                            ПодключениекСерверуАунтификация.setConnectTimeout(2000000);//todo таймайт подключение к самому серверу если вообще подключения
                             ПодключениекСерверуАунтификация.setUseCaches(false);
                         // TODO: 10.03.2023 Логин И Пароль для Аунтификайии с Сервером
                             ПодключениекСерверуАунтификация.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
@@ -291,6 +291,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                             + ОшибкиПришлиПослеПингаОтСервера);
                                 } catch (IOException e) {
                                     e.printStackTrace();
+                                    ПодключениекСерверуАунтификация.disconnect();
                                     ОшибкиПришлиПослеПингаОтСервера = e.toString();
                                     Log.d(this.getClass().getName(), "ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе "
                                             + ОшибкиПришлиПослеПингаОтСервера);
@@ -325,6 +326,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                         Log.w(this.getClass().getName(), "ПодключениекСерверуДляАунтификацииПользователяПриВходе.getResponseCode() "
                                 + "       ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе"+ ОшибкиПришлиПослеПингаОтСервера);
                         ///метод запись ошибок в таблицу
+                        ПодключениекСерверуАунтификация.disconnect();
                         ОшибкиПришлиПослеПингаОтСервера = e.toString();
                         ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
                         //////////TODO когда ошибка то увеличичваем счетчик ошибок

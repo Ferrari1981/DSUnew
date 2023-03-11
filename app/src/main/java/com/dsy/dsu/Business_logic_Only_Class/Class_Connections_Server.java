@@ -4,31 +4,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.loader.content.AsyncTaskLoader;
-import androidx.loader.content.Loader;
-import androidx.preference.PreferenceManager;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.crypto.NoSuchPaddingException;
-
-import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.functions.Action;
-import io.reactivex.rxjava3.functions.Predicate;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class Class_Connections_Server  extends  Class_GRUD_SQL_Operations {
     private Context context1;
@@ -74,10 +60,10 @@ public class Class_Connections_Server  extends  Class_GRUD_SQL_Operations {
                 // TODO: 10.11.2022  пинг к сервера
                    Integer  БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer =
                       new Class_MODEL_synchronized(context1).
-                              УниверсальныйБуферПолучениеДанныхсСервераТОлькоДляПинга(null, "",
+                              МетодУниверсальногоПинга(null, "",
                         "", "application/gzip",
                                       "Хотим Получить Статус Реальной Работы SQL SERVER",
-                                      0l, "",3000,"",
+                                      0l, "",30000,"",
                         0l,ИмяСервера, ИмяПорта);//application/gzip
                 Log.d(Class_MODEL_synchronized.class.getName(), "  БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer" + БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer);
                     if (БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer==null) {
