@@ -21,11 +21,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.loader.content.AsyncTaskLoader;
-import androidx.loader.content.Loader;
 
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Connections_Server;
@@ -39,17 +36,14 @@ import com.dsy.dsu.Business_logic_Only_Class.SubClassWriterPUBLICIDtoDatabase;
 import com.dsy.dsu.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.util.concurrent.AtomicDouble;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -65,7 +59,7 @@ import okhttp3.Response;
 
 public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
     ////todo аунтификация
-   private int ПодсчетОтрицательныйРезультатовАунтификации; ////подсчитываем количество негативныйх попыток долеее 5 послываем программу в спячку
+   private int ПодсчетПолощительиОтрцательРезультатов =0; ////подсчитываем количество негативныйх попыток долеее 5 послываем программу в спячку
     private Button КнопкаВходавСистему;///КНОПКА ДЛЯ ВХОДЯ В СИСТЕМУ
     private ProgressBar ПрогрессБарДляВходаСистему;///КНОПКА ДЛЯ ВХОДЯ В СИСТЕМУ
     private TextInputEditText ИмяДляВходаСистему,ПарольДляВходаСистему;///КНОПКА ДЛЯ ВХОДЯ В СИСТЕМУ
@@ -139,8 +133,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
         } catch (Exception e) {
             ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber() + " ПодсчетОтрицательныйРезультатовАунтификации "
-                    + ПодсчетОтрицательныйРезультатовАунтификации);
+                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber() );
             new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
             Log.d(this.getClass().getName(), "  Полусаем Ошибку e.toString() " + e.toString());
@@ -161,10 +154,9 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
         try {
             МетодПодготовкиДляАунтификации(); ////МЕТОД ПРЕДВАРИТЕЛЬНОГО ПОДГОТОВКИ К АУНТИФИКАЦИИ ПОЛЬЗОВАТЛЕЯ
         } catch (Exception e) {
-            ПодсчетОтрицательныйРезультатовАунтификации++;///подсчитываем ошибки для точго чтобы приложение пошло спать
             ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber() + " ПодсчетОтрицательныйРезультатовАунтификации " + ПодсчетОтрицательныйРезультатовАунтификации);
+                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
@@ -200,6 +192,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                     Log.d(this.getClass().getName(), " РеальныйПингСервера "+ РеальныйПингСервера) ;
                             if (РеальныйПингСервера==true) {
                                 ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// при нажатии делаем видимый програсссбар
+                                ПрогрессБарДляВходаСистему.refreshDrawableState();
                                 //TODO запукаем метод аунтификции
                                 МетодАунтификациисСервером(v);//// данный метод в будущем будет запускаться с  кнопк
                                 Log.d(this.getClass().getName(), " РеальныйПингСервера "+ РеальныйПингСервера) ;
@@ -207,11 +200,13 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                         } else {
                             Log.d(this.getClass().getName(), " Вы не заполнили Логин/Пароль ") ;
                             ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
+                            ПрогрессБарДляВходаСистему.refreshDrawableState();
                             Snackbar.make(v, "Нет связи с с сервером !!! ", Snackbar.LENGTH_LONG).show();
                         }////end проверки если сеть или нет TRUE
                     } else {
                         Log.d(this.getClass().getName(), " Вы не заполнили Логин/Пароль ") ;
                         ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
+                        ПрогрессБарДляВходаСистему.refreshDrawableState();
                         Snackbar.make(v, " Вы не заполнили Логин/Пароль ", Snackbar.LENGTH_LONG).show();
 
                     }
@@ -219,11 +214,8 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
             });
 
         } catch (Exception e) {
-            ///метод запись ошибок в таблицу
-            ПодсчетОтрицательныйРезультатовАунтификации++;///подсчитываем ошибки для точго чтобы приложение пошло спать
-            ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber() + " ПодсчетОтрицательныйРезультатовАунтификации " + ПодсчетОтрицательныйРезультатовАунтификации);
+                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
@@ -273,13 +265,13 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                 Request newRequest = builder.build();
                                 return chain.proceed(newRequest);
                             }
-                        }).connectTimeout(5, TimeUnit.SECONDS)
+                        }).connectTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS).build();
                 ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
                 Request requestGET = new Request.Builder().get().url(Adress).build();
                 Log.d(this.getClass().getName(), "  request  " + requestGET);
                 // TODO  Call callGET = client.newCall(requestGET);
-                Dispatcher dispatcherПроверкаЛогиниПароль = okHttpClientИмяиПароль.dispatcher();
+                //Dispatcher dispatcherПроверкаЛогиниПароль = okHttpClientИмяиПароль.dispatcher();
                 okHttpClientИмяиПароль.newCall(requestGET).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -289,7 +281,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                         new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), Class_MODEL_synchronized.class.getName(),
                                 Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                         // TODO: 31.05.2022
-                        dispatcherПроверкаЛогиниПароль.executorService().shutdown();
+                      //  dispatcherПроверкаЛогиниПароль.executorService().shutdown();
                         // TODO: 11.03.2023  ПОСЛЕ ПИНГА ПЕРЕХОДИМ
                         МетодПослеАунтификациисСервером(v);
                         //TODO закрываем п отоки
@@ -305,20 +297,19 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                             Long РазмерПришедшегоПотока = Long.parseLong(   response.header("stream_size"));
                             Log.d(this.getClass().getName(), "БуферПолученнниеДанныхПолученияIDотСервера " + БуферПолученнниеДанныхПолученияIDотСервера +  " РазмерПришедшегоПотока " +РазмерПришедшегоПотока);
                             // TODO: 31.05.2022
-                            dispatcherПроверкаЛогиниПароль.executorService().shutdown();
+                          //  dispatcherПроверкаЛогиниПароль.executorService().shutdown();
                             // TODO: 11.03.2023  ПОСЛЕ ПИНГА ПЕРЕХОДИМ
                             МетодПослеАунтификациисСервером(v);
                         }
                     }
                 });
                 //TODO
-                dispatcherПроверкаЛогиниПароль.executorService().awaitTermination(1,TimeUnit.MINUTES);
-                dispatcherПроверкаЛогиниПароль.cancelAll();
+             /*   dispatcherПроверкаЛогиниПароль.executorService().awaitTermination(1,TimeUnit.MINUTES);
+                dispatcherПроверкаЛогиниПароль.cancelAll();*/
             } else {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
             ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
@@ -339,25 +330,16 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                 МетодПослеУспешногоПолучениеДанныхОтСервераЗаписываемИх(ПолученинныйПубличныйIDДлчЗаписиВБАзу);
                 //TODO не прошёл аунтификайию
             }else{
-                ПрогрессБарДляВходаСистему.setIndeterminate(false);
-                ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
-                Snackbar snackbar = Snackbar.make(v, " " +"Логин и Пароль не правильный !!!" , Snackbar.LENGTH_LONG);
-                snackbar.show();
                 //TODO ПОСЛЕ ПИНГА ВИЗУАЛИЗАЦИЯ
-                МетодВизуальногоОтображениеРаботыКоннекта();
+                МетодВизуальногоОтображениеРаботыКоннекта("Логин и/или Пароль не правильный !!!" );
 
             }
         }else {
-            ПрогрессБарДляВходаСистему.setIndeterminate(false);
-            ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
-            Snackbar snackbar = Snackbar.make(v, " " +"Сервер выкл !!!" , Snackbar.LENGTH_LONG);
-            snackbar.show();
             //TODO ПОСЛЕ ПИНГА ВИЗУАЛИЗАЦИЯ
-            МетодВизуальногоОтображениеРаботыКоннекта();
+            МетодВизуальногоОтображениеРаботыКоннекта("Сервер выкл !!!");
         }
     } catch (Exception e) {
         e.printStackTrace();
-        ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                 " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
         new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
@@ -390,7 +372,6 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
             ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
@@ -421,7 +402,6 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
-            ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
             ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
@@ -433,39 +413,40 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
 
 
     ///todo метод визуализацци успешных и не успешных аунтифиуаци пользоватле
-    private void МетодВизуальногоОтображениеРаботыКоннекта() {
+    private void МетодВизуальногоОтображениеРаботыКоннекта(String СтатусДляПользователя) {
        runOnUiThread(new Runnable() {
             public void run() {
                 Log.d(this.getClass().getName(), " handlerВизуализацияАунтификации ");
                 try {
+                    ПодсчетПолощительиОтрцательРезультатов++;
+                    ПрогрессБарДляВходаСистему.setIndeterminate(false);
+                    ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
+                    ПрогрессБарДляВходаСистему.refreshDrawableState();
+                    Snackbar snackbar = Snackbar.make(v, " " +СтатусДляПользователя+" ("+ПодсчетПолощительиОтрцательРезультатов+") " , Snackbar.LENGTH_LONG);
+                    snackbar.show();
                     Log.d(this.getClass().getName(), " ОшибкаПриПодключениекСерверуДляАунтификацииПользователяПриВходе "
                             + " БуферПолученнниеДанныхПолученияIDотСервера" + БуферПолученнниеДанныхПолученияIDотСервера.length());
-                    if (ОшибкиПришлиПослеПингаОтСервера != null
-                            && БуферПолученнниеДанныхПолученияIDотСервера.length() == 0) {////полученный результат обрабатываем для принятия решения прошел ли пользователь аунтификацию
-///TODO КОГДА 4 ПОПЫТКИ ПРОШЛИ НЕ УСПЕШНО И МЫ ЗАСЫВАЕМ ПРИЛОЖЕНИЯ НА 30 СЕКУНД
-                        if (ПодсчетОтрицательныйРезультатовАунтификации > 4) {////ПОПЫТКИ НЕ УДАЧНОГО ВХОДА В ПРОГРАММУ СВЫШЕ 5  СООБШАЕМ ПОЛЬЗОВАТЛЮ ЧТО ЕГО ИММ ЯИ ИЛИ ПАРОЛЬ НЕ ПРАВИЛЬНЫЙ И ПРИЛОЖЕНИЕ ОПРАЫЛЕМ В СОН
-                            ПодсчетОтрицательныйРезультатовАунтификации = 0;
-                                    ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// при нажатии делаем видимый програсссбар
-                                    Snackbar.make(v, " Сон на 10 секунд.....", Snackbar.LENGTH_LONG).show();
-                                    КнопкаВходавСистему.setEnabled(false);
-                                    КнопкаВходавСистему.setClickable(false);
-                                    КнопкаВходавСистему.setBackgroundColor(Color.GRAY);
-                                    ((Activity) КонтекстСинхроДляАунтификации).runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ПрогрессБарДляВходаСистему.postDelayed(()->{
-                                                ПрогрессБарДляВходаСистему .setVisibility(View.INVISIBLE);
-                                                КнопкаВходавСистему.setEnabled(true);
-                                                КнопкаВходавСистему.setClickable(true);
-                                                КнопкаВходавСистему.setBackgroundColor(Color.parseColor("#00ACC1"));
-                                            },10000);// по умолчанию прогресс бар делаем не видеым
+                        if (ПодсчетПолощительиОтрцательРезультатов > 4) {////ПОПЫТКИ НЕ УДАЧНОГО ВХОДА В ПРОГРАММУ СВЫШЕ 5  СООБШАЕМ ПОЛЬЗОВАТЛЮ ЧТО ЕГО ИММ ЯИ ИЛИ ПАРОЛЬ НЕ ПРАВИЛЬНЫЙ И ПРИЛОЖЕНИЕ ОПРАЫЛЕМ В СОН
+                            ПодсчетПолощительиОтрцательРезультатов = 0;
+                            ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// при нажатии делаем видимый програсссбар
+                            Snackbar.make(v, " Сон на 10 секунд.....", Snackbar.LENGTH_LONG).show();
+                            КнопкаВходавСистему.setEnabled(false);
+                            КнопкаВходавСистему.setClickable(false);
+                            КнопкаВходавСистему.setBackgroundColor(Color.GRAY);
+                            ((Activity) КонтекстСинхроДляАунтификации).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ПрогрессБарДляВходаСистему.postDelayed(() -> {
+                                        ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
+                                        КнопкаВходавСистему.setEnabled(true);
+                                        КнопкаВходавСистему.setClickable(true);
+                                        КнопкаВходавСистему.setBackgroundColor(Color.parseColor("#00ACC1"));
+                                    }, 10000);// по умолчанию прогресс бар делаем не видеым
 
-                                            // TODO: 13.10.2021
-                                        }
-                                    });
-
+                                    // TODO: 13.10.2021
+                                }
+                            });
                         }
-                    }
                 } catch (Exception e) {
                     ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
                     e.printStackTrace();
