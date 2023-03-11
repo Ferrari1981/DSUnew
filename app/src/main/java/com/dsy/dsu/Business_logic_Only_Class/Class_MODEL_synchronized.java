@@ -328,7 +328,6 @@ import okhttp3.Response;
             Log.d(this.getClass().getName(), " Adress_String " + Adress_String);
             URL Adress = new URL(Adress_String);
             // TODO: 11.03.2023 новый тест код
-            Dispatcher dispatcher = null;
             // MediaType JSON = MediaType.parse("application/json; charset=utf-8");
             OkHttpClient okHttpClientПинг = new OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
                         @Override
@@ -368,19 +367,23 @@ import okhttp3.Response;
                             Request newRequest = builder.build();
                             return chain.proceed(newRequest);
                         }
-                    }).connectTimeout(50, TimeUnit.SECONDS)
-                    .readTimeout(100, TimeUnit.SECONDS).build();
-            // TODO: 25.10.2022 Диспечер
-            dispatcher = okHttpClientПинг.dispatcher();
-            //
+                    }).connectTimeout(5, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS).build();
             ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
             Request requestGET = new Request.Builder().get().url(Adress).build();
             Log.d(this.getClass().getName(), "  request  " + requestGET);
             // TODO  Call callGET = client.newCall(requestGET);
+            Dispatcher  dispatcherПинг = okHttpClientПинг.dispatcher();
             okHttpClientПинг.newCall(requestGET).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     Log.e(this.getClass().getName(), "  ERROR call  " + call + "  e" + e.toString());
+                    Log.e(Class_MODEL_synchronized.class.getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber() + " ОшибкаТекущегоМетода " + e.getMessage());
+                    new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), Class_MODEL_synchronized.class.getName(),
+                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    // TODO: 31.05.2022
+                    dispatcherПинг.executorService().shutdown();
                     //TODO закрываем п отоки
                 }
                 @Override
@@ -393,13 +396,14 @@ import okhttp3.Response;
                                 StringBuffer::append);
                         РазмерПришедшегоПотока[0] = Integer.parseInt(   response.header("stream_size"));
                         Log.d(this.getClass().getName(), "БуферРезультатПингасСервером " + БуферРезультатПингасСервером +  " РазмерПришедшегоПотока[0] " +РазмерПришедшегоПотока[0]);
+                        // TODO: 31.05.2022
+                        dispatcherПинг.executorService().shutdown();
                     }
                 }
             });
             //TODO
-            // TODO: 31.05.2022
-            dispatcher.executorService().shutdown();
-            dispatcher.executorService().awaitTermination(1,TimeUnit.MINUTES);
+            dispatcherПинг.executorService().awaitTermination(1,TimeUnit.MINUTES);
+            dispatcherПинг.cancelAll();
             Log.i(context.getClass().getName(), "БуферРезультатПингасСервером" + БуферРезультатПингасСервером);
         } catch (IOException ex) {
             ex.printStackTrace();
