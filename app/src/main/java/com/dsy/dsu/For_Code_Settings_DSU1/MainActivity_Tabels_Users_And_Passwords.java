@@ -282,6 +282,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                 Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                         // TODO: 31.05.2022
                         dispatcherПроверкаЛогиниПароль.executorService().shutdown();
+                        dispatcherПроверкаЛогиниПароль.cancelAll();
                         // TODO: 11.03.2023  ПОСЛЕ ПИНГА ПЕРЕХОДИМ
                         МетодПослеАунтификациисСервером(v);
                         //TODO закрываем п отоки
@@ -298,6 +299,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                             Log.d(this.getClass().getName(), "БуферПолученнниеДанныхПолученияIDотСервера " + БуферПолученнниеДанныхПолученияIDотСервера +  " РазмерПришедшегоПотока " +РазмерПришедшегоПотока);
                             // TODO: 31.05.2022
                             dispatcherПроверкаЛогиниПароль.executorService().shutdown();
+                            dispatcherПроверкаЛогиниПароль.cancelAll();
                             // TODO: 11.03.2023  ПОСЛЕ ПИНГА ПЕРЕХОДИМ
                             МетодПослеАунтификациисСервером(v);
                         }

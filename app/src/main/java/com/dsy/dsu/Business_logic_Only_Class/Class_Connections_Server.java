@@ -83,6 +83,7 @@ public class Class_Connections_Server  extends  Class_GRUD_SQL_Operations {
                         результатПрозвонаСокетом = false;
                         Log.e(Class_MODEL_synchronized.class.getName(), " ОШИБКА НЕТ СВЯЗИ С СЕВРЕРОМ  результатПрозвонаСокетом[0] " + результатПрозвонаСокетом);
                     }
+                Log.d(Class_MODEL_synchronized.class.getName(), "  ИмяПорта" + ИмяПорта);
             }
         } catch (Exception e) {
             e.printStackTrace();

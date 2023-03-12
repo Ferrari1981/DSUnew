@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import androidx.annotation.NonNull;
 
@@ -116,35 +117,23 @@ import okhttp3.Response;
         Object ОшибкаТекущегоМетода = new Object();
         GZIPInputStream GZIPПотокОтСЕРВЕРА = null;
         BufferedReader РидерОтСервераМетодаGET = null;
-        ///
         try {
-            ////
             String СтрокаСвязиСсервером ="http://"+ИмяСервера+":"+ИмяПорта+"/";;
             СтрокаСвязиСсервером = СтрокаСвязиСсервером.replace(" ", "%20");
-            ///
-            Log.d(this.getClass().getName(), " СтрокаСвязиСсервером " +СтрокаСвязиСсервером);
-            //TODO ФУТУРЕ ЗАВЕРШАЕМ
             Log.d(this.getClass().getName(), "   СтрокаСвязиСсервером "+  СтрокаСвязиСсервером);
             String Adress_String = new String();
-            ////
             String Params = new String();
-            //PUBLIC_CONTENT.ПубличныйАдресGlassFish = "http://tabel.dsu1.ru:8888/"; //http://80.66.149.58:8888   //http://tabel.dsu1.ru/
-            // Adress_String = "http://192.168.254.40:8080/dsu1.glassfish/DSU1JsonServlet";///СТРОЧКА УКАЗЫВАЕТ НА КАКОЙ СЕРВЕЛ НА СЕРВЕР МЫ БУДЕМ СТУЧАТЬСЯ /// 80.66.149.58
-            Adress_String = СтрокаСвязиСсервером +new PUBLIC_CONTENT(context).getСсылкаНаРежимСервера()+ "/DSU1JsonServlet";///СТРОЧКА УКАЗЫВАЕТ НА КАКОЙ СЕРВЕЛ НА СЕРВЕР МЫ БУДЕМ СТУЧАТЬСЯ /// 80.66.149.58 /// dsu1.glassfish/DSU1JsonServlet
+            Adress_String = СтрокаСвязиСсервером +new PUBLIC_CONTENT(context).getСсылкаНаРежимСервера();
             Params = "?" + "ИмяТаблицыОтАндройда= " + ПУбличныйИмяТаблицыОтАндройдаВнутриПотока + "&" + "КонкретнаяТаблицаВПотоке=" + КонкретнаяТаблицаВПотокеВнутриПотока + ""
                     + "&" + "МакАдресТелефона=" + МакАдресТелефонаВнутриПотока + "" +
                     "&" + "ЗаданиеДляСервлетаВнутриПотока=" + ЗаданиеДляСервлетаВнутриПотока + "" + "&" + "ДатаНаДанныеВнутриПотока=" + ВерсииДанныхНаАндройдеСерверная + ""
                     + "&" + "IDДляПолучениеКонткртнойНабораТаблиц=" + IDДляПолучениеКонткртнойНабораТаблиц + ""
                     + "&" + "РезультаПолученаяЛокальнаяВерсияДанныхДляОтправкиНаСервер=" + РезультаПолученаяЛокальнаяВерсияДанныхДляОтправкиНаСервер + "";
             Log.d(this.getClass().getName(), " Params" + Params);
-            ///////////
             Adress_String = Adress_String + Params;
-            Log.d(this.getClass().getName(), "Adress_String " + Adress_String);
             Adress_String = Adress_String.replace(" ", "%20");
             Log.d(this.getClass().getName(), " Adress_String " + Adress_String);
-            // TODO: 25.05.2021  адереса
             URL Adress = new URL(Adress_String);
-            //TODO
                     HttpURLConnection ПодключениеПолученияДанныхсСервер = null;
                     ПодключениеПолученияДанныхсСервер = (HttpURLConnection) (Adress).openConnection();/////САМ ФАЙЛ JSON C ДАННЫМИ
                    // ПодключениеПолученияДанныхсСервер.setDoInput(true);
@@ -301,7 +290,7 @@ import okhttp3.Response;
                                             String ЗаданиеДляСервлетаВнутриПотока,
                                             Long ВерсииДанныхНаАндройдеСерверная,
                                             String IDДляПолучениеКонткртнойНабораТаблиц
-            , int ВремяЗакотороеСерверБудетЗагружатьДанные,
+                                           , int ВремяЗакотороеСерверБудетЗагружатьДанные,
                                             String ФлагТОлькоДлПолученияСтрочекТаблицыССерера,
                                             Long РезультаПолученаяЛокальнаяВерсияДанныхДляОтправкиНаСервер,
                                             String ИмяСервера, Integer ИмяПорта) throws IOException,
@@ -354,6 +343,7 @@ import okhttp3.Response;
                                 ПубличноеИмяПользовательДлСервлета = Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
                                 ПубличноеПарольДлСервлета = Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
                             }
+                            String ANDROID_ID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
                             Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " + ПубличноеИмяПользовательДлСервлета +
                                     " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета);
                             Request originalRequest = chain.request();
@@ -363,12 +353,13 @@ import okhttp3.Response;
                                     .header("Connection", "Keep-Alive")
                                     .header("Accept-Language", "ru-RU")
                                     .header("identifier", ПубличноеИмяПользовательДлСервлета)
-                                    .header("p_identifier", ПубличноеПарольДлСервлета);
+                                    .header("p_identifier", ПубличноеПарольДлСервлета)
+                                    .header("id_device_androis", ANDROID_ID);
                             Request newRequest = builder.build();
                             return chain.proceed(newRequest);
                         }
-                    }).connectTimeout(5, TimeUnit.SECONDS)
-                    .readTimeout(10, TimeUnit.SECONDS).build();
+                    }).connectTimeout(100, TimeUnit.SECONDS)
+                    .readTimeout(100, TimeUnit.SECONDS).build();
             ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
             Request requestGET = new Request.Builder().get().url(Adress).build();
             Log.d(this.getClass().getName(), "  request  " + requestGET);
@@ -384,6 +375,7 @@ import okhttp3.Response;
                             Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                     // TODO: 31.05.2022
                     dispatcherПинг.executorService().shutdown();
+                    dispatcherПинг.cancelAll();
                     //TODO закрываем п отоки
                 }
                 @Override
@@ -398,12 +390,11 @@ import okhttp3.Response;
                         Log.d(this.getClass().getName(), "БуферРезультатПингасСервером " + БуферРезультатПингасСервером +  " РазмерПришедшегоПотока[0] " +РазмерПришедшегоПотока[0]);
                         // TODO: 31.05.2022
                         dispatcherПинг.executorService().shutdown();
+                        dispatcherПинг.cancelAll();
                     }
                 }
             });
-            //TODO
             dispatcherПинг.executorService().awaitTermination(1,TimeUnit.MINUTES);
-            dispatcherПинг.cancelAll();
             Log.i(context.getClass().getName(), "БуферРезультатПингасСервером" + БуферРезультатПингасСервером);
         } catch (IOException ex) {
             ex.printStackTrace();
