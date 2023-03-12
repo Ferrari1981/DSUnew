@@ -506,7 +506,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
 
-            Observable observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK = Observable.interval(1, TimeUnit.SECONDS)
+            Observable observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK = Observable.interval(3, TimeUnit.SECONDS)
                     .take(20, TimeUnit.SECONDS)
                     .subscribeOn(Schedulers.single())
                     .flatMap((string) -> {

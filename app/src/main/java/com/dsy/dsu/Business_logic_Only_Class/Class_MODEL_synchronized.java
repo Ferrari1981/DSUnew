@@ -502,7 +502,7 @@ import okio.ByteString;
                             try (  BufferedWriter БуферПосылаемМетодуPOSTJSONФайл = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(sink.outputStream()), StandardCharsets.UTF_16));){
                                 БуферПосылаемМетодуPOSTJSONФайл.write(СгенерированыйФайлJSONДляОтправкиНаСервер.toString());/// ЗАПИСЫВАЕМ В ПОТОК
                                 БуферПосылаемМетодуPOSTJSONФайл.flush();///ПРОТАЛКИВАЕМ О
-                                Log.d(this.getClass().getName(), " requestBody ");
+                                Log.d(this.getClass().getName(), " requestBody  СгенерированыйФайлJSONДляОтправкиНаСервер.toString() "+СгенерированыйФайлJSONДляОтправкиНаСервер.toString());
                         } catch (Exception e) {
                             e.printStackTrace();
                             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -512,13 +512,6 @@ import okio.ByteString;
                         }
                         }
                     };
-
-
-
-
-
-
-
                     Request requestPost = new Request.Builder().post(requestBody).url(Adress).build();
                     Log.d(this.getClass().getName(), "  requestPost  " + requestPost);
                     // TODO  Call callGET = client.newCall(requestGET);
@@ -533,7 +526,6 @@ import okio.ByteString;
                                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                             // TODO: 31.05.2022
                             dispatcherCallsBackСервера.executorService().shutdown();
-                            dispatcherCallsBackСервера.cancelAll();
                             //TODO закрываем п отоки
                         }
                         @Override
@@ -548,7 +540,6 @@ import okio.ByteString;
                                 Log.d(this.getClass().getName(), " БуферCallsBackОтСеврера[0] " +  БуферCallsBackОтСеврера[0] +  " РазмерПришедшегоПотока " +РазмерПришедшегоПотока);
                                 // TODO: 31.05.2022
                                 dispatcherCallsBackСервера.executorService().shutdown();
-                                dispatcherCallsBackСервера.cancelAll();
                             }
                         }
                     });

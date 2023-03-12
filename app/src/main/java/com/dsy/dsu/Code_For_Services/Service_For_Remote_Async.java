@@ -2643,7 +2643,7 @@ public class Service_For_Remote_Async extends IntentService {
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", имяТаблицыОтАндройда_локальноая);
                         //////TODO dверсия данных для ВСЕХ ТАБЛИЦ КРОМЕ , ТАБЛИЦ ЧАТА
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", ВерсияДанныхДляСравения-2);
+                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", ВерсияДанныхДляСравения);
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   "
                                 + имяТаблицыОтАндройда_локальноая + "  ВерсияДанныхДляСравения ");
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
