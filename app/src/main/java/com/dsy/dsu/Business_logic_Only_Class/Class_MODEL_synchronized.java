@@ -55,6 +55,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.BufferedSink;
+import okio.ByteString;
 
 
 ///////Универсальный Класс Обмена Данными  Два Стачичных Метода и Плюс Сттичный Курсор
@@ -473,8 +475,51 @@ import okhttp3.Response;
 
                     Log.i(context.getClass().getName(), "СгенерированыйФайлJSONДляОтправкиНаСервер.toString()" + СгенерированыйФайлJSONДляОтправкиНаСервер.toString());
                       MediaType JSON = MediaType.parse("application/json; charset=utf-16");
-                    RequestBody body = RequestBody.create(JSON, СгенерированыйФайлJSONДляОтправкиНаСервер.toString());
-                    Request requestPost = new Request.Builder().post(body).url(Adress).build();
+
+
+
+
+
+                   // RequestBody body = RequestBody.create(JSON, СгенерированыйФайлJSONДляОтправкиНаСервер.toString());
+
+                    RequestBody requestBody = new RequestBody() {
+                        @Override
+                        public MediaType contentType() {
+                            try{
+                                Log.d(this.getClass().getName(), " requestBody ");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        }
+                            return JSON;
+                        }
+
+                        @Override
+                        public void writeTo(BufferedSink sink) throws IOException {
+                            try (  BufferedWriter БуферПосылаемМетодуPOSTJSONФайл = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(sink.outputStream()), StandardCharsets.UTF_16));){
+                                БуферПосылаемМетодуPOSTJSONФайл.write(СгенерированыйФайлJSONДляОтправкиНаСервер.toString());/// ЗАПИСЫВАЕМ В ПОТОК
+                                БуферПосылаемМетодуPOSTJSONФайл.flush();///ПРОТАЛКИВАЕМ О
+                                Log.d(this.getClass().getName(), " requestBody ");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        }
+                        }
+                    };
+
+
+
+
+
+
+
+                    Request requestPost = new Request.Builder().post(requestBody).url(Adress).build();
                     Log.d(this.getClass().getName(), "  requestPost  " + requestPost);
                     // TODO  Call callGET = client.newCall(requestGET);
                     Dispatcher  dispatcherCallsBackСервера = okHttpClientОтправкиДанныхНаСервер.dispatcher();

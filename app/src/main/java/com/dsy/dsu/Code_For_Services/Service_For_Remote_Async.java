@@ -2483,7 +2483,7 @@ public class Service_For_Remote_Async extends IntentService {
                 Log.d(this.getClass().getName(), "     class_grud_sql_operationsПосылаемДанныеНаСервервФоне.\n" +
                         "                    concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций   " +     class_grud_sql_operationsПосылаемДанныеНаСервервФоне.
                         concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций);
-                // TODO: 15.02.2022  код обработка таблиц синхрониазции
+                // TODO: 15.02.2022  код обработка таблиц синхрониазции МетодДляТекущейТаблицыСинхронизаццииGetCursor
                 class_grud_sql_operationsПосылаемДанныеНаСервервФоне = МетодДляТекущейТаблицыСинхронизаццииGetCursor(имяТаблицыОтАндройда_локальноая,
                         РезультаПолученаяЛокальнаяСервернуюВерсиюДанныхКогдаПоследнийРазПришлиДанныесСерера, ПубличныйIDДляФрагмента);
                 // TODO: 27.08.2021  ПОЛУЧЕНИЕ ДАННЫХ ОТ КЛАССА GRUD-ОПЕРАЦИИ
@@ -2643,7 +2643,7 @@ public class Service_For_Remote_Async extends IntentService {
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", имяТаблицыОтАндройда_локальноая);
                         //////TODO dверсия данных для ВСЕХ ТАБЛИЦ КРОМЕ , ТАБЛИЦ ЧАТА
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", ВерсияДанныхДляСравения);
+                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", ВерсияДанныхДляСравения-2);
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   "
                                 + имяТаблицыОтАндройда_локальноая + "  ВерсияДанныхДляСравения ");
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
