@@ -160,7 +160,7 @@ import okhttp3.Response;
                             Request newRequest = builder.build();
                             return chain.proceed(newRequest);
                         }
-                    }).connectTimeout(5, TimeUnit.SECONDS)
+                    }).connectTimeout(10, TimeUnit.SECONDS)
                     .readTimeout(10, TimeUnit.SECONDS).build();
             ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
             Request requestGET = new Request.Builder().get().url(Adress).build();
@@ -3155,9 +3155,11 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                     }
                     Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " + ПубличноеЛогин +
                             " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПароль);
+                    String ANDROID_ID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
                     ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("identifier", ПубличноеПароль);  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
                     /////// TODO set login pasword
                     ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("p_identifier", ПубличноеЛогин);  //"dsu1getsession"
+                    ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("id_device_androis", ANDROID_ID);  //"dsu1getsession"
                     ПодключениеИнтернетДляЗагрузкеAPKФайла.connect(); /////////////ТОЛЬКО СОЕДИНЕНИЕ
                     ПодключениеИнтернетДляЗагрузкеAPKФайла.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
                     int lenghtOfFile = ПодключениеИнтернетДляЗагрузкеAPKФайла.getContentLength();
@@ -3275,8 +3277,10 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                     Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " + ПубличноеЛогин +
                             " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПароль);
                     // TODO: 11.11.2021  ПЕРЕДОТПРАВКОЙ ШИФРУЕМ ДАННЫЕ \
+                    String ANDROID_ID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("identifier", ПубличноеЛогин);  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("p_identifier", ПубличноеПароль);  //"dsu1getsession"
+                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("id_device_androis", ANDROID_ID);  //"dsu1getsession"
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.connect();
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
 
