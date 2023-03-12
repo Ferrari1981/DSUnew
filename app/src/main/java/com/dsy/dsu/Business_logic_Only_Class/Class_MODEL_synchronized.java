@@ -421,7 +421,7 @@ import okhttp3.Response;
                     Log.d(this.getClass().getName(), " СтрокаСвязиСсервером " +СтрокаСвязиСсервером);
                     String Adress_String = new String();
                     // String Adress_String = "http://192.168.254.40:8080/dsu1.glassfish/DSU1JsonServlet";
-                    Adress_String = СтрокаСвязиСсервером +new PUBLIC_CONTENT(context).getСсылкаНаРежимСервера()+ "/DSU1JsonServlet";///СТРОЧКА УКАЗЫВАЕТ НА КАКОЙ СЕРВЕЛ НА СЕРВЕР МЫ БУДЕМ СТУЧАТЬСЯ /// 80.66.149.58 /// dsu1.glassfish/DSU1JsonServlet
+                    Adress_String = СтрокаСвязиСсервером +new PUBLIC_CONTENT(context).getСсылкаНаРежимСервера();///СТРОЧКА УКАЗЫВАЕТ НА КАКОЙ СЕРВЕЛ НА СЕРВЕР МЫ БУДЕМ СТУЧАТЬСЯ /// 80.66.149.58 /// dsu1.glassfish/DSU1JsonServlet
                     String Params = new String();
                     Params = "?" + "ИмяТаблицыОтАндройда=" + ПубличноеИмяПользовательМетодPOST + "&" + "СотрудникТаблицыОтАндройда=" + ПУбличныйИмяТаблицыМетодPOST +
                             "&" + "ЗаданиеДляСервлетаВнутриПотока=" + ЗаданиеДляСервлета + "";
@@ -438,8 +438,8 @@ import okhttp3.Response;
                             ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("Connection", "Keep-Alive");
                             ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("Accept-Language", "ru-RU");
                             ПодключениеИнтернетДляОтправкиНаСервер.setRequestMethod("POST"); ///GET //ПРОВЕРЯЕМ ЕСЛИ ПОДКЛЮЧЕНИЕ К СЕВРЛЕТУ НА СЕРВЕР ВЫБРАСЫВАЕМ
-                            ПодключениеИнтернетДляОтправкиНаСервер.setReadTimeout(ВремяЗакотороеСерверБудетЗагружатьДанные); //todo САМ ТАЙМАУТ ПОДКЛЮЧЕНИЕ(30000);
-                            ПодключениеИнтернетДляОтправкиНаСервер.setConnectTimeout(2000);//todo САМ ПОТОК ДАННЫХ(1000);
+                            ПодключениеИнтернетДляОтправкиНаСервер.setReadTimeout(100000); //todo САМ ТАЙМАУТ ПОДКЛЮЧЕНИЕ(30000);
+                            ПодключениеИнтернетДляОтправкиНаСервер.setConnectTimeout(1000000);//todo САМ ПОТОК ДАННЫХ(1000);
                             ПодключениеИнтернетДляОтправкиНаСервер.setUseCaches(false);
                             Class_GRUD_SQL_Operations class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯ= new Class_GRUD_SQL_Operations(context);
                             ///
@@ -457,8 +457,11 @@ import okhttp3.Response;
                             }
                             Log.i(this.getClass().getName(), " PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета " + ПубличноеЛогин +
                                     " PUBLIC_CONTENT.ПубличноеПарольДлСервлета   " + ПубличноеПароль);
+
+                    String ANDROID_ID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
                             ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("identifier", ПубличноеЛогин);
                             ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("p_identifier", ПубличноеПароль);
+                            ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("id_device_androis", ANDROID_ID);
                             ПодключениеИнтернетДляОтправкиНаСервер.connect();
                     //////TODO ОТПРАВЛЕМ ДАННЫЕ НА СЕРВЕР ЕЛСИ ДАННЫЕ НОВЫЕ КАК ОТПАРВЯЕМ ТО ОБНЦЛЕМ БУФЕР С JSON АГА !!!!
                     try ( BufferedWriter БуферПосылаемМетодуPOSTJSONФайл = new BufferedWriter(new OutputStreamWriter(
