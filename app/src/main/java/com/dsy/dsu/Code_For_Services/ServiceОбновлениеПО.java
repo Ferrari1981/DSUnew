@@ -49,7 +49,6 @@ import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 import java.util.zip.Inflater;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -63,6 +62,7 @@ import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Predicate;
+import io.reactivex.rxjava3.functions.Supplier;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
@@ -164,28 +164,64 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         try {
             this.activity=activity;
             this.РежимРаботыСлужбыОбновлениеПО=РежимРаботыСлужбыОбновлениеПО;
-          String  РежимРаботыСети = МетодУзнаемРежимСетиWIFiMobile(getApplicationContext());
-            preferences = getApplicationContext().getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
-                if (РежимРаботыСети.equals("WIFI")  || РежимРаботыСети.equals("Mobile")  ) {
-                    Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ "РежимРаботыСети " + РежимРаботыСети);
-                    // TODO: 18.02.2023 удаление перед анализо файлов json И .apk 
-                    МетодДополнительногоУдалениеФайлов();
-                    МетодАнализаВерсииПОJSON();
-                    Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
-                }else {
-                    Log.e(this.getClass().getName(), "неТ СВЯЗИ ДЛЯ ЗАГРУЗКИ ПО ТипПодключенияИнтернтаДляСлужбы "  + РежимРаботыСети);
-                    activity.runOnUiThread(new Runnable() {
+            Completable.fromSupplier(new Supplier<Object>() {
                         @Override
-                        public void run() {
-                            if (РежимРаботыСлужбыОбновлениеПО == true) {
-                                Toast toast = Toast.makeText(  getApplicationContext(), "Нет связи c Cервер !!!", Toast.LENGTH_LONG);
-                                toast.setGravity(Gravity.BOTTOM, 0, 40);
-                                toast.show();
+                        public Object get() throws Throwable {
+                            String  РежимРаботыСети = МетодУзнаемРежимСетиWIFiMobile(getApplicationContext());
+                            preferences = getApplicationContext().getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
+                            if (РежимРаботыСети.equals("WIFI")  || РежимРаботыСети.equals("Mobile")  ) {
+                                Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ "РежимРаботыСети " + РежимРаботыСети);
+                                // TODO: 18.02.2023 удаление перед анализо файлов json И .apk
+                                МетодДополнительногоУдалениеФайлов();
+                                МетодАнализаВерсииПОJSON();
                                 Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
+                            }else {
+                                Log.e(this.getClass().getName(), "неТ СВЯЗИ ДЛЯ ЗАГРУЗКИ ПО ТипПодключенияИнтернтаДляСлужбы "  + РежимРаботыСети);
+                                activity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (РежимРаботыСлужбыОбновлениеПО == true) {
+                                            Toast toast = Toast.makeText(  getApplicationContext(), "Нет связи c Cервер ПО !!!", Toast.LENGTH_LONG);
+                                            toast.setGravity(Gravity.BOTTOM, 0, 40);
+                                            toast.show();
+                                            Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
+                                        }
+                                    }
+                                });
                             }
+                            return РежимРаботыСети;
                         }
-                    });
-                }
+                    })
+                    .subscribeOn(Schedulers.single())
+                    .doOnError(new io.reactivex.rxjava3.functions.Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Throwable {
+                            throwable.printStackTrace();
+                            Log.e(this.getClass().getName(), "Ошибка " +throwable + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
+                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
+                        }
+                    })
+                    .doOnComplete(new Action() {
+                        @Override
+                        public void run() throws Throwable {
+                            Log.d(getApplicationContext().getClass().getName(), "\n" + "   ФинальныйРезультатAsyncBackgroud ");
+                        }
+                    })
+                    .onErrorComplete(new Predicate<Throwable>() {
+                        @Override
+                        public boolean test(Throwable throwable) throws Throwable {
+                            throwable.printStackTrace();
+                            Log.e(this.getClass().getName(), "Ошибка " +throwable + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
+                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
+                            return false;
+                        }
+                    }).subscribe();
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -506,80 +542,20 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
 
-            Observable observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK = Observable.interval(3, TimeUnit.SECONDS)
-                    .take(20, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.single())
-                    .flatMap((string) -> {
-                        PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(getApplicationContext());
-                        // TODO: 08.01.2022
-                        СервернаяВерсияПОВнутри[0] = new Class_MODEL_synchronized(getApplicationContext()).
-                                //   УниверсальныйБуферJSONВерсииПОсСервера("dsu1.glassfish/update_android_dsu1/output-metadata.json", Контекст, public_content.getАдресСервера() , public_content.getПортСервера());
-                                        УниверсальныйБуферJSONВерсииПОсСервера(new PUBLIC_CONTENT(getApplicationContext())
-                                                .getСсылкаНаРежимСервера()+"/update_android_dsu1/output-metadata.json",
-                                        getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица);
-                        Log.w(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри" + СервернаяВерсияПОВнутри[0] + "+" +Thread.currentThread().getName());
-                        return Observable.fromArray(string).doOnComplete(System.out::println);
-                    }).repeatWhen(new Function<Observable<Object>, ObservableSource<?>>() {
-                        @Override
-                        public ObservableSource<?> apply(Observable<Object> objectObservable) throws Throwable {
-                          /*  activity.runOnUiThread(()->{
-                                Toast toast = Toast.makeText(getApplicationContext(), "Поиск ПО ▼", Toast.LENGTH_LONG);
-                                toast.setGravity(Gravity.BOTTOM, 0, 40);
-                                toast.show();});*/
-                            return objectObservable;
-                        }
-                    })
-                    .doOnError(new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Throwable {
-                            Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :"
-                                    + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
-                                    Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        }
-                    })
-                    .takeWhile(new Predicate<Object>() {
-                        @Override
-                        public boolean test(Object o) throws Throwable {
-                            Log.w(getApplicationContext().getClass().getName(), "   takeWhile observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK"  +"\n"+
-                                    " Thread.currentThread().getName() " +Thread.currentThread().getName()+ "  o " +o);
-                            if (   СервернаяВерсияПОВнутри[0] >0) {
-                                Log.w(getApplicationContext().getClass().getName(), "СервернаяВерсияПОВнутри  observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK ::::" +
-                                        "  "+"\n"
-                                        + СервернаяВерсияПОВнутри[0] +"\n"+
-                                        " Thread.currentThread().getName() " +Thread.currentThread().getName());
-                                return false;
-                            }else {
-                                return true;
-                            }
-                        }
-                    })
-                    .observeOn(Schedulers.single())
-                    .onErrorComplete(new Predicate<Throwable>() {
-                        @Override
-                        public boolean test(Throwable throwable) throws Throwable {
-                            Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
-                                    Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            return false;
-                        }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnComplete(new Action() {
-                        @Override
-                        public void run() throws Throwable {
-                                Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
-                                        СервернаяВерсияПОВнутри[0]+   " СервернаяВерсияПОВнутри  " + Thread.currentThread().getName());
-                            // TODO: 18.02.2023 Анализ Версии
-                                МетодАнализВерсийЛокальнаяИСерверная(СервернаяВерсияПОВнутри[0]);
-                        }
-                    });
-// TODO: 07.01.2022 GREAT OPERATIONS подпииска на данные
-            observableПолучаемНовуюВерсиюСервернойВерсииФайлаAPK.subscribe();
+
+            // TODO: 08.01.2022
+            СервернаяВерсияПОВнутри[0] = new Class_MODEL_synchronized(getApplicationContext()).
+                    //   УниверсальныйБуферJSONВерсииПОсСервера("dsu1.glassfish/update_android_dsu1/output-metadata.json", Контекст, public_content.getАдресСервера() , public_content.getПортСервера());
+                            УниверсальныйБуферJSONВерсииПОсСервера(new PUBLIC_CONTENT(getApplicationContext())
+                                    .getСсылкаНаРежимСервера()+"/update_android_dsu1/output-metadata.json",
+                            getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица);
+            Log.w(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри" + СервернаяВерсияПОВнутри[0] + "+" +Thread.currentThread().getName());
+
+            Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
+                    СервернаяВерсияПОВнутри[0]+   " СервернаяВерсияПОВнутри  " + Thread.currentThread().getName());
+            // TODO: 18.02.2023 Анализ Версии
+            МетодАнализВерсийЛокальнаяИСерверная(СервернаяВерсияПОВнутри[0]);
+
         } catch (Exception e ) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
