@@ -181,7 +181,6 @@ import okio.ByteString;
                             Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                     // TODO: 31.05.2022
                     dispatcherДанныеОтСервера.executorService().shutdown();
-                    dispatcherДанныеОтСервера.cancelAll();
                     //TODO закрываем п отоки
                 }
                 @Override
@@ -196,7 +195,6 @@ import okio.ByteString;
                         Log.d(this.getClass().getName(), "БуферСамиДанныеОтСервера " + БуферСамиДанныеОтСервера[0] +  " РазмерПришедшегоПотока " +РазмерПришедшегоПотока);
                         // TODO: 31.05.2022
                         dispatcherДанныеОтСервера.executorService().shutdown();
-                        dispatcherДанныеОтСервера.cancelAll();
                     }
                 }
             });
@@ -300,8 +298,8 @@ import okio.ByteString;
                             Request newRequest = builder.build();
                             return chain.proceed(newRequest);
                         }
-                    }).connectTimeout(10, TimeUnit.SECONDS)
-                    .readTimeout(10, TimeUnit.SECONDS).build();
+                    }).connectTimeout(20, TimeUnit.SECONDS)
+                    .readTimeout(20, TimeUnit.SECONDS).build();
             ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
             Request requestGET = new Request.Builder().get().url(Adress).build();
             Log.d(this.getClass().getName(), "  request  " + requestGET);
@@ -317,7 +315,6 @@ import okio.ByteString;
                             Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                     // TODO: 31.05.2022
                     dispatcherПинг.executorService().shutdown();
-                    dispatcherПинг.cancelAll();
                     //TODO закрываем п отоки
                 }
                 @Override
@@ -332,7 +329,6 @@ import okio.ByteString;
                         Log.d(this.getClass().getName(), "БуферРезультатПингасСервером " + БуферРезультатПингасСервером +  " РазмерПришедшегоПотока[0] " +РазмерПришедшегоПотока[0]);
                         // TODO: 31.05.2022
                         dispatcherПинг.executorService().shutdown();
-                        dispatcherПинг.cancelAll();
                     }
                 }
             });

@@ -292,7 +292,7 @@ public class Service_For_Remote_Async extends IntentService {
                         public Object get() throws Throwable {
                             ФинальныйРезультатAsyncBackgroud[0] = new Class_Engine_SQL(context).МетодЗАпускаФоновойСинхронизации(context);
                             Log.d(context.getClass().getName(), "\n"
-                                    + "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud[0]);
+                                    + "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud[0]+ " время work manager starting async "+new  Date().toLocaleString());
                             return ФинальныйРезультатAsyncBackgroud[0];
                         }
                     })
