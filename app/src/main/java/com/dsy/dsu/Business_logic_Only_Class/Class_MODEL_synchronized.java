@@ -173,9 +173,10 @@ import okhttp3.Response;
                     }
                     Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " +ПубличноеИмяПользовательДлСервлета +
                             " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета);
-
+                       String ANDROID_ID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
                         ПодключениеПолученияДанныхсСервер.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);  //"dsu1getsession"
                         ПодключениеПолученияДанныхсСервер.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
+                        ПодключениеПолученияДанныхсСервер.setRequestProperty("id_device_androis", ANDROID_ID  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
                     ПодключениеПолученияДанныхсСервер.connect(); /////////////ТОЛЬКО СОЕДИНЕНИЕ
                    ПодключениеПолученияДанныхсСервер.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
 
@@ -358,8 +359,8 @@ import okhttp3.Response;
                             Request newRequest = builder.build();
                             return chain.proceed(newRequest);
                         }
-                    }).connectTimeout(100, TimeUnit.SECONDS)
-                    .readTimeout(100, TimeUnit.SECONDS).build();
+                    }).connectTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS).build();
             ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
             Request requestGET = new Request.Builder().get().url(Adress).build();
             Log.d(this.getClass().getName(), "  request  " + requestGET);
