@@ -20,12 +20,9 @@ import android.os.Messenger;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.loader.content.AsyncTaskLoader;
-import androidx.loader.content.Loader;
 
 
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
@@ -46,42 +43,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
-import java.util.Spliterator;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import javax.crypto.NoSuchPaddingException;
 
-import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
-import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Predicate;
 import io.reactivex.rxjava3.functions.Supplier;
-import io.reactivex.rxjava3.parallel.ParallelFlowable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
@@ -676,7 +660,7 @@ public class Service_For_Remote_Async extends IntentService {
                 String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
                 Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
                 // TODO: 10.11.2022 Получение Список Таблиц
-                БуферПолученияСпискаТАблицДляОбмена = УниверсальныйБуферПолучениеДанныхсСервера("view_data_modification",
+                БуферПолученияСпискаТАблицДляОбмена = МетодУниверсальныйДанныесСервера("view_data_modification",
                         "", "",
                         "application/gzip",//application/json
                         "Хотим Получить Версию Данных Сервера",
@@ -1606,7 +1590,6 @@ public class Service_For_Remote_Async extends IntentService {
             try {
                 Log.d(this.getClass().getName(), "  МетодПолучаемДаннныесСервера" + "  имяТаблицыОтАндройда_локальноая" + имяТаблицыОтАндройда_локальноая);
                 StringBuffer БуферПолучениеДанных = new StringBuffer();
-                try {
                     МетодCallBasksВизуальноИзСлужбы(МаксималноеКоличествоСтрочекJSON,
                             ИндексВизуальнойДляPrograssBar,имяТаблицыОтАндройда_локальноая,
                             Проценты,"ПроцессеAsyncBackground",false,false);
@@ -1614,7 +1597,7 @@ public class Service_For_Remote_Async extends IntentService {
                     String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
                     Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
                     // TODO: 10.11.2022  Получение JSON-потока
-                    БуферПолучениеДанных = УниверсальныйБуферПолучениеДанныхсСервера(имяТаблицыОтАндройда_локальноая, "",
+                    БуферПолучениеДанных = МетодУниверсальныйДанныесСервера(имяТаблицыОтАндройда_локальноая, "",
                             "", "application/gzip", "Хотим Получить  JSON"
                             ,ВерсииДанныхНаАндройдеСерверная,//    ВерсииДанныхНаАндройдеСерверная,//37262l
                             ДанныеПришёлЛиIDДЛяГенерацииUUID,2000000,null,
@@ -1625,13 +1608,7 @@ public class Service_For_Remote_Async extends IntentService {
                     }
                     Log.d(this.getClass().getName(), "  МетодПолучаемДаннныесСервера" + "  БуферПолучениеДанных" + БуферПолучениеДанных.toString()+"\n"
                             + "  БуферПолучениеДанных.length()" + БуферПолучениеДанных.length());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                }
+
                 if ( БуферПолучениеДанных.toString().toCharArray().length > 3) {
                     БуферПолученныйJSON = new StringBuffer();
                     Log.d(this.getClass().getName(), "  БуферПолучениеДанных.toString()) " + БуферПолучениеДанных.toString());

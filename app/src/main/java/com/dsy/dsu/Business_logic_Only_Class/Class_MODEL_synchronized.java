@@ -13,7 +13,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.dsy.dsu.Business_logic_Only_Class.DATE.Class_Generation_Data;
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.util.concurrent.AtomicDouble;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.FileUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -61,8 +60,8 @@ import okhttp3.Response;
   public     Context context;
     private  PUBLIC_CONTENT Class_Engine_SQLГдеНаходитьсяМенеджерПотоков =null;
     private Class_MODEL_synchronized ссылка_MODELsynchronized = null;
-    private String  ПубличноеИмяПользовательДлСервлета=      new String();
-    private  String  ПубличноеПарольДлСервлета=   new String();
+    private String ПубличноеЛогин =      new String();
+    private  String ПубличноеПароль =   new String();
     ////шифрование
 /*    public SecretKey ГлавныйКлючДляШифрованиеИРасшифровки;
     ////
@@ -90,33 +89,19 @@ import okhttp3.Response;
 
 
     ///МЕТОД ПОЛУЧЕНИЕ ДАННЫХ С СЕРВЕРА
-    public StringBuffer УниверсальныйБуферПолучениеДанныхсСервера(String ПУбличныйИмяТаблицыОтАндройдаВнутриПотока,
-                                                                  String КонкретнаяТаблицаВПотокеВнутриПотока,
-                                                                  String МакАдресТелефонаВнутриПотока,
-                                                                  String ТипОтветаTEXTилиJSONВнутриПотока,
-                                                                  String ЗаданиеДляСервлетаВнутриПотока,
-                                                                  Long ВерсииДанныхНаАндройдеСерверная,
-                                                                  String IDДляПолучениеКонткртнойНабораТаблиц
-            , int ВремяЗакотороеСерверБудетЗагружатьДанные,
-                                                                  String ФлагТОлькоДлПолученияСтрочекТаблицыССерера,
-                                                                  Long РезультаПолученаяЛокальнаяВерсияДанныхДляОтправкиНаСервер,
-                                                                  String ИмяСервера, Integer ИмяПорта) throws IOException,
-            ExecutionException, InterruptedException, TimeoutException, NoSuchAlgorithmException,
-            KeyManagementException, InvalidKeyException, NoSuchPaddingException {
+    public StringBuffer МетодУниверсальныйДанныесСервера(String ПУбличныйИмяТаблицыОтАндройдаВнутриПотока,
+                                                         String КонкретнаяТаблицаВПотокеВнутриПотока,
+                                                         String МакАдресТелефонаВнутриПотока,
+                                                         String ТипОтветаTEXTилиJSONВнутриПотока,
+                                                         String ЗаданиеДляСервлетаВнутриПотока,
+                                                         Long ВерсииДанныхНаАндройдеСерверная,
+                                                         String IDДляПолучениеКонткртнойНабораТаблиц
+                                                                 , int ВремяЗакотороеСерверБудетЗагружатьДанные,
+                                                         String ФлагТОлькоДлПолученияСтрочекТаблицыССерера,
+                                                         Long РезультаПолученаяЛокальнаяВерсияДанныхДляОтправкиНаСервер,
+                                                         String ИмяСервера, Integer ИмяПорта) {
 
-        StringBuffer БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера = new StringBuffer();
-        Integer РазмерПришедшегоОбщееКоличествоСтрочекJSONДляТаблицы=0;
-        System.out.println("УниверсальныйБуферПолучениеДанныхсСервера");
-
-        if (ФлагТОлькоДлПолученияСтрочекТаблицыССерера==null) {
-            ФлагТОлькоДлПолученияСтрочекТаблицыССерера=new String();
-        }
-        ////////перевод перменных внутрь Анисакска
-        ///////// ПРИ НУЛЕВОМ ЗАПУСКЕ ЛОВИМ ЭТОТ МОМЕНТ ДАТОЙ ИЗ ТАБЛИЦЫ АНДОЙД
-        //////КОНЕЦ ЛОВЛИ НУЛОЙ ДАТЫ ТАБЛИЦЫ
-        Object ОшибкаТекущегоМетода = new Object();
-        GZIPInputStream GZIPПотокОтСЕРВЕРА = null;
-        BufferedReader РидерОтСервераМетодаGET = null;
+        final StringBuffer[] БуферСамиДанныеОтСервера = {new StringBuffer()};
         try {
             String СтрокаСвязиСсервером ="http://"+ИмяСервера+":"+ИмяПорта+"/";;
             СтрокаСвязиСсервером = СтрокаСвязиСсервером.replace(" ", "%20");
@@ -132,150 +117,102 @@ import okhttp3.Response;
             Log.d(this.getClass().getName(), " Params" + Params);
             Adress_String = Adress_String + Params;
             Adress_String = Adress_String.replace(" ", "%20");
-            Log.d(this.getClass().getName(), " Adress_String " + Adress_String);
             URL Adress = new URL(Adress_String);
-                    HttpURLConnection ПодключениеПолученияДанныхсСервер = null;
-                    ПодключениеПолученияДанныхсСервер = (HttpURLConnection) (Adress).openConnection();/////САМ ФАЙЛ JSON C ДАННЫМИ
-                   // ПодключениеПолученияДанныхсСервер.setDoInput(true);
-                   // ПодключениеПолученияДанныхсСервер.setDoOutput(true);
+            Log.d(this.getClass().getName(), " Adress_String " + Adress_String);
+            OkHttpClient okHttpClientДанныеОтСервера = new OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
+                        @Override
+                        public Response intercept(Chain chain) throws IOException {
+                            Class_GRUD_SQL_Operations grudSqlOperations= new Class_GRUD_SQL_Operations(context);
+                            grudSqlOperations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СамFreeSQLКОд",
+                                    " SELECT success_users,success_login  FROM successlogin  ORDER BY date_update DESC ;");
+                            PUBLIC_CONTENT  classEngineSQLГдеНаходитьсяМенеджерПотоков =new PUBLIC_CONTENT (context);
+                            SQLiteCursor            Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО= null;
+                            try {
+                                Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО = (SQLiteCursor) grudSqlOperations.
+                                        new GetаFreeData(context).getfreedata(grudSqlOperations.
+                                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
+                                        classEngineSQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
+                            } catch (ExecutionException e) {
+                                throw new RuntimeException(e);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
 
-                    ПодключениеПолученияДанныхсСервер.setRequestProperty("Content-Type", ТипОтветаTEXTилиJSONВнутриПотока + " ;charset=UTF-8");
-                    ПодключениеПолученияДанныхсСервер.setRequestProperty("Accept-Encoding", "gzip,deflate,sdch");
-                    ПодключениеПолученияДанныхсСервер.setRequestProperty("Connection", "Keep-Alive");
-                    ПодключениеПолученияДанныхсСервер.setRequestProperty("Accept-Language", "ru-RU");
-                    ПодключениеПолученияДанныхсСервер.setRequestMethod("GET"); ///GET //ПРОВЕРЯЕМ ЕСЛИ ПОДКЛЮЧЕНИЕ К СЕВРЛЕТУ НА СЕРВЕР ВЫБРАСЫВАЕМ
-                    ПодключениеПолученияДанныхсСервер.setReadTimeout(ВремяЗакотороеСерверБудетЗагружатьДанные); //todo САМ ТАЙМАУТ ПОДКЛЮЧЕНИЕ(30000);
-                    ПодключениеПолученияДанныхсСервер.setConnectTimeout(3000);//todo САМ ПОТОК ДАННЫХ(1000);
-                    ПодключениеПолученияДанныхсСервер.setUseCaches(false);
-                    //////////
-                    // TODO: 26.08.2021 НОВЫЙ ВЫЗОВ НОВОГО КЛАСС GRUD - ОПЕРАЦИИ
-                    Class_GRUD_SQL_Operations class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯ= new Class_GRUD_SQL_Operations(context);
-                    ///
-                    class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯ. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СамFreeSQLКОд",
-                            " SELECT success_users,success_login  FROM successlogin  ORDER BY date_update DESC ;");
-
-
-                    // TODO: 12.10.2021  Ссылка Менеджер Потоков
-
-                    PUBLIC_CONTENT  Class_Engine_SQLГдеНаходитьсяМенеджерПотоков =new PUBLIC_CONTENT (context);
-
-
-                    ///////
-                    SQLiteCursor            Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО= (SQLiteCursor) class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯ.
-                            new GetаFreeData(context).getfreedata(class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯ.
-                                    concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
-                            Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
-
-                    if(Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getCount()>0){
-                        Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.moveToFirst();
-                         ПубличноеИмяПользовательДлСервлета=         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
-                        ПубличноеПарольДлСервлета=           Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
-                    }
-                    Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " +ПубличноеИмяПользовательДлСервлета +
-                            " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета);
-                       String ANDROID_ID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-                        ПодключениеПолученияДанныхсСервер.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);  //"dsu1getsession"
-                        ПодключениеПолученияДанныхсСервер.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
-                        ПодключениеПолученияДанныхсСервер.setRequestProperty("id_device_androis", ANDROID_ID  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
-                    ПодключениеПолученияДанныхсСервер.connect(); /////////////ТОЛЬКО СОЕДИНЕНИЕ
-                   ПодключениеПолученияДанныхсСервер.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
-
-
-            Log.d(this.getClass().getName(), "ПодключениеИнтернетДляОтправкиНаСервер.getContentLength() " + ПодключениеПолученияДанныхсСервер.getHeaderField("stream_size"));
-            Long РазмерПришедшегоПотока = Long.parseLong(ПодключениеПолученияДанныхсСервер.getHeaderField("stream_size"));
-            Log.d(this.getClass().getName(), "РазмерПришедшегоПотока " + РазмерПришедшегоПотока);
-            Log.d(this.getClass().getName(), "ФлагТОлькоДлПолученияСтрочекТаблицыССерера " + ФлагТОлькоДлПолученияСтрочекТаблицыССерера);
-            Object finalОшибкаТекущегоМетода = ОшибкаТекущегоМетода;
-            Object finalОшибкаТекущегоМетода1 = ОшибкаТекущегоМетода;
-            String finalФлагТОлькоДлПолученияСтрочекТаблицыССерера = ФлагТОлькоДлПолученияСтрочекТаблицыССерера;
-            Integer finalРазмерПришедшегоОбщееКоличествоСтрочекJSONДляТаблицы = РазмерПришедшегоОбщееКоличествоСтрочекJSONДляТаблицы;
-                    ////TODO И ЕСЛИ ПРИШЕЛ ОТ СЕРВЕРА ОТВЕТ ПОЛОЖИТЕЛЬНО ТО ТОГДА ЗАПУСКАМ ПРОЧТЕНИЯ ПОТОКА ПРИШЕДШЕГО С СЕРВЕРА
-                        if (ПодключениеПолученияДанныхсСервер.getResponseCode() == 200 && РазмерПришедшегоПотока > 0) {
-                            Log.d(Class_MODEL_synchronized.class.getName(), "  СЛУЖБА СИНХРОНИЗАЦИИ РАЗМЕР ПОТОКА КОТОРЫЙ ПРИШЁЛ ... " + "\n" +
-                                    " ПУбличныйИмяТаблицыОтАндройдаВнутриПотока  ::::::  " + ПУбличныйИмяТаблицыОтАндройдаВнутриПотока + "\n" +
-                                    " ПодключениеИнтернетДляОтправкиНаСервер.getContentLength()  " + ПодключениеПолученияДанныхсСервер.getHeaderField("stream_size"));//  "   ПодключениеИнтернетДляОтправкиНаСервер.getHeaderField(Content-Length "+
-                                GZIPПотокОтСЕРВЕРА = new GZIPInputStream(ПодключениеПолученияДанныхсСервер.getInputStream());
-                                РидерОтСервераМетодаGET = new BufferedReader(new InputStreamReader(GZIPПотокОтСЕРВЕРА, StandardCharsets.UTF_16));//
-                            Log.d(this.getClass().getName(), "finalФлагТОлькоДлПолученияСтрочекТаблицыССерера " + finalФлагТОлькоДлПолученияСтрочекТаблицыССерера+
-                                    "  КонкретнаяТаблицаВПотокеВнутриПотока " +КонкретнаяТаблицаВПотокеВнутриПотока);
-                                            // TODO: 14.05.2021 получаем данные с сервера
-                                    /////НАЗВАНИЕ ПОТОКА
-                                    Log.i(this.getClass().getName(), "РазмерПришедшегоПотока " + РазмерПришедшегоПотока);
-                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                                        ///TODO ПЕРВЫЙ ВАРАНТ РАСПАРСИВАНИЯ ПРИШЕДШЕГО JSON ПОТОКА С СЕРВРА
-                                        БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера
-                                            = РидерОтСервераМетодаGET.lines().collect(StringBuffer::new, (sb, i) -> sb.append(i),
-                                            StringBuffer::append);
-                                            /////НАЗВАНИЕ ПОТОКА
-                                            Log.i(this.getClass().getName(), "НАЗВАНИЕ ПОТОКА В aSYNSTASK " + Thread.currentThread().getName().toUpperCase() + " БуферПолученнниеДанныхОтМетодаGET "
-                                                    + БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString()+"\n"+
-                                                     "  БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.length() "
-                                                    +БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.length());
-                                    }else {
-                                        ///TODO ПЕРВЫЙ ВАРАНТ РАСПАРСИВАНИЯ ПРИШЕДШЕГО JSON ПОТОКА С СЕРВРА
-                                        БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.append(РидерОтСервераМетодаGET.readLine());
-                                        /////НАЗВАНИЕ ПОТОКА
-                                        Log.i(this.getClass().getName(), "НАЗВАНИЕ ПОТОКА В aSYNSTASK " + Thread.currentThread().getName().toUpperCase() + " БуферПолученнниеДанныхОтМетодаGET "
-                                                + БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString()+"\n"+
-                                                "  БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.length() "
-                                                +БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.length());
-                                    }
-                                    ///
-                                    Log.d(this.getClass().getName(), " БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString()"
-                                            + БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString());/////
-
-                                    if (БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера != null &&
-                                            БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString().length() > 0) {
-                                        /////НАЗВАНИЕ ПОТОКА
-                                        Log.i(this.getClass().getName(), "НАЗВАНИЕ ПОТОКА В aSYNSTASK " + Thread.currentThread().getName().toUpperCase() + " БуферПолученнниеДанныхОтМетодаGET "
-                                                + БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString());
-                                    }
-
-
-
-                            /////НАЗВАНИЕ ПОТОКА
-                            Log.i(this.getClass().getName(), "БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера" +
-                                    БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера.toString());
-
-                            ////TODO нет ответа от сервер или поток нулевой
-                        } else {
-                            Log.i(this.getClass().getName(), "ПОТОК ПРИШЕЛ НУЛОВОЙ ОТ СЕРВЕРА  " + ПодключениеПолученияДанныхсСервер.getInputStream().available());
+                            if(Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getCount()>0){
+                                Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.moveToFirst();
+                                ПубличноеЛогин =         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
+                                ПубличноеПароль =           Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
+                            }
+                            Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " + ПубличноеЛогин +
+                                    " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПароль);
+                            String ANDROID_ID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+                            // TODO: 26.08.2021 НОВЫЙ ВЫЗОВ НОВОГО КЛАСС GRUD - ОПЕРАЦИИ
+                            Log.d(this.getClass().getName(), "  ПубличноеЛогин " + ПубличноеЛогин + " ПубличноеПароль " + ПубличноеПароль+" ANDROID_ID "+ANDROID_ID);
+                            Request originalRequest = chain.request();
+                            Request.Builder builder = originalRequest.newBuilder()
+                                    .header("Content-Type", ТипОтветаTEXTилиJSONВнутриПотока + " ;charset=UTF-8")
+                                    .header("Accept-Encoding", "gzip,deflate,sdch")
+                                    .header("Connection", "Keep-Alive")
+                                    .header("Accept-Language", "ru-RU")
+                                    .header("identifier", ПубличноеЛогин)
+                                    .header("p_identifier", ПубличноеПароль)
+                                    .header("id_device_androis", ANDROID_ID);
+                            Request newRequest = builder.build();
+                            return chain.proceed(newRequest);
                         }
-                        ////////
-
-                    // TODO: 04.08.2021  end
-            if (GZIPПотокОтСЕРВЕРА!=null) {
-                GZIPПотокОтСЕРВЕРА.close();
-            }
-            ////
-            if (РидерОтСервераМетодаGET!=null) {
-                РидерОтСервераМетодаGET.close();
-            }
-
-
-            ПодключениеПолученияДанныхсСервер.disconnect();
-                        ////
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            ///метод запись ошибок в таблицу
-            ОшибкаТекущегоМетода = ex.toString();
-
+                    }).connectTimeout(5, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS).build();
+            ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
+            Request requestGET = new Request.Builder().get().url(Adress).build();
+            Log.d(this.getClass().getName(), "  request  " + requestGET);
+            // TODO  Call callGET = client.newCall(requestGET);
+            Dispatcher dispatcherДанныеОтСервера = okHttpClientДанныеОтСервера.dispatcher();
+            okHttpClientДанныеОтСервера.newCall(requestGET).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.e(this.getClass().getName(), "  ERROR call  " + call + "  e" + e.toString());
+                    Log.e(Class_MODEL_synchronized.class.getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber() + " ОшибкаТекущегоМетода " + e.getMessage());
+                    new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), Class_MODEL_synchronized.class.getName(),
+                            Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    // TODO: 31.05.2022
+                    dispatcherДанныеОтСервера.executorService().shutdown();
+                    dispatcherДанныеОтСервера.cancelAll();
+                    //TODO закрываем п отоки
+                }
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    if (response.isSuccessful()) {
+                        InputStream inputStreamОтПинга = response.body().source().inputStream();
+                        GZIPInputStream GZIPПотокОтСЕРВЕРА = new GZIPInputStream(inputStreamОтПинга);
+                        BufferedReader РидерОтСервераМетодаGET = new BufferedReader(new InputStreamReader(GZIPПотокОтСЕРВЕРА, StandardCharsets.UTF_16));//
+                        БуферСамиДанныеОтСервера[0] = РидерОтСервераМетодаGET.lines().collect(StringBuffer::new, (sb, i) -> sb.append(i),
+                                StringBuffer::append);
+                        Long РазмерПришедшегоПотока = Long.parseLong(   response.header("stream_size"));
+                        Log.d(this.getClass().getName(), "БуферСамиДанныеОтСервера " + БуферСамиДанныеОтСервера[0] +  " РазмерПришедшегоПотока " +РазмерПришедшегоПотока);
+                        // TODO: 31.05.2022
+                        dispatcherДанныеОтСервера.executorService().shutdown();
+                        dispatcherДанныеОтСервера.cancelAll();
+                    }
+                }
+            });
+            //TODO
+            dispatcherДанныеОтСервера.executorService().awaitTermination(1, TimeUnit.MINUTES);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+           String ОшибкаТекущегоМетода = e.toString();
             if (!ОшибкаТекущегоМетода.toString().matches("(.*)java.io.EOFException(.*)") &&
                     !ОшибкаТекущегоМетода.toString().matches("(.*)java.net.sockettimeoutexception(.*)")
                     &&
                     !ОшибкаТекущегоМетода.toString().matches("(.*)SocketTimeout(.*)")) {
-
                 Log.e(Class_MODEL_synchronized.class.getName(), "Ошибка " + ОшибкаТекущегоМетода + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                         " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber() + " ОшибкаТекущегоМетода " + ОшибкаТекущегоМетода.toString());
-                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(ex.toString(), Class_MODEL_synchronized.class.getName(),
+                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), Class_MODEL_synchronized.class.getName(),
                         Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
             }
         }
-        ////////
-        // TODO: 21.10.2021
         //// todo get ASYNtASK
-        return (StringBuffer) БуферПолученнниеДанныхОтМетодаGETУниверсальныйБуферПолучениеДанныхсСервера;
+        return БуферСамиДанныеОтСервера[0];
 
     }
 
@@ -341,20 +278,20 @@ import okhttp3.Response;
                             }
                             if (Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getCount() > 0) {
                                 Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.moveToFirst();
-                                ПубличноеИмяПользовательДлСервлета = Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
-                                ПубличноеПарольДлСервлета = Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
+                                ПубличноеЛогин = Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
+                                ПубличноеПароль = Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
                             }
                             String ANDROID_ID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-                            Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " + ПубличноеИмяПользовательДлСервлета +
-                                    " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета);
+                            Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " + ПубличноеЛогин +
+                                    " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПароль);
                             Request originalRequest = chain.request();
                             Request.Builder builder = originalRequest.newBuilder()
                                     .header("Content-Type", ТипОтветаTEXTилиJSONВнутриПотока + " ;charset=UTF-8")
                                     .header("Accept-Encoding", "gzip,deflate,sdch")
                                     .header("Connection", "Keep-Alive")
                                     .header("Accept-Language", "ru-RU")
-                                    .header("identifier", ПубличноеИмяПользовательДлСервлета)
-                                    .header("p_identifier", ПубличноеПарольДлСервлета)
+                                    .header("identifier", ПубличноеЛогин)
+                                    .header("p_identifier", ПубличноеПароль)
                                     .header("id_device_androis", ANDROID_ID);
                             Request newRequest = builder.build();
                             return chain.proceed(newRequest);
@@ -515,13 +452,13 @@ import okhttp3.Response;
                                     Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
                             if(Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getCount()>0){
                                 Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.moveToFirst();
-                                ПубличноеИмяПользовательДлСервлета=         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
-                                ПубличноеПарольДлСервлета=           Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
+                                ПубличноеЛогин =         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
+                                ПубличноеПароль =           Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
                             }
-                            Log.i(this.getClass().getName(), " PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета " + ПубличноеИмяПользовательДлСервлета +
-                                    " PUBLIC_CONTENT.ПубличноеПарольДлСервлета   " +ПубличноеПарольДлСервлета);
-                            ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );
-                            ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);
+                            Log.i(this.getClass().getName(), " PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета " + ПубличноеЛогин +
+                                    " PUBLIC_CONTENT.ПубличноеПарольДлСервлета   " + ПубличноеПароль);
+                            ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("identifier", ПубличноеЛогин);
+                            ПодключениеИнтернетДляОтправкиНаСервер.setRequestProperty("p_identifier", ПубличноеПароль);
                             ПодключениеИнтернетДляОтправкиНаСервер.connect();
                     //////TODO ОТПРАВЛЕМ ДАННЫЕ НА СЕРВЕР ЕЛСИ ДАННЫЕ НОВЫЕ КАК ОТПАРВЯЕМ ТО ОБНЦЛЕМ БУФЕР С JSON АГА !!!!
                     try ( BufferedWriter БуферПосылаемМетодуPOSTJSONФайл = new BufferedWriter(new OutputStreamWriter(
@@ -3210,14 +3147,14 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
 
                     if(Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getCount()>0){
                         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.moveToFirst();
-                        ПубличноеИмяПользовательДлСервлета=         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
-                        ПубличноеПарольДлСервлета=           Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
+                        ПубличноеЛогин =         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
+                        ПубличноеПароль =           Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
                     }
-                    Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " +ПубличноеИмяПользовательДлСервлета +
-                            " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета);
-                    ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("identifier", ПубличноеПарольДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
+                    Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " + ПубличноеЛогин +
+                            " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПароль);
+                    ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("identifier", ПубличноеПароль);  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
                     /////// TODO set login pasword
-                    ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("p_identifier", ПубличноеИмяПользовательДлСервлета);  //"dsu1getsession"
+                    ПодключениеИнтернетДляЗагрузкеAPKФайла.setRequestProperty("p_identifier", ПубличноеЛогин);  //"dsu1getsession"
                     ПодключениеИнтернетДляЗагрузкеAPKФайла.connect(); /////////////ТОЛЬКО СОЕДИНЕНИЕ
                     ПодключениеИнтернетДляЗагрузкеAPKФайла.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
                     int lenghtOfFile = ПодключениеИнтернетДляЗагрузкеAPKФайла.getContentLength();
@@ -3329,14 +3266,14 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                             Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
                     if(Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getCount()>0){
                         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.moveToFirst();
-                        ПубличноеИмяПользовательДлСервлета=         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
-                        ПубличноеПарольДлСервлета=           Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
+                        ПубличноеЛогин =         Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0).trim();
+                        ПубличноеПароль =           Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(1).trim();
                     }
-                    Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " +ПубличноеИмяПользовательДлСервлета +
-                            " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета);
+                    Log.d(this.getClass().getName(), "  PUBLIC_CONTENT.ПубличноеИмяПользовательДлСервлета  " + ПубличноеЛогин +
+                            " PUBLIC_CONTENT.ПубличноеПарольДлСервлета " + ПубличноеПароль);
                     // TODO: 11.11.2021  ПЕРЕДОТПРАВКОЙ ШИФРУЕМ ДАННЫЕ \
-                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("identifier", ПубличноеИмяПользовательДлСервлета  );  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
-                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("p_identifier", ПубличноеПарольДлСервлета);  //"dsu1getsession"
+                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("identifier", ПубличноеЛогин);  //"dsu1getsession"   ПубличноеИмяПользовательДлСервлета
+                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("p_identifier", ПубличноеПароль);  //"dsu1getsession"
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.connect();
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.getContent(); ////РЕАЛЬНОЕ ПОЛУЧЕНИЕ ДАННЫХ С ИНТРЕНЕТА
 
