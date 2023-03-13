@@ -13,7 +13,6 @@ import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -32,19 +31,13 @@ import com.dsy.dsu.R;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import javax.crypto.NoSuchPaddingException;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
@@ -70,11 +63,11 @@ public class MainActivity_Face_Start extends AppCompatActivity {
     private  int ПубличныйIDТекущегоПользователя=0;
     private Integer   ПубличноеIDПолученныйИзСервлетаДляUUID=0;
     private Class_GRUD_SQL_Operations classGrudSqlOperations;
-    private   SQLiteCursor Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней=null;
-    private  boolean СтатусРаботаетЛиСетьИНашСервер =false;
+    private   SQLiteCursor КурсорДаннныеПоСотрудникуБолее7Дней =null;
+  
     private SQLiteDatabase sqLiteDatabaseСамаБазы;
     // TODO: 24.02.202
-    private   Handler HandlerДляПоказаПользователюЗагрузки ;
+    private  Boolean СтатусРаботыСервера =false;
     private SharedPreferences preferences;
     Integer ФиналПолучаемРазницуМеждуДатами =0;
 
@@ -105,7 +98,6 @@ activity=this;
       /////todo данная настрока запрещает при запуке активти подскаваать клавиатуре вверх на компонеты eedittext
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         ((Activity) КонтекстДляFAceapp) .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-    HandlerДляПоказаПользователюЗагрузки = new Handler();
     preferences = getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
     // TODO: 24.02.2022
     Log.d(this.getClass().getName(),  " date " +new Date().toGMTString().toString());
@@ -222,6 +214,7 @@ try{
     Flowable.just("ЗагрузкаИПроверкаСтутуса").subscribeOn(Schedulers.single()).map(new Function<String, Object>() {
         @Override
         public Object apply(String s) throws Throwable {
+            МетодПингаКСереруЗапущенЛиСерерИлиНет();
             МетодОпределениеКогдаПоследнийРазЗаходилПользователь();////ЗАПУСКАЕМ
             Integer РезультатПолученныйПубличныйID=     МетодЗаполенениеПубличногоIDПриРаботеОфлайн();
             Log.d(this.getClass().getName(), "РезультатПолученныйПубличныйID " +РезультатПолученныйПубличныйID);
@@ -282,22 +275,13 @@ try{
 
 
 
-    private Boolean МетодПингаКСереруЗапущенЛиСерерИлиНет()
-            throws ExecutionException, InterruptedException,
-            TimeoutException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        Boolean РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции=false;
-
-
+    private Boolean МетодПингаКСереруЗапущенЛиСерерИлиНет() {
         try{
             // TODO: 16.12.2021 НЕПОСРЕДСТВЕННЫЙ ПИНГ СИСТЕНМ ИНТРЕНАТ НА НАЛИЧЕНИ СВАЗИ С БАЗОЙ SQL SERVER
-            РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции =
+            СтатусРаботыСервера =
                     new Class_Connections_Server(getApplicationContext()).
                             МетодПингаСервераРаботаетИлиНет(getApplicationContext());
-
-            //TODO ФУТУРЕ ЗАВЕРШАЕМ
-            Log.d(this.getClass().getName(), "  РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции "
-                    + РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции);
-
+            Log.d(this.getClass().getName(), "  РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции " + СтатусРаботыСервера);
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу
@@ -307,7 +291,7 @@ try{
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
 
-        return  РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции;
+        return СтатусРаботыСервера;
     }
 
 
@@ -474,7 +458,7 @@ try{
     //todo ВЫТАСКИВАЕМ ДАННЫЕ ДЛЯ АУНТИФИКАЦИИ МЕНЕЕ 7 ДНЕЙ
 
     private void МетодВытаскиемДанныеИзКурсораДляАунтификацииМенне7Дней(  @NotNull long ФиналПолучаемРазницуМеждуДатами ) {/////МЕТОД ПОЛУЧЕНИЕ ИЗ БАЗЫ ИМЯ И ПАРОЛЬ ДЛЯ АУНТИФИКАЦИИ МЕНЕЕ 7 ДНЕЙ
-     Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней=null;
+     КурсорДаннныеПоСотрудникуБолее7Дней =null;
         try {
           Class_GRUD_SQL_Operations   classGrudSqlOperationsВытаскиемДанныеИзКурсораДляАунтификацииМенне7Дней =new Class_GRUD_SQL_Operations(getApplicationContext());
             classGrudSqlOperationsВытаскиемДанныеИзКурсораДляАунтификацииМенне7Дней. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы","SuccessLogin");
@@ -482,11 +466,11 @@ try{
             classGrudSqlOperationsВытаскиемДанныеИзКурсораДляАунтификацииМенне7Дней. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеЛимита","1");
             // TODO: 12.10.2021  Ссылка Менеджер Потоков
             PUBLIC_CONTENT  Class_Engine_SQLГдеНаходитьсяМенеджерПотоков =new PUBLIC_CONTENT (getApplicationContext());
-            Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней= (SQLiteCursor)  classGrudSqlOperationsВытаскиемДанныеИзКурсораДляАунтификацииМенне7Дней.
+            КурсорДаннныеПоСотрудникуБолее7Дней = (SQLiteCursor)  classGrudSqlOperationsВытаскиемДанныеИзКурсораДляАунтификацииМенне7Дней.
                     new GetData(getApplicationContext()).getdata(classGrudSqlOperationsВытаскиемДанныеИзКурсораДляАунтификацииМенне7Дней. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
                     Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков
                     ,sqLiteDatabaseСамаБазы);
-            Log.d(this.getClass().getName(), "GetData " +Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней );
+            Log.d(this.getClass().getName(), "GetData " + КурсорДаннныеПоСотрудникуБолее7Дней);
             //TODO  ПУБЛИЧНЫЙ ЛОГИН и ПАРОЛЬ
             // TODO: 26.08.2021 НОВЫЙ ВЫЗОВ НОВОГО КЛАСС GRUD - ОПЕРАЦИИ
             Class_GRUD_SQL_Operations class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯ= new Class_GRUD_SQL_Operations(getApplicationContext());
@@ -509,12 +493,12 @@ try{
 
             ///"SELECT id,success_users,success_login   FROM SuccessLogin  WHERE id=?", "1"
                 ///////////////////////х( "SuccessLogin", "date_update","id","=","1",null,null,null,null );
-                if (Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней.getCount() > 0) {/////ПРОВЕРЯЕМ ЕСЛИ ПО ДАННОМУ ID UUID ЗАПОЛНЕ ЛИ ОН
-                    Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней.moveToFirst();
-                    ПубличноеИмяПользовательДлСервлета = Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней.getString(1).trim();
-                 ПубличноеПарольДлСервлета = Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней.getString(2).trim();
-                 ДатаПоследенегоЗаходаУспешнойАунтификации = Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней.getString(3).trim();
-                    Log.d(this.getClass().getName(), " Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней  " + Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней.getCount() +
+                if (КурсорДаннныеПоСотрудникуБолее7Дней.getCount() > 0) {/////ПРОВЕРЯЕМ ЕСЛИ ПО ДАННОМУ ID UUID ЗАПОЛНЕ ЛИ ОН
+                    КурсорДаннныеПоСотрудникуБолее7Дней.moveToFirst();
+                    ПубличноеИмяПользовательДлСервлета = КурсорДаннныеПоСотрудникуБолее7Дней.getString(1).trim();
+                 ПубличноеПарольДлСервлета = КурсорДаннныеПоСотрудникуБолее7Дней.getString(2).trim();
+                 ДатаПоследенегоЗаходаУспешнойАунтификации = КурсорДаннныеПоСотрудникуБолее7Дней.getString(3).trim();
+                    Log.d(this.getClass().getName(), " Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней  " + КурсорДаннныеПоСотрудникуБолее7Дней.getCount() +
                             " ПубличноеИмяПользовательДлСервлета " + ПубличноеИмяПользовательДлСервлета +
                             "  ПубличноеПарольДлСервлета " + ПубличноеПарольДлСервлета + "ДатаПоследенегоЗаходаУспешнойАунтификации " +ДатаПоследенегоЗаходаУспешнойАунтификации);
                 }
@@ -549,7 +533,8 @@ try{
                 +  "ФиналПолучаемРазницуМеждуДатами "+ФиналПолучаемРазницуМеждуДатами);
 
 // todo ПРОВЕРЯЕМ РЕЗУЛЬТАТ ПРОВЕРКИ НА ДАТУ КОГДА ПОСЛДЕНИЙ РАЗ ЗАХОДИЛ ПОЛЬЗОВАТЕЛЬ В ПРОГАММУ ЕСЛИ МЕНЕЕ НЕДЕЛИ НАЗАД ТО НЕ  ПРОВОДИМ АУТНИФИКАЦИЮ ( ИМЯ И ПАРОЛЬ НА СЕРВРЕР)
-        if ((long)  ФиналПолучаемРазницуМеждуДатами <7 && Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней.getCount()>0 ) {
+        if ((long)  ФиналПолучаемРазницуМеждуДатами <7
+                && КурсорДаннныеПоСотрудникуБолее7Дней.getCount()>0 ) {
 /////TODO запускам СРАЗУ СИНХРНИЗАЦИЮ НЕ ПЕРВЫЙ ЗАПУСК ПРИЛДОЖЕНИЯ
             /////TODO запускам ПРОВЕРКУ ПОЛЬЗОВАТЕЛЯ И ПАРОЛЬ  ДЛЯ ВХОДА В СИСТЕМУ
             Log.d(this.getClass().getName(), " ПубличноеИмяПользовательДлСервлета "+
@@ -562,13 +547,14 @@ try{
             editor.putString("РежимЗапускаСинхронизации","ПовторныйЗапускСинхронизации");
             editor.commit();
                 /////TODO ЗАПУСКАМ ОБНОЛВЕНИЕ ДАННЫХ С СЕРВЕРА ПЕРЕРД ЗАПУСКОМ ПРИЛОЖЕНИЯ ВСЕ ПРИЛОЖЕНИЯ ДСУ-1
-            if (СтатусРаботаетЛиСетьИНашСервер ==true) {
+            if (СтатусРаботыСервера ==true) {
                 Интент_ЗапускаетFaceApp.setClass(getApplicationContext(),  MainActivity_Visible_Async.class); //MainActivity_Visible_Async //MainActivity_Face_App
-                Log.d(this.getClass().getName(), " Нет Связи с сервером  Face_Start " + СтатусРаботаетЛиСетьИНашСервер);
+                Log.d(this.getClass().getName(), " Нет Связи с сервером   СтатусРаботыСервера " + СтатусРаботыСервера);
             } else {
-                Интент_ЗапускаетFaceApp.setClass(getApplicationContext(),  MainActivity_Face_App.class); //MainActivity_Visible_Async //MainActivity_Face_App
+                Интент_ЗапускаетFaceApp.setClass(getApplicationContext(),  MainActivity_Face_App.class);
+                // TODO: 13.03.2023 нет интретена говорим человеку
                 МетодСообщениеПользоватлюЧтоНЕтИнтренета("Режим: (офлайн)");
-                Log.d(this.getClass().getName(), " Нет Связи с сервером  Face_Start " + СтатусРаботаетЛиСетьИНашСервер);
+                Log.d(this.getClass().getName(), " Нет Связи с сервером  Face_Start СтатусРаботыСервера " + СтатусРаботыСервера);
 
             }
 
@@ -577,15 +563,15 @@ try{
         }else{////ПРОВОДИМ АУНТИФИКАЦИЮ ПОЛЬЗОВАТЕЛЯ
 /////TODO запускам ПРОВЕРКУ ПОЛЬЗОВАТЕЛЯ И ПАРОЛЬ  ДЛЯ ВХОДА В СИСТЕМУ  ПЕРВЫЙ ВХОД
             ///TODO принудительно устанвливаем редим работы синхронизации
-            Log.d(this.getClass().getName(), " ПубличноеИмяПользовательДлСервлета "+ПубличноеИмяПользовательДлСервлета+" ПубличноеПарольДлСервлета " +ПубличноеПарольДлСервлета);
-
-            Log.d(this.getClass().getName(), " Нет Связи с сервером  Face_Start "
-                    + СтатусРаботаетЛиСетьИНашСервер);
+            Log.d(this.getClass().getName(), " ПубличноеИмяПользовательДлСервлета "+ПубличноеИмяПользовательДлСервлета+
+                    " ПубличноеПарольДлСервлета " +ПубличноеПарольДлСервлета);
+            Log.d(this.getClass().getName(), " Нет Связи с сервером  Face_Start СтатусРаботыСервера "+ СтатусРаботыСервера);
 
             //// TODO ЗАПУСКАЕМ СНАЧАЛА АУНТИФКАУИЮ И ЕСЛИ УСПЕШНО ЗАПУСКАМ ДАННЫЕ   -----ЭТО ПЕРВЫЙ ЗАПУСК ПРИЛОЖЕНИЯ
             Intent Интент_ЗапускПроверкиАунтификацииЕслиПользоваьельЗаходилДавновПрограмму=new Intent();
             Интент_ЗапускПроверкиАунтификацииЕслиПользоваьельЗаходилДавновПрограмму.putExtra("РежимЗапускаСинхронизации","СамыйПервыйЗапускСинхронизации");
-            Интент_ЗапускПроверкиАунтификацииЕслиПользоваьельЗаходилДавновПрограмму.setClass(getApplicationContext(), MainActivity_Tabels_Users_And_Passwords.class);/////
+            Интент_ЗапускПроверкиАунтификацииЕслиПользоваьельЗаходилДавновПрограмму.setClass(getApplicationContext(),
+                    MainActivity_Tabels_Users_And_Passwords.class);/////
             Интент_ЗапускПроверкиАунтификацииЕслиПользоваьельЗаходилДавновПрограмму.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_FROM_BACKGROUND);///
 
             // TODO: 01.12.2022   Записываем дама
@@ -594,10 +580,10 @@ try{
             editor.commit();
             startActivity(Интент_ЗапускПроверкиАунтификацииЕслиПользоваьельЗаходилДавновПрограмму);
             ////TODO ДАННАЯ КОМАНДА ПЕРЕКРЫВАЕТ НЕ ЗАПУСКАЕМОЕ АКТИВТИ А АКТИВТИ КОТОРЕ ЕГО ЗАПУСТИЛО
-                Log.d(this.getClass().getName(), " Нет Связи с сервером  Face_Start "
-                        + СтатусРаботаетЛиСетьИНашСервер);
+                Log.d(this.getClass().getName(), " Нет Связи с сервером  Face_Start СтатусРаботыСервера " + СтатусРаботыСервера);
         }
-              Курсор_ДляПолучениеИМяИПарольДЛяПодключениеКСерверуБолееСемиДней.close();
+              // TODO: 13.03.2023 после всех условий
+              КурсорДаннныеПоСотрудникуБолее7Дней.close();
               Интент_ЗапускаетFaceApp.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_FROM_BACKGROUND);//////FLAG_ACTIVITY_SINGLE_TOP
               startActivity(Интент_ЗапускаетFaceApp);
               finish();

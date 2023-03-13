@@ -165,6 +165,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                                 Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ "РежимРаботыСети " + РежимРаботыСети);
                                 // TODO: 18.02.2023 удаление перед анализо файлов json И .apk
                                 МетодДополнительногоУдалениеФайлов();
+                                // TODO: 18.02.2023 удаление перед анализо файлов json И .apk
                                  ВерсияПООтСервере[0] =       МетодАнализаВерсииПОJSON();
                                 Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ " время "
                                         +new Date().toLocaleString() +  "ВерсияПООтСервере " + ВерсияПООтСервере[0]);
@@ -562,7 +563,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()
                     + Thread.currentThread().getName()+" ФайлJsonОтСервера" + ФайлJsonОтСервера);
             // TODO: 13.03.2023 Анализ JSON
-            if(ФайлJsonОтСервера.isFile()){
+            if(ФайлJsonОтСервера!=null && ФайлJsonОтСервера.isFile()){
                 File ФайлJSonКоторыйУжеСохраненный = null;
                 if (Build.VERSION.SDK_INT >= 30) {
                     ФайлJSonКоторыйУжеСохраненный = getApplicationContext().getExternalFilesDir( Environment.DIRECTORY_DOWNLOADS+"/" + "update_dsu1.json");
@@ -570,12 +571,24 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     ФайлJSonКоторыйУжеСохраненный = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+"/" + "update_dsu1.json");
                 }
                 Reader reader = new InputStreamReader( new FileInputStream(ФайлJSonКоторыйУжеСохраненный), StandardCharsets.UTF_8);
-                BufferedReader bufferedReader = new BufferedReader( reader );
-                List<String> БуферСамиДанныеОтСервера = bufferedReader.lines().collect(Collectors.toList());
-                СервернаяВерсияПОВнутри= Integer.parseInt(БуферСамиДанныеОтСервера.get(13).replaceAll("([^0-9])", "")) ;
+                BufferedReader bufferedReader = null;
+                if (reader!=null && reader.ready() ) {
+                    bufferedReader = new BufferedReader( reader );
+                }
+                List<String> БуферСамиДанныеОтСервера = null;
+                if (bufferedReader!=null  && bufferedReader.ready()) {
+                    БуферСамиДанныеОтСервера = bufferedReader.lines().collect(Collectors.toList());
+                }
+                if (БуферСамиДанныеОтСервера!=null) {
+                    СервернаяВерсияПОВнутри= Integer.parseInt(БуферСамиДанныеОтСервера.get(13).replaceAll("([^0-9])", "")) ;
+                    // TODO: 13.03.2023
+                    Log.d(getApplicationContext().getClass().getName(),"\n"+" Starting.... class "+Thread.currentThread().getStackTrace()[2].getClassName() +"\n"+
+                            " metod "+Thread.currentThread().getStackTrace()[2].getMethodName() +"\n"+
+                            " line "+  Thread.currentThread().getStackTrace()[2].getLineNumber()+"\n"+  "  ФайлJsonОтСервера " +ФайлJsonОтСервера.isFile());
+                }
                 Log.d(getApplicationContext().getClass().getName(),"\n"+" Starting.... class "+Thread.currentThread().getStackTrace()[2].getClassName() +"\n"+
                         " metod "+Thread.currentThread().getStackTrace()[2].getMethodName() +"\n"+
-                        " line "+  Thread.currentThread().getStackTrace()[2].getLineNumber()+"\n"+  "  ФайлJsonОтСервера " +ФайлJsonОтСервера.isFile());
+                        " line "+  Thread.currentThread().getStackTrace()[2].getLineNumber()+"\n");
             }
         } catch (Exception e ) {
             e.printStackTrace();
@@ -593,7 +606,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
       PackageInfo    pInfo = getApplicationContext(). getPackageManager().getPackageInfo(getApplicationContext(). getPackageName(), 0);
         String version = pInfo.versionName;//Version Name
         Integer ЛокальнаяВерсияПО = pInfo.versionCode;//Version Code
-        if (СервернаяВерсияПОВнутри+1 >ЛокальнаяВерсияПО ) {
+        if (СервернаяВерсияПОВнутри >ЛокальнаяВерсияПО ) {
             МетодСообщениеЗапускЗагрущикаПо(СервернаяВерсияПОВнутри);
             Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
                     " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+  " СервернаяВерсияПОВнутри  "+СервернаяВерсияПОВнутри + " POOLS" + Thread.currentThread().getName());
