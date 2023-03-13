@@ -295,6 +295,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     ФайлУдаления[1] = ИмяФайла.matches("(.*)output-metadata.json(.*)");
                     ФайлУдаления[2] = ИмяФайла.matches("(.*)update_dsu1(.*)");//    boolean ПосикПоНазваниюФайла=Files[j].getName().matches("(.*).json(.*)");
                     ФайлУдаления[3] = ИмяФайла.equalsIgnoreCase("update_dsu1.apk");//    boolean ПосикПоНазваниюФайла=Files[j].getName().matches("(.*).json(.*)");
+                    ФайлУдаления[4] = ИмяФайла.equalsIgnoreCase("update_dsu1.json");//    boolean ПосикПоНазваниюФайла=Files[j].getName().matches("(.*).json(.*)");
                     // TODO: 10.04.2022
                     Log.d(this.getClass().getName(), " СЛУЖБА  ТАКОГО ФАЙЛА БОЛЬШЕ НЕТ  .JSON АНАЛИЗ " + Files[j].length()
                             + "   путь файла " + Files[j].getAbsolutePath() + "   --- " + new Date() + " ИмяФайла " + ИмяФайла);

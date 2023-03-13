@@ -3349,12 +3349,30 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                             if (response.isSuccessful()) {
                                 InputStream inputStreamОтПинга = response.body().source().inputStream();
-                                BufferedReader РидерОтСервераМетодаGET = new BufferedReader(new InputStreamReader(inputStreamОтПинга, StandardCharsets.UTF_16));//
-                                StringBuffer БуферРезультатПингасСервером = РидерОтСервераМетодаGET.lines().collect(StringBuffer::new, (sb, i) -> sb.append(i),
-                                        StringBuffer::append);
+                                File ПутькФайлу = null;
+                                if (Build.VERSION.SDK_INT >= 30) {
+                                    ПутькФайлу = context.getExternalFilesDir( Environment.DIRECTORY_DOWNLOADS);
+                                } else {
+                                    ПутькФайлу = Environment.getExternalStoragePublicDirectory(
+                                            Environment.DIRECTORY_DOWNLOADS);
+                                }
+                              File  СамФайлJson = new File(ПутькФайлу, "/" + "update_dsu1.json");
+                                if (!СамФайлJson.getParentFile().mkdirs() ) {
+                                    СамФайлJson.getParentFile().mkdirs();
+                                }
+                                if (СамФайлJson.createNewFile()) {
+                                    Log.d(context.getClass().getName(), "Будущий файл успешно создалься , далее запись на диск новго APk файла ");
+                                    FileUtils.copyInputStreamToFile(inputStreamОтПинга, СамФайлJson);
+                                    Log.d(context.getClass().getName(), "FileUtils.copyInputStreamToFile Будущий файл успешно создалься , далее запись на диск новго APk файла СамФайлJson "+
+                                            СамФайлJson);
+                                } else {
+                                    Log.e(context.getClass().getName(), "Ошибка не создалься Будущий файл успешно создалься , далее запись на диск новго APk файла  СЛУЖБА ");
+                                }
+                                inputStreamОтПинга.close();
                               Integer  РазмерПришедшегоПотока = Integer.parseInt(   response.header("stream_size"));
-                                Log.d(this.getClass().getName(), "БуферРезультатПингасСервером " + БуферРезультатПингасСервером +  " РазмерПришедшегоПотока[0] " +РазмерПришедшегоПотока);
-                                // TODO: 31.05.2022
+                                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber());
                                 dispatcherЗагрузкаПО.executorService().shutdown();
                             }
                         }
