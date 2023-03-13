@@ -199,6 +199,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                             Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
                         }
                     })
+                    .observeOn(AndroidSchedulers.mainThread())
                     .doOnComplete(new Action() {
                         @Override
                         public void run() throws Throwable {
@@ -236,13 +237,20 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             Log.d(this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName()+"Загружаем Файл APK."+new Date());
             String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
-            // TODO: 19.12.2021  загрузка файда  .apk    УниверсальныйБуферAPKФайлаПОсСервера("dsu1.glassfish/update_android_dsu1/app-release.apk", "update_dsu1.apk",
+            // TODO: 08.01.2022 Полученм JSON File  для анализа
             FileAPK = new Class_MODEL_synchronized(getApplicationContext()).
+                    МетодЗагрузкиОбновлениеПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервераОбновлениеПО(),
+                            getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица,"FileAPKUpdatePO","update_dsu1.apk");
+            Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()
+                    + Thread.currentThread().getName()+" FileAPK" + FileAPK);
+            // TODO: 19.12.2021  загрузка файда  .apk    УниверсальныйБуферAPKФайлаПОсСервера("dsu1.glassfish/update_android_dsu1/app-release.apk", "update_dsu1.apk",
+         /*   FileAPK = new Class_MODEL_synchronized(getApplicationContext()).
                     УниверсальныйБуферAPKФайлаПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).
                                     getСсылкаНаРежимСервера()+ "/update_android_dsu1/app-release.apk",
                             "update_dsu1.apk",
                             getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица);
-            Log.w(this.getClass().getName(), "FileAPK "+ FileAPK);
+            Log.w(this.getClass().getName(), "FileAPK "+ FileAPK);*/
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -253,6 +261,17 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         }
         return FileAPK;
     }
+
+
+
+
+
+
+
+
+
+
+
     private String МетодУзнаемРежимСетиWIFiMobile(Context КонтекстКоторыйДляСинхронизации) {
         String  РежимРаботыСети = new String();
         try{
@@ -574,7 +593,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
       PackageInfo    pInfo = getApplicationContext(). getPackageManager().getPackageInfo(getApplicationContext(). getPackageName(), 0);
         String version = pInfo.versionName;//Version Name
         Integer ЛокальнаяВерсияПО = pInfo.versionCode;//Version Code
-        if (СервернаяВерсияПОВнутри >ЛокальнаяВерсияПО ) {
+        if (СервернаяВерсияПОВнутри+1 >ЛокальнаяВерсияПО ) {
             МетодСообщениеЗапускЗагрущикаПо(СервернаяВерсияПОВнутри);
             Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
                     " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+  " СервернаяВерсияПОВнутри  "+СервернаяВерсияПОВнутри + " POOLS" + Thread.currentThread().getName());
