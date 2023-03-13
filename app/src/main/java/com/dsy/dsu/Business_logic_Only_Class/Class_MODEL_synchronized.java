@@ -3349,8 +3349,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                             if (response.isSuccessful()) {
                                 InputStream inputStreamОтПинга = response.body().source().inputStream();
-                                GZIPInputStream GZIPПотокОтСЕРВЕРА = new GZIPInputStream(inputStreamОтПинга);
-                                BufferedReader РидерОтСервераМетодаGET = new BufferedReader(new InputStreamReader(GZIPПотокОтСЕРВЕРА, StandardCharsets.UTF_16));//
+                                BufferedReader РидерОтСервераМетодаGET = new BufferedReader(new InputStreamReader(inputStreamОтПинга, StandardCharsets.UTF_16));//
                                 StringBuffer БуферРезультатПингасСервером = РидерОтСервераМетодаGET.lines().collect(StringBuffer::new, (sb, i) -> sb.append(i),
                                         StringBuffer::append);
                               Integer  РазмерПришедшегоПотока = Integer.parseInt(   response.header("stream_size"));
