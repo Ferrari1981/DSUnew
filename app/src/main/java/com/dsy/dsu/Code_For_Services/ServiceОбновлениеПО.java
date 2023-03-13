@@ -36,9 +36,16 @@ import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
@@ -300,7 +307,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     Log.d(this.getClass().getName(), " СЛУЖБА  ТАКОГО ФАЙЛА БОЛЬШЕ НЕТ  .JSON АНАЛИЗ " + Files[j].length()
                             + "   путь файла " + Files[j].getAbsolutePath() + "   --- " + new Date() + " ИмяФайла " + ИмяФайла);
                     if (ФайлУдаления[0] = true || ФайлУдаления[1] == true ||
-                            ФайлУдаления[2] == true || ФайлУдаления[3] == true) {
+                            ФайлУдаления[2] == true || ФайлУдаления[3] == true  || ФайлУдаления[4] == true ) {
                         // TODO: 10.04.2022
                         if (Files[j].exists()) {
                             // TODO: 10.04.2022
@@ -529,12 +536,31 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         try {
             String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
-            // TODO: 08.01.2022 Получение данных с сервера
+            // TODO: 08.01.2022 Полученм JSON File  для анализа
             File ФайлJsonОтСервера = new Class_MODEL_synchronized(getApplicationContext()).
                     МетодЗагрузкиОбновлениеПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервераОбновлениеПО(),
                                     getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица,"FileJsonUpdatePO");
             Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()
                     + Thread.currentThread().getName()+" ФайлJsonОтСервера" + ФайлJsonОтСервера);
+
+
+            // TODO: 13.03.2023 Анализ JSON
+            
+            File ФайлJSonКоторыйУжеСохраненный = null;
+            if (Build.VERSION.SDK_INT >= 30) {
+                ФайлJSonКоторыйУжеСохраненный = getApplicationContext().getExternalFilesDir( Environment.DIRECTORY_DOWNLOADS+"/" + "update_dsu1.json");
+            } else {
+                ФайлJSonКоторыйУжеСохраненный = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+"/" + "update_dsu1.json");
+            }
+            if(ФайлJsonОтСервера.isFile()){
+                Reader reader = new InputStreamReader( new FileInputStream(ФайлJSonКоторыйУжеСохраненный), StandardCharsets.UTF_8);
+                BufferedReader bufferedReader = new BufferedReader( reader );
+                List<String> БуферСамиДанныеОтСервера = bufferedReader.lines().collect(Collectors.toList());
+                String БуферСами = БуферСамиДанныеОтСервера.get(13).replaceAll("([^0-9])", "");
+                Log.d(getApplicationContext().getClass().getName(),"\n"+" Starting.... class "+Thread.currentThread().getStackTrace()[2].getClassName() +"\n"+
+                        " metod "+Thread.currentThread().getStackTrace()[2].getMethodName() +"\n"+
+                        " line "+  Thread.currentThread().getStackTrace()[2].getLineNumber()+"\n"+  "  БуферСами " +БуферСами);
+            }
         } catch (Exception e ) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"

@@ -20,13 +20,16 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -36,11 +39,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -3274,7 +3279,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                                   @NonNull String ИмяСервера,
                                                   @NonNull Integer ИмяПорта,
                                                   @NonNull String ЗаданиеЗагрузки) {
-        File ФайлОбновлениеОтСервера = null;
+        final File[] СамФайлJsonandApk = {null};
                 try {
                     String СтрокаСвязиСсервером ="http://"+ИмяСервера+":"+ИмяПорта+"/";;
                     СтрокаСвязиСсервером = СтрокаСвязиСсервером.replace(" ", "%20");
@@ -3353,18 +3358,17 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                 if (Build.VERSION.SDK_INT >= 30) {
                                     ПутькФайлу = context.getExternalFilesDir( Environment.DIRECTORY_DOWNLOADS);
                                 } else {
-                                    ПутькФайлу = Environment.getExternalStoragePublicDirectory(
-                                            Environment.DIRECTORY_DOWNLOADS);
+                                    ПутькФайлу = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                                 }
-                              File  СамФайлJson = new File(ПутькФайлу, "/" + "update_dsu1.json");
-                                if (!СамФайлJson.getParentFile().mkdirs() ) {
-                                    СамФайлJson.getParentFile().mkdirs();
+                                 СамФайлJsonandApk[0] = new File(ПутькФайлу, "/" + "update_dsu1.json");
+                                if (!СамФайлJsonandApk[0].getParentFile().mkdirs() ) {
+                                    СамФайлJsonandApk[0].getParentFile().mkdirs();
                                 }
-                                if (СамФайлJson.createNewFile()) {
+                                if (СамФайлJsonandApk[0].createNewFile()) {
                                     Log.d(context.getClass().getName(), "Будущий файл успешно создалься , далее запись на диск новго APk файла ");
-                                    FileUtils.copyInputStreamToFile(inputStreamОтПинга, СамФайлJson);
-                                    Log.d(context.getClass().getName(), "FileUtils.copyInputStreamToFile Будущий файл успешно создалься , далее запись на диск новго APk файла СамФайлJson "+
-                                            СамФайлJson);
+                                    FileUtils.copyInputStreamToFile(inputStreamОтПинга, СамФайлJsonandApk[0]);
+                                    Log.d(context.getClass().getName(), "FileUtils.copyInputStreamToFile СамФайлJsonandApk"+
+                                            СамФайлJsonandApk[0]);
                                 } else {
                                     Log.e(context.getClass().getName(), "Ошибка не создалься Будущий файл успешно создалься , далее запись на диск новго APk файла  СЛУЖБА ");
                                 }
@@ -3378,7 +3382,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                         }
                     });
                     dispatcherЗагрузкаПО.executorService().awaitTermination(1,TimeUnit.MINUTES);
-                    Log.i(context.getClass().getName(), "ФайлОбновлениеОтСервера" + ФайлОбновлениеОтСервера);
+                    Log.i(context.getClass().getName(), "СамФайлJsonandApk" + СамФайлJsonandApk[0]);
                     // TODO: 13.03.2023  конец загрузки файла по новому FILE
                 } catch (IOException | InterruptedException ex) {
                     ex.printStackTrace();
@@ -3396,7 +3400,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
 
                     }
                 }
-        return   ФайлОбновлениеОтСервера;
+        return СамФайлJsonandApk[0];
 
     }
 
