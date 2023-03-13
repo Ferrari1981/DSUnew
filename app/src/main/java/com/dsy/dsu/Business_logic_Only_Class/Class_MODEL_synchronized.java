@@ -3325,8 +3325,8 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                     Request newRequest = builder.build();
                                     return chain.proceed(newRequest);
                                 }
-                            }).connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(10, TimeUnit.SECONDS).build();
+                            }).connectTimeout(100, TimeUnit.SECONDS)
+                            .readTimeout(100, TimeUnit.SECONDS).build();
                     ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
                     Request requestGET = new Request.Builder().get().url(Adress).build();
                     Log.d(this.getClass().getName(), "  request  " + requestGET);
