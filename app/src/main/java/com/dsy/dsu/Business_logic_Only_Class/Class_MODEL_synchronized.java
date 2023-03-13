@@ -3278,7 +3278,8 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                                   @NonNull Context context,
                                                   @NonNull String ИмяСервера,
                                                   @NonNull Integer ИмяПорта,
-                                                  @NonNull String ЗаданиеЗагрузки) {
+                                                  @NonNull String ЗаданиеЗагрузки,
+                                                  @NonNull String ИмяФайлаЗагрузки ) {
         final File[] СамФайлJsonandApk = {null};
                 try {
                     String СтрокаСвязиСсервером ="http://"+ИмяСервера+":"+ИмяПорта+"/";;
@@ -3360,7 +3361,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                 } else {
                                     ПутькФайлу = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                                 }
-                                 СамФайлJsonandApk[0] = new File(ПутькФайлу, "/" + "update_dsu1.json");
+                                 СамФайлJsonandApk[0] = new File(ПутькФайлу, "/" + ИмяФайлаЗагрузки );
                                 if (!СамФайлJsonandApk[0].getParentFile().mkdirs() ) {
                                     СамФайлJsonandApk[0].getParentFile().mkdirs();
                                 }

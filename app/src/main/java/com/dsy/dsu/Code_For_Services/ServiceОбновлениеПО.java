@@ -530,7 +530,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     }
 
 
-
+    // TODO: 13.03.2023  Метод Анализа JSON файла
     Integer МетодАнализаВерсииПОJSON() {
          Integer СервернаяВерсияПОВнутри = 0;
         try {
@@ -539,27 +539,24 @@ public class ServiceОбновлениеПО extends IntentService {////Service
             // TODO: 08.01.2022 Полученм JSON File  для анализа
             File ФайлJsonОтСервера = new Class_MODEL_synchronized(getApplicationContext()).
                     МетодЗагрузкиОбновлениеПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервераОбновлениеПО(),
-                                    getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица,"FileJsonUpdatePO");
+                                    getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица,"FileJsonUpdatePO","update_dsu1.json");
             Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()
                     + Thread.currentThread().getName()+" ФайлJsonОтСервера" + ФайлJsonОтСервера);
-
-
             // TODO: 13.03.2023 Анализ JSON
-            
-            File ФайлJSonКоторыйУжеСохраненный = null;
-            if (Build.VERSION.SDK_INT >= 30) {
-                ФайлJSonКоторыйУжеСохраненный = getApplicationContext().getExternalFilesDir( Environment.DIRECTORY_DOWNLOADS+"/" + "update_dsu1.json");
-            } else {
-                ФайлJSonКоторыйУжеСохраненный = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+"/" + "update_dsu1.json");
-            }
             if(ФайлJsonОтСервера.isFile()){
+                File ФайлJSonКоторыйУжеСохраненный = null;
+                if (Build.VERSION.SDK_INT >= 30) {
+                    ФайлJSonКоторыйУжеСохраненный = getApplicationContext().getExternalFilesDir( Environment.DIRECTORY_DOWNLOADS+"/" + "update_dsu1.json");
+                } else {
+                    ФайлJSonКоторыйУжеСохраненный = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS+"/" + "update_dsu1.json");
+                }
                 Reader reader = new InputStreamReader( new FileInputStream(ФайлJSonКоторыйУжеСохраненный), StandardCharsets.UTF_8);
                 BufferedReader bufferedReader = new BufferedReader( reader );
                 List<String> БуферСамиДанныеОтСервера = bufferedReader.lines().collect(Collectors.toList());
-                String БуферСами = БуферСамиДанныеОтСервера.get(13).replaceAll("([^0-9])", "");
+                СервернаяВерсияПОВнутри= Integer.parseInt(БуферСамиДанныеОтСервера.get(13).replaceAll("([^0-9])", "")) ;
                 Log.d(getApplicationContext().getClass().getName(),"\n"+" Starting.... class "+Thread.currentThread().getStackTrace()[2].getClassName() +"\n"+
                         " metod "+Thread.currentThread().getStackTrace()[2].getMethodName() +"\n"+
-                        " line "+  Thread.currentThread().getStackTrace()[2].getLineNumber()+"\n"+  "  БуферСами " +БуферСами);
+                        " line "+  Thread.currentThread().getStackTrace()[2].getLineNumber()+"\n"+  "  ФайлJsonОтСервера " +ФайлJsonОтСервера.isFile());
             }
         } catch (Exception e ) {
             e.printStackTrace();
