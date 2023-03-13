@@ -95,7 +95,11 @@ public Gson gson = new GsonBuilder()
         return СсылкаНаРежимСервера.trim();
     }
 
-
+    private   String  СсылкаНаРежимСервераОбновлениеПО;
+    public String getСсылкаНаРежимСервераОбновлениеПО() {
+        СсылкаНаРежимСервераОбновлениеПО="jboss-1.0-SNAPSHOT/dsu1.glassfish.download";//TODO РЕЛИЗ
+        return СсылкаНаРежимСервераОбновлениеПО.trim();
+    }
     public LinkedHashMap<Integer,String> getМассивПортовСервера() {
 
         МассивПортовСервера.putIfAbsent(8080,"192.168.254.40");// TODO: 10.11.2022 Debug

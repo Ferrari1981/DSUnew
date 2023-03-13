@@ -3293,9 +3293,11 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("Accept-Encoding", "gzip,deflate,sdch");
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("Connection", "Keep-Alive");
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestProperty("Accept-Language", "ru-RU");
+                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setDoInput(true);
+                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setDoOutput(true);
                     ПодключениеИнтернетДляJSONВерсииФайлаAPK.setRequestMethod("GET"); ///GET //ПРОВЕРЯЕМ ЕСЛИ ПОДКЛЮЧЕНИЕ К СЕВРЛЕТУ НА СЕРВЕР ВЫБРАСЫВАЕМ
-                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setReadTimeout(30000); //todo САМ ТАЙМАУТ ПОДКЛЮЧЕНИЕ(30000);
-                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setConnectTimeout(30000);//todo САМ ПОТОК ДАННЫХ(1000);
+                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setReadTimeout(3000000); //todo САМ ТАЙМАУТ ПОДКЛЮЧЕНИЕ(30000);
+                    ПодключениеИнтернетДляJSONВерсииФайлаAPK.setConnectTimeout(3000000);//todo САМ ПОТОК ДАННЫХ(1000);
                  ПодключениеИнтернетДляJSONВерсииФайлаAPK.setUseCaches(false);
                     Class_GRUD_SQL_Operations class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯ= new Class_GRUD_SQL_Operations(this.context);
                     class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯ. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СамFreeSQLКОд",

@@ -164,6 +164,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         try {
             this.activity=activity;
             this.РежимРаботыСлужбыОбновлениеПО=РежимРаботыСлужбыОбновлениеПО;
+            final Integer[] ВерсияПООтСервере = {0};
             Completable.fromSupplier(new Supplier<Object>() {
                         @Override
                         public Object get() throws Throwable {
@@ -173,7 +174,10 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                                 Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ "РежимРаботыСети " + РежимРаботыСети);
                                 // TODO: 18.02.2023 удаление перед анализо файлов json И .apk
                                 МетодДополнительногоУдалениеФайлов();
-                                МетодАнализаВерсииПОJSON();
+                                 ВерсияПООтСервере[0] =       МетодАнализаВерсииПОJSON();
+                                Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ " время "
+                                        +new Date().toLocaleString() +  "ВерсияПООтСервере " + ВерсияПООтСервере[0]);
+
                                 Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
                             }else {
                                 Log.e(this.getClass().getName(), "неТ СВЯЗИ ДЛЯ ЗАГРУЗКИ ПО ТипПодключенияИнтернтаДляСлужбы "  + РежимРаботыСети);
@@ -207,6 +211,8 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     .doOnComplete(new Action() {
                         @Override
                         public void run() throws Throwable {
+                            // TODO: 18.02.2023 Анализ Версии
+                            МетодАнализВерсийЛокальнаяИСерверная(ВерсияПООтСервере[0]);
                             Log.d(getApplicationContext().getClass().getName(), "\n" + "   ФинальныйРезультатAsyncBackgroud ");
                         }
                     })
@@ -534,28 +540,17 @@ public class ServiceОбновлениеПО extends IntentService {////Service
 
 
     Integer МетодАнализаВерсииПОJSON() {
-        final Integer[] СервернаяВерсияПОВнутри = new Integer[1];
+         Integer СервернаяВерсияПОВнутри = 0;
         try {
             Log.d(this.getClass().getName(), " СЛУЖБА ... МЕТОД АНАЛИЗА ДАННЫХ РАБОТАЕТ......" + new Date());
-            Log.w(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри  ОБНОВЛЕНИЕ ПО  НазваниеТекущего Потока " + Thread.currentThread().getName());
-            // TODO: 17.12.2021 RXJAVA ПОЛУЧАЕМ JSON  ФАЙЛ ВЕРСИИ ПОРГРАМНОГО ПО ТАБЕЛЬНЫЙ УЧЁТ
             String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
             Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
-
-
-            // TODO: 08.01.2022
-            СервернаяВерсияПОВнутри[0] = new Class_MODEL_synchronized(getApplicationContext()).
-                    //   УниверсальныйБуферJSONВерсииПОсСервера("dsu1.glassfish/update_android_dsu1/output-metadata.json", Контекст, public_content.getАдресСервера() , public_content.getПортСервера());
-                            УниверсальныйБуферJSONВерсииПОсСервера(new PUBLIC_CONTENT(getApplicationContext())
-                                    .getСсылкаНаРежимСервера()+"/update_android_dsu1/output-metadata.json",
-                            getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица);
-            Log.w(getApplicationContext().getClass().getName(), " СервернаяВерсияПОВнутри" + СервернаяВерсияПОВнутри[0] + "+" +Thread.currentThread().getName());
-
+            // TODO: 08.01.2022 Получение данных с сервера
+            СервернаяВерсияПОВнутри = new Class_MODEL_synchronized(getApplicationContext()).
+                            УниверсальныйБуферJSONВерсииПОсСервера(new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервераОбновлениеПО(),
+                                    getApplicationContext(), ИмяСерверИзХранилица ,ПортСерверИзХранилица);
             Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
-                    СервернаяВерсияПОВнутри[0]+   " СервернаяВерсияПОВнутри  " + Thread.currentThread().getName());
-            // TODO: 18.02.2023 Анализ Версии
-            МетодАнализВерсийЛокальнаяИСерверная(СервернаяВерсияПОВнутри[0]);
-
+                    СервернаяВерсияПОВнутри+   " СервернаяВерсияПОВнутри  " + Thread.currentThread().getName()+" СервернаяВерсияПОВнутри" + СервернаяВерсияПОВнутри);
         } catch (Exception e ) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -564,7 +559,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
                     Thread.currentThread().getStackTrace()[2].getMethodName(),
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
-        return СервернаяВерсияПОВнутри[0];
+        return СервернаяВерсияПОВнутри;
     }
 
     private void МетодАнализВерсийЛокальнаяИСерверная(@NonNull Integer СервернаяВерсияПОВнутри) {
