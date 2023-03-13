@@ -3272,7 +3272,8 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
     public File МетодЗагрузкиОбновлениеПОсСервера(@NonNull String АдресЗагрузки,
                                                   @NonNull Context context,
                                                   @NonNull String ИмяСервера,
-                                                  @NonNull Integer ИмяПорта) {
+                                                  @NonNull Integer ИмяПорта,
+                                                  @NonNull String ЗаданиеЗагрузки) {
         File ФайлОбновлениеОтСервера = null;
                 try {
                     String СтрокаСвязиСсервером ="http://"+ИмяСервера+":"+ИмяПорта+"/";;
@@ -3321,6 +3322,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                             .header("Accept-Language", "ru-RU")
                                             .header("identifier", ПубличноеЛогин)
                                             .header("p_identifier", ПубличноеПароль)
+                                            .header("task_downlonupdatepo", ЗаданиеЗагрузки)
                                             .header("id_device_androis", ANDROID_ID);
                                     Request newRequest = builder.build();
                                     return chain.proceed(newRequest);
