@@ -102,15 +102,13 @@ public Gson gson = new GsonBuilder()
     }
     public LinkedHashMap<Integer,String> getМассивПортовСервера() {
 
-        МассивПортовСервера.putIfAbsent(8080,"192.168.254.40");// TODO: 10.11.2022 Debug
+    /*    МассивПортовСервера.putIfAbsent(8080,"192.168.254.40");// TODO: 10.11.2022 Debug
         МассивПортовСервера.putIfAbsent(8084,"192.168.254.40");// TODO: 10.11.2022 Debug
-        МассивПортовСервера.putIfAbsent(8085,"192.168.254.40");// TODO: 10.11.2022 Debug
+        МассивПортовСервера.putIfAbsent(8085,"192.168.254.40");// TODO: 10.11.2022 Debug*/
 
-/*
       МассивПортовСервера.putIfAbsent(8888,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз
        МассивПортовСервера.putIfAbsent(8889,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз
         МассивПортовСервера.putIfAbsent(8890,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз
-*/
 
 
         return МассивПортовСервера;
