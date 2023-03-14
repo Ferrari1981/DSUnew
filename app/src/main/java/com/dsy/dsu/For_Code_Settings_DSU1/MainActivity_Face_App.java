@@ -325,36 +325,22 @@ public class MainActivity_Face_App extends AppCompatActivity {
                             item.setChecked(true);
                             Log.w(getPackageName().getClass().getName(), "item.getItemId() Сменить пользователя и смена данных    " + item.getItemId() + "\n");/////////
                             try {
-                                asyncTaskLoader = new AsyncTaskLoader(getApplicationContext()) {
-                                    @Nullable
-                                    @Override
-                                    public Object loadInBackground() {
-                                        Boolean РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных =
-                                                new Class_Connections_Server(getApplicationContext()).МетодПингаСервераРаботаетИлиНет(getApplicationContext());
-                                        return РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных;
-                                    }
-                                };
-                                asyncTaskLoader.startLoading();
-                                asyncTaskLoader.forceLoad();
-                                asyncTaskLoader.registerListener(new Random().nextInt(), new Loader.OnLoadCompleteListener() {
-                                    @Override
-                                    public void onLoadComplete(@NonNull Loader loader, @Nullable Object data) {
-                                        Boolean РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных = (Boolean) data;
-                                        if (РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных == true) {
-                                            String ПолученыйТекущееИмяПользователя = new Class_MODEL_synchronized(getApplicationContext())
-                                                    .МетодПолучениеИмяСистемыДляСменыПользователя(getApplicationContext());
-                                            Log.d(this.getClass().getName(), "  ПолученыйТекущееИмяПользователя " +
-                                                    ПолученыйТекущееИмяПользователя);
-                                                МетодДиалогаДляМеню("Пользователи Системы", "При смене пользователя,"
-                                                    + "\n" + " поменяються и данные системы." + "\n"
-                                                    + "Поменять пользователя ?" + "\n"
-                                                    + " (текущий пользователь : ) " + ПолученыйТекущееИмяПользователя.toUpperCase());
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "Для смены данных, нужно подключение к серверу !!! "
-                                                    + "\n", Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
+                                Boolean РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных =
+                                        new Class_Connections_Server(getApplicationContext()).МетодПингаСервераРаботаетИлиНет(getApplicationContext());
+
+                                if (РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных == true) {
+                                    String ПолученыйТекущееИмяПользователя = new Class_MODEL_synchronized(getApplicationContext())
+                                            .МетодПолучениеИмяСистемыДляСменыПользователя(getApplicationContext());
+                                    Log.d(this.getClass().getName(), "  ПолученыйТекущееИмяПользователя " +
+                                            ПолученыйТекущееИмяПользователя);
+                                    МетодДиалогаДляМеню("Пользователи Системы", "При смене пользователя,"
+                                            + "\n" + " поменяються и данные системы." + "\n"
+                                            + "Поменять пользователя ?" + "\n"
+                                            + " (текущий пользователь : ) " + ПолученыйТекущееИмяПользователя.toUpperCase());
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Для смены данных, нужно подключение к серверу !!! "
+                                            + "\n", Toast.LENGTH_LONG).show();
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 ///метод запись ошибок в таблицу
@@ -640,13 +626,13 @@ public class MainActivity_Face_App extends AppCompatActivity {
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     try {
                         binderAsyns = (Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации) service;
-                        if (binderAsyns.isBinderAlive()) {
+                        if (service.isBinderAlive()) {
                             // TODO: 16.11.2022
                             Log.d(getApplicationContext().getClass().getName(), "\n"
                                     + " время: " + new Date() + "\n+" +
                                     " Класс в процессе... " + this.getClass().getName() + "\n" +
                                     " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                                    + "    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации binderAsyns.pingBinder() " + binderAsyns.pingBinder());
+                                    + "    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации binderAsyns.pingBinder() " + service.pingBinder());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -682,9 +668,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
             context.bindService(intentЗапускСлужюыыСинхрониазцииБиндинг, connectionДляОдноразовойСинхронизации, Context.BIND_AUTO_CREATE);*/
             Intent intentЗапускСлужюыыСинхрониазцииБиндинг = new Intent(context, Service_ДляЗапускаодноразовойСинхронизации.class);
             intentЗапускСлужюыыСинхрониазцииБиндинг.setAction("com.Service_ДляЗапускаодноразовойСинхронизации");
-            context.bindService(intentЗапускСлужюыыСинхрониазцииБиндинг,
-                    Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT | Context.BIND_INCLUDE_CAPABILITIES,Executors.newCachedThreadPool(),
-                    connectionДляОдноразовойСинхронизации);
+            context.bindService(intentЗапускСлужюыыСинхрониазцииБиндинг, connectionДляОдноразовойСинхронизации,  Context.BIND_AUTO_CREATE);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -791,9 +775,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
 
 
     private void МетодЗапускаСинихрниазцииИзМенюНаАктивтиFACEAPP() {
-        final Boolean[] РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции = {false};
         try {
-
             final Integer[] ФинальныйРезультатФоновойСинхронизации = {0};
             ProgressDialog progressDialogДляСинхронизации;
             progressDialogДляСинхронизации = new ProgressDialog(activity);
@@ -804,74 +786,56 @@ public class MainActivity_Face_App extends AppCompatActivity {
             progressDialogДляСинхронизации.setMessage("Обмен данными ....");
             progressDialogДляСинхронизации.show();
 
+                            handlerFaceAPP.post(()->{
+                                boolean СтатусСетиВыбранныйПользователем =
+                                        new Class_Find_Setting_User_Network(getApplicationContext()).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
+                                Log.d(this.getClass().getName(), "  РезультатПроВеркиУстановкиПользователяРежимРаботыСети "
+                                        + СтатусСетиВыбранныйПользователем);
+                                Class_Connections_Server class_connections_serverПингаСерераИзАктивтиМеню = new Class_Connections_Server(getApplicationContext());
+                                PUBLIC_CONTENT public_contentЗапусСинхрониазцииИМеню = new PUBLIC_CONTENT(getApplicationContext());
+
+                                if (СтатусСетиВыбранныйПользователем == true) {
+                                   Boolean СтатусСервераСоюзаВключенИлиНЕт = class_connections_serverПингаСерераИзАктивтиМеню.МетодПингаСервераРаботаетИлиНет(getApplicationContext());
+                                    if (СтатусСервераСоюзаВключенИлиНЕт== true) {
+                                        Integer ПубличныйIDДляОдноразовойСинхрониазции =
+                                                new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplicationContext());
+
+                                        Bundle bundleДляПЕредачи=new Bundle();
+                                        bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляОдноразовойСинхрониазции);
+                                        Intent  intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle=new Intent();
+                                        intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle.putExtras(bundleДляПЕредачи);
+                                        // TODO: 02.08.2022
+                                        binderAsyns.getService().МетодЗапускаОдноразовойСинхронизацииИзСлужбы(context,intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle);
+                                        // TODO: 26.06.2022
+                                        Log.d(this.getClass().getName(), " ПРОШЕЛ ЗАПУСК  метода МетодПовторногоЗапускаВсехWorkManager__ОДНОРАЗОВОЙСинхрониазцииданных()   " +
+                                                "   ПубличныйIDДляОдноразовойСинхрониазцииДляКонкретногоПользователя "+
+                                                ПубличныйIDДляОдноразовойСинхрониазции);
+
+                                        Log.d(this.getClass().getName(), "Синхронизация Данных с Web-сервера ДСУ-1 ?  ФинальныйРезультатФоновойСинхронизации[0] " +
+                                                ФинальныйРезультатФоновойСинхронизации[0]);
+
+                                        handlerFaceAPP.postDelayed(() -> {
+                                            progressDialogДляСинхронизации.dismiss();
+                                            progressDialogДляСинхронизации.cancel();
+                                        }, 3000);
 
 
-            asyncTaskLoader = new AsyncTaskLoader(getApplicationContext()) {
-                @Nullable
-                @Override
-                public Object loadInBackground() {
-                    // TODO: 02.02.2022 запуск синхрониазции из Активти из МЕНЮ FACEAPP
-                    boolean РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию =
-                            new Class_Find_Setting_User_Network(getApplicationContext()).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
-                    Log.d(this.getClass().getName(), "  РезультатПроВеркиУстановкиПользователяРежимРаботыСети "
-                            + РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию);
-                    Class_Connections_Server class_connections_serverПингаСерераИзАктивтиМеню = new Class_Connections_Server(getApplicationContext());
-                    PUBLIC_CONTENT public_contentЗапусСинхрониазцииИМеню = new PUBLIC_CONTENT(getApplicationContext());
+                                    }else {
+                                        activity.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast toast = Toast.makeText(getApplicationContext(), "Сервер выкл. !!!", Toast.LENGTH_LONG);
+                                                toast.setGravity(Gravity.BOTTOM, 0, 40);
+                                                toast.show();
+                                            }
+                                        });
+                                    }
+                                }
+                            });
 
-                    if (РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию == true) {
-                        РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции[0]
-                                = class_connections_serverПингаСерераИзАктивтиМеню.
-                                МетодПингаСервераРаботаетИлиНет(getApplicationContext());
-
-
-                        if (РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции[0] == true) {
-
-                            Integer ПубличныйIDДляОдноразовойСинхрониазции =
-                                    new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplicationContext());
-
-                            new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext()).
-                                    МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(getApplicationContext(),
-                                            Integer.parseInt(ПубличныйIDДляОдноразовойСинхрониазции.toString()));
-
-                            Log.d(this.getClass().getName(), "Синхронизация Данных с Web-сервера ДСУ-1 ?  ФинальныйРезультатФоновойСинхронизации[0] " +
-                                    ФинальныйРезультатФоновойСинхронизации[0]);
-                        }
-                    }
-                    return РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции[0];
-                }
-            };
-            asyncTaskLoader.startLoading();
-            asyncTaskLoader.forceLoad();
-            asyncTaskLoader.registerListener(new Random().nextInt(), new Loader.OnLoadCompleteListener() {
-                @Override
-                public void onLoadComplete(@NonNull Loader loader, @Nullable Object data) {
-                    if ((Boolean) data == false) {
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast toast = Toast.makeText(getApplicationContext(), "Сервер выкл. !!!", Toast.LENGTH_LONG);
-                                toast.setGravity(Gravity.BOTTOM, 0, 40);
-                                toast.show();
-                            }
-                        });
-
-                    }
-                    handlerFaceAPP.postDelayed(() -> {
-                        progressDialogДляСинхронизации.dismiss();
-                        progressDialogДляСинхронизации.cancel();
-                    }, 2000);
-                    System.out.println("doOnTerminate  Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков.poll().get() ");
-                    Log.w(this.getClass().getName(), "  doOnComplete " +
-                            "  doOnTerminate Синхронизация Данных с Web-сервера ДСУ-1 ? РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции[0] "
-                            + РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизции[0]);
-
-                    asyncTaskLoader.reset();
-                }
-            });
 
         } catch (Exception e) {
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
