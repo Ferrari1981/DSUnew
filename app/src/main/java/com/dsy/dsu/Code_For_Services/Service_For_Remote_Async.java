@@ -48,7 +48,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -1399,6 +1398,11 @@ public class Service_For_Remote_Async extends IntentService {
                         "  ИмяТаблицыОтАндройда_Локальноая " +ИмяТаблицыОтАндройда_Локальноая+
                         " Результат_СсервераПолучаем_Сервер " +Результат_СсервераПолучаем_Сервер+
                         "  ПубличныйРезультатОтветаОтСерврераУспешно " +ПубличныйРезультатОтветаОтСерврераУспешно);
+                ///16,20
+                Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                        + " ((HttpServletRequest) req).getPathInfo() " );
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -2416,104 +2420,35 @@ public class Service_For_Remote_Async extends IntentService {
 
         /////todo POST МЕТОД КОГДА НА АНДРОЙДЕ ВЕРСИЯ ДАННЫХ ВЫШЕ ЧЕМ НА СЕРВРЕР И МЫ  JSON ФАЙЛ ТУДА МЕТОД POST
         Integer МетодПосылаемДанныеНаСервервФоне(String имяТаблицыОтАндройда_локальноая,
-                                                 Long РезультаПолученаяЛокальнаяСервернуюВерсиюДанныхКогдаПоследнийРазПришлиДанныесСерера,
+                                                 Long ВерсияДанныхОсноваСозданиеДанныхОтправки,
                                                  CompletionService МенеджерПотоковВнутрений) {
 
-            Integer РезультатОтветаОтСервераУспешнаяВставкаИлиОбновление=0;
-            Log.d(this.getClass().getName(), "  имяТаблицыОтАндройда_локальноая " + имяТаблицыОтАндройда_локальноая);
-            Long Версия_ДанныхАндройДляОтправкиДанныхНАсервер = 0l;
-            int КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки = 0;
-            Integer КоличествоКолоноквОтправвляемойТаблице = 0;
+            Integer РезультатОтправкиДанныхНасервер=0;
             try {
-                Log.d(this.getClass().getName(), "  МетодПосылаемДанныеНаСервер в фоне ");
-                Class_GRUD_SQL_Operations  class_grud_sql_operationsПосылаемДанныеНаСервервФоне = new Class_GRUD_SQL_Operations(context);
-                // TODO: 15.02.2022
-                Class_GRUD_SQL_Operations.GetData class_grud_sql_operationsДляВыполенияОперацииGEtData=class_grud_sql_operationsПосылаемДанныеНаСервервФоне.new GetData(context);
-                // TODO: 15.02.2022
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", "MODIFITATION_Client");
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки", "versionserveraandroid_version");
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика", " name=?   ");
-                ///"_id > ?   AND _id< ?"
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", имяТаблицыОтАндройда_локальноая);
-                SQLiteCursor КурсорДляАнализаДатыПоследнейОтпракиНаСервер = null;
-                ///////
-                КурсорДляАнализаДатыПоследнейОтпракиНаСервер = (SQLiteCursor) class_grud_sql_operationsДляВыполенияОперацииGEtData
-                        .getdata(class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
+                Class_GRUD_SQL_Operations  sql_operations = new Class_GRUD_SQL_Operations(context);
+                sql_operations = МетодДанныеДляОтправкиCursor(имяТаблицыОтАндройда_локальноая, ВерсияДанныхОсноваСозданиеДанныхОтправки, ПубличныйIDДляФрагмента);
+                Class_GRUD_SQL_Operations.GetData  getData=sql_operations.new GetData(context);
+                // TODO: 15.02.2022  ПолучаемдАннык На ОТправку На сервер
+            Cursor    КурсорДляОтправкиДанныхНаСервер = (SQLiteCursor) getData
+                        .getdata(sql_operations.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
                                 МенеджерПотоковВнутрений, СсылкаНаБазуSqlite);
-                Log.d(this.getClass().getName(), "GetData  КурсорДляАнализаДатыПоследнейОтпракиНаСервер "+КурсорДляАнализаДатыПоследнейОтпракиНаСервер );
-                if (КурсорДляАнализаДатыПоследнейОтпракиНаСервер.getCount()>0) {
-                    ///// todo УДАЛЯЕМ ИЗ ПАМЯТИ  ОТРАБОТАННЫЙ АСИНАТСК
-                    Log.i(this.getClass().getName(), " КурсорДляАнализаДатыПоследнейОтпракиНаСервер.getCount() " + КурсорДляАнализаДатыПоследнейОтпракиНаСервер.getCount());
-                    КурсорДляАнализаДатыПоследнейОтпракиНаСервер.moveToFirst();
-                    Integer ИндексГлдеНаходитьсяСлолбикСВерисеДанныхСервернойЛОкальноНаТелефоне=КурсорДляАнализаДатыПоследнейОтпракиНаСервер.getColumnIndex( "versionserveraandroid_version");
-                    Версия_ДанныхАндройДляОтправкиДанныхНАсервер = 0l;
-                    // TODO: 05.10.2021
-                    Версия_ДанныхАндройДляОтправкиДанныхНАсервер = КурсорДляАнализаДатыПоследнейОтпракиНаСервер.getLong(ИндексГлдеНаходитьсяСлолбикСВерисеДанныхСервернойЛОкальноНаТелефоне);
-                    ///TODO ЕСЛИ НЕТ ДАТЫ НЕЧЕГО ОТПРАВЛЯТЬ
-                    if (Версия_ДанныхАндройДляОтправкиДанныхНАсервер >=0) {
-                        Log.d(this.getClass().getName(), " Версия_ДанныхАндройДляОтправкиДанныхНАсервер " + Версия_ДанныхАндройДляОтправкиДанныхНАсервер +
-                                "  имяТаблицыОтАндройда_локальноая " + имяТаблицыОтАндройда_локальноая);
-                        int КоличествоСтрокПолученыеДляОтпарвкиПоДате = КурсорДляАнализаДатыПоследнейОтпракиНаСервер.getCount();
-                        Log.d(this.getClass().getName(), " КоличествоСтрокПолученыеДляОтпарвкиПоДате   " + КоличествоСтрокПолученыеДляОтпарвкиПоДате);
-                        ///todo
-                    }
-
-                }
-                // TODO: 06.09.2021  закрываем
-                ///todo закрываем куроср
-                КурсорДляАнализаДатыПоследнейОтпракиНаСервер.close();
-                // TODO: 21.09.2021  ВТОРАЯ ЧАСТЬ    НЕПОСРЕДСТВЕННО ВЫЯСНИВ ЕСЛИ ДАННЫЕ ДЛЯ ОТПРАВКИ ,      ПОЛУЧАЕМ ДАННЫЕ ДЛЯ САМОЙ ОТПРАВКИ ЧРЕЗ КУРСОР ВТОРОЙ   КурсорДляОтправкиДанныхНаСервер
-                ///todo закрываем куроср
-                Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   " + имяТаблицыОтАндройда_локальноая);
-                SQLiteCursor КурсорДляОтправкиДанныхНаСервер = null;
-                Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   " + имяТаблицыОтАндройда_локальноая);
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне = new Class_GRUD_SQL_Operations(context);
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", имяТаблицыОтАндройда_локальноая);
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки", "*");
-                Integer ПубличныйIDДляФрагмента=0;
-                // TODO: 31.01.2022 ОПРЕДЕЛЯЕМ ПУБЛИЧНЫЙ id
-                ПубличныйIDДляФрагмента = getInteger(имяТаблицыОтАндройда_локальноая, РезультаПолученаяЛокальнаяСервернуюВерсиюДанныхКогдаПоследнийРазПришлиДанныесСерера,
-                        class_grud_sql_operationsПосылаемДанныеНаСервервФоне);
-                Log.d(this.getClass().getName(), " ПубличныйIDДляФрагмента   " + ПубличныйIDДляФрагмента);
-                //////TODO ВКЛЮЧАЕМ ФЛАГ НЕ ПОВТОРАЕМОСТИ СТРОК
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне.
-                        concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФлагНепотораяемостиСтрок",true);
-                Log.d(this.getClass().getName(), "     class_grud_sql_operationsПосылаемДанныеНаСервервФоне.\n" +
-                        "                    concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций   " +     class_grud_sql_operationsПосылаемДанныеНаСервервФоне.
-                        concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций);
-                // TODO: 15.02.2022  код обработка таблиц синхрониазции МетодДляТекущейТаблицыСинхронизаццииGetCursor
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне = МетодДляТекущейТаблицыСинхронизаццииGetCursor(имяТаблицыОтАндройда_локальноая,
-                        РезультаПолученаяЛокальнаяСервернуюВерсиюДанныхКогдаПоследнийРазПришлиДанныесСерера, ПубличныйIDДляФрагмента);
-                // TODO: 27.08.2021  ПОЛУЧЕНИЕ ДАННЫХ ОТ КЛАССА GRUD-ОПЕРАЦИИ
-                class_grud_sql_operationsДляВыполенияОперацииGEtData=class_grud_sql_operationsПосылаемДанныеНаСервервФоне.new GetData(context);
-                // TODO: 15.02.2022
-                КурсорДляОтправкиДанныхНаСервер = null;
-                КурсорДляОтправкиДанныхНаСервер = (SQLiteCursor) class_grud_sql_operationsДляВыполенияОперацииGEtData
-                        .getdata(class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
-                                МенеджерПотоковВнутрений, СсылкаНаБазуSqlite);
-                Log.d(this.getClass().getName(), "GetData " + КурсорДляОтправкиДанныхНаСервер);
-                //////ОЧИСТКА ПАМЯТИ ОТ ASYNSTASK
-                Log.d(this.getClass().getName(), "КурсорДляОтправкиДанныхНаСервер.getCount()  ЕСЛИ 0 СТРОЧЕК ТО ДЕЛАЕМ ЕЩЕ ОДИН ПРОВЕРКУ НА null " + КурсорДляОтправкиДанныхНаСервер.getCount());
                 /////TODO результаты   количество отправляемой информации на сервера
-                if (КурсорДляОтправкиДанныхНаСервер.getCount() > 0) {/////работаем уже в сгенерированных даннных которые мы отправим на сервер
-                    КурсорДляОтправкиДанныхНаСервер.moveToFirst();
-                    КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки = КурсорДляОтправкиДанныхНаСервер.getCount();////КОЛИЧЕСТВО СТРОК В АНДРОЙДЕ ДАННЫЕ КОТОРЫЕ НУЖНО ПОСЛЛАТЬ
-                    КоличествоКолоноквОтправвляемойТаблице = КурсорДляОтправкиДанныхНаСервер.getColumnCount();/////КОЛИЧЕСТВО СТОЛЮЦОВ НА АНДРОДЕ БАЗЕ КОТОРОЫЕ НУЖНО ОТОСЛАТЬ
-                    Log.d(this.getClass().getName(), " КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки  " + КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки +
-                            "  КоличествоКолоноквОтправвляемойТаблице  " + КоличествоКолоноквОтправвляемойТаблице +
-                            "  КурсорДляОтправкиДанныхНаСервер.getCount() " +КурсорДляОтправкиДанныхНаСервер.getCount());
-                    ////TODO провеояем чтобы  JSON ФАЙЛ БЫЛ НЕ ПУСТЫМ ДЛЯ ОТПРПВИК ЕГО НЕ СЕРВЕР
-                    if (КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки > 0) {
-                        РезультатОтветаОтСервераУспешнаяВставкаИлиОбновление = 0;
-                        Log.d(this.getClass().getName(), "КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки " + КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки);
-                        //////// todo упаковываем в  json ПЕРЕХОДИМ НА СЛЕДУЩИМ МЕТОД для отрправки на сервер метод POST() POST() POST() POST() POST() POST()POST()
-                        РезультатОтветаОтСервераУспешнаяВставкаИлиОбновление =
-                                МетодГенеррируемJSONИзНашыхДанныхвФоне(КурсорДляОтправкиДанныхНаСервер, КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки,
-                                        КоличествоКолоноквОтправвляемойТаблице, имяТаблицыОтАндройда_локальноая,МенеджерПотоковВнутрений);
-                        Log.d(this.getClass().getName(), "РезультатОтветаОтСервераУспешнаяВставкаИлиОбновление " + РезультатОтветаОтСервераУспешнаяВставкаИлиОбновление);
+                if (КурсорДляОтправкиДанныхНаСервер.getCount() > 0) {
+                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                            + " КурсорДляОтправкиДанныхНаСервер.getCount() "+КурсорДляОтправкиДанныхНаСервер.getCount() );
 
-                    }
+                    //////// todo упаковываем в  json ПЕРЕХОДИМ НА СЛЕДУЩИМ МЕТОД для отрправки на сервер метод POST() POST() POST() POST() POST() POST()POST()
+                        РезультатОтправкиДанныхНасервер =
+                                МетодГенеррируемJSONДляОтправкиНАсервер(КурсорДляОтправкиДанныхНаСервер, имяТаблицыОтАндройда_локальноая,МенеджерПотоковВнутрений);
+                        Log.d(this.getClass().getName(), "РезультатОтправкиДанныхНасервер " + РезультатОтправкиДанныхНасервер);
+
                 }
+                Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                        + " РезультатОтправкиДанныхНасервер "+РезультатОтправкиДанныхНасервер );
                 ///todo закрываем куроср
                 КурсорДляОтправкиДанныхНаСервер.close();
             } catch (Exception e) {
@@ -2523,15 +2458,15 @@ public class Service_For_Remote_Async extends IntentService {
                 new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                         Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
             }
-            return  РезультатОтветаОтСервераУспешнаяВставкаИлиОбновление;
+            return  РезультатОтправкиДанныхНасервер;
         }
 
 
         // TODO: 15.02.2022 синхрогниазции таблиц
         @NonNull
-        private Class_GRUD_SQL_Operations МетодДляТекущейТаблицыСинхронизаццииGetCursor(String имяТаблицыОтАндройда_локальноая,
-                                                                                        Long ВерсияДанныхДляСравения,
-                                                                                        Integer ПубличныйIDДляФрагмента) {
+        private Class_GRUD_SQL_Operations МетодДанныеДляОтправкиCursor(String имяТаблицыОтАндройда_локальноая,
+                                                                       Long ВерсияДанныхДляСравения,
+                                                                       Integer ПубличныйIDДляФрагмента) {
             Class_GRUD_SQL_Operations class_grud_sql_operationsГенерируемКурсорДляОтправки = null;
 
             try{
@@ -2710,122 +2645,6 @@ public class Service_For_Remote_Async extends IntentService {
 
 
 
-        /////todo POST МЕТОД КОГДА НА АНДРОЙДЕ ВЕРСИЯ ДАННЫХ ВЫШЕ ЧЕМ НА СЕРВРЕР И МЫ  JSON ФАЙЛ ТУДА МЕТОД POST
-
-
-
-
-
-
-        // TODO: 18.10.2021  метод дОВОЛТИЛЬЕНО  ПРОВЕРКИ ЕСЛИ ЗНАЧЕНИ НУЛЛВ ПОЛНЕ ID
-        private SQLiteCursor МетодДополнительнойПроверкиНаЗначниеКоторыеЩЕНеОтправленны_СтолбикеID_ЕстьЗначенияNULL(String имяТаблицыОтАндройда_локальноая,
-                                                                                                                    CompletionService МенеджерПотоковВнутрений
-        ) throws ExecutionException, InterruptedException {
-            Class_GRUD_SQL_Operations class_grud_sql_operationsПосылаемДанныеНаСервервФоне;
-
-            SQLiteCursor КурсорДляОтправкиДанныхНаСервер=null;
-
-            try{
-                //todo ЕСЛИ НЕЧЕГО ОТПРАВЛЯЕТЬ ТО ДОПОЛНТЕЛЬНО ПРОВЕРЯЕМ МОЖЕТ ЕЩЕ ОТПРАВИТЬ НА СЕРВЕР
-
-
-
-                Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   " + имяТаблицыОтАндройда_локальноая);
-
-                // TODO: 06.09.2021 ДОПОЛНИТЕЛЬНЫЙ МЕХАНИЗСМ ОТПРВКИ ДАНННЫХС NULL В ID ПОЛЕ ДЛЯ ЧАТА
-
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне = new Class_GRUD_SQL_Operations(context);
-
-
-                class_grud_sql_operationsПосылаемДанныеНаСервервФоне
-                        .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы",
-                                имяТаблицыОтАндройда_локальноая);
-
-
-                // TODO: 12.10.2021 выбор двух вариантов отправки с _id and id
-
-
-                // TODO: 12.10.2021
-
-                switch (имяТаблицыОтАндройда_локальноая.trim()) {
-
-
-                    case "tabels":
-                    case "chats":
-                    case "data_chat":
-                    case "chat_users":
-                    case "fio":
-                    case "tabel":
-                    case "data_tabels":
-
-
-
-                        Log.d(this.getClass().getName(), "имяТаблицыОтАндройда_локальноая " + имяТаблицыОтАндройда_локальноая);
-                        ///////
-                        class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки", "_id");
-
-                        //
-                        class_grud_sql_operationsПосылаемДанныеНаСервервФоне
-                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика", "  _id IS NULL    AND date_update IS NOT NULL   ");
-                        ///"_id > ?   AND _id< ?"
-                        break;
-
-
-                    default:
-
-                        Log.d(this.getClass().getName(), "имяТаблицыОтАндройда_локальноая " + имяТаблицыОтАндройда_локальноая);
-                        ///////
-                        class_grud_sql_operationsПосылаемДанныеНаСервервФоне.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки", "id");
-                        //
-                        class_grud_sql_operationsПосылаемДанныеНаСервервФоне
-                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика", "  id IS NULL     AND date_update IS NOT NULL   ");
-                        ///"_id > ?   AND _id< ?"
-
-                }
-
-
-                //////
-                /// class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", "");
-                ///
-
-                // TODO: 27.08.2021  ПОЛУЧЕНИЕ ДАННЫХ ОТ КЛАССА GRUD-ОПЕРАЦИИ
-
-                КурсорДляОтправкиДанныхНаСервер = null;
-
-                КурсорДляОтправкиДанныхНаСервер = (SQLiteCursor) class_grud_sql_operationsПосылаемДанныеНаСервервФоне.
-                        new GetData(context).getdata(class_grud_sql_operationsПосылаемДанныеНаСервервФоне.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
-                        МенеджерПотоковВнутрений, СсылкаНаБазуSqlite);
-
-                Log.d(this.getClass().getName(), "GetData " + КурсорДляОтправкиДанныхНаСервер);
-
-
-                if(КурсорДляОтправкиДанныхНаСервер.getCount()>0){
-                    ////
-                    КурсорДляОтправкиДанныхНаСервер.moveToFirst();
-
-                }
-
-                // TODO: 06.09.2021  old
-/*
-            КурсорДляОтправкиДанныхНаСервер = КурсорУниверсальныйДляБазыДанных(имяТаблицыОтАндройда_локальноая, new String[]{"*"}, " _id IS NULL  OR _id = ? ",
-                    new String[]{""}, null, null, null, null);*/
-                ///
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                ///метод запись ошибок в таблицу
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                // TODO: 01.09.2021 метод вызова
-                new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                ////// начало запись в файл
-            }
-
-            return КурсорДляОтправкиДанныхНаСервер;
-        }
 
 
 
@@ -2848,33 +2667,28 @@ public class Service_For_Remote_Async extends IntentService {
         ////////TODO     МЕТОД ГЕНЕРИРОУЕМ JSON ПОЛЯ НА ОСНОВАНИЕ НАШИХ ДАННЫХ ДЛЯ ПОСЛЕДЖУЮЩЕ ОТПРАВКИ  POST()->
         ////////TODO     МЕТОД ГЕНЕРИРОУЕМ JSON ПОЛЯ НА ОСНОВАНИЕ НАШИХ ДАННЫХ ДЛЯ ПОСЛЕДЖУЮЩЕ ОТПРАВКИ  POST()->
 
-        Integer МетодГенеррируемJSONИзНашыхДанныхвФоне( Cursor КурсорДляОтправкиДанныхНаСерверОтАндройда, int КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки,
-                                                        Integer КоличествоКолоноквОтправвляемойТаблице, String имяТаблицыОтАндройда_локальноая,CompletionService МенеджерПотоковВнутрений) {
+        Integer МетодГенеррируемJSONДляОтправкиНАсервер( @NonNull  Cursor КурсорДляОтправкиДанныхНаСерверОтАндройда,
+                                                       @NonNull String имяТаблицыОтАндройда_локальноая,
+                                                      @NonNull  CompletionService МенеджерПотоковВнутрений) {
             ///
-            Log.d(this.getClass().getName(), " КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки " + КоличествоСтрокПолученыеДляОтпарвкиПоДатеОтпарвки);
             Integer РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления = 0;
             final int[] ЕслиUUIDПриЗабросеДанныхНаСервер = {0};
             final int[] ЕслиIDПриЗабросеДанныхНаСервер = {0};
             JSONObject ГенерацияJSONполейФинал = new JSONObject();///генериция финального поля дляJSON;  ////ПОЛЯ  ДЛЯ  JSON
             try {
                  String ПерхнееПолеJSONПоследнаяОперация = null;////ПЕРЕРВОДИМ ИЗ INT TO STRING
-                Log.d(this.getClass().getName(), " КурсорДляОтправкиДанныхНаСервер.getCount())   "
-                        + КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() + " имяТаблицыОтАндройда_локальноая " + имяТаблицыОтАндройда_локальноая);
-                boolean СработалПоворот = false;
                 if (КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount()>0) {
                     КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToLast();
-                    Log.d(context.getClass().getName(), "КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() " + КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount());
                 }
+                Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                        + " КурсорДляОтправкиДанныхНаСерверОтАндройда "+КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() );
+
+
                 final int[] КакаяСтрочкаОбработкиТекущаяя = {1};/////ОСТЛЕЖИВАЕМ ТЕКУЩУЮ СТРОЧКУ ОБРАБОТКИ
                 do {/////КРУТИТЬ ДАННЫЕ ЧЕРЕЗ ЦИКЛ ОТВЕТЫ ОТ МЕТОДА POST
                     JSONObject ГенерацияJSONполей = new JSONObject();  ////ПОЛЯ  ДЛЯ  JSON ///ВАЖНО ГЕНЕРАЦИЯ НОВЫХ ОБЬЕКТОВ JSON НУЖНО СТАВИТЬ ВНУТРИ DO WHILE  НО ДО FOR ЦИКЛА МЕЖДУ НИМИ
-                    CopyOnWriteArrayList<Integer> linkedBlockingDequeГенерируемJSONИзНашихДанныхДляОтправкиНаСервре=new CopyOnWriteArrayList<Integer>();
-                    for (Integer i = 0; i < КоличествоКолоноквОтправвляемойТаблице; i++) {
-                        linkedBlockingDequeГенерируемJSONИзНашихДанныхДляОтправкиНаСервре.add(i);
-                    }
-                    Iterator iteratorГенерируемJSONИзНашихДанныхДляОтправкиНаСервре=linkedBlockingDequeГенерируемJSONИзНашихДанныхДляОтправкиНаСервре.iterator();
-                    //todo бежим по столбцам
-                    while (iteratorГенерируемJSONИзНашихДанныхДляОтправкиНаСервре.hasNext()) {
                         try {
                             //////////TODO ЭКСПЕРЕМЕНТ С JSON
                             Integer ИндексПоТАблицамДляОтправки= (Integer) iteratorГенерируемJSONИзНашихДанныхДляОтправкиНаСервре.next();
@@ -2957,7 +2771,7 @@ public class Service_For_Remote_Async extends IntentService {
                             new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
                         }
-                    }
+
                     ////TODO упаковываем jon если хоть какое поле есть   , ЕСЛИ ЕСТЬ ИЛИ ID ИЛИ UUID
                     if (ПерхнееПолеJSONПоследнаяОперация != null && ГенерацияJSONполей != null && ГенерацияJSONполей.length() > 0) {
                         /// todo МЕЖДУ FOR И WHILE
@@ -2975,7 +2789,7 @@ public class Service_For_Remote_Async extends IntentService {
                         }
                     }
                     КакаяСтрочкаОбработкиТекущаяя[0]++;////ЛОВИМ ТЕКУУЩЮ СТРОЧКУ ОБРАБОТКИ
-                } while (КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToPrevious());////ДАННЫЕ КРУТИЯТЬСЯ ДО КОНЦА ДАННЫХ И ГЕНЕРИРУЮ JSON
+                } while (КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToNext());////ДАННЫЕ КРУТИЯТЬСЯ ДО КОНЦА ДАННЫХ И ГЕНЕРИРУЮ JSON
                 ///////// TODO ФИНАЛ ПРОСМАТРИВАЕМ СГЕНЕРИРОВАНЫЙ JSON  ФАЙЛ ПОСЛЕ ЦИКЛА DO WHILE СОЗДАИНИЕ НА СТОРОНЕ АНДРОЙДА JSON ПОЛЕЙ
                 Log.d(this.getClass().getName(), " ГенерацияJSONполейФинал  " + ГенерацияJSONполейФинал + " ГенерацияJSONполейФинал " + ГенерацияJSONполейФинал.toString() +
                         " ГенерацияJSONполейФинал.length() " + ГенерацияJSONполейФинал.length());
@@ -2991,7 +2805,6 @@ public class Service_For_Remote_Async extends IntentService {
                     ///////// TODO ФИНАЛ ПРОСМАТРИВАЕМ СГЕНЕРИРОВАНЫЙ JSON  ФАЙЛ ПОСЛЕ ЦИКЛА DO WHILE СОЗДАИНИЕ НА СТОРОНЕ АНДРОЙДА JSON ПОЛЕЙ
                     Log.d(this.getClass().getName(), " НЕТ ДАННЫХ ДЛЯ ОТПРАВКИ  ГенерацияJSONполейФинал  " + ГенерацияJSONполейФинал + " ГенерацияJSONполейФинал " + ГенерацияJSONполейФинал.toString() +
                             " ГенерацияJSONполейФинал.length() " + ГенерацияJSONполейФинал.length());
-
                 }
                 КурсорДляОтправкиДанныхНаСерверОтАндройда.close();
             } catch (Exception e) {
