@@ -169,7 +169,7 @@ import okio.BufferedSink;
                             return chain.proceed(newRequest);
                         }
                     }).connectTimeout(10, TimeUnit.SECONDS)
-                    .readTimeout(30, TimeUnit.SECONDS).build();
+                    .readTimeout(55, TimeUnit.SECONDS).build();
             ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
             Request requestGET = new Request.Builder().get().url(Adress).build();
             Log.d(this.getClass().getName(), "  request  " + requestGET);
