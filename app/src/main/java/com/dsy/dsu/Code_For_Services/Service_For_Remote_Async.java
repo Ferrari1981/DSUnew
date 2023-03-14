@@ -34,6 +34,8 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Visible_Processing_Async;
 import com.dsy.dsu.Business_logic_Only_Class.Class__Generation_Genetal_Tables;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
+import com.dsy.dsu.Business_logic_Only_Class.SubClass_Connection_BroadcastReceiver_Sous_Asyns_Glassfish;
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.util.concurrent.AtomicDouble;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -84,17 +86,28 @@ public class Service_For_Remote_Async extends IntentService {
     private SharedPreferences preferences;
     private   String Проценты;
     private Integer ИндексВизуальнойДляPrograssBar=0;
+    private      Integer ПубличныйIDДляФрагмента=0;
     public Service_For_Remote_Async() {
         super("Service_For_Remote_Async");
     }
     @Override
     public void onCreate() {
         super.onCreate();
+        try{
+       ПубличныйIDДляФрагмента = new SubClass_Connection_BroadcastReceiver_Sous_Asyns_Glassfish().МетодПолучениеяПубличногоID(context);
         Log.d(context.getClass().getName(), "\n"
                 + " время: " + new Date() + "\n+" +
                 " Класс в процессе... " + this.getClass().getName() + "\n" +
-                " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName());
+                " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName() +  "  ПубличныйIDДляФрагмента " +ПубличныйIDДляФрагмента);
      context .getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+        Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
+    }
     }
 
     class IncomingHandler extends Handler{
@@ -1359,12 +1372,13 @@ public class Service_For_Remote_Async extends IntentService {
                                         "  ВерсияДанныхЛокальнаяСерверная "
                                         + ВерсияДанныхЛокальнаяСерверная
                                         + " Результат_ПосылаемНа_Сервер " + Результат_ПосылаемНа_Сервер);
+                        // TODO: 28.10.2021 ПЕРЕРДАЕМ ВОЗМОЖНЫЙ ОТВЕТ
                         if(Результат_ПосылаемНа_Сервер>0 ){
-                            ПубличныйРезультатОтветаОтСерврераУспешно=    Результат_ПосылаемНа_Сервер ;
+                            ПубличныйРезультатОтветаОтСерврераУспешно=Результат_СсервераПолучаем_Сервер;
                             // TODO: 19.11.2022  версия данных синхронизируемс таблицей modificatin client
-                         Integer РезультатПовышенииВерсииДанных =new Class_GRUD_SQL_Operations(context) .new ClassRuntimeExeGRUDOpertions(context)
-                                      .МетодУвеличиваемДанныхБазы(ИмяТаблицыОтАндройда_Локальноая,
-                                              "Серверный",new PUBLIC_CONTENT(context).МенеджерПотоков,"Анализ");
+                            Integer РезультатПовышенииВерсииДанных =new Class_GRUD_SQL_Operations(context) .new ClassRuntimeExeGRUDOpertions(context)
+                                    .МетодУвеличиваемДанныхБазы(ИмяТаблицыОтАндройда_Локальноая,
+                                            "Серверный",new PUBLIC_CONTENT(context).МенеджерПотоков,"Поднять");///"Анализ"
                             Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
                         }
                     } else {
@@ -1381,7 +1395,7 @@ public class Service_For_Remote_Async extends IntentService {
                                 // TODO: 19.11.2022  версия данных синхронизируемс таблицей modificatin client
                                 Integer РезультатПовышенииВерсииДанных =new Class_GRUD_SQL_Operations(context) .new ClassRuntimeExeGRUDOpertions(context)
                                         .МетодУвеличиваемДанныхБазы(ИмяТаблицыОтАндройда_Локальноая,
-                                                "Серверный",new PUBLIC_CONTENT(context).МенеджерПотоков,"Анализ");
+                                                "Серверный",new PUBLIC_CONTENT(context).МенеджерПотоков,"Поднять");///"Анализ"
                                 Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
                             }
                             Log.d(this.getClass().getName(),
@@ -1422,25 +1436,12 @@ public class Service_For_Remote_Async extends IntentService {
             try{
                 Log.d(this.getClass().getName(), "  ВерсияДанныхПришлаПослеУспешнойСинхронизации   "
                                 + ВерсияДанныхПришлаПослеУспешнойСинхронизации + "ВерсияДанныхРеальнаяНаСейчасНаSqlServer "+ ВерсияДанныхСервернаяВнешная);
-                // TODO: 04.11.202
-                ////// todo МЕТОД POST
-  /*              Результат_ПосылаемНа_Сервер =
-                        МетодПосылаемДанныеНаСервервФоне(ИмяТаблицыОтАндройда_Локальноая, РезультаПолученаяСервернуюВерсиюДанныхКогдаПоследнийРазПришлиДанныесСерера,
-                                МенеджерПотоковВнутрений);*/
                 ////// todo МЕТОД POST() в фоне    ////// todo МЕТОД POST
                 РезультатОтправкиДанныхНаСервер =
                         МетодПосылаемДанныеНаСервервФоне(ИмяТаблицыОтАндройда_Локальноая, ВерсияДанныхПришлаПослеУспешнойСинхронизации,
                                 МенеджерПотоковВнутрений);
-                ////// todo МЕТОД POST() в фоне
                 Log.i(this.getClass().getName(), "   РезультатОтправкиДанныхНаСервер" + РезультатОтправкиДанныхНаСервер+
                         " ВерсияДанныхПришлаПослеУспешнойСинхронизации "+ВерсияДанныхПришлаПослеУспешнойСинхронизации);
-             /*   if (РезультатОтправкиДанныхНаСервер > 0 ) {
-                    // TODO: 18.11.2022  После Синхрониащзции ПОДНИМАМ ВЕРИСЮ ДАННЫХ POST()
-                    Integer РезультатПовышенияВерсииДанныхДатыиВерсии = МетодПовышаемВерсиюПоДвумПолям( ИмяТаблицыОтАндройда_Локальноая,
-                            "ЛокальныйСерверныйОба", МенеджерПотоковВнутрений,РезультатОтправкиДанныхНаСервер);
-                    Log.i(this.getClass().getName(), "   РезультатПовышенияВерсииДанныхДатыиВерсии" + РезультатПовышенияВерсииДанныхДатыиВерсии+
-                            " РезультатОтправкиДанныхНаСервер "+РезультатОтправкиДанныхНаСервер);
-                }*/
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -2670,141 +2671,65 @@ public class Service_For_Remote_Async extends IntentService {
         Integer МетодГенеррируемJSONДляОтправкиНАсервер( @NonNull  Cursor КурсорДляОтправкиДанныхНаСерверОтАндройда,
                                                        @NonNull String имяТаблицыОтАндройда_локальноая,
                                                       @NonNull  CompletionService МенеджерПотоковВнутрений) {
-            ///
             Integer РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления = 0;
-            final int[] ЕслиUUIDПриЗабросеДанныхНаСервер = {0};
-            final int[] ЕслиIDПриЗабросеДанныхНаСервер = {0};
-            JSONObject ГенерацияJSONполейФинал = new JSONObject();///генериция финального поля дляJSON;  ////ПОЛЯ  ДЛЯ  JSON
             try {
-                 String ПерхнееПолеJSONПоследнаяОперация = null;////ПЕРЕРВОДИМ ИЗ INT TO STRING
+                JSONObject ГенерацияJSONполейФинал = new JSONObject();
                 if (КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount()>0) {
-                    КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToLast();
-                }
+                    КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToFirst();
+
                 Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                         + " КурсорДляОтправкиДанныхНаСерверОтАндройда "+КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() );
+                do {
+                    JSONObject ГенерацияJSONполей = new JSONObject();
+                    // TODO: 14.03.2023  генериуем по столбцам
+                    for (int ИндексСтолбикаJson = 0; ИндексСтолбикаJson < КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnCount(); ИндексСтолбикаJson++) {
+                        //    int ИндексСтолбикаJson = КурсорДляОтправкиДанныхНаСерверОтАндройда.getInt(i);//TODO индекс цифрв столбика в JSON
+                        String НазваниеСтолбикаJson = КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnName(ИндексСтолбикаJson);// TODO: 14.03.2023 Название как текст столбика в JSON  NAme
+                        Object СодержимоеСтолбикаJson =Optional.ofNullable(КурсорДляОтправкиДанныхНаСерверОтАндройда.getString(ИндексСтолбикаJson)).map(String::new).orElse("") ;// TODO: 14.03.2023  Само Полученое содеожимое столбика Value
+                        Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                + " ИндексСтолбикаJson " + ИндексСтолбикаJson + " НазваниеСтолбикаJson " + НазваниеСтолбикаJson +
+                                " СодержимоеСтолбикаJson " + СодержимоеСтолбикаJson);
+                        //todo Пропускаем СТолбик ID и _ID
+                        if (!НазваниеСтолбикаJson.trim().equalsIgnoreCase("_id")) {
+                            if (!НазваниеСтолбикаJson.trim().equalsIgnoreCase("id")) {
 
-
-                final int[] КакаяСтрочкаОбработкиТекущаяя = {1};/////ОСТЛЕЖИВАЕМ ТЕКУЩУЮ СТРОЧКУ ОБРАБОТКИ
-                do {/////КРУТИТЬ ДАННЫЕ ЧЕРЕЗ ЦИКЛ ОТВЕТЫ ОТ МЕТОДА POST
-                    JSONObject ГенерацияJSONполей = new JSONObject();  ////ПОЛЯ  ДЛЯ  JSON ///ВАЖНО ГЕНЕРАЦИЯ НОВЫХ ОБЬЕКТОВ JSON НУЖНО СТАВИТЬ ВНУТРИ DO WHILE  НО ДО FOR ЦИКЛА МЕЖДУ НИМИ
-                        try {
-                            //////////TODO ЭКСПЕРЕМЕНТ С JSON
-                            Integer ИндексПоТАблицамДляОтправки= (Integer) iteratorГенерируемJSONИзНашихДанныхДляОтправкиНаСервре.next();
-                            Log.d(this.getClass().getName(), "  ИндексПоТАблицамДляОтправки " +ИндексПоТАблицамДляОтправки );
-                            String КлючJsonСтроки = КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnName(ИндексПоТАблицамДляОтправки);
-                            System.out.println(" КлючJsonСтроки  " + КлючJsonСтроки);
-                            Object ЗначниеJsonСтроки = КурсорДляОтправкиДанныхНаСерверОтАндройда.getString(ИндексПоТАблицамДляОтправки);
-                            Log.d(this.getClass().getName(), " КлючJsonСтроки ::    "
-                                    + КлючJsonСтроки + "  ЗначниеJsonСтроки " + ЗначниеJsonСтроки);
-                            //todo
-                            if (!КлючJsonСтроки.equalsIgnoreCase("_id") && !КлючJsonСтроки.equalsIgnoreCase("id")) {
-                                ЗначниеJsonСтроки=  Optional.ofNullable(ЗначниеJsonСтроки).orElse("");
-                                Log.d(this.getClass().getName(), " КлючJsonСтроки ::    "
-                                        + КлючJsonСтроки + "  ЗначниеJsonСтроки " + ЗначниеJsonСтроки);
-                            }
-                            Log.d(this.getClass().getName(), " КлючJsonСтроки ::    "
-                                    + КлючJsonСтроки + "  ЗначниеJsonСтроки " + ЗначниеJsonСтроки);
-                            //TODO НАЧИНАЕМ ОБРАБАТЫВАТЬ КОГДА ЗНАЧЕНИЕ ПО СТОЛБИКУ ОТРУСТУЕТ VALUE==BULL  #ПЕРВАЯ ЧАСТЬ
-                            Log.d(this.getClass().getName(), " КлючJsonСтроки " + КлючJsonСтроки);
-                            ////////// TODO КОНКРЕТАНАЯ ГЕНЕРАЦИЯ  JSON СТРОКИ
-                            if (КлючJsonСтроки != null && ЗначниеJsonСтроки != null) {//ПРОИЗВОДИМ ВСТАВКИ JSON ПОЛЕЙ ТОЛЬКО ЕСЛИ ОНИ НЕ NULL
-                                // TODO: 24.06.2021 меняем местави приотправки на сервер данные однго столика с _id на id
-                                switch (имяТаблицыОтАндройда_локальноая.trim().toLowerCase()) {
-                                    case "tabels":
-                                    case "chats":
-                                    case "data_chat":
-                                    case "chat_users":
-                                    case "fio":
-                                    case "tabel":
-                                    case "data_tabels":
-                                    case "nomen_vesov":
-                                    case "type_materials":
-                                    case "company":
-                                    case "track":
-                                        System.out.println("  КлючJsonСтроки  " + КлючJsonСтроки);
-                                        if (КлючJsonСтроки.equals("_id")) {
-                                            КлючJsonСтроки = "id";
-                                            System.out.println("  КлючJsonСтроки  " + КлючJsonСтроки);
-                                        }
-                                        break;
-                                }
-                                /////TODO вытаемся отслидить хотябы один заполненый день
-                                Log.d(this.getClass().getName(), "КлючJsonСтроки " + "--" + КлючJsonСтроки + " З начниеJsonСтроки " + ЗначниеJsonСтроки);/////
-                                ///todo генерация самой строки json ниже ключ к нему после for//   && ЗначниеJsonСтроки.toString().matches("[1-9]"
-                                if (КлючJsonСтроки.matches("[d].*") && КлючJsonСтроки.length() <= 3) {
-                                    ГенерацияJSONполей.put(КлючJsonСтроки, ЗначниеJsonСтроки); ////заполение полей JSON
-                                } else if (ЗначниеJsonСтроки != null && ! ЗначниеJsonСтроки.toString().equalsIgnoreCase("null")) {
-                                    ГенерацияJSONполей.put(КлючJsonСтроки, ЗначниеJsonСтроки); ////заполение полей JSON
-                                }
-                                Log.d(this.getClass().getName(), " КлючJsonСтроки  " + КлючJsonСтроки + "  ЗначниеJsonСтроки " + ЗначниеJsonСтроки);
-                                //todo обнуление после вставки
-                                КлючJsonСтроки = null;
-                                ЗначниеJsonСтроки = null;
-                            }
-                            //////////TODO  КОНЕЦ ЭКСПЕРЕМЕНТ С JSON
-                            ///todo  только uuid
-                            ЕслиUUIDПриЗабросеДанныхНаСервер[0] = КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnIndex("uuid");
-                            if (ЕслиUUIDПриЗабросеДанныхНаСервер[0] >= 0) {
-                                Log.d(this.getClass().getName(), "ЕслиUUIDИлиIDПриЗабросеДанныхНаСервер " + ЕслиUUIDПриЗабросеДанныхНаСервер[0]);
-                                ///////////////ЕСЛИ ID ПОЛЕ ПУСТОЕ ТО ЗАПОЛНЕМЕМ ЕГО ВТОРЫМ ПОЛЕМ
-                                int ИндексДвижениеПОПОлямДЛяФОрмированиеID = КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnIndex("uuid");
-                                ////todo
-                                ПерхнееПолеJSONПоследнаяОперация = КурсорДляОтправкиДанныхНаСерверОтАндройда.getString(ИндексДвижениеПОПОлямДЛяФОрмированиеID);
-
-                            }
-                            ///todo  только id
-                            ЕслиIDПриЗабросеДанныхНаСервер[0] = КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnIndex("id");
-                            if (ЕслиIDПриЗабросеДанныхНаСервер[0] >= 0 && ПерхнееПолеJSONПоследнаяОперация== null) {
-                                Log.d(this.getClass().getName(), "ЕслиUUIDИлиIDПриЗабросеДанныхНаСервер " + ЕслиIDПриЗабросеДанныхНаСервер[0]);
-                                ///////////////ЕСЛИ ID ПОЛЕ ПУСТОЕ ТО ЗАПОЛНЕМЕМ ЕГО ВТОРЫМ ПОЛЕМ
-                                int ИндексДвижениеПОПОлямДЛяФОрмированиеID = КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnIndex("id");
-                                ////todo
-                                ПерхнееПолеJSONПоследнаяОперация= КурсорДляОтправкиДанныхНаСерверОтАндройда.getString(ИндексДвижениеПОПОлямДЛяФОрмированиеID);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            // TODO: 01.09.2021 метод вызова
-                            new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        }
-
-                    ////TODO упаковываем jon если хоть какое поле есть   , ЕСЛИ ЕСТЬ ИЛИ ID ИЛИ UUID
-                    if (ПерхнееПолеJSONПоследнаяОперация != null && ГенерацияJSONполей != null && ГенерацияJSONполей.length() > 0) {
-                        /// todo МЕЖДУ FOR И WHILE
-                        Log.i(this.getClass().getName(), " ПерхнееПолеJSONПоследнаяОперация  :     " + ПерхнееПолеJSONПоследнаяОперация
-                                + " ГенерацияJSONполей " + ГенерацияJSONполей.toString());
-                        try {
-                            //////////todo КОНКРЕТАНАЯ ГЕНЕРАЦИЯ  JSON ВЕРХНЕГО КЛЮЧА
-                            ГенерацияJSONполейФинал.put(ПерхнееПолеJSONПоследнаяОперация, ГенерацияJSONполей);////ВСТАВЛЯЕМ ОДИН JSON в ДРУГОЙ JSON ПОЛУЧАЕМ ФИНАЛЬНЫЙ РЕЗУЛЬТАТ JSON"А
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            Log.d(this.getClass().getName(), " НазваниеСтолбикаJson ::    " + НазваниеСтолбикаJson +  " СодержимоеСтолбикаJson " +СодержимоеСтолбикаJson);
+                            Log.d(this.getClass().getName(), " НазваниеСтолбикаJson ::    " + НазваниеСтолбикаJson);
+                            // TODO: 14.03.2023  ГЕНЕРИРУЕМ СТРОЧКУ json
+                            ГенерацияJSONполей.put(НазваниеСтолбикаJson, СодержимоеСтолбикаJson); ////заполение полей JSON
+                            Log.d(this.getClass().getName(), " ГенерацияJSONполей ::    " + ГенерацияJSONполей);
                         }
                     }
-                    КакаяСтрочкаОбработкиТекущаяя[0]++;////ЛОВИМ ТЕКУУЩЮ СТРОЧКУ ОБРАБОТКИ
+                    }
+                    Log.d(this.getClass().getName(), " ГенерацияJSONполей ::    " + ГенерацияJSONполей);
+                    int ИндексСтолбикаJsonТолькоUUID= КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnIndex("uuid");
+                    Object    СтолбикаJsonСамUUID= КурсорДляОтправкиДанныхНаСерверОтАндройда.getString(ИндексСтолбикаJsonТолькоUUID);
+                    //////////todo КОНКРЕТАНАЯ ГЕНЕРАЦИЯ  JSON ВЕРХНЕГО КЛЮЧА
+                    ГенерацияJSONполейФинал.put(СтолбикаJsonСамUUID.toString(), ГенерацияJSONполей);////ВСТАВЛЯЕМ ОДИН JSON в ДРУГОЙ JSON ПОЛУЧАЕМ ФИНАЛЬНЫЙ РЕЗУЛЬТАТ JSON"А
+
+                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                            + " ГенерацияJSONполейФинал " +ГенерацияJSONполейФинал +" СтолбикаJsonСамUUID " +СтолбикаJsonСамUUID);
+
                 } while (КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToNext());////ДАННЫЕ КРУТИЯТЬСЯ ДО КОНЦА ДАННЫХ И ГЕНЕРИРУЮ JSON
-                ///////// TODO ФИНАЛ ПРОСМАТРИВАЕМ СГЕНЕРИРОВАНЫЙ JSON  ФАЙЛ ПОСЛЕ ЦИКЛА DO WHILE СОЗДАИНИЕ НА СТОРОНЕ АНДРОЙДА JSON ПОЛЕЙ
-                Log.d(this.getClass().getName(), " ГенерацияJSONполейФинал  " + ГенерацияJSONполейФинал + " ГенерацияJSONполейФинал " + ГенерацияJSONполейФинал.toString() +
-                        " ГенерацияJSONполейФинал.length() " + ГенерацияJSONполейФинал.length());
-                if (ГенерацияJSONполейФинал.toString().length() > 3) {
-                    ///////// TODO ФИНАЛ ПРОСМАТРИВАЕМ СГЕНЕРИРОВАНЫЙ JSON  ФАЙЛ ПОСЛЕ ЦИКЛА DO WHILE СОЗДАИНИЕ НА СТОРОНЕ АНДРОЙДА JSON ПОЛЕЙ
-                    Log.d(this.getClass().getName(), " ГенерацияJSONполейФинал  " + ГенерацияJSONполейФинал + " ГенерацияJSONполейФинал " + ГенерацияJSONполейФинал.toString() +
-                            " ГенерацияJSONполейФинал.length() " + ГенерацияJSONполейФинал.length());
+
                     РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления =
                             new SubClass_SendToServer(context).МетодПосылаетНаСерверСозданныйJSONФайлвФоне(ГенерацияJSONполейФинал, имяТаблицыОтАндройда_локальноая, МенеджерПотоковВнутрений); ////СГЕНЕРИРОВАНЫЙ JSON ФАЙЛ ЕСЛИ БОЛЬШЕ 2 ССИМВОЛОМ В НЕМ ТО ОТПРАВЛЯЕМ
-                    //
-                    Log.d(this.getClass().getName(), " РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления  " + РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления);
-                }else {
-                    ///////// TODO ФИНАЛ ПРОСМАТРИВАЕМ СГЕНЕРИРОВАНЫЙ JSON  ФАЙЛ ПОСЛЕ ЦИКЛА DO WHILE СОЗДАИНИЕ НА СТОРОНЕ АНДРОЙДА JSON ПОЛЕЙ
-                    Log.d(this.getClass().getName(), " НЕТ ДАННЫХ ДЛЯ ОТПРАВКИ  ГенерацияJSONполейФинал  " + ГенерацияJSONполейФинал + " ГенерацияJSONполейФинал " + ГенерацияJSONполейФинал.toString() +
-                            " ГенерацияJSONполейФинал.length() " + ГенерацияJSONполейФинал.length());
+                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                            + " РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления " +РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления );
+                }else{
+                    Log.d(this.getClass().getName(), " НЕ т данных  "+"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                            + " РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления " +РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления +
+                             " КурсорДляОтправкиДанныхНаСерверОтАндройда " +КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount());
                 }
                 КурсорДляОтправкиДанныхНаСерверОтАндройда.close();
             } catch (Exception e) {
