@@ -2673,7 +2673,7 @@ public class Service_For_Remote_Async extends IntentService {
                                                       @NonNull  CompletionService МенеджерПотоковВнутрений) {
             Integer РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления = 0;
             try {
-                JSONObject ГенерацияJSONполейФинал = new JSONObject();
+                JSONObject ГенерацияJSONВсейТаблицы = new JSONObject();
                 if (КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount()>0) {
                     КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToFirst();
 
@@ -2682,7 +2682,7 @@ public class Service_For_Remote_Async extends IntentService {
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                         + " КурсорДляОтправкиДанныхНаСерверОтАндройда "+КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() );
                 do {
-                    JSONObject ГенерацияJSONполей = new JSONObject();
+                    JSONObject ГенерацияJSONСтроки = new JSONObject();
                     // TODO: 14.03.2023  генериуем по столбцам
                     for (int ИндексСтолбикаJson = 0; ИндексСтолбикаJson < КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnCount(); ИндексСтолбикаJson++) {
                         //    int ИндексСтолбикаJson = КурсорДляОтправкиДанныхНаСерверОтАндройда.getInt(i);//TODO индекс цифрв столбика в JSON
@@ -2696,30 +2696,28 @@ public class Service_For_Remote_Async extends IntentService {
                         //todo Пропускаем СТолбик ID и _ID
                         if (!НазваниеСтолбикаJson.trim().equalsIgnoreCase("_id")) {
                             if (!НазваниеСтолбикаJson.trim().equalsIgnoreCase("id")) {
-
                             Log.d(this.getClass().getName(), " НазваниеСтолбикаJson ::    " + НазваниеСтолбикаJson +  " СодержимоеСтолбикаJson " +СодержимоеСтолбикаJson);
-                            Log.d(this.getClass().getName(), " НазваниеСтолбикаJson ::    " + НазваниеСтолбикаJson);
                             // TODO: 14.03.2023  ГЕНЕРИРУЕМ СТРОЧКУ json
-                            ГенерацияJSONполей.put(НазваниеСтолбикаJson, СодержимоеСтолбикаJson); ////заполение полей JSON
-                            Log.d(this.getClass().getName(), " ГенерацияJSONполей ::    " + ГенерацияJSONполей);
+                            ГенерацияJSONСтроки.put(НазваниеСтолбикаJson, СодержимоеСтолбикаJson); ////заполение полей JSON
+                            Log.d(this.getClass().getName(), " ГенерацияJSONСтроки ::    " + ГенерацияJSONСтроки);
                         }
                     }
                     }
-                    Log.d(this.getClass().getName(), " ГенерацияJSONполей ::    " + ГенерацияJSONполей);
+                    Log.d(this.getClass().getName(), " ГенерацияJSONСтроки ::    " + ГенерацияJSONСтроки);
                     int ИндексСтолбикаJsonТолькоUUID= КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnIndex("uuid");
-                    Object    СтолбикаJsonСамUUID= КурсорДляОтправкиДанныхНаСерверОтАндройда.getString(ИндексСтолбикаJsonТолькоUUID);
+                    Long    СтолбикаJsonСамUUID= Optional.ofNullable(КурсорДляОтправкиДанныхНаСерверОтАндройда.getLong(ИндексСтолбикаJsonТолькоUUID)).map(Long::new).orElse(0l) ;
                     //////////todo КОНКРЕТАНАЯ ГЕНЕРАЦИЯ  JSON ВЕРХНЕГО КЛЮЧА
-                    ГенерацияJSONполейФинал.put(СтолбикаJsonСамUUID.toString(), ГенерацияJSONполей);////ВСТАВЛЯЕМ ОДИН JSON в ДРУГОЙ JSON ПОЛУЧАЕМ ФИНАЛЬНЫЙ РЕЗУЛЬТАТ JSON"А
+                    ГенерацияJSONВсейТаблицы.put(СтолбикаJsonСамUUID.toString(), ГенерацияJSONСтроки);////ВСТАВЛЯЕМ ОДИН JSON в ДРУГОЙ JSON ПОЛУЧАЕМ ФИНАЛЬНЫЙ РЕЗУЛЬТАТ JSON"А
 
                     Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
-                            + " ГенерацияJSONполейФинал " +ГенерацияJSONполейФинал +" СтолбикаJsonСамUUID " +СтолбикаJsonСамUUID);
+                            + " ГенерацияJSONВсейТаблицы " +ГенерацияJSONВсейТаблицы +" СтолбикаJsonСамUUID " +СтолбикаJsonСамUUID);
 
                 } while (КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToNext());////ДАННЫЕ КРУТИЯТЬСЯ ДО КОНЦА ДАННЫХ И ГЕНЕРИРУЮ JSON
 
                     РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления =
-                            new SubClass_SendToServer(context).МетодПосылаетНаСерверСозданныйJSONФайлвФоне(ГенерацияJSONполейФинал, имяТаблицыОтАндройда_локальноая, МенеджерПотоковВнутрений); ////СГЕНЕРИРОВАНЫЙ JSON ФАЙЛ ЕСЛИ БОЛЬШЕ 2 ССИМВОЛОМ В НЕМ ТО ОТПРАВЛЯЕМ
+                            new SubClass_SendToServer(context).МетодПосылаетНаСерверСозданныйJSONФайлвФоне(ГенерацияJSONВсейТаблицы, имяТаблицыОтАндройда_локальноая, МенеджерПотоковВнутрений); ////СГЕНЕРИРОВАНЫЙ JSON ФАЙЛ ЕСЛИ БОЛЬШЕ 2 ССИМВОЛОМ В НЕМ ТО ОТПРАВЛЯЕМ
                     Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"

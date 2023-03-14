@@ -470,7 +470,8 @@ import okio.BufferedSink;
                                     return chain.proceed(newRequest);
                                 }
                             }).connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(10, TimeUnit.SECONDS).build();
+                            .writeTimeout(20, TimeUnit.SECONDS)
+                            .readTimeout(20, TimeUnit.SECONDS).build();
                     ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
 
                     Log.i(context.getClass().getName(), "СгенерированыйФайлJSONДляОтправкиНаСервер.toString()" + СгенерированыйФайлJSONДляОтправкиНаСервер.toString());
