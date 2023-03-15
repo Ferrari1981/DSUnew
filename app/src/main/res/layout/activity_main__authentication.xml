@@ -31,8 +31,8 @@
 
     <ImageView
         android:id="@+id/textViewНастройки"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="210dp"
         android:adjustViewBounds="false"
