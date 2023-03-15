@@ -121,10 +121,7 @@ activity=this;
     //TODO метод пользовательской дополнительной настройки автозапуса
 
     private void МетодДополнительнойНастрокиАвтоЗапуска() {
-
 try{
-
-
     final Intent[] AUTO_START_INTENTS = {
             new Intent().setComponent(new ComponentName("com.samsung.android.lool",
                     "com.samsung.android.sm.ui.battery.BatteryActivity")),
@@ -141,18 +138,12 @@ try{
             new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.entry.FunctionActivity")).setData(
                     Uri.parse("mobilemanager://function/entry/AutoStart"))
     };
-
-
-
     for (Intent intent : AUTO_START_INTENTS) {
         if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
             startActivity(intent);
            // break;
         }
-
     }
-
-
 } catch (Exception e) {
         e.printStackTrace();
         ///метод запись ошибок в таблицу
@@ -163,23 +154,6 @@ try{
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
     }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     protected void onStart() {
@@ -218,7 +192,6 @@ try{
             МетодОпределениеКогдаПоследнийРазЗаходилПользователь();////ЗАПУСКАЕМ
             Integer РезультатПолученныйПубличныйID=     МетодЗаполенениеПубличногоIDПриРаботеОфлайн();
             Log.d(this.getClass().getName(), "РезультатПолученныйПубличныйID " +РезультатПолученныйПубличныйID);
-
             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                     " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
