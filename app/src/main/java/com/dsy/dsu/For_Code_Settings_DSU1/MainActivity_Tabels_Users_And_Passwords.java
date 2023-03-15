@@ -188,7 +188,8 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                 new Class_Find_Setting_User_Network(getApplicationContext()).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
 
                         if (РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию == true) {
-                            Boolean       РеальныйПингСервера = new Class_Connections_Server(getApplicationContext()).         МетодПингаСервераРаботаетИлиНет(getApplicationContext());
+                            Boolean       РеальныйПингСервера = new Class_Connections_Server(getApplicationContext()).
+                                    МетодПингаСервераРаботаетИлиНет(getApplicationContext());
                                     Log.d(this.getClass().getName(), " РеальныйПингСервера "+ РеальныйПингСервера) ;
                             if (РеальныйПингСервера==true) {
                                 ПрогрессБарДляВходаСистему.setVisibility(View.VISIBLE);// при нажатии делаем видимый програсссбар
@@ -233,7 +234,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                 Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
                 String ИмменоКакойСерверПодкючения ="http://"+ИмяСерверИзХранилица+":"+ПортСерверИзХранилица+"/";
                 //////TODO --операции
-                СтрокаСвязиСсервером = ИмменоКакойСерверПодкючения +new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервера()+ "?"
+                СтрокаСвязиСсервером = ИмменоКакойСерверПодкючения +new PUBLIC_CONTENT(getApplicationContext()).getСсылкаНаРежимСервераАунтификация()+ "?"
                         + "ЗаданиеДляСервлетаВнутриПотока=Хотим Получить ID для Генерации  UUID";
                 СтрокаСвязиСсервером = СтрокаСвязиСсервером.replace(" ", "%20");
                 Log.d(this.getClass().getName(), " СтрокаСвязиСсервером " +СтрокаСвязиСсервером);

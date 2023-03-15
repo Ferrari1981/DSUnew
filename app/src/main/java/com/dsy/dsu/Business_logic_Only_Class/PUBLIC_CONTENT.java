@@ -100,15 +100,35 @@ public Gson gson = new GsonBuilder()
         СсылкаНаРежимСервераОбновлениеПО="jboss-1.0-SNAPSHOT/dsu1.glassfish.download";//TODO РЕЛИЗ
         return СсылкаНаРежимСервераОбновлениеПО.trim();
     }
+
+
+    private   String  СсылкаНаРежимСервераАунтификация;
+    public String getСсылкаНаРежимСервераАунтификация() {
+        //   СсылкаНаРежимСервера="dsu1.glassfish.atomic";//TODO РЕЛИЗ
+        //СсылкаНаРежимСервера="jboss-1.0-SNAPSHOT/dsu1.glassfish.atomic";//TODO РЕЛИЗ
+        СсылкаНаРежимСервераАунтификация="jboss-1.0-SNAPSHOT/dsu1.glassfish.authentication";//TODO РЕЛИЗ
+        return СсылкаНаРежимСервераАунтификация.trim();
+    }
+
+    private   String  СсылкаНаРежимСервераRuntime;
+    public String getСсылкаНаРежимСервераRuntime() {
+        //   СсылкаНаРежимСервера="dsu1.glassfish.atomic";//TODO РЕЛИЗ
+        //СсылкаНаРежимСервера="jboss-1.0-SNAPSHOT/dsu1.glassfish.atomic";//TODO РЕЛИЗ
+        СсылкаНаРежимСервераRuntime="jboss-1.0-SNAPSHOT/dsu1.glassfish.runtimejboss";//TODO РЕЛИЗ
+        return СсылкаНаРежимСервераRuntime.trim();
+    }
+
+
+
     public LinkedHashMap<Integer,String> getМассивПортовСервера() {
 
-    /*    МассивПортовСервера.putIfAbsent(8080,"192.168.254.40");// TODO: 10.11.2022 Debug
+        МассивПортовСервера.putIfAbsent(8080,"192.168.254.40");// TODO: 10.11.2022 Debug
         МассивПортовСервера.putIfAbsent(8084,"192.168.254.40");// TODO: 10.11.2022 Debug
-        МассивПортовСервера.putIfAbsent(8085,"192.168.254.40");// TODO: 10.11.2022 Debug*/
+        МассивПортовСервера.putIfAbsent(8085,"192.168.254.40");// TODO: 10.11.2022 Debug
 
-      МассивПортовСервера.putIfAbsent(8888,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз
+ /*     МассивПортовСервера.putIfAbsent(8888,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз
        МассивПортовСервера.putIfAbsent(8889,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз
-        МассивПортовСервера.putIfAbsent(8890,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз
+        МассивПортовСервера.putIfAbsent(8890,"tabel.dsu1.ru");// TODO: 10.11.2022 Релиз*/
 
 
         return МассивПортовСервера;

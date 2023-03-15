@@ -33,7 +33,8 @@ public class Class_Connections_Server  extends  Class_GRUD_SQL_Operations {
         Boolean РезультатПингакСервераРаботаетЛиОНРеально=false;
                             try{
                                 РезультатПингакСервераРаботаетЛиОНРеально=  МетодПингаСервераРаботаетИлиНетВнутри(КонтекстКоторыйДляСинхронизации);
-                            Log.w(КонтекстКоторыйДляСинхронизации.getClass().getName(), " РезультатПингакСервераРаботаетЛиОНРеально "+РезультатПингакСервераРаботаетЛиОНРеально);
+                            Log.w(КонтекстКоторыйДляСинхронизации.getClass().getName(), " РезультатПингакСервераРаботаетЛиОНРеально "
+                                    +РезультатПингакСервераРаботаетЛиОНРеально);
                         } catch (Exception e) {
                             e.printStackTrace();
                             if (! e.toString().equalsIgnoreCase("java.util.concurrent.TimeoutException: The source did not signal an event for 5 seconds and has been terminated.")) {
@@ -63,9 +64,11 @@ public class Class_Connections_Server  extends  Class_GRUD_SQL_Operations {
                               МетодУниверсальногоПинга(null, "",
                         "", "application/gzip",
                                       "Хотим Получить Статус Реальной Работы SQL SERVER",
-                                      0l, "",30000,"",
+                                      0l, "",30000,
+                                      "",
                         0l,ИмяСервера, ИмяПорта);//application/gzip
-                Log.d(Class_MODEL_synchronized.class.getName(), "  БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer" + БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer);
+                Log.d(Class_MODEL_synchronized.class.getName(), "  БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer" +
+                        БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer);
                     if (БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer==null) {
                         БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer=0;
                         Log.d(this.getClass().getName(), "РазмерПришедшегоПотока " + БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer);
