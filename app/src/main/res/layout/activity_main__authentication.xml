@@ -28,34 +28,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent"></ScrollView>
 
-    <TextView
+
+    <ImageView
         android:id="@+id/textViewНастройки"
-        style="@style/Widget.MaterialComponents.MaterialCalendar.DayTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="20dp"
-        android:bufferType="normal"
-        android:capitalize="characters"
-        android:fontFamily="sans-serif-medium"
-        android:foregroundGravity="center"
-        android:gravity="center"
-        android:text="ООО &quot;Союз Автодор&quot;"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="#0E0E0E"
-        android:textSize="22sp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="210dp"
+        android:adjustViewBounds="false"
+        android:textSize="34sp"
         android:textStyle="bold"
-        android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
         android:typeface="monospace"
-        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/view4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/icon_boot_dsu1_1" />
+
 
 
     <View
