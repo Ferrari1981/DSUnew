@@ -677,9 +677,9 @@ public class Service_For_Remote_Async extends IntentService {
                         "application/gzip",//application/json
                         "Хотим Получить Версию Данных Сервера",
                         0l,
-                        ДанныеПришёлЛиIDДЛяГенерацииUUID, 10000,
-                        null,
-                        0l, ИмяСерверИзХранилица ,ПортСерверИзХранилица);   //// БуферПолученнниеДанныхОтМетодаGET.mark(1000); // save the data we are about to readБуферПолученнниеДанныхОтМетодаGET.reset(); // jump back to the marked position
+                        ДанныеПришёлЛиIDДЛяГенерацииUUID,
+                        0l,
+                        ИмяСерверИзХранилица ,ПортСерверИзХранилица,new PUBLIC_CONTENT(context).getСсылкаНаРежимСервераАунтификация());   //// БуферПолученнниеДанныхОтМетодаGET.mark(1000); // save the data we are about to readБуферПолученнниеДанныхОтМетодаGET.reset(); // jump back to the marked position
                 Log.d(this.getClass().getName(), " БуферПолученияСпискаТАблицДляОбмена.toString().toCharArray().length "
                         + БуферПолученияСпискаТАблицДляОбмена.toString().toCharArray().length);
                 // TODO: 03.09.2021
@@ -1607,8 +1607,11 @@ public class Service_For_Remote_Async extends IntentService {
                     БуферПолучениеДанных = МетодУниверсальныйДанныесСервера(имяТаблицыОтАндройда_локальноая, "",
                             "", "application/gzip", "Хотим Получить  JSON"
                             ,ВерсииДанныхНаАндройдеСерверная,//    ВерсииДанныхНаАндройдеСерверная,//37262l
-                            ДанныеПришёлЛиIDДЛяГенерацииUUID,2000000,null,
-                            РезультаПолученаяЛокальнаяВерсияДанныхДляОтправкиНаСервер, ИмяСерверИзХранилица ,ПортСерверИзХранилица);//TODO "http://192.168.254.40:8080/"      /      // TODO     "http://tabel.dsu1.ru:8888/"   original     "tabel.dsu1.ru", 8888);
+                            ДанныеПришёлЛиIDДЛяГенерацииUUID,
+                            РезультаПолученаяЛокальнаяВерсияДанныхДляОтправкиНаСервер,
+                            ИмяСерверИзХранилица
+                            ,ПортСерверИзХранилица,
+                            new PUBLIC_CONTENT(context).getСсылкаНаРежимСервераТабель());//TODO "http://192.168.254.40:8080/"      /      // TODO     "http://tabel.dsu1.ru:8888/"   original     "tabel.dsu1.ru", 8888);
                     Log.d(this.getClass().getName(), "  БУФЕР получаем даннные БуферПолучениеДанных.toString() " + БуферПолучениеДанных.toString());
                     if(БуферПолучениеДанных==null){
                         БуферПолучениеДанных = new StringBuffer();

@@ -102,18 +102,6 @@ activity=this;
     preferences = getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
     // TODO: 24.02.2022
     Log.d(this.getClass().getName(),  " date " +new Date().toGMTString().toString());
-
-
-    // TODO: 16.03.2023 тест код
-String Json1c="[ {\"names\":\"4ffce689-a8fe-4dd6-8557-e6452d4fc6a9\"}," +
-        " {\"names\":\"df2cc0b8-3158-4804-8c94-90f87a2d05fe\"} ]";
-
-    //TODO тестовый код пинга 1с
-  StringBuffer  БуферРезультатаПолучаемОтветДанных =
-            new Class_Get_Json_1C(getApplicationContext(),
-                    "http://uat.dsu1.ru:55080/uat12/hs/api/car")//TODO old debug "http://192.168.254.145/dsutest/hs/jsonto1c/listofdocuments"
-                    .МетодОтправляемJSONОт1СТестирование("userapi", "User4321api",new StringBuffer(Json1c));///"[4ffce689-a8fe-4dd6-8557-e6452d4fc6a9,df2cc0b8-3158-4804-8c94-90f87a2d05fe]"
-
     // TODO: 07.12.2022  test code
 } catch (Exception e) {
         e.printStackTrace();
