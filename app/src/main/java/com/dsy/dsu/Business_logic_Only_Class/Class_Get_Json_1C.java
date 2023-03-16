@@ -459,7 +459,95 @@ public StringBuffer МетодПолучемJSONОт1СДляСогласова�
 
 
 
+    //TODO ВТОРОЙ МЕТОД ОТПРАВЛЯЕМ ДАННЫЕ  НА 1С POST()
+    ////// TODO ПЕРВЫЙ МЕТОД ОБМЕНА ДАННЫМИ С СЕРВЕРОМ МЕТОД GET JSON только когда иы хотим узнать все строки json  по всем строкам мы запускаем этот код И ВСЕ !!!!
+    public StringBuffer МетодОтправляемJSONОт1СТестирование(
+            String Логин
+            , String Пароль
+            , StringBuffer ДанныеДляОтправки)
+            throws InterruptedException, ExecutionException, NoSuchAlgorithmException, IOException, KeyManagementException, TimeoutException {
+        //TODO
+        StringBuffer stringBufferотправкаНа1С = new StringBuffer();
+        Log.d(this.getClass().getName(), "  Логин  " + Логин +
+                " Пароль " + Пароль +
+                " ДанныеДляОтправки " + ДанныеДляОтправки );
+        try {
+            ////todo ТОЛЬКО КОГДА НЕ ОТЛАДКА
+            // MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            OkHttpClient   okHttpClientОтправкаСоглоавания = new OkHttpClient().newBuilder().addInterceptor(new Interceptor() {
+                        @Override
+                        public okhttp3.Response intercept(Chain chain) throws IOException {
+                            Request originalRequest = chain.request();
 
+                            Request.Builder builder = originalRequest.newBuilder()
+                                    .header("Authorization",
+                                            Credentials.basic(Логин, Пароль));
+
+                            Request newRequest = builder.build();
+                            return chain.proceed(newRequest);
+                        }
+                    }).connectTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS).build();
+            Dispatcher    dispatcher1CОтпарвка= okHttpClientОтправкаСоглоавания.dispatcher();
+
+            //TODO POST () Генерируем JSON на отправку
+            RequestBody bodyДляОтправки = RequestBody.create(MediaType.parse("application/json; charset=utf-16"),ДанныеДляОтправки.toString());
+
+            Request requestPOST = new Request.Builder()
+                    .post(bodyДляОтправки)
+                    .url(АдресСервера).build();
+            //   Call callPOST = client.newCall(requestPOST);
+            okHttpClientОтправкаСоглоавания.newCall(requestPOST).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    try{
+                        Log.d(this.getClass().getName(), "  post call  " + call + "  e" + e.toString());
+                        dispatcher1CОтпарвка.executorService().shutdown();
+                        ///TODO оттоепт обрабно о резульатате вставки статуса в 1с согласования
+                    } catch (Exception ex) {
+                        e.printStackTrace();
+                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                                this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    }
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    //TODO
+                    try{
+                        if (response.isSuccessful()) {
+                            //TODO
+                            stringBufferотправкаНа1С.append(response.body().string());
+                            Log.d(this.getClass().getName(), "   stringBufferотправкаНа1С  " + stringBufferотправкаНа1С.toString() +
+                                    "  responsePOST.code()" + response.code());
+                            ///TODO оттоепт обрабно о резульатате вставки статуса в 1с согласования
+                            Log.i(context.getClass().getName(), "stringBuffer" + stringBufferотправкаНа1С);
+                            dispatcher1CОтпарвка.executorService().shutdown();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                                this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    }}
+            });
+            dispatcher1CОтпарвка.executorService().awaitTermination(1,TimeUnit.MINUTES);
+            Log.i(context.getClass().getName(), "stringBuffer" + stringBufferотправкаНа1С);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                    this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+        }
+        return stringBufferотправкаНа1С;
+    }
 
 
 

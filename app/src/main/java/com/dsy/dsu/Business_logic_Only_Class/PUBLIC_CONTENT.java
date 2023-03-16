@@ -24,12 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 
-;import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.ObservableSource;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.functions.Function;
-import io.reactivex.rxjava3.observables.ConnectableObservable;
-
+;
 
 
 /////--------TODO В ДАННОМ КЛАССЕ СОБРАНЫ ВСЕ СТАТИЧЕСКИЕ ПЕРЕМЕННЫЕ ДЛЯ РАБОТЫ ВСЕГО ПРИЛОЖЕНИЯ DSU-1  ( И БОЛЬШНЕ В КЛАСЕ НИЧЕГО НЕТ )
@@ -88,33 +83,29 @@ public Gson gson = new GsonBuilder()
 
 
     private   String  СсылкаНаРежимСервера;
-    public String getСсылкаНаРежимСервера() {
+    public String getСсылкаНаРежимСервераТабель() {
     //   СсылкаНаРежимСервера="dsu1.glassfish.atomic";//TODO РЕЛИЗ
         //СсылкаНаРежимСервера="jboss-1.0-SNAPSHOT/dsu1.glassfish.atomic";//TODO РЕЛИЗ
-        СсылкаНаРежимСервера="jboss-1.0-SNAPSHOT/dsu1.glassfish.atomic";//TODO РЕЛИЗ
+        СсылкаНаРежимСервера="jboss-1.0-SNAPSHOT/sous.jboss.tabel";//TODO РЕЛИЗ
         return СсылкаНаРежимСервера.trim();
     }
-
     private   String  СсылкаНаРежимСервераОбновлениеПО;
     public String getСсылкаНаРежимСервераОбновлениеПО() {
-        СсылкаНаРежимСервераОбновлениеПО="jboss-1.0-SNAPSHOT/dsu1.glassfish.download";//TODO РЕЛИЗ
+        СсылкаНаРежимСервераОбновлениеПО="jboss-1.0-SNAPSHOT/sous.jboss.download";//TODO РЕЛИЗ
         return СсылкаНаРежимСервераОбновлениеПО.trim();
     }
-
-
     private   String  СсылкаНаРежимСервераАунтификация;
     public String getСсылкаНаРежимСервераАунтификация() {
         //   СсылкаНаРежимСервера="dsu1.glassfish.atomic";//TODO РЕЛИЗ
         //СсылкаНаРежимСервера="jboss-1.0-SNAPSHOT/dsu1.glassfish.atomic";//TODO РЕЛИЗ
-        СсылкаНаРежимСервераАунтификация="jboss-1.0-SNAPSHOT/dsu1.glassfish.authentication";//TODO РЕЛИЗ
+        СсылкаНаРежимСервераАунтификация="jboss-1.0-SNAPSHOT/sous.jboss.authentication";//TODO РЕЛИЗ
         return СсылкаНаРежимСервераАунтификация.trim();
     }
-
     private   String  СсылкаНаРежимСервераRuntime;
     public String getСсылкаНаРежимСервераRuntime() {
         //   СсылкаНаРежимСервера="dsu1.glassfish.atomic";//TODO РЕЛИЗ
         //СсылкаНаРежимСервера="jboss-1.0-SNAPSHOT/dsu1.glassfish.atomic";//TODO РЕЛИЗ
-        СсылкаНаРежимСервераRuntime="jboss-1.0-SNAPSHOT/dsu1.glassfish.runtimejboss";//TODO РЕЛИЗ
+        СсылкаНаРежимСервераRuntime="jboss-1.0-SNAPSHOT/sous.jboss.runtimejboss";//TODO РЕЛИЗ
         return СсылкаНаРежимСервераRuntime.trim();
     }
 

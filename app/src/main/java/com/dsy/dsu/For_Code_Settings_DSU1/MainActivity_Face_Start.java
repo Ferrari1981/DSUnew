@@ -25,6 +25,7 @@ import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Connections_Server;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Get_Json_1C;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Send_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.R;
@@ -101,6 +102,20 @@ activity=this;
     preferences = getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
     // TODO: 24.02.2022
     Log.d(this.getClass().getName(),  " date " +new Date().toGMTString().toString());
+
+
+    // TODO: 16.03.2023 тест код
+String Json1c="[ {  \"id\" : 1,  \"chosen_organization\" : 0,  \"current_table\" : 273,  \"date_update\" : \"2022-11-27 10:33:20.737\",  \"fullname\" : \"Общество с ограниченной ответственностью СОЮЗ АВТОДОР\",  \"inn\" : \"3711025287\",  \"kpp\" : \"371101001\",  \"name\" : \"ООО СОЮЗ АВТОДОР\",  \"user_update\" : 8,  \"uuid\" : 2}," +
+        " {  \"id\" : 225,  \"chosen_organization\" : 1,  \"current_table\" : 274,  \"date_update\" : \"2022-11-27 10:33:20.737\",  \"fullname\" : \"Акционерное общество \\\"ДСУ-1\\\"\",  \"inn\" : \"3728001189\",  \"kpp\" : \"370201001\",  \"name\" : \"АО \\\"ДСУ-1\\\"\",  \"user_update\" : 8,  \"uuid\" : 3}," +
+        " {  \"id\" : 226,  \"chosen_organization\" : 1,  \"current_table\" : 275,  \"date_update\" : \"2022-11-27 10:33:20.740\",  \"fullname\" : \"ООО \\\"Дорожно-эксплуатационное предприятие №17\\\" (ООО \\\"ДЭП №17\\\")\",  \"inn\" : \"4401152985\",  \"kpp\" : \"371101001\",  \"name\" : \"ООО \\\"ДЭП №17\\\"\",  \"user_update\" : 2,  \"uuid\" : 4}," +
+        " {  \"id\" : 227,  \"chosen_organization\" : 1,  \"current_table\" : 276,  \"date_update\" : \"2022-11-27 10:33:20.740\",  \"fullname\" : \"Общество с ограниченной ответственностью \\\"ПРОФИНТЕРСТРОЙ\\\"\",  \"inn\" : \"3711046840\",  \"kpp\" : \"371101001\",  \"name\" : \"ООО \\\"ПРОФИНТЕРСТРОЙ\\\"\",  \"user_update\" : 2,  \"uuid\" : 5}, " +
+        "{  \"id\" : 228,  \"chosen_organization\" : 0,  \"current_table\" : 277,  \"date_update\" : \"2022-11-27 10:33:20.740\",  \"fullname\" : \"Общество с ограниченной ответственностью ДОРОЖНО-ЭКСПЛУТАЦИОННОЕ ПРЕДПРИЯТИЕ-44\",  \"inn\" : \"6612053923\",  \"kpp\" : \"661201001\",  \"name\" : \"ООО ДЭП-44\",  \"user_update\" : 8,  \"uuid\" : 6} ]";
+
+    //TODO тестовый код пинга 1с
+  StringBuffer  БуферРезультатаПолучаемОтветДанных =
+            new Class_Get_Json_1C(getApplicationContext(),
+                    "http://uat.dsu1.ru:55080/uat12/hs/api/car")//TODO old debug "http://192.168.254.145/dsutest/hs/jsonto1c/listofdocuments"
+                    .МетодОтправляемJSONОт1СТестирование("userapi", "User4321api",new StringBuffer(Json1c));///"[4ffce689-a8fe-4dd6-8557-e6452d4fc6a9,df2cc0b8-3158-4804-8c94-90f87a2d05fe]"
 
     // TODO: 07.12.2022  test code
 } catch (Exception e) {

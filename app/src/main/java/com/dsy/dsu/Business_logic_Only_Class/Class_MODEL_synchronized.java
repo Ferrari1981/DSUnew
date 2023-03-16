@@ -20,16 +20,12 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -39,13 +35,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -116,7 +110,7 @@ import okio.BufferedSink;
             Log.d(this.getClass().getName(), "   СтрокаСвязиСсервером "+  СтрокаСвязиСсервером);
             String Adress_String = new String();
             String Params = new String();
-            Adress_String = СтрокаСвязиСсервером +new PUBLIC_CONTENT(context).getСсылкаНаРежимСервера();
+            Adress_String = СтрокаСвязиСсервером +new PUBLIC_CONTENT(context).getСсылкаНаРежимСервераТабель();
             Params = "?" + "ИмяТаблицыОтАндройда= " + ПУбличныйИмяТаблицыОтАндройдаВнутриПотока + "&" + "КонкретнаяТаблицаВПотоке=" + КонкретнаяТаблицаВПотокеВнутриПотока + ""
                     + "&" + "МакАдресТелефона=" + МакАдресТелефонаВнутриПотока + "" +
                     "&" + "ЗаданиеДляСервлетаВнутриПотока=" + ЗаданиеДляСервлетаВнутриПотока + "" + "&" + "ДатаНаДанныеВнутриПотока=" + ВерсииДанныхНаАндройдеСерверная + ""
@@ -420,7 +414,7 @@ import okio.BufferedSink;
                     String СтрокаСвязиСсервером ="http://"+ИмяСервера+":"+ИмяПорта+"/";;
                     СтрокаСвязиСсервером = СтрокаСвязиСсервером.replace(" ", "%20");
                     String Adress_String = new String();
-                    Adress_String = СтрокаСвязиСсервером +new PUBLIC_CONTENT(context).getСсылкаНаРежимСервера();
+                    Adress_String = СтрокаСвязиСсервером +new PUBLIC_CONTENT(context).getСсылкаНаРежимСервераТабель();
                     String Params = new String();
                     Params = "?" + "ИмяТаблицыОтАндройда=" + ПубличноеИмяПользовательМетодPOST + "&" + "СотрудникТаблицыОтАндройда=" + ПУбличныйИмяТаблицыМетодPOST +
                             "&" + "ЗаданиеДляСервлетаВнутриПотока=" + ЗаданиеДляСервлета + "";
