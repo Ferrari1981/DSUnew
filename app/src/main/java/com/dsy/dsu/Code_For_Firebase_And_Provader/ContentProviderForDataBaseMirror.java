@@ -381,6 +381,8 @@ public class ContentProviderForDataBaseMirror extends ContentProvider {
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         ArrayList<Integer> РезультатОперацииBurkUPDATE = new ArrayList<>();
         try {
+            Class_GRUD_SQL_Operations.ClassRuntimeExeGRUDOpertions class_engine_sqlПовышаемВерсиюДанных=
+                    new Class_GRUD_SQL_Operations(getContext()) .new ClassRuntimeExeGRUDOpertions(getContext());
             LinkedBlockingQueue<ContentValues>      ДанныеДляВторогоЭтапаBulkINSERT=new LinkedBlockingQueue<ContentValues>(Arrays.asList(values));
             String     table = МетодОпределяемТаблицу(uri);
             String ФлагКакойСинхронизацияПерваяИлиНет=         preferences.getString("РежимЗапускаСинхронизации", "");
@@ -462,6 +464,14 @@ public class ContentProviderForDataBaseMirror extends ContentProvider {
                                     Create_Database_СамаБАзаSQLite.setTransactionSuccessful();
                                     Create_Database_СамаБАзаSQLite.endTransaction();
                                 }
+                                if (РезультатОперацииBurkUPDATE.size()>0) {
+                                    // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
+                                    Integer РезультатПовышенииВерсииДанных =
+                                            class_engine_sqlПовышаемВерсиюДанных.МетодПоднимаемЛокальнуюВерсиюMODIFITATION_Client(table);///"Анализ"
+                                    Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
+                                }
+
+
                             }
                         })
                         .onErrorComplete(new Predicate<Throwable>() {

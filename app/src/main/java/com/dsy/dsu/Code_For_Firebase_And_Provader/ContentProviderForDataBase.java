@@ -288,6 +288,8 @@ public class ContentProviderForDataBase extends ContentProvider {
         Integer РезультатМассовогоВсатвкиДанныхФинал=0;
         ArrayList<Integer> РезультатОперацииBulkInsert = new ArrayList<>();
         try {
+            Class_GRUD_SQL_Operations.ClassRuntimeExeGRUDOpertions class_engine_sqlПовышаемВерсиюДанных=
+                    new Class_GRUD_SQL_Operations(getContext()) .new ClassRuntimeExeGRUDOpertions(getContext());
             if (!Create_Database_СамаБАзаSQLite.inTransaction()) {
                 Create_Database_СамаБАзаSQLite.beginTransaction();
             }
@@ -345,6 +347,16 @@ public class ContentProviderForDataBase extends ContentProvider {
                                 Create_Database_СамаБАзаSQLite.setTransactionSuccessful();
                                 Create_Database_СамаБАзаSQLite.endTransaction();
                             }
+
+                            if (РезультатОперацииBulkInsert.size()>0) {
+                                // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
+                                Integer РезультатПовышенииВерсииДанных =
+                                        class_engine_sqlПовышаемВерсиюДанных.МетодПоднимаемЛокальнуюВерсиюMODIFITATION_Client(table);///"Анализ"
+                                Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
+                            }
+
+
+
                         }
                     })
                     .onErrorComplete(new Predicate<Throwable>() {
