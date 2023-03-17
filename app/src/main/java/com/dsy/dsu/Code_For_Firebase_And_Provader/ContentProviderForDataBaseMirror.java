@@ -466,8 +466,7 @@ public class ContentProviderForDataBaseMirror extends ContentProvider {
                                 if(РезультатОперацииBurkUPDATE.size()>0){
                                     Integer РезультатПовышенииВерсииДанных =new Class_GRUD_SQL_Operations(getContext()) .new ClassRuntimeExeGRUDOpertions(getContext())
                                             .МетодУвеличиваемДанныхБазы(table,
-                                                    "Серверный",new PUBLIC_CONTENT(getContext()).МенеджерПотоков,
-                                                    "Анализ");
+                                                    "Серверный", "Анализ");
                                     Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
                                 }
                             }

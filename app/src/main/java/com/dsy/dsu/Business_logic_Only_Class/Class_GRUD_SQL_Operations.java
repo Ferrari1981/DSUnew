@@ -1457,104 +1457,6 @@ Context context;
 ///// todo конец первой повышени  данных
 
 
-
-
-
-
-
-        // TODO: 27.08.2021 ПОВЫШЕНИЯ ВЕРСИИ ДАННЫХ В ТОЛЬКО ТАБЛИЦЕ  MODIFITATION_Client , ТОЛЬКО ПОСЛЕ УСПЕШНОЙ СИНХРОНИАЗЦИИ
-        public Object МетодВыравниваемДанныеВТаблицеModificationClient(Map<String, Object> concurrentHashMap
-                , CompletionService МенеджерПотоков, SQLiteDatabase getБазаДанныхДЛяОперацийВнутри)
-                throws ExecutionException, InterruptedException {
-
-            Object ChangesvesiondataДля_MODIFITATION_Client_СинхрониазацииДанных=null;
-            try {
-                ЛистДляGRUDопераций=new Callable<Object>() {
-                    @Override
-                    public Object call() throws Exception {
-                        Object changesvesiondata_MODIFITATION_Client_СинхрониазацииДанных =null;
-                        String  НазваниеОбрабоатываемойТаблицы=null;
-                        String ФлагТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба=null;
-                        Long ВерсияДанныхДляВыравнивание=0l;
-                        Log.w(context.getClass().getName(), "concurrentHashMap " + concurrentHashMap.values() );
-                        for (Object КлючconcurrentHashMap : concurrentHashMap.keySet()) {
-                            Object ЗначениеconcurrentHashMap = concurrentHashMap.get(КлючconcurrentHashMap);
-                            Log.w(context.getClass().getName(), "concurrentHashMap.toString() " + concurrentHashMap.toString());
-                            switch (КлючconcurrentHashMap.toString().trim()){
-                                case "НазваниеОбрабоатываемойТаблицы" :
-                                    НазваниеОбрабоатываемойТаблицы=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "ФлагТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба" :
-                                    ФлагТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "ВерсияДанныхДляВыравнивание" :
-                                    ВерсияДанныхДляВыравнивание=Long.parseLong(ЗначениеconcurrentHashMap.toString().trim());
-
-                                    break;
-                            }
-                        }
-                        String СгенерированованныйДата=null;
-                        СгенерированованныйДата=     new Class_Generation_Data(context).ГлавнаяДатаИВремяОперацийСБазойДанных();
-                        Log.d(this.getClass().getName(), "   ЗАПУСК ФОНОВОЙ СИНХРОНИЗАЦИИИ С mYwORK_sYNCHRONIZACI  СЛУЖБА  WorkManager Synchronizasiy_Data  СгенерированованныйДата "+СгенерированованныйДата);
-// TODO: 30.08.2021  ЗАПОЛЕНЕНИ ПОЛУЧЕННЫМИ ДАННЫМИ НОВОЙ ДАТОЙ И НОВОЙ ВЕРИСЕ
-                        switch (ФлагТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба){
-                            case "ЛокальныйСерверныйОба":
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("localversionandroid",СгенерированованныйДата);
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("versionserveraandroid",СгенерированованныйДата);
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("localversionandroid_version",ВерсияДанныхДляВыравнивание);
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("versionserveraandroid_version",ВерсияДанныхДляВыравнивание);
-                                break;
-                            case "Локальный":
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("localversionandroid",СгенерированованныйДата);
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("localversionandroid_version",ВерсияДанныхДляВыравнивание);
-                                break;
-                            case "Серверный":
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("versionserveraandroid",СгенерированованныйДата);
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("versionserveraandroid_version",ВерсияДанныхДляВыравнивание);
-                                break;
-                            default:
-                                break;
-
-                        }
-                        String ТаблицаОбработки="MODIFITATION_Client";
-                        SQLBuilder_Для_GRUD_Операций.setTables(ТаблицаОбработки.toLowerCase());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                            changesvesiondata_MODIFITATION_Client_СинхрониазацииДанных =             SQLBuilder_Для_GRUD_Операций.
-                                    update(getБазаДанныхДЛяОперацийВнутри,
-                                            contentValuesДляSQLBuilder_Для_GRUD_Операций,"name=?", new String[]{НазваниеОбрабоатываемойТаблицы.toLowerCase()});
-                        }else{
-                            ///////////////
-                            changesvesiondata_MODIFITATION_Client_СинхрониазацииДанных =           getБазаДанныхДЛяОперацийВнутри
-                                    .update(ТаблицаОбработки,contentValuesДляSQLBuilder_Для_GRUD_Операций,"name=?", new String[]{НазваниеОбрабоатываемойТаблицы.toLowerCase()});
-                        }
-
-                        // TODO: 22.11.2021  ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ ПОДТВЕРЖДАЕМ ТРАНЗАУЙИЮ
-                        Log.d(this.getClass().getName(), "  СОЗДАН ТРИГЕР ДЛЯ ТАБЛИЦЫ  tabels  update  Для_MODIFITATION_Client_СинхрониазацииДанных     " + СгенерированованныйДата);
-                        Log.d(this.getClass().getName(), "РезультатИзменениеВерсииДанных  changesvesiondata_MODIFITATION_Client_СинхрониазацииДанных  Для_MODIFITATION_Client_СинхрониазацииДанных " +
-                                "" +changesvesiondata_MODIFITATION_Client_СинхрониазацииДанных+
-                                " результат изменения данных Integer.parseInt(changesvesiondata.toString()) " +Integer.parseInt(changesvesiondata_MODIFITATION_Client_СинхрониазацииДанных.toString()));
-                        return changesvesiondata_MODIFITATION_Client_СинхрониазацииДанных;
-                    }
-                };
-                //TODO конец выполения кода через Callble  , отправляем его в главный менеджер пОТОКОВ
-                ChangesvesiondataДля_MODIFITATION_Client_СинхрониазацииДанных =    new ClassRuntimeExeGRUDOpertions(context).МетодЗапускаОперацийGRUD_exe(ЛистДляGRUDопераций,МенеджерПотоков);
-                Log.w(context.getClass().getName(), " РЕЗУЛЬТАТ changesvesiondata  ИЗМЕНЕНИЯ ДАННЫХ  ЗНАЧЕНИЯ  ChangesvesiondataДля_MODIFITATION_Client_СинхрониазацииДанных" +
-                        " " +  ChangesvesiondataДля_MODIFITATION_Client_СинхрониазацииДанных.toString() );
-            } catch (Exception e) {
-                e.printStackTrace();
-                ///метод запись ошибок в таблицу
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                        + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(),
-                        this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                        Thread.currentThread().getStackTrace()[2].getLineNumber());
-            }
-            return ChangesvesiondataДля_MODIFITATION_Client_СинхрониазацииДанных;
-        }
-
-
-
-
     }
 
     //TODO КЛАСС ПОЛУЧЕНИЕ ДАННЫХ Free
@@ -1669,33 +1571,31 @@ Context context;
         }
 
         // TODO: 19.11.2022  метод коптрует верстию данныхизтекущей таблицы в системныную табллицу
-       public Integer МетодУвеличиваемДанныхБазы(
-                @NotNull  String текущаяТаблицаДляОБменаДанными
-                , @NotNull  String  РежимПовышенияВерсииЛокальнаяСервернаяИлиОба
-                , @NotNull CompletionService МенеджерПотоковВнутрений
+       public Integer МетодПоднимаемВерсиюТекущейТаблице(
+                @NotNull  String Таблица
+                , @NotNull  String  ФлагТипИзменения
         ,@NotNull String ФлагУвеличинаяВерсияДанныхНужнаИлиНет) {
             // TODO: 27.10.2022
             Integer    Результат_ПовышенаяВерсия=0;
             Long ВерсияДанныхПослеСинхрониазацииДляЗаписи=0l;
             try{
-            // TODO: 20.11.2022  анализ версии данных
-                switch (ФлагУвеличинаяВерсияДанныхНужнаИлиНет){
-                    case "Анализ":
-                        ВерсияДанныхПослеСинхрониазацииДляЗаписи=МетодАнализаВерсииCurrentTable(текущаяТаблицаДляОБменаДанными,context,getССылкаНаСозданнуюБазу());
-                        break;
-                    case "Поднять":
-                        ВерсияДанныхПослеСинхрониазацииДляЗаписи=МетодПовышаемВерсииCurrentTable(текущаяТаблицаДляОБменаДанными,context,getССылкаНаСозданнуюБазу());
-                        break;
+                ВерсияДанныхПослеСинхрониазацииДляЗаписи=МетодПовышаемВерсииCurrentTable(Таблица,context,getССылкаНаСозданнуюБазу());
+                // TODO: 22.11.2021  ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ ПОДТВЕРЖДАЕМ ТРАНЗАУЙИЮ
+                Log.d(this.getClass().getName(), "  ВерсияДанныхПослеСинхрониазацииДляЗаписи   " + ВерсияДанныхПослеСинхрониазацииДляЗаписи);
+                String    СгенерированованныйДата=     new Class_Generation_Data(context).ГлавнаяДатаИВремяОперацийСБазойДанных();
+                ContentValues contentValuesДляПоднятияВерсии=new ContentValues();
+                        contentValuesДляПоднятияВерсии.put("localversionandroid",СгенерированованныйДата);
+                        contentValuesДляПоднятияВерсии.put("localversionandroid_version",ВерсияДанныхПослеСинхрониазацииДляЗаписи);
+                SQLBuilder_Для_GRUD_Операций.setTables(Таблица);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    Результат_ПовышенаяВерсия =             SQLBuilder_Для_GRUD_Операций.
+                            update(getССылкаНаСозданнуюБазу(), contentValuesДляSQLBuilder_Для_GRUD_Операций,"name=?", new String[]{Таблица.toLowerCase()});
+                }else{
+                    Результат_ПовышенаяВерсия =           getССылкаНаСозданнуюБазу().update(Таблица,contentValuesДляSQLBuilder_Для_GRUD_Операций,
+                            "name=?", new String[]{Таблица.toLowerCase()});
                 }
-                Log.i(this.getClass().getName(), "   ВходящийПараметрПослеУспешнойВсатвкиИлиобвнлденияДаннымиССерверафИНАЛ");
-                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы",текущаяТаблицаДляОБменаДанными.trim());
-                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФлагТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба", РежимПовышенияВерсииЛокальнаяСервернаяИлиОба.trim());///  "ЛокальныйСерверныйОба"    ПОСЛЕ КАК ПРИШЛИ ВНЕШНИЕ ДАННЫЕ
-                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ДополнительныйФлагДляСинхЧАТАТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба",
-                        ВерсияДанныхПослеСинхрониазацииДляЗаписи);///  "ЛокальныйСерверныйОба"    ПОСЛЕ КАК ПРИШЛИ ВНЕШНИЕ ДАННЫЕ
-                ///TODO РЕЗУЛЬТА изменения версии данных
-                Результат_ПовышенаяВерсия= (Integer) new ChangesVesionData(context).МетодВыравниваемДанныеВТаблицеModificationClient(concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
-                        МенеджерПотоковВнутрений, getССылкаНаСозданнуюБазу());
-                Log.i(this.getClass().getName(), "   Результат_ПовышенаяВерсия "+Результат_ПовышенаяВерсия);
+                // TODO: 22.11.2021  ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ ПОДТВЕРЖДАЕМ ТРАНЗАУЙИЮ
+                Log.d(this.getClass().getName(), "  Результат_ПовышенаяВерсия   " + Результат_ПовышенаяВерсия);
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(context.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -1707,6 +1607,103 @@ Context context;
             return  Результат_ПовышенаяВерсия;
 
         }
+
+
+
+
+        // TODO: 19.11.2022  метод коптрует верстию данныхизтекущей таблицы в системныную табллицу
+        public Integer МетодПоднимаемВерсиюMODIFITATION_Client(
+                @NotNull  String Таблица
+                , @NotNull  String  ФлагТипИзменения
+                ,@NotNull String ФлагУвеличинаяВерсияДанныхНужнаИлиНет) {
+            // TODO: 27.10.2022
+            Integer    Результат_ПовышенаяВерсия=0;
+            Long ВерсияДанныхПослеСинхрониазацииДляЗаписи=0l;
+            try{
+                // TODO: 20.11.2022  анализ версии данных
+                switch (ФлагУвеличинаяВерсияДанныхНужнаИлиНет){
+                    case "Анализ":
+                        ВерсияДанныхПослеСинхрониазацииДляЗаписи=МетодАнализаВерсииCurrentTable(Таблица,context,getССылкаНаСозданнуюБазу());
+                        break;
+                    case "Поднять":
+                        ВерсияДанныхПослеСинхрониазацииДляЗаписи=МетодПовышаемВерсииCurrentTable(Таблица,context,getССылкаНаСозданнуюБазу());
+                        break;
+                }
+
+                String    СгенерированованныйДата=     new Class_Generation_Data(context).ГлавнаяДатаИВремяОперацийСБазойДанных();
+                ContentValues contentValuesДляПоднятияВерсии=new ContentValues();
+                switch (ФлагУвеличинаяВерсияДанныхНужнаИлиНет){
+                    case "ЛокальныйСерверныйОба":
+                        contentValuesДляПоднятияВерсии.put("localversionandroid",СгенерированованныйДата);
+                        contentValuesДляПоднятияВерсии.put("versionserveraandroid",СгенерированованныйДата);
+                        contentValuesДляПоднятияВерсии.put("localversionandroid_version",ВерсияДанныхПослеСинхрониазацииДляЗаписи);
+                        contentValuesДляПоднятияВерсии.put("versionserveraandroid_version",ВерсияДанныхПослеСинхрониазацииДляЗаписи);
+                        break;
+                    case "Локальный":
+                        contentValuesДляПоднятияВерсии.put("localversionandroid",СгенерированованныйДата);
+                        contentValuesДляПоднятияВерсии.put("localversionandroid_version",ВерсияДанныхПослеСинхрониазацииДляЗаписи);
+                        break;
+                    case "Серверный":
+                        contentValuesДляПоднятияВерсии.put("versionserveraandroid",СгенерированованныйДата);
+                        contentValuesДляПоднятияВерсии.put("versionserveraandroid_version",ВерсияДанныхПослеСинхрониазацииДляЗаписи);
+                        break;
+                    default:
+                        break;
+                }
+                SQLBuilder_Для_GRUD_Операций.setTables("MODIFITATION_Client");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    Результат_ПовышенаяВерсия =             SQLBuilder_Для_GRUD_Операций.
+                            update(getССылкаНаСозданнуюБазу(), contentValuesДляSQLBuilder_Для_GRUD_Операций,"name=?", new String[]{Таблица.toLowerCase()});
+                }else{
+                    Результат_ПовышенаяВерсия =           getССылкаНаСозданнуюБазу().update("MODIFITATION_Client",contentValuesДляSQLBuilder_Для_GRUD_Операций,
+                            "name=?", new String[]{Таблица.toLowerCase()});
+                }
+                // TODO: 22.11.2021  ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ ПОДТВЕРЖДАЕМ ТРАНЗАУЙИЮ
+                Log.d(this.getClass().getName(), "  Результат_ПовышенаяВерсия   " + Результат_ПовышенаяВерсия);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(context.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                        + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(),
+                        this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                        Thread.currentThread().getStackTrace()[2].getLineNumber());
+            }
+            return  Результат_ПовышенаяВерсия;
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // TODO:MAX cURRENT table
         public Long МетодАнализаВерсииCurrentTable( @NotNull String Текущаятаблицы,
                                                     @NotNull Context contextУвеличинойВесрииДанных,
