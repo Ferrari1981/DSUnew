@@ -1203,6 +1203,7 @@ public class Service_For_Remote_Async extends IntentService {
                                                                                      CompletionService МенеджерПотоковВнутрений) {
             Integer ДанныеПосылаемНаСервер=0;//РезультатУспешнойВставкиИлИОбвновленияССервера
             Integer ДанныесСервера=0;//РезультатУспешнойВставкиИлИОбвновленияССервера
+         Class_GRUD_SQL_Operations.ClassRuntimeExeGRUDOpertions class_engine_sqlПовышаемВерсиюДанных=   new Class_GRUD_SQL_Operations(context) .new ClassRuntimeExeGRUDOpertions(context);
             try {
                 if (ИмяТаблицыНаSqlServerИзТаблицыВерсииДанных.equalsIgnoreCase(ИмяТаблицыОтАндройда_Локальноая)) {//////ОБЯЗАТОЛЬНОЕ УСЛОВИЕ НАЗВАНИЕ ТАБЛИЦ ДОЛЖНО БЫТЬ ОДИНАКОВЫМ НАПРИМЕР  CFO==CFO
                     Log.d(this.getClass().getName(), " ФлагУказываетЧтоТОлькоОбработкаТаблицДляЧАТА"
@@ -1244,13 +1245,10 @@ public class Service_For_Remote_Async extends IntentService {
                                         + ВерсияДанныхЛокальнаяСерверная
                                         + " ДанныеПосылаемНаСервер " + ДанныеПосылаемНаСервер);
                         // TODO: 28.10.2021 ПЕРЕРДАЕМ ВОЗМОЖНЫЙ ОТВЕТ
-                        if(ДанныеПосылаемНаСервер>0 ){
+                        if(ДанныесСервера>0 ){
                             ПубличныйРезультатОтветаОтСерврераУспешно=ДанныесСервера;///"Серверный"
-                            // TODO: 19.11.2022  версия данных синхронизируемс таблицей modificatin client
-                            Integer РезультатПовышенииВерсииДанных =new Class_GRUD_SQL_Operations(context) .new ClassRuntimeExeGRUDOpertions(context)
-                                    .МетодУвеличиваемДанныхБазы(ИмяТаблицыОтАндройда_Локальноая,
-                                            "ЛокальныйСерверныйОба",new PUBLIC_CONTENT(context).МенеджерПотоков,
-                                            "Анализ");///"Анализ"
+                            // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
+                            Integer РезультатПовышенииВерсииДанных =class_engine_sqlПовышаемВерсиюДанных.МетодПоднимаемВерсиюMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая);///"Анализ"
                             Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
                         }
                     } else {
@@ -1264,11 +1262,8 @@ public class Service_For_Remote_Async extends IntentService {
                             // TODO: 28.10.2021 ПЕРЕРДАЕМ ВОЗМОЖНЫЙ ОТВЕТ
                             if(ДанныесСервера>0 ){
                                 ПубличныйРезультатОтветаОтСерврераУспешно=ДанныесСервера;///"Серверный"
-                                // TODO: 19.11.2022  версия данных синхронизируемс таблицей modificatin client
-                                Integer РезультатПовышенииВерсииДанных =new Class_GRUD_SQL_Operations(context) .new ClassRuntimeExeGRUDOpertions(context)
-                                        .МетодУвеличиваемДанныхБазы(ИмяТаблицыОтАндройда_Локальноая,
-                                                "ЛокальныйСерверныйОба",new PUBLIC_CONTENT(context).МенеджерПотоков,
-                                                "Анализ");///"Анализ"
+                                // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
+                                Integer РезультатПовышенииВерсииДанных =class_engine_sqlПовышаемВерсиюДанных.МетодПоднимаемВерсиюMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая);///"Анализ"
                                 Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
                             }
                             Log.d(this.getClass().getName(),

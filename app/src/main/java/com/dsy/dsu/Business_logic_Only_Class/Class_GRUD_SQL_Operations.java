@@ -246,8 +246,6 @@ public class Class_GRUD_SQL_Operations extends CREATE_DATABASE {
                             Log.w(this.getClass().getName(), "   РЕЗУЛЬТАТ GetData  ПОЛУЧЕНИЕ  ДАННЫХ  SUB UNION   КОЛ СТРОЧКЕ:  "+ ((SQLiteCursor) getdata).getCount());
                         }
                         Log.w(this.getClass().getName(), " ЕДИНСТВЕННЫЙ         ПОЛУЧЕНИЯ ДАННЫХ   " + getdata);
-                        // TODO: 19.11.2022  версия данных синхронизируемс таблицей modificatin client
-                     //   new ClassRuntimeExeGRUDOpertions(context).МетодУвеличиваемДанныхБазы(НазваниеОбрабоатываемойТаблицы, "ЛокальныйСерверныйОба",МенеджерПотоков);
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"

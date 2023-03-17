@@ -462,13 +462,6 @@ public class ContentProviderForDataBaseMirror extends ContentProvider {
                                     Create_Database_СамаБАзаSQLite.setTransactionSuccessful();
                                     Create_Database_СамаБАзаSQLite.endTransaction();
                                 }
-                                // TODO: 07.12.2022 дополнительно повышаем версию данных внтури контерйнера
-                                if(РезультатОперацииBurkUPDATE.size()>0){
-                                    Integer РезультатПовышенииВерсииДанных =new Class_GRUD_SQL_Operations(getContext()) .new ClassRuntimeExeGRUDOpertions(getContext())
-                                            .МетодУвеличиваемДанныхБазы(table,
-                                                    "Серверный", "Анализ");
-                                    Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
-                                }
                             }
                         })
                         .onErrorComplete(new Predicate<Throwable>() {
