@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 //этот класс создает базу данных SQLite
 public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
-     static final int VERSION =      964 ;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
+     static final int VERSION =     968;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
    private   Context context;
     private      SQLiteDatabase ССылкаНаСозданнуюБазу;
     private     CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда;
@@ -74,6 +74,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
             МетодСозданиеТаблицыФИО(ССылкаНаСозданнуюБазу);
             МетодСозданияТаблицыРегион(ССылкаНаСозданнуюБазу);
             МетодСоздания_ТаблицыТабель(ССылкаНаСозданнуюБазу);
+            МетодСоздания_ТаблицыПрофесии(ССылкаНаСозданнуюБазу);
             МетодСоздания_ТаблицыДатаТабель(ССылкаНаСозданнуюБазу);
             МетодСозданиеМетокТабеля(ССылкаНаСозданнуюБазу);
             МетодСозданиеSettingTabels(ССылкаНаСозданнуюБазу);
@@ -99,7 +100,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
             МетодСозданияViewТабеля(ССылкаНаСозданнуюБазу);
             МетодСозданиеViewПолученныхМатериалов(ССылкаНаСозданнуюБазу);
             МетодСозданиеViewПолученныхМатериаловGroup(ССылкаНаСозданнуюБазу);
-
+// TODO: 12.10.2022  создание Trigers
             МетодСозданиеТрирераМодификаценКлиент(ССылкаНаСозданнуюБазу,ИменаТаблицыОтАндройда);
             Log.d(this.getClass().getName(), " сработала ... КОНЕЦ СОЗДАНИЯ ТАБЛИЦ " +new Date().toGMTString());
         } catch (Exception e) {
@@ -665,6 +666,20 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
 
 
 
+    private void МетодСоздания_ТаблицыПрофесии(SQLiteDatabase ССылкаНаСозданнуюБазу) {
+        ССылкаНаСозданнуюБазу.execSQL("drop table  if exists prof");//test
+        ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'tabel'");//test
+        ССылкаНаСозданнуюБазу.execSQL("Create table if not exists prof (" +
+                "_id  INTEGER    ," +
+                " name TEXT ," +
+                " user_update INTEGER ," +
+                "date_update  NUMERIC   ," +
+                "current_table  NUMERIC  UNIQUE     ,"+
+                " uuid  NUMERIC UNIQUE  )");//
+        Log.d(this.getClass().getName(), " сработала ...  создание таблицы   новая prof");//"FOREIGN KEY(organizations) REFERENCES SuccessLogin (organizations)  ON UPDATE CASCADE ,"+
+    }
+
+
 
     //TODO новые таблицы для табеля  НОВАЯ ТАБЛИЦА   ДАТА ТАБЕЛЬ
 
@@ -714,8 +729,10 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                 " user_update INTEGER  ," +
                 "status_send TEXT ," +
                 "status_carried_out   INTEGER DEFAULT 0   ,"+
+                "prof   INTEGER    ,"+
                 " UNIQUE (uuid_tabel,fio,user_update),"+
-                "FOREIGN KEY(fio ) REFERENCES fio (uuid)  ON UPDATE CASCADE ) ");//  "PRIMARY KEY(fio,uuid_tabel)) ");
+                "FOREIGN KEY(fio ) REFERENCES fio (uuid)  ON UPDATE CASCADE   ,"+
+                "FOREIGN KEY(prof) REFERENCES prof  (id)  ON UPDATE CASCADE) ");//  "PRIMARY KEY(fio,uuid_tabel)) ");
         ///             "FOREIGN KEY(uuid_tabel ) REFERENCES tabel (uuid)  ON UPDATE CASCADE  ON DELETE CASCADE," +
         ////////////////////
         Log.d(this.getClass().getName(), " сработала ...  создание таблицы   новая data_tabels");//"FOREIGN KEY(organizations) REFERENCES SuccessLogin (organizations)  ON UPDATE CASCADE ,"+
@@ -790,8 +807,12 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                 " uuid  NUMERIC UNIQUE," +
                 " current_organization INTEGER," +
                 " current_table  NUMERIC UNIQUE   ," +
+                " prof  INTEGER   ," +
+                "  UNIQUE (name, snils,current_table)," +
                 "FOREIGN KEY(user_update) REFERENCES users  (id)  ON UPDATE CASCADE," +
-                "FOREIGN KEY(current_organization) REFERENCES organization  (id)  ON UPDATE CASCADE)");
+                "FOREIGN KEY(current_organization) REFERENCES organization  (id)  ON UPDATE CASCADE ," +
+                " FOREIGN KEY(prof) REFERENCES prof  (id)  ON UPDATE CASCADE" +
+                ")");
 
         Log.d(this.getClass().getName(), " сработала ...  создание таблицы   fio");
     }

@@ -1475,7 +1475,7 @@ Context context;
                         Object changesvesiondata_MODIFITATION_Client_СинхрониазацииДанных =null;
                         String  НазваниеОбрабоатываемойТаблицы=null;
                         String ФлагТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба=null;
-                        Long ДополнительныйФлагДляСинхЧАТАТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба=0l;
+                        Long ВерсияДанныхДляВыравнивание=0l;
                         Log.w(context.getClass().getName(), "concurrentHashMap " + concurrentHashMap.values() );
                         for (Object КлючconcurrentHashMap : concurrentHashMap.keySet()) {
                             Object ЗначениеconcurrentHashMap = concurrentHashMap.get(КлючconcurrentHashMap);
@@ -1487,8 +1487,8 @@ Context context;
                                 case "ФлагТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба" :
                                     ФлагТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба=ЗначениеconcurrentHashMap.toString().trim();
                                     break;
-                                case "ДополнительныйФлагДляСинхЧАТАТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба" :
-                                    ДополнительныйФлагДляСинхЧАТАТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба=Long.parseLong(ЗначениеconcurrentHashMap.toString().trim());
+                                case "ВерсияДанныхДляВыравнивание" :
+                                    ВерсияДанныхДляВыравнивание=Long.parseLong(ЗначениеconcurrentHashMap.toString().trim());
 
                                     break;
                             }
@@ -1501,16 +1501,16 @@ Context context;
                             case "ЛокальныйСерверныйОба":
                                 contentValuesДляSQLBuilder_Для_GRUD_Операций.put("localversionandroid",СгенерированованныйДата);
                                 contentValuesДляSQLBuilder_Для_GRUD_Операций.put("versionserveraandroid",СгенерированованныйДата);
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("localversionandroid_version",ДополнительныйФлагДляСинхЧАТАТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба);
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("versionserveraandroid_version",ДополнительныйФлагДляСинхЧАТАТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба);
+                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("localversionandroid_version",ВерсияДанныхДляВыравнивание);
+                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("versionserveraandroid_version",ВерсияДанныхДляВыравнивание);
                                 break;
                             case "Локальный":
                                 contentValuesДляSQLBuilder_Для_GRUD_Операций.put("localversionandroid",СгенерированованныйДата);
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("localversionandroid_version",ДополнительныйФлагДляСинхЧАТАТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба);
+                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("localversionandroid_version",ВерсияДанныхДляВыравнивание);
                                 break;
                             case "Серверный":
                                 contentValuesДляSQLBuilder_Для_GRUD_Операций.put("versionserveraandroid",СгенерированованныйДата);
-                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("versionserveraandroid_version",ДополнительныйФлагДляСинхЧАТАТипИзменениеВерсииДанныхЛокальнаяСервернаяИлиОба);
+                                contentValuesДляSQLBuilder_Для_GRUD_Операций.put("versionserveraandroid_version",ВерсияДанныхДляВыравнивание);
                                 break;
                             default:
                                 break;

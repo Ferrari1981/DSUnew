@@ -18,6 +18,7 @@ public class SubClassCreatingMainAllTables {
     public CopyOnWriteArrayList<String> МетодТОлькоЗаполенияНазваниямиТаблицДляОмена(@NotNull Context context) throws InterruptedException {
         CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда = new CopyOnWriteArrayList();
         try {
+            ИменаТаблицыОтАндройда.add("prof");
             ИменаТаблицыОтАндройда.add("organization");
             ИменаТаблицыОтАндройда.add("depatment");
             ИменаТаблицыОтАндройда.add("fio");
