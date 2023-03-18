@@ -348,15 +348,6 @@ public class ContentProviderForDataBase extends ContentProvider {
                                 Create_Database_СамаБАзаSQLite.endTransaction();
                             }
 
-                            if (РезультатОперацииBulkInsert.size()>0) {
-                                // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
-                                Integer РезультатПовышенииВерсииДанных =
-                                        class_engine_sqlПовышаемВерсиюДанных.МетодПоднимаемЛокальнуюВерсиюMODIFITATION_Client(table);///"Анализ"
-                                Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
-                            }
-
-
-
                         }
                     })
                     .onErrorComplete(new Predicate<Throwable>() {

@@ -18,7 +18,6 @@ public class SubClassCreatingMainAllTables {
     public CopyOnWriteArrayList<String> МетодТОлькоЗаполенияНазваниямиТаблицДляОмена(@NotNull Context context) throws InterruptedException {
         CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда = new CopyOnWriteArrayList();
         try {
-            ИменаТаблицыОтАндройда.add("prof");
             ИменаТаблицыОтАндройда.add("organization");
             ИменаТаблицыОтАндройда.add("depatment");
             ИменаТаблицыОтАндройда.add("fio");
@@ -40,6 +39,7 @@ public class SubClassCreatingMainAllTables {
             ИменаТаблицыОтАндройда.add("get_materials_data");
             ИменаТаблицыОтАндройда.add("company");
             ИменаТаблицыОтАндройда.add("track");
+            ИменаТаблицыОтАндройда.add("prof");
             Log.d(this.getClass().getName(), "  ИменаТаблицыОтАндройда" + ИменаТаблицыОтАндройда);
             ///todo публикум название таблицы или цифру его
         } catch (Exception e) {

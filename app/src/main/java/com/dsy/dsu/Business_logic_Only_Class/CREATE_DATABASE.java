@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 //этот класс создает базу данных SQLite
 public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
-     static final int VERSION =     967;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
+     static final int VERSION =     968;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
    private   Context context;
     private      SQLiteDatabase ССылкаНаСозданнуюБазу;
     private     CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда;
@@ -410,10 +410,9 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                     //TODO INSERT
                     ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS Inserts" + НазваниеТаблицыДляТригера + "" +
                             "  AFTER INSERT   ON " + НазваниеТаблицыДляТригера +
-                            " WHEN new.current_table >0 " +
                             " BEGIN " +
-                            " UPDATE MODIFITATION_Client SET  localversionandroid_version=(SELECT MAX(current_table) FROM " + НазваниеТаблицыДляТригера + "),localversionandroid= datetime() " +
-                            " WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + "   AND localversionandroid_version < new.current_table  " + "; " +
+                            " UPDATE MODIFITATION_Client SET  localversionandroid_version=new.current_table,localversionandroid= datetime() " +
+                            " WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + ";" +
                             " END ;");//test
                     // TODO: 03.06.2022
                     Log.d(this.getClass().getName(), " сработала ... создание тригера MODIFITATION_Client   TODO INSERT ФиналНазваниеТаблицыДляЗаполения " + ФиналНазваниеТаблицыДляЗаполения);
@@ -422,10 +421,9 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                     //TODO INSERT
                     ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS UPDATES" + НазваниеТаблицыДляТригера + "" +
                             "  AFTER UPDATE   ON " + НазваниеТаблицыДляТригера +
-                            " WHEN new.current_table > old.current_table " +
                             " BEGIN " +
-                            " UPDATE MODIFITATION_Client SET  localversionandroid_version=(SELECT MAX(current_table) FROM " + НазваниеТаблицыДляТригера + "),localversionandroid= datetime() " +
-                            " WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + " AND localversionandroid_version < new.current_table  " + "; " +
+                            " UPDATE MODIFITATION_Client SET  localversionandroid_version=new.current_table,localversionandroid= datetime() " +
+                            " WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + ";" +
                             " END ;");//test
                     Log.d(this.getClass().getName(), " сработала ... создание тригера MODIFITATION_Client   TODO UPDATE  ФиналНазваниеТаблицыДляЗаполения " + ФиналНазваниеТаблицыДляЗаполения);
                     //TODO END UPDATE
@@ -440,7 +438,8 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                             " WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + "" +
                             "   AND (SELECT COUNT(current_table)>0 FROM " + НазваниеТаблицыДляТригера + "   ) " +
                             ";" +
-                            " END;   BEGIN  " +
+                            " END;  " +
+                            " BEGIN  " +
                             " UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0' , localversionandroid= datetime() , " +
                             " versionserveraandroid= datetime()  WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + "" +
                             " AND (SELECT COUNT(current_table)=0 FROM " + НазваниеТаблицыДляТригера + "   ) " +
@@ -448,18 +447,6 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                             " END;");//test
                     Log.d(this.getClass().getName(), " сработала ... создание тригера MODIFITATION_Client   TODO DELETE#1  ФиналНазваниеТаблицыДляЗаполения " + ФиналНазваниеТаблицыДляЗаполения);
 
-                    //TODO DELETE#2
-                    ССылкаНаСозданнуюБазу.execSQL("  drop TRIGGER  if exists DELETESTwo" + НазваниеТаблицыДляТригера + "");
-                    ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS DELETESTwo" + НазваниеТаблицыДляТригера + "" +
-                            "  AFTER DELETE   ON " + НазваниеТаблицыДляТригера +
-                            " WHEN OLD.current_table >0 " +
-                            "   BEGIN  " +
-                            " UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0' , localversionandroid= datetime() , " +
-                            " versionserveraandroid= datetime()  WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + "" +
-                            " AND (SELECT COUNT(current_table)=0 FROM " + НазваниеТаблицыДляТригера + "   ) " +
-                            "; " +
-                            " END;");//test
-                    Log.d(this.getClass().getName(), " сработала ... создание тригера MODIFITATION_Client   TODO DELETE#2  ФиналНазваниеТаблицыДляЗаполения " + ФиналНазваниеТаблицыДляЗаполения);
                 }
                 // TODO: 22.11.2022 end all triger
             });
@@ -808,7 +795,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                 " current_organization INTEGER," +
                 " current_table  NUMERIC UNIQUE   ," +
                 " prof  INTEGER   ," +
-                "  UNIQUE (name, snils,current_table)," +
+                "  UNIQUE (name,f,n,o,BirthDate, snils,current_table)," +
                 "FOREIGN KEY(user_update) REFERENCES users  (id)  ON UPDATE CASCADE," +
                 "FOREIGN KEY(current_organization) REFERENCES organization  (id)  ON UPDATE CASCADE ," +
                 " FOREIGN KEY(prof) REFERENCES prof  (id)  ON UPDATE CASCADE" +

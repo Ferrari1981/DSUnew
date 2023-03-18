@@ -35,7 +35,6 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Visible_Processing_Async;
 import com.dsy.dsu.Business_logic_Only_Class.Class__Generation_Genetal_Tables;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Connection_BroadcastReceiver_Sous_Asyns_Glassfish;
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.util.concurrent.AtomicDouble;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -1248,7 +1247,7 @@ public class Service_For_Remote_Async extends IntentService {
                         if(ДанныесСервера>0 ){
                             ПубличныйРезультатОтветаОтСерврераУспешно=ДанныесСервера;///"Серверный"
                             // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
-                            Integer РезультатПовышенииВерсииДанных =class_engine_sqlПовышаемВерсиюДанных.МетодПоднимаемСервенуюВерсиюMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая);///"Анализ"
+                            Integer РезультатПовышенииВерсииДанных =class_engine_sqlПовышаемВерсиюДанных.МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая);///"Анализ"
                             Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
                         }
                     } else {
@@ -1263,7 +1262,7 @@ public class Service_For_Remote_Async extends IntentService {
                             if(ДанныесСервера>0 ){
                                 ПубличныйРезультатОтветаОтСерврераУспешно=ДанныесСервера;///"Серверный"
                                 // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
-                                Integer РезультатПовышенииВерсииДанных =class_engine_sqlПовышаемВерсиюДанных.МетодПоднимаемСервенуюВерсиюMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая);///"Анализ"
+                                Integer РезультатПовышенииВерсииДанных =class_engine_sqlПовышаемВерсиюДанных.МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая);///"Анализ"
                                 Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
                             }
                             Log.d(this.getClass().getName(),
