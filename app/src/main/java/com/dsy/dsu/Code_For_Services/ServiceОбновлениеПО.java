@@ -606,7 +606,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
       PackageInfo    pInfo = getApplicationContext(). getPackageManager().getPackageInfo(getApplicationContext(). getPackageName(), 0);
         String version = pInfo.versionName;//Version Name
         Integer ЛокальнаяВерсияПО = pInfo.versionCode;//Version Code
-        if (СервернаяВерсияПОВнутри+3 >ЛокальнаяВерсияПО ) {
+        if (СервернаяВерсияПОВнутри >ЛокальнаяВерсияПО ) {
             МетодСообщениеЗапускЗагрущикаПо(СервернаяВерсияПОВнутри);
             Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+
                     " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+  " СервернаяВерсияПОВнутри  "+СервернаяВерсияПОВнутри + " POOLS" + Thread.currentThread().getName());
