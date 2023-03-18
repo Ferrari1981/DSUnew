@@ -19,7 +19,7 @@ public class SubClassUpVersionDATA {
         Integer Результат_ПовышенаяВерсия = 0;
         try {
             String ТаблицаСистемная = "MODIFITATION_Client";
-            SQLiteQueryBuilder      SQLBuilder_Для_GRUD_Операций = new SQLiteQueryBuilder();
+            SQLiteQueryBuilder      SQLBuilderВерсияДанныхСистемнаяТАблицы = new SQLiteQueryBuilder();
             Long ВерсияДанныхПослеСинхрониазацииДляЗаписи = МетодАнализаВерсииCurrentTable(Таблица, context,getССылкаНаСозданнуюБазу );
             // TODO: 22.11.2021  ПОСЛЕ УСПЕШНОЙ ОПЕРАЦИИ ПОДТВЕРЖДАЕМ ТРАНЗАУЙИЮ
             Log.d(this.getClass().getName(), "  ВерсияДанныхПослеСинхрониазацииДляЗаписи   " + ВерсияДанныхПослеСинхрониазацииДляЗаписи + " Таблица " + Таблица);
@@ -29,9 +29,9 @@ public class SubClassUpVersionDATA {
             contentValuesДляПоднятияВерсии.put("versionserveraandroid", СгенерированованныйДата);
             contentValuesДляПоднятияВерсии.put("versionserveraandroid_version", ВерсияДанныхПослеСинхрониазацииДляЗаписи);
 
-            SQLBuilder_Для_GRUD_Операций.setTables(ТаблицаСистемная);
+            SQLBuilderВерсияДанныхСистемнаяТАблицы.setTables(ТаблицаСистемная);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                Результат_ПовышенаяВерсия = SQLBuilder_Для_GRUD_Операций.
+                Результат_ПовышенаяВерсия = SQLBuilderВерсияДанныхСистемнаяТАблицы.
                         update(getССылкаНаСозданнуюБазу, contentValuesДляПоднятияВерсии, "name=?", new String[]{Таблица.toLowerCase()});
             } else {
                 Результат_ПовышенаяВерсия = getССылкаНаСозданнуюБазу.update(ТаблицаСистемная, contentValuesДляПоднятияВерсии,
@@ -59,9 +59,8 @@ public class SubClassUpVersionDATA {
                                                 @NotNull Context context,
                                                 @NotNull SQLiteDatabase getБазаДанныхДЛяОперацийВнутри) {
         Long  АнализВерсииMAXCurrentTable=0l;
-        try  {
-            SQLiteCursor КурсоАнализVersionCurrentTable=
-                    (SQLiteCursor) getБазаДанныхДЛяОперацийВнутри.rawQuery(" SELECT MAX ( current_table  ) AS MAX_R  FROM " +  Текущаятаблицы.trim()+"" , null);
+        try   ( SQLiteCursor КурсоАнализVersionCurrentTable=
+                        (SQLiteCursor) getБазаДанныхДЛяОперацийВнутри.rawQuery(" SELECT MAX ( current_table  ) AS MAX_R  FROM " +  Текущаятаблицы.trim()+"" , null);) {
 /*         Курсор_КоторыйПолучаетМаксимальюнуВерсиюДанных= (SQLiteCursor)
                         getБазаДанныхДЛяОперацийВнутри.rawQuery(" SELECT MAX ( " +ТекущаяяКолонкаТаблицы.trim() + "  ) AS MAX_MODIFITATION_Client  FROM " + уже запомнитовано провренно
                                 "  MODIFITATION_Client  WHERE  name = '" + Текущаятаблицы.trim().toLowerCase() +"'  ;", null);*/
@@ -70,8 +69,10 @@ public class SubClassUpVersionDATA {
                 Integer  ИндексГдеСтолбикМах=КурсоАнализVersionCurrentTable.getColumnIndex("MAX_R");
                 АнализВерсииMAXCurrentTable=КурсоАнализVersionCurrentTable.getLong(ИндексГдеСтолбикМах);
             }
-            КурсоАнализVersionCurrentTable.close();
-            Log.w(context.getClass().getName(), " РЕЗУЛЬТАТ АнализВерсииMAXCurrentTable" + " " + АнализВерсииMAXCurrentTable   +  "Текущаятаблицы  " +Текущаятаблицы);
+            Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                    " АнализВерсииMAXCurrentTable  " + АнализВерсииMAXCurrentTable + "  Текущаятаблицы" + Текущаятаблицы);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -90,11 +91,11 @@ public class SubClassUpVersionDATA {
                                                  @NotNull SQLiteDatabase getБазаДанныхДЛяОперацийВнутри) {
         Long  ПовышенняВерсияMAXCurrentTable=0l;
         try  (   SQLiteCursor  КурсорMAXVersionCurrentTable=
-                         (SQLiteCursor) getБазаДанныхДЛяОперацийВнутри.rawQuery(" SELECT MAX ( current_table  ) AS MAX_R  FROM " +  Текущаятаблицы.trim()+"" , null);) {
+                         (SQLiteCursor) getБазаДанныхДЛяОперацийВнутри.rawQuery(" SELECT MAX ( current_table  ) AS MAX_R  FROM " +  Текущаятаблицы.trim()+"" , null);
 
-            SQLiteCursor         Курсор_АнализMODIFITATION_Client= (SQLiteCursor)
-                    getБазаДанныхДЛяОперацийВнутри.rawQuery(" SELECT  localversionandroid_version  FROM " +
-                            "  MODIFITATION_Client  WHERE  name = ? ", new String[]{ Текущаятаблицы.trim().toLowerCase()});
+                 SQLiteCursor         Курсор_АнализMODIFITATION_Client= (SQLiteCursor)
+                         getБазаДанныхДЛяОперацийВнутри.rawQuery(" SELECT  localversionandroid_version  FROM " +
+                                 "  MODIFITATION_Client  WHERE  name = ? ", new String[]{ Текущаятаблицы.trim().toLowerCase()});) {
             if(КурсорMAXVersionCurrentTable.getCount()>0){
                 КурсорMAXVersionCurrentTable.moveToFirst();
                 Integer  ИндексГдеСтолбикМах=КурсорMAXVersionCurrentTable.getColumnIndex("MAX_R");
@@ -117,8 +118,10 @@ public class SubClassUpVersionDATA {
             }else {
                 ПовышенняВерсияMAXCurrentTable=1l;
             }
-            Курсор_АнализMODIFITATION_Client.close();
-            Log.w(context.getClass().getName(), " РЕЗУЛЬТАТ ПовышенняВерсияMAXCurrentTable" + " " + ПовышенняВерсияMAXCurrentTable   +  "Текущаятаблицы  " +Текущаятаблицы);
+            Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                    " ПовышенняВерсияMAXCurrentTable  " + ПовышенняВерсияMAXCurrentTable + "  Текущаятаблицы" + Текущаятаблицы);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
