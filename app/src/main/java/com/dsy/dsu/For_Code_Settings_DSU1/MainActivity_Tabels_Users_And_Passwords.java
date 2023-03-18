@@ -321,7 +321,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
     private void МетодПослеАунтификациисСервером(View v)  {
         try{
         if (БуферПолученнниеДанныхПолученияIDотСервера.length() > 0) {
-            if (!БуферПолученнниеДанныхПолученияIDотСервера.toString().trim().equalsIgnoreCase("Server Running...... Don't Login and Password") ) {
+            if (!БуферПолученнниеДанныхПолученияIDотСервера.toString().trim() .matches("(.*)Don't Login and Password(.*)") ) {
                 ПубличноеIDПолученныйИзСервлетаДляUUID =Integer.parseInt(БуферПолученнниеДанныхПолученияIDотСервера.toString());
                 Log.d(this.getClass().getName(), "  ПроверкаПришёлЛиОтветОтСервлетаДляАунтификацииПользователя "
                         + БуферПолученнниеДанныхПолученияIDотСервера + "  ПубличноеIDПолученныйИзСервлетаДляUUID " +ПубличноеIDПолученныйИзСервлетаДляUUID);
@@ -333,7 +333,6 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
             }else{
                 //TODO ПОСЛЕ ПИНГА ВИЗУАЛИЗАЦИЯ
                 МетодВизуальногоОтображениеРаботыКоннекта("Логин и/или Пароль не правильный !!!" );
-
             }
         }else {
             //TODO ПОСЛЕ ПИНГА ВИЗУАЛИЗАЦИЯ

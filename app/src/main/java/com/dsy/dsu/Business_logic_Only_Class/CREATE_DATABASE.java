@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 //этот класс создает базу данных SQLite
 public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
-     static final int VERSION =     968;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
+     static final int VERSION =     969;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
    private   Context context;
     private      SQLiteDatabase ССылкаНаСозданнуюБазу;
     private     CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда;
@@ -412,7 +412,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                             "  AFTER INSERT   ON " + НазваниеТаблицыДляТригера +
                             " WHEN  new.current_table>0" +
                             " BEGIN " +
-                            " UPDATE MODIFITATION_Client SET  localversionandroid_version=new.current_table,localversionandroid= datetime() " +
+                            " UPDATE MODIFITATION_Client SET  localversionandroid_version=(SELECT MAX(current_table) FROM " + НазваниеТаблицыДляТригера + "),localversionandroid= datetime() " +
                             " WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + ";" +
                             " END ;");//test
                     // TODO: 03.06.2022
@@ -424,7 +424,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                             "  AFTER UPDATE   ON " + НазваниеТаблицыДляТригера +
                             " WHEN  new.current_table>old.current_table " +
                             " BEGIN " +
-                            " UPDATE MODIFITATION_Client SET  localversionandroid_version=new.current_table,localversionandroid= datetime() " +
+                            " UPDATE MODIFITATION_Client SET  localversionandroid_version=(SELECT MAX(current_table) FROM " + НазваниеТаблицыДляТригера + "),localversionandroid= datetime() " +
                             " WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + ";" +
                             " END ;");//test
                     Log.d(this.getClass().getName(), " сработала ... создание тригера MODIFITATION_Client   TODO UPDATE  ФиналНазваниеТаблицыДляЗаполения " + ФиналНазваниеТаблицыДляЗаполения);
