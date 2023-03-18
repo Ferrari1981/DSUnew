@@ -60,6 +60,7 @@ import com.dsy.dsu.Business_logic_Only_Class.DATE.Class_Generation_Data;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
 import com.dsy.dsu.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -3021,10 +3022,10 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                                     Long РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудника=0L;
                                     Class_GRUD_SQL_Operations        class_grud_sql_operationsПовышаемВерсиюДляЛокальногоОбволенияТабеля=new Class_GRUD_SQL_Operations(getApplicationContext());
 
-                                    РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудника=
-                                            class_grud_sql_operationsПовышаемВерсиюДляЛокальногоОбволенияТабеля. new ChangesVesionData(getApplicationContext()).
-                                                    МетодПовышаемВерсииCurrentTable("data_tabels", getApplicationContext(),Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());///  current_table    ///  localversionandroid_version
-                                    Log.d(this.getClass().getName(), "  РезультатУвеличинаяВерсияДАныхЧата " + РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудника);
+                                    // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+                                    РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудника =
+                                            new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(    "data_tabels",getApplicationContext(),Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
+                                    Log.d(this.getClass().getName(), " РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудника  " + РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудника);
 
                                     КонтейнерЗаполненияДаннымиПриЛокальномОбновлении.put("current_table", РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудника);
 

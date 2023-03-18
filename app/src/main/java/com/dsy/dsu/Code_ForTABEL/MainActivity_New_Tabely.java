@@ -46,6 +46,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_UUID;
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
 import com.dsy.dsu.R;
 import com.google.android.material.button.MaterialButton;
@@ -841,11 +842,11 @@ while(iterator.hasNext()){
             // TODO: 08.10.2021 повышаем верси
             Class_GRUD_SQL_Operations        class_grud_sql_operationsПовышаемВерсиюДанныхПриСозданеииИзШаблонаСотрудника
                     =new Class_GRUD_SQL_Operations(getApplicationContext());
-            Long    РезультатУвеличинаяВерсияДАныхЧата=
-                    class_grud_sql_operationsПовышаемВерсиюДанныхПриСозданеииИзШаблонаСотрудника. new ChangesVesionData(getApplicationContext()).
-                    МетодПовышаемВерсииCurrentTable(
-                            "tabel", getApplicationContext(),
-                            Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
+
+                // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+                Long РезультатУвеличинаяВерсияДАныхЧата =
+                        new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(   "tabel",getApplicationContext(),Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
+                Log.d(this.getClass().getName(), " РезультатУвеличинаяВерсияДАныхЧата  " + РезультатУвеличинаяВерсияДАныхЧата);
 
                 АдаптерВставкиНовгоТабеля.put("current_table", РезультатУвеличинаяВерсияДАныхЧата);
                 АдаптерВставкиНовгоТабеля.put("cfo",IDЦфоДЛяПередачи);

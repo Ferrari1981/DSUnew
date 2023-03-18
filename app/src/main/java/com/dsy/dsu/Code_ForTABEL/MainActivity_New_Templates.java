@@ -43,6 +43,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_UUID;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Weekend_For_Tabels;
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
 import com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_App;
 import com.dsy.dsu.R;
@@ -2587,10 +2588,10 @@ public class MainActivity_New_Templates extends AppCompatActivity implements Dat
             Log.d(this.getClass().getName(), "РодительскийUUDТаблицыТабель " + РодительскийUUDТаблицыТабель);
             // TODO: 08.10.2021 повышаем версию
             Class_GRUD_SQL_Operations class_grud_sql_operationsПовышаемВерсиюДанныхПриСозданеииИзШаблонаСотрудника = new Class_GRUD_SQL_Operations(getApplicationContext());
-            // TODO: 28.01.2022  вычиляем повышения версии данных
-            Long     РезультатУвеличинаяВерсияДАныхЧата = class_grud_sql_operationsПовышаемВерсиюДанныхПриСозданеииИзШаблонаСотрудника.new ChangesVesionData(getApplicationContext()).
-                    МетодПовышаемВерсииCurrentTable("data_tabels",getApplicationContext(), Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
-            Log.d(this.getClass().getName(), " current_table УВЕЛИЧИВАЕМ ВЕРИСЮ ДАННЫХ ВНУТРИ ТАБЛИЦЫ  РезультатУвеличинаяВерсияДАныхЧата  " + РезультатУвеличинаяВерсияДАныхЧата);
+            // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+            Long РезультатУвеличинаяВерсияДАныхЧата =
+                    new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(    "data_tabels",getApplicationContext(),Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
+            Log.d(this.getClass().getName(), " РезультатУвеличинаяВерсияДАныхЧата  " + РезультатУвеличинаяВерсияДАныхЧата);
 
             АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.put("current_table", РезультатУвеличинаяВерсияДАныхЧата);
             АдаптерДляВставкиИзГотоваШаблонаВТаблицуТабель.putNull("_id");

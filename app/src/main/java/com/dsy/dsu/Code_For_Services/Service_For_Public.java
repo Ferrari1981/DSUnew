@@ -34,6 +34,7 @@ import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassMONTHONLY;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassMONTHONLY_ТолькоАнализ;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYEARONLY;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYearHONLY_ТолькоАнализ;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -347,10 +348,10 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 contentValuesДляДатаТабель.put("status_send", " ");
                 contentValuesДляДатаТабель.put("status_carried_out", "False");
                 // TODO: 22.09.2022 дополнительные параменты ДатаТабель
+                // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
                 Long РезультатУвеличиваемВерсияДатаТАбель =
-                        class_grud_sql_operationЗаполнениеИзПрошлогоМесяца.new ChangesVesionData(getApplicationContext()).
-                                МетодПовышаемВерсииCurrentTable(
-                                        НазваниеОбрабоатываемойТаблицы, context, new CREATE_DATABASE(getApplicationContext()).getССылкаНаСозданнуюБазу());
+                        new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(    НазваниеОбрабоатываемойТаблицы,getApplicationContext(),new CREATE_DATABASE(getApplicationContext()).getССылкаНаСозданнуюБазу());
+                Log.d(this.getClass().getName(), " РезультатУвеличиваемВерсияДатаТАбель  " + РезультатУвеличиваемВерсияДатаТАбель);
                 // TODO: 18.11.2022
                 contentValuesДляДатаТабель.put("current_table", РезультатУвеличиваемВерсияДатаТАбель);
                 // TODO: 22.09.2022
