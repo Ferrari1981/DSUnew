@@ -35,6 +35,7 @@ import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Starting_Tasks_ЗапускДЛяЗадач;
 import com.dsy.dsu.R;
 
@@ -888,13 +889,12 @@ public class MyWork_Notifocations_Уведомления_Для_Задачи ext
         ///
         contentValuesСменаСтатусаЗадачиЧтоЕЕЕжуПоказывали.put("alreadyshownnotifications", 1);
 
-            // TODO: 20.06.2022
+            // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+            Long РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая=
+                    new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(    ТаблицаОбрабокаиПриСменсатусаУведомленияЧтоЕгоУжекПоказхывали
+                            ,getApplicationContext(),Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
+            Log.d(this.getClass().getName(), " РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая  " + РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая);
 
-            Long РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая =
-                    class_grud_sql_operationsПослеУдаленияДобавляемДатуВерсии.new ChangesVesionData(getApplicationContext()).
-                            МетодПовышаемВерсииCurrentTable(
-                                    ТаблицаОбрабокаиПриСменсатусаУведомленияЧтоЕгоУжекПоказхывали
-                                    , getApplicationContext(), Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());///  current_table    ///  localversionandroid_version
 
             contentValuesСменаСтатусаЗадачиЧтоЕЕЕжуПоказывали.put("current_table", РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая);
         // TODO: 06.09.2021  ПАРАМЕНТЫ ДЛЯ ОБНОВЛЕНИЯ

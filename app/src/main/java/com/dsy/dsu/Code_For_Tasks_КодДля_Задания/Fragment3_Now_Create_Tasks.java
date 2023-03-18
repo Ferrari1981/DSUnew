@@ -46,6 +46,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_UUID;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
@@ -2097,11 +2098,11 @@ public class Fragment3_Now_Create_Tasks extends Fragment {
                             Log.d(this.getClass().getName(), "  ТаблицаОбработки " + ТаблицаОбработки);
 
                             // TODO: 21.03.2022 #1 для первой таблицы
+                            // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+                            Long РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая=
+                                    new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(    ТаблицаОбработки,getContext(),sqLiteDatabaseДляНовгоЗадания);
+                            Log.d(this.getClass().getName(), " РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая  " + РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая);
 
-                            Long РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая =
-                                    classGrudSqlOperationsДляОперацииСозданеиНовойЗадачи.new ChangesVesionData(getContext()).
-                                            МетодПовышаемВерсииCurrentTable(
-                                                    ТаблицаОбработки, getContext(), sqLiteDatabaseДляНовгоЗадания);///  current_table    ///  localversionandroid_version
                             Log.d(this.getClass().getName(), "  РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая " + РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая);
                             // TODO: 08.10.2021 повышаем версию
                             contentValuesДляСозданияНовойЗадачиДляДвухТаблиц.put("current_table", РезультатУвеличинаяВерсияВнутриСамогоТабелСтрудникаПервая);
