@@ -25,6 +25,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassCreatingMainAllTables;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 
 
 import java.util.ArrayList;
@@ -259,8 +260,6 @@ public class ContentProviderSynsInsert extends ContentProvider {
         Integer РезультатМассовогоВсатвкиДанныхФинал=0;
         ArrayList<Integer> РезультатОперацииBulkInsert = new ArrayList<>();
         try {
-            Class_GRUD_SQL_Operations.ClassRuntimeExeGRUDOpertions class_engine_sqlПовышаемВерсиюДанных=
-                    new Class_GRUD_SQL_Operations(getContext()) .new ClassRuntimeExeGRUDOpertions(getContext());
             if (!Create_Database_СамаБАзаSQLite.inTransaction()) {
                 Create_Database_СамаБАзаSQLite.beginTransaction();
             }
@@ -313,17 +312,21 @@ public class ContentProviderSynsInsert extends ContentProvider {
                     .doOnComplete(new Action() {
                         @Override
                         public void run() throws Throwable {
-                            // TODO: 09.11.2022 закрывает ТРАНЗАКЦИИ ВНУТРИ
-                            if (Create_Database_СамаБАзаSQLite.inTransaction()) {
-                                Create_Database_СамаБАзаSQLite.setTransactionSuccessful();
-                                Create_Database_СамаБАзаSQLite.endTransaction();
+                            // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
+                            Integer РезультатПовышенииВерсииДанных=0;
+                            if(РезультатОперацииBulkInsert.size()>0 ){
+                               РезультатПовышенииВерсииДанных =
+                                       new SubClassUpVersionDATA().МетодVesrionUPMODIFITATION_Client(table,getContext(),Create_Database_СамаБАзаSQLite);
+                                Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
                             }
 
-                            // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
-                            if(РезультатОперацииBulkInsert.size()>0 ){
-                                Integer РезультатПовышенииВерсииДанных =
-                                        class_engine_sqlПовышаемВерсиюДанных.МетодVesrionUPMODIFITATION_Client(table);///"Анализ"
-                                Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
+                            // TODO: 09.11.2022 закрывает ТРАНЗАКЦИИ ВНУТРИ
+                            if (Create_Database_СамаБАзаSQLite.inTransaction()  ) {
+                                // TODO: 09.11.2022 закрывает ТРАНЗАКЦИИ ВНУТРИ
+                                if ( РезультатПовышенииВерсииДанных>0) {
+                                    Create_Database_СамаБАзаSQLite.setTransactionSuccessful();
+                                }
+                                Create_Database_СамаБАзаSQLite.endTransaction();
                             }
                             Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +

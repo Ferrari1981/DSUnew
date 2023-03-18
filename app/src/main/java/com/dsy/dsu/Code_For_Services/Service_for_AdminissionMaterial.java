@@ -35,6 +35,7 @@ import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYEARONLY;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYearHONLY_ТолькоАнализ;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassMONTHONLY;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
 
 
@@ -539,11 +540,12 @@ public class Service_for_AdminissionMaterial extends IntentService {
                 contentValuesДляДатаТабель.put("uuid_tabel", ГенерироватьUUIDРОДИТЕЛЬСКАЯ);
                 contentValuesДляДатаТабель.put("status_send", " ");
                 contentValuesДляДатаТабель.put("status_carried_out", "False");
-                // TODO: 22.09.2022 дополнительные параменты ДатаТабель
+
+
+                // TODO: 22.09.2022 ПОЛУЧЕМ ПОВЫШЕНУЮ ВЕРИСЮ ДАННЫХ
                 Long РезультатУвеличиваемВерсияДатаТАбель =
-                        class_grud_sql_operationЗаполнениеИзПрошлогоМесяца.new ChangesVesionData(getApplicationContext()).
-                                МетодПовышаемВерсииCurrentTable(
-                                        НазваниеОбрабоатываемойТаблицы, getApplicationContext(), new CREATE_DATABASE(getApplicationContext()).getССылкаНаСозданнуюБазу());
+                        new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(НазваниеОбрабоатываемойТаблицы,context,new CREATE_DATABASE(getApplicationContext()).getССылкаНаСозданнуюБазу());
+                Log.d(this.getClass().getName(), " РезультатУвеличиваемВерсияДатаТАбель  " + РезультатУвеличиваемВерсияДатаТАбель);
                 // TODO: 18.11.2022
                 contentValuesДляДатаТабель.put("current_table", РезультатУвеличиваемВерсияДатаТАбель);
                 // TODO: 22.09.2022
@@ -850,11 +852,12 @@ private class SubClassGetDataAdmissionMaterial_Автомобили {
                      contentValuesСозданиеНовогоМатериала.put("date_update", СгенерированованныйДатаДляДаннойОперации);
                      contentValuesСозданиеНовогоМатериала.putNull("id");
                      contentValuesСозданиеНовогоМатериала.put("status_send"," ");
-                     // TODO: 22.09.2022 дополнительные параменты ДатаТабель
-                     Long РезультатУвеличиваемВерсияПолучениеНовогоМатериала=
-                             new Class_GRUD_SQL_Operations(context) .new ChangesVesionData(getApplicationContext()).
-                                     МетодПовышаемВерсииCurrentTable(
-                                             НазваниеОбрабоатываемойТаблицы, context, new CREATE_DATABASE(context).getССылкаНаСозданнуюБазу());
+
+                     // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+                     Long РезультатУвеличиваемВерсияПолучениеНовогоМатериала =
+                             new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(НазваниеОбрабоатываемойТаблицы,getApplicationContext(),new CREATE_DATABASE(context).getССылкаНаСозданнуюБазу());
+                     Log.d(this.getClass().getName(), " РезультатУвеличиваемВерсияПолучениеНовогоМатериала  " + РезультатУвеличиваемВерсияПолучениеНовогоМатериала);
+
                      contentValuesСозданиеНовогоМатериала.put("current_table", РезультатУвеличиваемВерсияПолучениеНовогоМатериала);
                      // TODO: 22.09.2022
                      Long ГенерироватьUUIDДляНовойЗадачи = (Long) new Class_Generation_UUID(getApplicationContext()).МетодГенерацииUUID(getApplicationContext());
@@ -1007,10 +1010,12 @@ private class SubClassGetDataAdmissionMaterial_Автомобили {
                        Long      selectionArgs= data.getLong("UUIDВыбраныйМатериал");
                        ContentValues contentValuesСменыСтатусаВыбраногоМатериала=new ContentValues();
                         contentValuesСменыСтатусаВыбраногоМатериала.put("status_send","Удаленная");
-                        Long РезультатУвеличиваемВерсияПолучениеНовогоМатериала=
-                                new Class_GRUD_SQL_Operations(context) .new ChangesVesionData(getApplicationContext()).
-                                        МетодПовышаемВерсииCurrentTable(
-                                                НазваниеОбрабоатываемойТаблицы, context, new CREATE_DATABASE(context).getССылкаНаСозданнуюБазу());
+
+                        // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+                        Long РезультатУвеличиваемВерсияПолучениеНовогоМатериала =
+                                new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(НазваниеОбрабоатываемойТаблицы,getApplicationContext(),new CREATE_DATABASE(context).getССылкаНаСозданнуюБазу());
+                        Log.d(this.getClass().getName(), " РезультатУвеличиваемВерсияПолучениеНовогоМатериала  " + РезультатУвеличиваемВерсияПолучениеНовогоМатериала);
+
                         // TODO: 18.11.2022
                         contentValuesСменыСтатусаВыбраногоМатериала.put("current_table",РезультатУвеличиваемВерсияПолучениеНовогоМатериала);
                         // TODO: 21.10.2022 САМА ВСТАВКА

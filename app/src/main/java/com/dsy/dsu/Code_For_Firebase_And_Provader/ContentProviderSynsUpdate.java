@@ -28,6 +28,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassCreatingMainAllTables;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 
 
 import java.util.ArrayList;
@@ -438,16 +439,20 @@ public class ContentProviderSynsUpdate extends ContentProvider {
                         .doOnComplete(new Action() {
                             @Override
                             public void run() throws Throwable {
-                                // TODO: 09.11.2022 закрывает ТРАНЗАКЦИИ ВНУТРИ
-                                if (Create_Database_СамаБАзаSQLite.inTransaction()) {
-                                    Create_Database_СамаБАзаSQLite.setTransactionSuccessful();
-                                    Create_Database_СамаБАзаSQLite.endTransaction();
-                                }
                                 // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
+                                Integer РезультатПовышенииВерсииДанных=0;
                                 if(РезультатОперацииBurkUPDATE.size()>0 ){
-                                    Integer РезультатПовышенииВерсииДанных =
-                                            class_engine_sqlПовышаемВерсиюДанных.МетодVesrionUPMODIFITATION_Client(table);///"Анализ"
+                                    РезультатПовышенииВерсииДанных =
+                                            new SubClassUpVersionDATA().МетодVesrionUPMODIFITATION_Client(table,getContext(),Create_Database_СамаБАзаSQLite);
                                     Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
+                                }
+
+                                if (Create_Database_СамаБАзаSQLite.inTransaction()  ) {
+                                    // TODO: 09.11.2022 закрывает ТРАНЗАКЦИИ ВНУТРИ
+                                    if ( РезультатПовышенииВерсииДанных>0) {
+                                        Create_Database_СамаБАзаSQLite.setTransactionSuccessful();
+                                    }
+                                    Create_Database_СамаБАзаSQLite.endTransaction();
                                 }
                                 Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +

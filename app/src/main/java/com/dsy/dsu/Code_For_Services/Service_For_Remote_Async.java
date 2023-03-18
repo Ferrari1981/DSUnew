@@ -34,6 +34,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Visible_Processing_Async;
 import com.dsy.dsu.Business_logic_Only_Class.Class__Generation_Genetal_Tables;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Connection_BroadcastReceiver_Sous_Asyns_Glassfish;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -1247,7 +1248,8 @@ public class Service_For_Remote_Async extends IntentService {
                         if(ДанныесСервера>0 ){
                             ПубличныйРезультатОтветаОтСерврераУспешно=ДанныесСервера;///"Серверный"
                             // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
-                            Integer РезультатПовышенииВерсииДанных =class_engine_sqlПовышаемВерсиюДанных.МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая);///"Анализ"
+                            Integer РезультатПовышенииВерсииДанных =РезультатПовышенииВерсииДанных =
+                                    new SubClassUpVersionDATA().МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая,context,getССылкаНаСозданнуюБазу());
                             Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
                         }
                     } else {
@@ -1262,7 +1264,8 @@ public class Service_For_Remote_Async extends IntentService {
                             if(ДанныесСервера>0 ){
                                 ПубличныйРезультатОтветаОтСерврераУспешно=ДанныесСервера;///"Серверный"
                                 // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
-                                Integer РезультатПовышенииВерсииДанных =class_engine_sqlПовышаемВерсиюДанных.МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая);///"Анализ"
+                                Integer РезультатПовышенииВерсииДанных =РезультатПовышенииВерсииДанных =
+                                        new SubClassUpVersionDATA().МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая,context,getССылкаНаСозданнуюБазу());
                                 Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
                             }
                             Log.d(this.getClass().getName(),
@@ -2275,6 +2278,7 @@ public class Service_For_Remote_Async extends IntentService {
                     case "fio":
                     case "tabel":
                     case "data_tabels":
+                    case "prof":
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для tabels  chat_users  fio  tabel  data_tabels  " + имяТаблицыОтАндройда_локальноая);
                         class_grud_sql_operationsГенерируемКурсорДляОтправки = new Class_GRUD_SQL_Operations(context);
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
