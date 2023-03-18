@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 //этот класс создает базу данных SQLite
 public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
-     static final int VERSION =     968;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
+     static final int VERSION =     967;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
    private   Context context;
     private      SQLiteDatabase ССылкаНаСозданнуюБазу;
     private     CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда;
@@ -406,9 +406,9 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                     //    String ДАТА = new Class_Generation_Data(context).ГлавнаяДатаИВремяОперацийСБазойДанных();
 
                     //TODO INSERT
-                    ССылкаНаСозданнуюБазу.execSQL("  drop TRIGGER  if exists MODIFITATION_ClientTrigerInserorganizationINSERT" + НазваниеТаблицыДляТригера + "");
+                    ССылкаНаСозданнуюБазу.execSQL("  drop TRIGGER  if exists Inserts" + НазваниеТаблицыДляТригера + "");
                     //TODO INSERT
-                    ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS MODIFITATION_ClientTrigerInserorganizationINSERT" + НазваниеТаблицыДляТригера + "" +
+                    ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS Inserts" + НазваниеТаблицыДляТригера + "" +
                             "  AFTER INSERT   ON " + НазваниеТаблицыДляТригера +
                             " WHEN new.current_table >0 " +
                             " BEGIN " +
@@ -418,9 +418,9 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                     // TODO: 03.06.2022
                     Log.d(this.getClass().getName(), " сработала ... создание тригера MODIFITATION_Client   TODO INSERT ФиналНазваниеТаблицыДляЗаполения " + ФиналНазваниеТаблицыДляЗаполения);
                     //TODO UPDATE
-                    ССылкаНаСозданнуюБазу.execSQL("  drop TRIGGER  if exists MODIFITATION_ClientTrigerInserorganizationUPDATE" + НазваниеТаблицыДляТригера + "");
+                    ССылкаНаСозданнуюБазу.execSQL("  drop TRIGGER  if exists UPDATES" + НазваниеТаблицыДляТригера + "");
                     //TODO INSERT
-                    ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS MODIFITATION_ClientTrigerInserorganizationUPDATE" + НазваниеТаблицыДляТригера + "" +
+                    ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS UPDATES" + НазваниеТаблицыДляТригера + "" +
                             "  AFTER UPDATE   ON " + НазваниеТаблицыДляТригера +
                             " WHEN new.current_table > old.current_table " +
                             " BEGIN " +
@@ -431,8 +431,8 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                     //TODO END UPDATE
 
                     //TODO DELETE#1
-                    ССылкаНаСозданнуюБазу.execSQL("  drop TRIGGER  if exists MODIFITATION_ClientTrigerInserorganizationDELETE" + НазваниеТаблицыДляТригера + "");
-                    ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS MODIFITATION_ClientTrigerInserorganizationDELETE" + НазваниеТаблицыДляТригера + "" +
+                    ССылкаНаСозданнуюБазу.execSQL("  drop TRIGGER  if exists DELETES" + НазваниеТаблицыДляТригера + "");
+                    ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS DELETES" + НазваниеТаблицыДляТригера + "" +
                             "  AFTER DELETE   ON " + НазваниеТаблицыДляТригера +
                             " WHEN OLD.current_table >0 " +
                             " BEGIN " +
@@ -449,8 +449,8 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                     Log.d(this.getClass().getName(), " сработала ... создание тригера MODIFITATION_Client   TODO DELETE#1  ФиналНазваниеТаблицыДляЗаполения " + ФиналНазваниеТаблицыДляЗаполения);
 
                     //TODO DELETE#2
-                    ССылкаНаСозданнуюБазу.execSQL("  drop TRIGGER  if exists MODIFITATION_ClientTrigerInserorganizationDELETETWO" + НазваниеТаблицыДляТригера + "");
-                    ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS MODIFITATION_ClientTrigerInserorganizationDELETETWO" + НазваниеТаблицыДляТригера + "" +
+                    ССылкаНаСозданнуюБазу.execSQL("  drop TRIGGER  if exists DELETESTwo" + НазваниеТаблицыДляТригера + "");
+                    ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS DELETESTwo" + НазваниеТаблицыДляТригера + "" +
                             "  AFTER DELETE   ON " + НазваниеТаблицыДляТригера +
                             " WHEN OLD.current_table >0 " +
                             "   BEGIN  " +
