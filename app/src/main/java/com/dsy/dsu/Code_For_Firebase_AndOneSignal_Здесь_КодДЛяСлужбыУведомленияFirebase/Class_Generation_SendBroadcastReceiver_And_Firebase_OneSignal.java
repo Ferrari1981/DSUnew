@@ -22,6 +22,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Notificatioons_For_Tasks_Cancel_AndComplete;
 import com.dsy.dsu.Code_For_Services.Service_For_Task_Для_Задания_СменаСатуса;
 import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
@@ -749,13 +750,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
                throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
            try{
            Class_GRUD_SQL_Operations class_grud_sql_operationsПовышаемВерсиюДанныхПриПолученииНовогоКлючаONESINGLE=new Class_GRUD_SQL_Operations(context);
-           Long  РезультатУвеличинаяВерсияПриУвеличенияПриПолученияКлючаONESINGLE =
-                   class_grud_sql_operationsПовышаемВерсиюДанныхПриПолученииНовогоКлючаONESINGLE.new ChangesVesionData(context)
-                           .МетодПовышаемВерсииCurrentTable(
-                                   ТаблицаКоторуюнадоИзменитьВерсиюДанныхТАюдицы_VIEW_ONESIGNAL, context, new CREATE_DATABASE(context).getССылкаНаСозданнуюБазу());
-           Log.i(this.getClass().getName(), "РезультатУвеличинаяВерсияПриУвеличенияПриПолученияКлючаONESINGLE"
-                   +РезультатУвеличинаяВерсияПриУвеличенияПриПолученияКлючаONESINGLE);
-       } catch (Exception e ) {
+               // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+               Long РезультатУвеличинаяВерсияПриУвеличенияПриПолученияКлючаONESINGLE=
+                       new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(    ТаблицаКоторуюнадоИзменитьВерсиюДанныхТАюдицы_VIEW_ONESIGNAL,context,new CREATE_DATABASE(context).getССылкаНаСозданнуюБазу());
+               Log.d(this.getClass().getName(), " РезультатУвеличинаяВерсияПриУвеличенияПриПолученияКлючаONESINGLE  " + РезультатУвеличинаяВерсияПриУвеличенияПриПолученияКлючаONESINGLE);
+
+           } catch (Exception e ) {
            e.printStackTrace();
            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
@@ -804,13 +804,11 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
            АдаптерВставкиПолученогоПубличногоID.put("uuid", ПубличныйIDДляФрагмента);
 
 
-           // TODO: 13.12.2021
+               // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+               Long РезультатУвеличинаяВерсияДАныхЧата=
+                       new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(    ТаблицаОбрработкиВСдлужбеOneSignal,context,create_databaseДЛяOneSignal.getССылкаНаСозданнуюБазу());
+               Log.d(this.getClass().getName(), " РезультатУвеличинаяВерсияДАныхЧата  " + РезультатУвеличинаяВерсияДАныхЧата);
 
-
-           Long РезультатУвеличинаяВерсияДАныхЧата=0L;
-
-           РезультатУвеличинаяВерсияДАныхЧата=         class_grud_sql_operationsПовышаемВерсиюДанныхДляOneSignal. new ChangesVesionData(context).
-                   МетодПовышаемВерсииCurrentTable(ТаблицаОбрработкиВСдлужбеOneSignal, context, create_databaseДЛяOneSignal.getССылкаНаСозданнуюБазу());
                // TODO: 27.08.2021 само значние
                Log.w(context.getClass().getName(), "РезультатУвеличинаяВерсияДАныхЧата  получлили увеличиную верисю данных в чате новоом КЛЮЧЕ " + РезультатУвеличинаяВерсияДАныхЧата);
            //TODO  конец курант ча
