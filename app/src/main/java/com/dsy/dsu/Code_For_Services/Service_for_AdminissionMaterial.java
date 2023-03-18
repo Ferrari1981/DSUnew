@@ -755,7 +755,7 @@ private class SubClassGetDataAdmissionMaterial_Автомобили {
                 Bundle data=intent.getExtras();
                 data.putString("Таблица",Таблица);
                 Log.w(this.getClass().getName(), "   Таблица  " +Таблица);
-                Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabasemirror/" + Таблица.trim() + "");
+                Uri uri = Uri.parse("content://com.dsy.dsu.providerdataadminissionmaterial/" + Таблица.trim() + "");
                 ContentResolver resolver = context.getContentResolver();
                 /*курсор     = resolver.query(uri,new String[]{"*"},"user_update=? AND cfo=? AND status_send!=?",
                         new String[]{String.valueOf(ПубличныйIDДляФрагмента), String.valueOf(ТекущаяЦФО),"Удаленная"},"");*/

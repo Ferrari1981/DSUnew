@@ -954,7 +954,7 @@
                 android:resource="@xml/provider_paths" />
         </provider> <!-- ПРОВАЙДЕР ДЛЯ БАЗЫ ДАННЫХ  ${applicationId}.file  content://com.dsy.dsu/Database DSU-1.db  content://com.example.app.provider/table2/dataset1  content://com.example.app.provider/table1    uriMatcher.addURI("com.example.app.provider", "table3/#", 2); -->
         <provider
-            android:name=".Code_For_Firebase_And_Provader.ContentProviderForDataBase"
+            android:name=".Code_For_Firebase_And_Provader.ContentProviderSynsInsert"
             android:authorities="com.dsy.dsu.providerdatabase"
             android:directBootAware="true"
             android:enabled="true"
@@ -966,7 +966,7 @@
             android:readPermission="true"
             android:writePermission="true" />
         <provider
-            android:name=".Code_For_Firebase_And_Provader.ContentProviderForDataBaseMirror"
+            android:name=".Code_For_Firebase_And_Provader.ContentProviderSynsUpdate"
             android:authorities="com.dsy.dsu.providerdatabasemirror"
             android:directBootAware="true"
             android:enabled="true"
@@ -977,6 +977,22 @@
             android:permission="com.dsy.dsu.providerdatabasemirror.pemission"
             android:readPermission="true"
             android:writePermission="true" />
+
+        <provider
+            android:name=".Code_For_Firebase_And_Provader.ContentProviderForAdminissionMaterial"
+            android:authorities="com.dsy.dsu.providerdataadminissionmaterial"
+            android:directBootAware="true"
+            android:enabled="true"
+            android:excludeFromRecents="true"
+            android:exported="true"
+
+            android:grantUriPermissions="true"
+            android:permission="com.dsy.dsu.providerdataadminissionmaterial.pemission"
+            android:readPermission="true"
+            android:writePermission="true" />
+
+
+
         <provider
             android:name=".Code_For_Firebase_And_Provader.ContentProviderForDataBaseCursorLoader"
             android:authorities="com.dsy.dsu.providerdatabasecursorloader"

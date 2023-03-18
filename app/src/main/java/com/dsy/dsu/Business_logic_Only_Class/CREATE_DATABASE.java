@@ -410,6 +410,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                     //TODO INSERT
                     ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS Inserts" + НазваниеТаблицыДляТригера + "" +
                             "  AFTER INSERT   ON " + НазваниеТаблицыДляТригера +
+                            " WHEN  new.current_table>0" +
                             " BEGIN " +
                             " UPDATE MODIFITATION_Client SET  localversionandroid_version=new.current_table,localversionandroid= datetime() " +
                             " WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + ";" +
@@ -421,6 +422,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                     //TODO INSERT
                     ССылкаНаСозданнуюБазу.execSQL(" CREATE TRIGGER IF NOT EXISTS UPDATES" + НазваниеТаблицыДляТригера + "" +
                             "  AFTER UPDATE   ON " + НазваниеТаблицыДляТригера +
+                            " WHEN  new.current_table>old.current_table " +
                             " BEGIN " +
                             " UPDATE MODIFITATION_Client SET  localversionandroid_version=new.current_table,localversionandroid= datetime() " +
                             " WHERE name = " + ФиналНазваниеТаблицыДляЗаполения + ";" +

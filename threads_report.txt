@@ -6,7 +6,7 @@
 	  at android.database.sqlite.SQLiteOpenHelper.getWritableDatabase(SQLiteOpenHelper.java:316)
 	  - locked <0x4d94> (a com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE)
 	  at com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE.<init>(CREATE_DATABASE.java:95)
-	  at com.dsy.dsu.Code_For_Firebase_And_Provader.ContentProviderForDataBase.onCreate(ContentProviderForDataBase.java:376)
+	  at com.dsy.dsu.Code_For_Firebase_And_Provader.ContentProviderSynsInsert.onCreate(ContentProviderForDataBase.java:376)
 	  at android.content.ContentProvider.attachInfo(ContentProvider.java:2404)
 	  at android.content.ContentProvider.attachInfo(ContentProvider.java:2374)
 	  at android.app.ActivityThread.installProvider(ActivityThread.java:7422)

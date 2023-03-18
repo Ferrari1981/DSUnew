@@ -4,10 +4,8 @@ import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.UriMatcher;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -29,51 +27,24 @@ import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassCreatingMainAllTables;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Spliterator;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionService;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
-import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Observer;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
-import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Predicate;
-import io.reactivex.rxjava3.parallel.ParallelFlowable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class ContentProviderForDataBase extends ContentProvider {
+public class ContentProviderSynsInsert extends ContentProvider {
     private   UriMatcher uriMatcherДЛяПровайдераКонтентБазаДанных;
     private SQLiteDatabase Create_Database_СамаБАзаSQLite;
     private  PUBLIC_CONTENT public_contentМенеджерПотоковМассвойОперацииВставки;
     private AsyncTaskLoader<?> asyncTaskLoader;
     private Handler handler;
     private Integer ТекущаяСтрокаПриДОбавлениииURL=0;
-    public ContentProviderForDataBase() throws InterruptedException {
+    public ContentProviderSynsInsert() throws InterruptedException {
         try{
 
             CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда=
@@ -348,6 +319,16 @@ public class ContentProviderForDataBase extends ContentProvider {
                                 Create_Database_СамаБАзаSQLite.endTransaction();
                             }
 
+                            // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
+                            if(РезультатОперацииBulkInsert.size()>0 ){
+                                Integer РезультатПовышенииВерсииДанных =
+                                        class_engine_sqlПовышаемВерсиюДанных.МетодVesrionUPMODIFITATION_Client(table);///"Анализ"
+                                Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
+                            }
+                            Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                                    " table  " + table + "  РезультатОперацииBulkInsert.size() " + РезультатОперацииBulkInsert.size());
                         }
                     })
                     .onErrorComplete(new Predicate<Throwable>() {

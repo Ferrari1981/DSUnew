@@ -1958,47 +1958,6 @@ public class Service_For_Remote_Async extends IntentService {
         }
         }
 
-     /*   private void МетодBulkINSERT(@NonNull String имяТаблицыОтАндройда_локальноая,@NonNull Context context) {
-            Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + имяТаблицыОтАндройда_локальноая + "");
-            Long результат_ВставкаДаннымисСервера=0l;
-            try{
-                    if (АдаптерДляМассовойВставкиДанныхсСервер[0]!=null) {
-                    if (АдаптерДляМассовойВставкиДанныхсСервер[0].toString().length() > 0) {
-                        //TODO  ПОСЛЕ ОБРАБОТКИ ВСЕЙ ТАБЛИЦЫ ТЕСТОВО ЗАПУСКАЕМ ЕТОД МАССОВОЙ ВСТАВКИ ЧЕРЕЗ КОНТЕНТ ПРОВАЙДЕР МЕТОД BurkInset
-                        Log.w(context.getClass().getName(), " АдаптерДляМассовойВставкиДанныхсСервер.length  " + АдаптерДляМассовойВставкиДанныхсСервер.length +
-                                "\n" + " АдаптерДляВставкиДанныхсСервер.size()  " + АдаптерДляВставкиДанныхсСервер.size() + " uri  " + uri);/////
-
-                        // TODO: 09.11.2022 визуальна часть синхрониазции по таблице
-                        МетодCallBasksВизуальноИзСлужбы(МаксималноеКоличествоСтрочекJSON,
-                                ИндексТекущейОперацииJSONДляВизуальнойОбработки, имяТаблицыОтАндройда_локальноая,
-                                Проценты, "ПроцессеAsyncBackground",
-                                true,false);
-
-                        ContentResolver contentResolver = context.getContentResolver();
-                        int РезультатВставкиМассовой = contentResolver.bulkInsert(uri, АдаптерДляМассовойВставкиДанныхсСервер);
-                        // TODO: 27.10.2021
-                        if (РезультатВставкиМассовой > 0) {
-                            ИндексТекущейОперацииРеальногРезультатОбработкиАтблицы++;
-                            АдаптерДляВставкиДанныхсСервер.clear();
-                            АдаптерДляМассовойВставкиДанныхсСервер = null;
-                        }
-                        результат_ВставкаДаннымисСервера = Long.valueOf(РезультатВставкиМассовой);
-                        // TODO: 30.10.2021
-                        Log.d(this.getClass().getName(), " Результат_ВставкаДаннымисСервера :::  "
-                                + РезультатВставкиМассовой + "\n" +
-                                "  имяТаблицыОтАндройда_локальноая " + имяТаблицыОтАндройда_локальноая);
-                        // TODO: 09.11.2022 визуальна часть синхрониазции по таблице
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-            }
-        }*/
-
         private void МетодBulkUPDATE(@NonNull String имяТаблицыОтАндройда_локальноая,@NonNull Context context) {
            Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabasemirror/" + имяТаблицыОтАндройда_локальноая + "");
          //   Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + имяТаблицыОтАндройда_локальноая + "");
@@ -2036,41 +1995,11 @@ public class Service_For_Remote_Async extends IntentService {
                         Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
             }
         }
-
-
-
-       /* private void МетодContentProvoderForBulkInsert(Context context,
-                                                       String имяТаблицыОтАндройда_локальноая) {
-
-            try{
-                if (АдаптерДляВставкиДанныхсСервер.size() > 0) {
-                    АдаптерДляМассовойВставкиДанныхсСервер[ ИндексДляМассовогоВставкаКонтейнер[0]] = new ContentValues();
-                    АдаптерДляМассовойВставкиДанныхсСервер[ ИндексДляМассовогоВставкаКонтейнер[0]].putAll(АдаптерДляВставкиДанныхсСервер);
-                    Log.d(this.getClass().getName(), " АдаптерДляМассовойВставкиДанныхсСервер.length :::  "
-                            + АдаптерДляМассовойВставкиДанныхсСервер.length);
-                        ИндексТекущейОперацииJSONДляВизуальнойОбработки++;
-                    ИндексДляМассовогоВставкаКонтейнер[0]++;
-                    // TODO: 11.10.2022 callback метод обратно в актвити #6
-                    МетодCallBasksВизуальноИзСлужбы(МаксималноеКоличествоСтрочекJSON,ИндексТекущейОперацииJSONДляВизуальнойОбработки,имяТаблицыОтАндройда_локальноая,
-                            Проценты,"ПроцессеAsyncBackground",false,false);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-       
-                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-            }
-        }*/
         private void МетодContentProvoderForUpdateJrInsert(Context context, String имяТаблицыОтАндройда_локальноая) {
 
             try{
                 if (ТекущийАдаптерДляВсего.size() > 0) {
-               /*     АдаптерДляВставкиИОбновления[ ИндексДляМассовогоОбшицКонтейнер[0]]=new ContentValues();*/
-               /*     АдаптерДляВставкиИОбновления[ ИндексДляМассовогоОбшицКонтейнер[0]].putAll(ТекущийАдаптерДляВсего);*/
                     АдаптерДляВставкиИОбновления.add(ТекущийАдаптерДляВсего);
-
                     Log.d(this.getClass().getName(), " АдаптерДляВставкиИОбновления  " + АдаптерДляВставкиИОбновления.size()+
                             " ИндексВизуальнойДляPrograssBar " +ИндексВизуальнойДляPrograssBar);
                         ИндексВизуальнойДляPrograssBar++;

@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.content.UriMatcher;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -23,47 +22,26 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.loader.content.AsyncTaskLoader;
-import androidx.loader.content.CursorLoader;
 
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassCreatingMainAllTables;
-import com.google.android.gms.common.util.ArrayUtils;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.Spliterator;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Predicate;
-import io.reactivex.rxjava3.functions.Supplier;
-import io.reactivex.rxjava3.parallel.ParallelFlowable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class ContentProviderForDataBaseMirror extends ContentProvider {
+public class ContentProviderForAdminissionMaterial extends ContentProvider {
   private   UriMatcher uriMatcherДЛяПровайдераКонтентБазаДанных;
     private SQLiteDatabase Create_Database_СамаБАзаSQLite;
     private  PUBLIC_CONTENT public_contentМенеджерПотоковМассвойОперацииВставки;
@@ -71,7 +49,7 @@ public class ContentProviderForDataBaseMirror extends ContentProvider {
     private Handler handler;
     private Integer ТекущаяСтрокаПриДОбавлениииURL=0;
     private SharedPreferences preferences;
-    public ContentProviderForDataBaseMirror() throws InterruptedException {
+    public ContentProviderForAdminissionMaterial() throws InterruptedException {
         try{
 
         CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда=
@@ -82,7 +60,7 @@ public class ContentProviderForDataBaseMirror extends ContentProvider {
             ИменаТаблицыОтАндройда.forEach(new Stream.Builder() {
          @Override
          public void accept(Object ЭлементТаблица) {
-             uriMatcherДЛяПровайдераКонтентБазаДанных.addURI("com.dsy.dsu.providerdatabasemirror",ЭлементТаблица.toString(),ТекущаяСтрокаПриДОбавлениииURL);
+             uriMatcherДЛяПровайдераКонтентБазаДанных.addURI("com.dsy.dsu.providerdataadminissionmaterial",ЭлементТаблица.toString(),ТекущаяСтрокаПриДОбавлениииURL);
              Log.d(this.getClass().getName(), " ЭлементТаблица "+ЭлементТаблица + " ТекущаяСтрокаПриДОбавлениииURL " +ТекущаяСтрокаПриДОбавлениииURL);
              ТекущаяСтрокаПриДОбавлениииURL++;
          }
