@@ -2708,11 +2708,10 @@ public class Service_For_Remote_Async extends IntentService {
                                                         public void run() throws Throwable {
                                                             if (СсылкаНаБазуSqlite.isOpen()) {
                                                                 СсылкаНаБазуSqlite.close();
-                                                                СсылкаНаБазуSqlite = null;
                                                             }
                                                             РезультатТаблицыОбмена[0] = ЛистТаблицыОбмена.stream().reduce(0, (a, b) -> a + b);
                                                             Log.w(this.getClass().getName(), " doOnTerminate ОБРАБОТКА ВСЕХ ТАБЛИЦ ЗАВЫЕРШИЛАСЬ В ГЛАВНОМ ЦИКЛЕ ПО ТАБЛИЦАМ В ОБМЕНЕ РезультатТаблицыОбмена"
-                                                                    + РезультатТаблицыОбмена[0]);
+                                                                    + РезультатТаблицыОбмена[0] + " СсылкаНаБазуSqlite.isOpen() " +СсылкаНаБазуSqlite.isOpen());
                                                         }
                                                     })
                                                             .onErrorComplete(new Predicate<Throwable>() {
