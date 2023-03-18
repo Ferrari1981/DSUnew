@@ -657,7 +657,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
 
     private void МетодСоздания_ТаблицыПрофесии(SQLiteDatabase ССылкаНаСозданнуюБазу) {
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists prof");//test
-        ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'tabel'");//test
+        ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'prof'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists prof (" +
                 "_id  INTEGER    ," +
                 " name TEXT ," +

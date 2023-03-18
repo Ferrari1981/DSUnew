@@ -1615,6 +1615,7 @@ public class Service_For_Remote_Async extends IntentService {
                                                             case "type_materials":
                                                             case "company":
                                                             case "track":
+                                                            case "prof":
                                                                 System.out.println("  ПолеОтJSONKEY  " + ПолеОтJSONKEY);
                                                                 if (stringJsonElementEntryВнутриJSONСтрочки.getKey().contentEquals("id") == true) {
                                                                     ПолеОтJSONKEY = "_id";
