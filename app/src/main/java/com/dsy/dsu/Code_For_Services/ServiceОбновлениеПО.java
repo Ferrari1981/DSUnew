@@ -603,9 +603,13 @@ public class ServiceОбновлениеПО extends IntentService {////Service
 
     private void МетодАнализВерсийЛокальнаяИСерверная(@NonNull Integer СервернаяВерсияПОВнутри) {
   try{
+
       PackageInfo    pInfo = getApplicationContext(). getPackageManager().getPackageInfo(getApplicationContext(). getPackageName(), 0);
         String version = pInfo.versionName;//Version Name
         Integer ЛокальнаяВерсияПО = pInfo.versionCode;//Version Code
+      Log.d(this.getClass().getName(),  " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+              + Thread.currentThread().getStackTrace()[2].getLineNumber() + " ЛокальнаяВерсияПО "+ЛокальнаяВерсияПО+
+               " СервернаяВерсияПОВнутри "+СервернаяВерсияПОВнутри);
         if (СервернаяВерсияПОВнутри >ЛокальнаяВерсияПО ) {
             МетодСообщениеЗапускЗагрущикаПо(СервернаяВерсияПОВнутри);
             Log.w(getApplicationContext().getClass().getName(),    Thread.currentThread().getStackTrace()[2].getMethodName()+

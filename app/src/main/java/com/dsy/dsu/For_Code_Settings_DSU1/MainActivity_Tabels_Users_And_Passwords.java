@@ -289,6 +289,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                     }
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        try{
                         if (response.isSuccessful()) {
                             InputStream inputStreamОтПинга = response.body().source().inputStream();
                             GZIPInputStream GZIPПотокОтСЕРВЕРА = new GZIPInputStream(inputStreamОтПинга);
@@ -302,6 +303,14 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                             // TODO: 11.03.2023  ПОСЛЕ ПИНГА ПЕРЕХОДИМ
                             МетодПослеАунтификациисСервером(v);
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ///метод запись ошибок в таблицу
+                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    }
                     }
                 });
                 //TODO
