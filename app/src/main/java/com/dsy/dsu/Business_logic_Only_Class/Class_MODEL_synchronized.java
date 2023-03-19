@@ -3243,6 +3243,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                         }
                         @Override
                         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            try{
                             if (response.isSuccessful()) {
                                 InputStream inputStreamОтПинга = response.body().source().inputStream();
                                 File ПутькФайлу = null;
@@ -3269,6 +3270,14 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber());
                                 dispatcherЗагрузкаПО.executorService().shutdown();
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                    Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        }
                         }
                     });
                     dispatcherЗагрузкаПО.executorService().awaitTermination(1,TimeUnit.MINUTES);

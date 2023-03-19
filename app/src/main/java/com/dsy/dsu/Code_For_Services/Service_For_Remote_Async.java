@@ -1202,7 +1202,7 @@ public class Service_For_Remote_Async extends IntentService {
                                                                                      String ДанныеПришёлЛиIDДЛяГенерацииUUID,
                                                                                      CompletionService МенеджерПотоковВнутрений) {
             try {
-                Class_GRUD_SQL_Operations.ClassRuntimeExeGRUDOpertions class_engine_sqlПовышаемВерсиюДанных=   new Class_GRUD_SQL_Operations(context) .new ClassRuntimeExeGRUDOpertions(context);
+                SubClassUpVersionDATA subClassUpVersionDATA=     new SubClassUpVersionDATA();
                 if (ИмяТаблицыНаSqlServerИзТаблицыВерсииДанных.equalsIgnoreCase(ИмяТаблицыОтАндройда_Локальноая)) {//////ОБЯЗАТОЛЬНОЕ УСЛОВИЕ НАЗВАНИЕ ТАБЛИЦ ДОЛЖНО БЫТЬ ОДИНАКОВЫМ НАПРИМЕР  CFO==CFO
                     Log.d(this.getClass().getName(), " ФлагУказываетЧтоТОлькоОбработкаТаблицДляЧАТА"
                             + ФлагУказываетЧтоТОлькоОбработкаТаблицДляЧАТА
@@ -1236,6 +1236,14 @@ public class Service_For_Remote_Async extends IntentService {
                         // TODO: 30.06.2022  конец встаялеммого кода с задержкой
                         Integer    ДанныеПосылаемНаСервер = МетодОбменаЗаданиеДляСервера_ПосылаемНа_Сервер(ИмяТаблицыОтАндройда_Локальноая,
                                 МенеджерПотоковВнутрений, ВерсияДанныхЛокальнаяСерверная);
+
+                        if(ДанныеПосылаемНаСервер>0 ){
+                            ПубличныйРезультатОтветаОтСерврераУспешно=ДанныеПосылаемНаСервер;///"Серверный"
+                            // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
+                          Integer РезультатПовышенииВерсииДанных = subClassUpVersionDATA.МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая,context,getССылкаНаСозданнуюБазу());
+                            Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
+                        }
+
                         Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                                 " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                                 " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
@@ -1262,9 +1270,16 @@ public class Service_For_Remote_Async extends IntentService {
                                     + ВерсияДанныхЛокальнаяСерверная
                                     + " ФлагКакуюЧастьСинхронизацииЗапускаем " + ФлагКакуюЧастьСинхронизацииЗапускаем+
                                     "  ДанныесСервера " +ДанныесСервера);
+                            if(ДанныесСервера>0 ){
+                                ПубличныйРезультатОтветаОтСерврераУспешно=ДанныесСервера;///"Серверный"
+                                // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
+                                Integer РезультатПовышенииВерсииДанных = subClassUpVersionDATA.МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая,context,getССылкаНаСозданнуюБазу());
+                                Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
+                            }
 
                         }
                     }
+
                 }
                 Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
