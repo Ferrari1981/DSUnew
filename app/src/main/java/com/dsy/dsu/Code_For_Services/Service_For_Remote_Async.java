@@ -1236,20 +1236,15 @@ public class Service_For_Remote_Async extends IntentService {
                         // TODO: 30.06.2022  конец встаялеммого кода с задержкой
                         Integer    ДанныеПосылаемНаСервер = МетодОбменаЗаданиеДляСервера_ПосылаемНа_Сервер(ИмяТаблицыОтАндройда_Локальноая,
                                 МенеджерПотоковВнутрений, ВерсияДанныхЛокальнаяСерверная);
-                        Log.d(this.getClass().getName(),
-                                " ВерсияДанныхЛокальноЛокальная  "
-                                        + ВерсияДанныхЛокальноЛокальная +
-                                        "  ВерсияДанныхЛокальнаяСерверная "
-                                        + ВерсияДанныхЛокальнаяСерверная
-                                        + " ДанныеПосылаемНаСервер " + ДанныеПосылаемНаСервер);
+                        Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                                " ВерсияДанныхсСамогоSqlServer  " + ВерсияДанныхсСамогоSqlServer +
+                                "  ВерсияДанныхЛокальнаяСерверная "
+                                + ВерсияДанныхЛокальнаяСерверная
+                                + " ФлагКакуюЧастьСинхронизацииЗапускаем " + ФлагКакуюЧастьСинхронизацииЗапускаем+
+                                "  ДанныеПосылаемНаСервер " +ДанныеПосылаемНаСервер);
                         // TODO: 28.10.2021 ПЕРЕРДАЕМ ВОЗМОЖНЫЙ ОТВЕТ
-                        if(ДанныеПосылаемНаСервер>0 ){
-                            ПубличныйРезультатОтветаОтСерврераУспешно=ДанныеПосылаемНаСервер;///"Серверный"
-                            // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
-                            Integer РезультатПовышенииВерсииДанных =
-                                    new SubClassUpVersionDATA().МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая,context,getССылкаНаСозданнуюБазу());
-                            Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
-                        }
                     } else {
                         // TODO: 19.10.2021   GET()->
                         if (ВерсияДанныхсСамогоSqlServer > ВерсияДанныхЛокальнаяСерверная) {
@@ -1259,27 +1254,23 @@ public class Service_For_Remote_Async extends IntentService {
                                     МенеджерПотоковВнутрений,
                                     ВерсияДанныхЛокальнаяСерверная );
                             // TODO: 28.10.2021 ПЕРЕРДАЕМ ВОЗМОЖНЫЙ ОТВЕТ
-                            if(ДанныесСервера>0 ){
-                                ПубличныйРезультатОтветаОтСерврераУспешно=ДанныесСервера;///"Серверный"
-                                // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
-                                Integer РезультатПовышенииВерсииДанных =
-                                        new SubClassUpVersionDATA().МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая,context,getССылкаНаСозданнуюБазу());
-                                Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
-                            }
-                            Log.d(this.getClass().getName(),
+                            Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
                                     " ВерсияДанныхсСамогоSqlServer  " + ВерсияДанныхсСамогоSqlServer +
-                                            "  ВерсияДанныхЛокальнаяСерверная "
-                                            + ВерсияДанныхЛокальнаяСерверная
-                                            + " ФлагКакуюЧастьСинхронизацииЗапускаем " + ФлагКакуюЧастьСинхронизацииЗапускаем+
-                                            "  ДанныесСервера " +ДанныесСервера );
+                                    "  ВерсияДанныхЛокальнаяСерверная "
+                                    + ВерсияДанныхЛокальнаяСерверная
+                                    + " ФлагКакуюЧастьСинхронизацииЗапускаем " + ФлагКакуюЧастьСинхронизацииЗапускаем+
+                                    "  ДанныесСервера " +ДанныесСервера);
+
                         }
                     }
                 }
-                ///16,20
-                Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
-                        "  ПубличныйРезультатОтветаОтСерврераУспешно " +ПубличныйРезультатОтветаОтСерврераУспешно );
+                        " ВерсияДанныхсСамогоSqlServer  " + ВерсияДанныхсСамогоSqlServer
+                        + " ФлагКакуюЧастьСинхронизацииЗапускаем " + ФлагКакуюЧастьСинхронизацииЗапускаем);
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
