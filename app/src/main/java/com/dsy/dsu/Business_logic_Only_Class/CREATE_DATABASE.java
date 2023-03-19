@@ -719,7 +719,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                 "status_send TEXT ," +
                 "status_carried_out   INTEGER DEFAULT 0   ,"+
                 "prof   INTEGER    ,"+
-                " UNIQUE (uuid_tabel,fio,user_update),"+
+                " UNIQUE (fio,user_update,date_update,uuid),"+
                 "FOREIGN KEY(fio ) REFERENCES fio (uuid)  ON UPDATE CASCADE   ,"+
                 "FOREIGN KEY(prof) REFERENCES prof  (id)  ON UPDATE CASCADE) ");//  "PRIMARY KEY(fio,uuid_tabel)) ");
         ///             "FOREIGN KEY(uuid_tabel ) REFERENCES tabel (uuid)  ON UPDATE CASCADE  ON DELETE CASCADE," +

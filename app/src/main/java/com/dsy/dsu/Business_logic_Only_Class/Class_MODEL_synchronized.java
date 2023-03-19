@@ -3263,11 +3263,11 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                 } else {
                                     Log.e(context.getClass().getName(), "Ошибка не создалься Будущий файл успешно создалься , далее запись на диск новго APk файла  СЛУЖБА ");
                                 }
-                                inputStreamОтПинга.close();
                               Integer  РазмерПришедшегоПотока = Integer.parseInt(   response.header("stream_size"));
                                 Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                inputStreamОтПинга.close();
                                 dispatcherЗагрузкаПО.executorService().shutdown();
                             }
                         }
