@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -3224,7 +3225,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                     return chain.proceed(newRequest);
                                 }
                             }).connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(60, TimeUnit.SECONDS).build();
+                            .readTimeout(2, TimeUnit.MINUTES).build();
                     ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
                     Request requestGET = new Request.Builder().get().url(Adress).build();
                     Log.d(this.getClass().getName(), "  request  " + requestGET);
@@ -3255,19 +3256,25 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                                  СамФайлJsonandApk[0] = new File(ПутькФайлу, "/" + ИмяФайлаЗагрузки );
                                 if (!СамФайлJsonandApk[0].getParentFile().mkdirs() ) {
                                     СамФайлJsonandApk[0].getParentFile().mkdirs();
+                                    СамФайлJsonandApk[0].setWritable(true);
+                                    СамФайлJsonandApk[0].setExecutable(true);
+                                    // TODO: 20.03.2023 само создание файла
+                                    if (СамФайлJsonandApk[0].createNewFile()) {
+                                        Log.d(context.getClass().getName(), "Будущий файл успешно создалься , далее запись на диск новго APk файла ");
+                                        FileUtils.copyInputStreamToFile(inputStreamОтПинга, СамФайлJsonandApk[0]);
+                                        Log.d(context.getClass().getName(), "FileUtils.copyInputStreamToFile СамФайлJsonandApk"+
+                                                СамФайлJsonandApk[0]);
+                                    } else {
+                                        Log.e(context.getClass().getName(), "Ошибка не создалься Будущий файл успешно создалься , далее запись на диск новго APk файла  СЛУЖБА ");
+                                    }
                                 }
-                                if (СамФайлJsonandApk[0].createNewFile()) {
-                                    Log.d(context.getClass().getName(), "Будущий файл успешно создалься , далее запись на диск новго APk файла ");
-                                    FileUtils.copyInputStreamToFile(inputStreamОтПинга, СамФайлJsonandApk[0]);
-                                    Log.d(context.getClass().getName(), "FileUtils.copyInputStreamToFile СамФайлJsonandApk"+
-                                            СамФайлJsonandApk[0]);
-                                } else {
-                                    Log.e(context.getClass().getName(), "Ошибка не создалься Будущий файл успешно создалься , далее запись на диск новго APk файла  СЛУЖБА ");
-                                }
-                              Integer  РазмерПришедшегоПотока = Integer.parseInt(   response.header("stream_size"));
+                                // TODO: 20.03.2023 ответ от сервреа если нет цифры значит не и файла
+                              Integer  РазмерПришедшегоПотока =
+                                      Integer.parseInt(   Optional.ofNullable(response.header("stream_size")).orElse(""));
                                 Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                                response.close();
                                 dispatcherЗагрузкаПО.executorService().shutdown();
                             }
                         } catch (Exception e) {
@@ -3280,7 +3287,7 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                         }
                         }
                     });
-                    dispatcherЗагрузкаПО.executorService().awaitTermination(1,TimeUnit.MINUTES);
+                    dispatcherЗагрузкаПО.executorService().awaitTermination(2,TimeUnit.MINUTES);
                     Log.i(context.getClass().getName(), "СамФайлJsonandApk" + СамФайлJsonandApk[0]);
                     // TODO: 13.03.2023  конец загрузки файла по новому FILE
                 } catch (IOException | InterruptedException ex) {
