@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteCursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -427,6 +428,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
             public void run() {
                 Log.d(this.getClass().getName(), " handlerВизуализацияАунтификации ");
                 try {
+                    Drawable icon;
                     ПодсчетПолощительиОтрцательРезультатов++;
                     ПрогрессБарДляВходаСистему.setIndeterminate(false);
                     ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
@@ -442,10 +444,7 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                             КнопкаВходавСистему.setEnabled(false);
                             КнопкаВходавСистему.setClickable(false);
                             КнопкаВходавСистему.setBackgroundColor(Color.GRAY);
-                            ПрогрессБарДляВходаСистему.setBackgroundColor(Color.GRAY);
-
                                     ПрогрессБарДляВходаСистему.postDelayed(() -> {
-                                        ПрогрессБарДляВходаСистему.setBackgroundColor(Color.parseColor("#FFD81B60"));
                                         ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
                                         КнопкаВходавСистему.setEnabled(true);
                                         КнопкаВходавСистему.setClickable(true);

@@ -18,15 +18,16 @@
         android:id="@+id/textView"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="210dp"
         android:adjustViewBounds="false"
         android:textSize="26sp"
         android:textStyle="bold"
         android:typeface="monospace"
-        app:layout_constraintBottom_toTopOf="@+id/progressBarFace"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.43"
         app:srcCompat="@mipmap/icon_boot_dsu1_1" />
 
 
