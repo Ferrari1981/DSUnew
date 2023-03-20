@@ -443,11 +443,9 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                             КнопкаВходавСистему.setClickable(false);
                             КнопкаВходавСистему.setBackgroundColor(Color.GRAY);
                             ПрогрессБарДляВходаСистему.setBackgroundColor(Color.GRAY);
-                            ((Activity) КонтекстСинхроДляАунтификации).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
+
                                     ПрогрессБарДляВходаСистему.postDelayed(() -> {
-                                        ПрогрессБарДляВходаСистему.setBackgroundColor(Color.parseColor("FFD81B60"));
+                                        ПрогрессБарДляВходаСистему.setBackgroundColor(Color.parseColor("#FFD81B60"));
                                         ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);
                                         КнопкаВходавСистему.setEnabled(true);
                                         КнопкаВходавСистему.setClickable(true);
@@ -455,8 +453,6 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
                                     }, 10000);// по умолчанию прогресс бар делаем не видеым
 
                                     // TODO: 13.10.2021
-                                }
-                            });
                         }
                 } catch (Exception e) {
                     ПрогрессБарДляВходаСистему.setVisibility(View.INVISIBLE);// при нажатии делаем видимый програсссбар
