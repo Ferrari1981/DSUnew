@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -3844,74 +3845,71 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
     }
     ///todo ОПРЕДЕЛЯЕМ КОЛИЧЕСТВО ДНЕЙ ЗАГРУЖАЕМОЙ МЕСЯЦ
     protected int МетодПолучениеКоличествоДнейвЗагружаемомМесяце(int Месяц ,int месяцДляСокращенно) {
-        Date date = null;
+        int daysInMonth = 0;
+        try{
         int КонктетныйМесяцВВидеЦифры;
-        try {
+            Date  date;
             String МесяцПлюсНоль=String.valueOf(Месяц);
             if (МесяцПлюсНоль.length() == 1){
                 МесяцПлюсНоль="0"+МесяцПлюсНоль;
             }
-            date = new SimpleDateFormat("MMyyyy",new Locale("rus")).parse(МесяцПлюсНоль+ месяцДляСокращенно);
+          date = new SimpleDateFormat("MMyyyy",new Locale("rus")).parse(МесяцПлюсНоль+ месяцДляСокращенно);
             System.out.println(" date " +date);
-
-        } catch (
-                ParseException e) {
-            e.printStackTrace();
-        }
-
         Calendar  cal = Calendar.getInstance();
         cal.setTime(date);
         КонктетныйМесяцВВидеЦифры=cal.get(Calendar.MONTH);
         System.out.println(cal.get(Calendar.MONTH));
-        // Create a calendar object and set year and month
-        // Get the number of days in that month
-        int daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH); // 28
-
+        daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH); // 28
+            Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                    " daysInMonth  " + daysInMonth );
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                Thread.currentThread().getStackTrace()[2].getLineNumber());
+    }
         return  daysInMonth;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     ///todo сообщение информация о ФИО
     @UiThread
     protected void СообщениеИнформацияОФИО(String ШабкаДиалога,  String СообщениеДиалога) {
         ///////СОЗДАЕМ ДИАЛОГ ДА ИЛИ НЕТ///////СОЗДАЕМ ДИАЛОГ ДА ИЛИ НЕТ
+        try{
 //////сам вид
-        final AlertDialog alertDialog = new MaterialAlertDialogBuilder(this)
+        final AlertDialog alertDialogДетализацияДАнныхСотрудника = new MaterialAlertDialogBuilder(this)
                 .setTitle(ШабкаДиалога)
                 .setMessage(СообщениеДиалога)
-                .setPositiveButton("ОК", null)
+                .setPositiveButton("Закрыть", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                                " НазваниеДанныхВТабелеФИО  " + НазваниеДанныхВТабелеФИО);
+                    }
+                })
+                .setNegativeButton("Изменить", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                                " НазваниеДанныхВТабелеФИО  " + НазваниеДанныхВТабелеФИО);
+                    }
+                })
                 .setIcon(R.drawable.icon_dsu1_info_customer)
                 .show();
-/////////кнопка
-        final Button MessageBoxUpdateСоздатьТабель = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        MessageBoxUpdateСоздатьТабель.setOnClickListener(new View.OnClickListener() {
-            ///MessageBoxUpdate метод CLICK для DIALOBOX
-            @Override
-            public void onClick(View v) {
-                //удаляем с экрана Диалог
-                alertDialog.dismiss();
-                Log.d(this.getClass().getName(), "  ФИНАЛ создание нового сотрудника ");
-
-
-                НазваниеДанныхВТабелеФИО.setBackgroundColor(Color.parseColor("#F5FFFA"));
-
-
-            }
-        });
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                Thread.currentThread().getStackTrace()[2].getLineNumber());
+    }
     }
 
 
