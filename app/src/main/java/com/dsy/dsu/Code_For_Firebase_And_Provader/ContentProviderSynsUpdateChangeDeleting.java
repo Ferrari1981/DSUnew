@@ -28,6 +28,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassCreatingMainAllTables;
+import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +42,7 @@ import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Predicate;
 
-public class ContentProviderForAdminissionMaterial extends ContentProvider {
+public class ContentProviderSynsUpdateChangeDeleting extends ContentProvider {
   private   UriMatcher uriMatcherДЛяПровайдераКонтентБазаДанных;
     private SQLiteDatabase Create_Database_СамаБАзаSQLite;
     private  PUBLIC_CONTENT public_contentМенеджерПотоковМассвойОперацииВставки;
@@ -49,7 +50,7 @@ public class ContentProviderForAdminissionMaterial extends ContentProvider {
     private Handler handler;
     private Integer ТекущаяСтрокаПриДОбавлениииURL=0;
     private SharedPreferences preferences;
-    public ContentProviderForAdminissionMaterial() throws InterruptedException {
+    public ContentProviderSynsUpdateChangeDeleting() throws InterruptedException {
         try{
 
         CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда=
@@ -60,7 +61,7 @@ public class ContentProviderForAdminissionMaterial extends ContentProvider {
             ИменаТаблицыОтАндройда.forEach(new Stream.Builder() {
          @Override
          public void accept(Object ЭлементТаблица) {
-             uriMatcherДЛяПровайдераКонтентБазаДанных.addURI("com.dsy.dsu.providerdataadminissionmaterial",ЭлементТаблица.toString(),ТекущаяСтрокаПриДОбавлениииURL);
+             uriMatcherДЛяПровайдераКонтентБазаДанных.addURI("com.dsy.dsu.providerdatachangedeleting",ЭлементТаблица.toString(),ТекущаяСтрокаПриДОбавлениииURL);
              Log.d(this.getClass().getName(), " ЭлементТаблица "+ЭлементТаблица + " ТекущаяСтрокаПриДОбавлениииURL " +ТекущаяСтрокаПриДОбавлениииURL);
              ТекущаяСтрокаПриДОбавлениииURL++;
          }
@@ -182,7 +183,7 @@ public class ContentProviderForAdminissionMaterial extends ContentProvider {
         String table = new String();
         try{
         Log.d(this.getClass().getName(), " uri"+ uri);
-            table=    Optional.ofNullable(uri).map(Emmeter->Emmeter.toString().replace("content://com.dsy.dsu.providerdataadminissionmaterial/","")).get();
+            table=    Optional.ofNullable(uri).map(Emmeter->Emmeter.toString().replace("content://com.dsy.dsu.providerdatachangedeleting/","")).get();
             Log.w(getContext().getClass().getName(),
                     " defaluit table  " + table  + " uri " + uri);/////
             Log.d(this.getClass().getName(), " table"+ table);
@@ -348,8 +349,10 @@ public class ContentProviderForAdminissionMaterial extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         // TODO: Implement this to handle requests to update one or more rows.
-     //   Create_Database_СамаБАзаSQLite=new CREATE_DATABASE(getContext()).getССылкаНаСозданнуюБазу();
+        /*String table = МетодОпределяемТаблицу(uri);
+        Create_Database_СамаБАзаSQLite=new CREATE_DATABASE(getContext()).getССылкаНаСозданнуюБазу();*/
         Log.w(this.getClass().getName(), "  КОНТЕНТ ПРОВАЙДЕР update  uri " +uri + " getContext()) " +getContext());
+
         return Integer.parseInt("1");
     }
 
@@ -359,9 +362,6 @@ public class ContentProviderForAdminissionMaterial extends ContentProvider {
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         ArrayList<Integer> РезультатОперацииBurkUPDATE = new ArrayList<>();
         try {
-            Class_GRUD_SQL_Operations.ClassRuntimeExeGRUDOpertions class_engine_sqlПовышаемВерсиюДанных=
-                    new Class_GRUD_SQL_Operations(getContext()) .new ClassRuntimeExeGRUDOpertions(getContext());
-            LinkedBlockingQueue<ContentValues>      ДанныеДляВторогоЭтапаBulkINSERT=new LinkedBlockingQueue<ContentValues>(Arrays.asList(values));
             String     table = МетодОпределяемТаблицу(uri);
             String ФлагКакойСинхронизацияПерваяИлиНет=         preferences.getString("РежимЗапускаСинхронизации", "");
             if (ФлагКакойСинхронизацияПерваяИлиНет.equalsIgnoreCase("ПовторныйЗапускСинхронизации") ||
@@ -395,33 +395,32 @@ public class ContentProviderForAdminissionMaterial extends ContentProvider {
                             public void accept(ContentValues contentValuesInsert) throws Throwable {
                                 try{
                                      String СтолбикСравнения="uuid";
-                                    Integer     ОперацияUPDATE=0;
+                                    Integer     ОперацияUPDATEСменыСтатусаУдаление=0;
                                     Object UUID= contentValuesInsert.get(СтолбикСравнения);
                                     System.out.println("  ИзменяемыйСтлобикСравенения  " + СтолбикСравнения);
-                                        ОперацияUPDATE  = Create_Database_СамаБАзаSQLite.update(table, contentValuesInsert,     СтолбикСравнения +"=?"
-                                                ,new String[]{(String) UUID});
-                                    Log.w(this.getClass().getName(), " Вставка массовая через contentValuesInsert  burkInsert   ОперацияUPDATE " +  ОперацияUPDATE);
-                                    if (ОперацияUPDATE>0) {
-                                        РезультатОперацииBurkUPDATE.add(Integer.parseInt(ОперацияUPDATE.toString()));
-                                        // TODO: 24.11.2022  удаление с последующей вставкой
-                                        ДанныеДляВторогоЭтапаBulkINSERT.remove(contentValuesInsert);
-                                    }else{
-                                           Cursor cursor=        Create_Database_СамаБАзаSQLite.rawQuery(" select "+
-                                                    СтолбикСравнения+" from "+ table +" WHERE  "+СтолбикСравнения+" =?  ",new String[]{UUID.toString()});
-                                        if (cursor!=null) {
-                                            if ( cursor.getCount() > 0) {
-                                                Log.d(this.getClass().getName(), "cursor.getCount()" + cursor.getCount());
-                                                // TODO: 24.11.2022  удаление с последующей вставкой
-                                                ДанныеДляВторогоЭтапаBulkINSERT.remove(contentValuesInsert);
-                                            }
-                                        }
-                                        cursor.close();
-                                    }//todo конец анализ
+
+                                    ContentValues contentValuesСменыСтатусаУдаленногоСервера=new ContentValues();
+                                    contentValuesСменыСтатусаУдаленногоСервера.put("status_send","Удаленная");
+                                    // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+                                    Long ВерсияДанныхТекущейСтроки=Long.parseLong(contentValuesInsert.get("current_table").toString());
+
+                                    Log.d(this.getClass().getName(), " ВерсияДанныхТекущейСтроки  " + ВерсияДанныхТекущейСтроки);
+                                    // TODO: 18.11.2022
+                                    contentValuesСменыСтатусаУдаленногоСервера.put("current_table",ВерсияДанныхТекущейСтроки+1);
+                                    String table = МетодОпределяемТаблицу(uri);
+                                    ОперацияUPDATEСменыСтатусаУдаление  =
+                                            Create_Database_СамаБАзаSQLite.update(table,contentValuesСменыСтатусаУдаленногоСервера,"status_send=? AND uuid=?",
+                                                    new String[]{"УдалитьФлагСервера",UUID.toString()});
+                                 /*   ОперацияUPDATEСменыСтатусаУдаление  = update(uri,contentValuesСменыСтатусаУдаленногоСервера,"status_send=?, uuid=?", new String[]{"УдалитьФлагСервера",UUID.toString()});;*/
+                                    Log.w(this.getClass().getName(), " Вставка массовая через contentValuesInsert  burkInsert   ОперацияUPDATEСменыСтатусаУдаление " +  ОперацияUPDATEСменыСтатусаУдаление);
+                                    if (ОперацияUPDATEСменыСтатусаУдаление>0) {
+                                        РезультатОперацииBurkUPDATE.add(Integer.parseInt(ОперацияUPDATEСменыСтатусаУдаление.toString()));
+                                        // TODO: 20.03.2023 МЕняем Статуст УдалелитьсСервера на Удаленный
+                                    }
                                     Log.w(this.getClass().getName(), "count  bulkInsert  РезультатОперацииBurkUPDATE.size() "
                                             + РезультатОперацииBurkUPDATE.size()+"\n"+"bulkPOTOK "+Thread.currentThread().getName()+"\n"+
                                             " FUTURE FUTURE SIZE  Task "+"\n"+
-                                            "  isParallel isParallel isParallel" + " ДанныеДляВторогоЭтапаBulkINSERT ДанныеДляВторогоЭтапаBulkINSERT.size()  "
-                                            + ДанныеДляВторогоЭтапаBulkINSERT.size() );
+                                            "  isParallel isParallel isParallel" + " ДанныеДляВторогоЭтапаBulkINSERT ДанныеДляВторогоЭтапаBulkINSERT.size()  ");
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     Create_Database_СамаБАзаSQLite.endTransaction();
@@ -437,11 +436,26 @@ public class ContentProviderForAdminissionMaterial extends ContentProvider {
                         .doOnComplete(new Action() {
                             @Override
                             public void run() throws Throwable {
-                                // TODO: 09.11.2022 закрывает ТРАНЗАКЦИИ ВНУТРИ
-                                if (Create_Database_СамаБАзаSQLite.inTransaction()) {
-                                    Create_Database_СамаБАзаSQLite.setTransactionSuccessful();
+                                // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
+                                Integer РезультатПовышенииВерсииДанных=0;
+                                if(РезультатОперацииBurkUPDATE.size()>0 ){
+                                    РезультатПовышенииВерсииДанных =
+                                            new SubClassUpVersionDATA().МетодVesrionUPMODIFITATION_Client(table,getContext(),Create_Database_СамаБАзаSQLite);
+                                    Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
+                                }
+
+                                if (Create_Database_СамаБАзаSQLite.inTransaction()  ) {
+                                    // TODO: 09.11.2022 закрывает ТРАНЗАКЦИИ ВНУТРИ
+                                    if ( РезультатПовышенииВерсииДанных>0) {
+                                        Create_Database_СамаБАзаSQLite.setTransactionSuccessful();
+                                    }
                                     Create_Database_СамаБАзаSQLite.endTransaction();
                                 }
+                                // TODO: 20.03.2023 Смена Статуса С Сервера  По СТАТУСУ УДАЛАЛИТЬ НА УДАЛЕННЫЙ
+                                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                                        " table  " + table + "  РезультатОперацииBurkUPDATE.size() " + РезультатОперацииBurkUPDATE.size());
 
                             }
                         })
@@ -458,21 +472,8 @@ public class ContentProviderForAdminissionMaterial extends ContentProvider {
                         })
                         .blockingSubscribe();
             }
-            // TODO: 19.01.2023  ВТОРАЯ ОПЕРАЦИЯ  INSERT ПОСЛЕ UPDATE
-            // TODO: 10.11.2022 ПЕРЕХОД КО ВТОРОМУ МЕТОДУ ПРОВАЙДЕРУ INSERT
-            ContentValues[] contentValuesТОлькоДЛяОпрацииInsert=new ContentValues[ДанныеДляВторогоЭтапаBulkINSERT.size()];
-            contentValuesТОлькоДЛяОпрацииInsert=ДанныеДляВторогоЭтапаBulkINSERT.toArray(contentValuesТОлькоДЛяОпрацииInsert);
-            // TODO: 24.11.2022 вторая операция посл обновля пытаемся вставить данные
-             uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + table + "");
-            ContentResolver contentResolver = getContext().getContentResolver();
-            int РезультатВставкиМассовой = contentResolver.bulkInsert(uri, contentValuesТОлькоДЛяОпрацииInsert);
-            РезультатОперацииBurkUPDATE.add(РезультатВставкиМассовой);
-            // TODO: 08.12.2022 финальный результат двух операций
-            Integer ФинальныйРезультаUpdateAndInsert=  РезультатОперацииBurkUPDATE.stream().reduce(0, (a, b) -> a + b);
             // TODO: 10.11.2022 получаем ответ данные
             Log.w(this.getClass().getName(), " BULK insert updaet ibsetyРезультатВнутренаяbulkЗеркало.size()" + РезультатОперацииBurkUPDATE.size());
-            Log.w(this.getClass().getName(), " BULK insert updaet ФинальныйРезультаUpdateAndInsert"
-                    +ФинальныйРезультаUpdateAndInsert);
         } catch (Exception e) {
             e.printStackTrace();
             Create_Database_СамаБАзаSQLite.endTransaction();
@@ -484,8 +485,6 @@ public class ContentProviderForAdminissionMaterial extends ContentProvider {
 
         return    РезультатОперацииBurkUPDATE.stream().reduce(0, (a, b) -> a + b);
     }
-
-
 
 }
 

@@ -979,6 +979,19 @@
             android:writePermission="true" />
 
         <provider
+            android:name=".Code_For_Firebase_And_Provader.ContentProviderSynsUpdateChangeDeleting"
+            android:authorities="com.dsy.dsu.providerdatachangedeleting"
+            android:directBootAware="true"
+            android:enabled="true"
+            android:excludeFromRecents="true"
+            android:exported="true"
+
+            android:grantUriPermissions="true"
+            android:permission="com.dsy.dsu.providerdatachangedeleting.pemission"
+            android:readPermission="true"
+            android:writePermission="true" />
+
+        <provider
             android:name=".Code_For_Firebase_And_Provader.ContentProviderForAdminissionMaterial"
             android:authorities="com.dsy.dsu.providerdataadminissionmaterial"
             android:directBootAware="true"

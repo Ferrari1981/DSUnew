@@ -362,9 +362,7 @@ public class ContentProviderSynsUpdate extends ContentProvider {
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         ArrayList<Integer> РезультатОперацииBurkUPDATE = new ArrayList<>();
         try {
-            Class_GRUD_SQL_Operations.ClassRuntimeExeGRUDOpertions class_engine_sqlПовышаемВерсиюДанных=
-                    new Class_GRUD_SQL_Operations(getContext()) .new ClassRuntimeExeGRUDOpertions(getContext());
-            LinkedBlockingQueue<ContentValues>      ДанныеДляВторогоЭтапаBulkINSERT=new LinkedBlockingQueue<ContentValues>(Arrays.asList(values));
+            LinkedBlockingQueue<ContentValues>      ДанныеДляОперацииUpdates=new LinkedBlockingQueue<ContentValues>(Arrays.asList(values));
             String     table = МетодОпределяемТаблицу(uri);
             String ФлагКакойСинхронизацияПерваяИлиНет=         preferences.getString("РежимЗапускаСинхронизации", "");
             if (ФлагКакойСинхронизацияПерваяИлиНет.equalsIgnoreCase("ПовторныйЗапускСинхронизации") ||
@@ -407,11 +405,8 @@ public class ContentProviderSynsUpdate extends ContentProvider {
                                     if (ОперацияUPDATE>0) {
                                         РезультатОперацииBurkUPDATE.add(Integer.parseInt(ОперацияUPDATE.toString()));
                                         // TODO: 24.11.2022  удаление с последующей вставкой
-                                        ДанныеДляВторогоЭтапаBulkINSERT.remove(contentValuesInsert);
+                                        ДанныеДляОперацииUpdates.remove(contentValuesInsert);
                                         // TODO: 20.03.2023 МЕняем Статуст УдалелитьсСервера на Удаленный
-                                        // TODO: 20.03.2023 Смена Статуса С Сервера  По СТАТУСУ УДАЛАЛИТЬ НА УДАЛЕННЫЙ
-                                        МетодСменыСтатусаУдалитьНаУдаленный(table,UUID);
-
                                     }else{
                                            Cursor cursor=        Create_Database_СамаБАзаSQLite.rawQuery(" select "+
                                                     СтолбикСравнения+" from "+ table +" WHERE  "+СтолбикСравнения+" =?  ",new String[]{UUID.toString()});
@@ -419,7 +414,7 @@ public class ContentProviderSynsUpdate extends ContentProvider {
                                             if ( cursor.getCount() > 0) {
                                                 Log.d(this.getClass().getName(), "cursor.getCount()" + cursor.getCount());
                                                 // TODO: 24.11.2022  удаление с последующей вставкой
-                                                ДанныеДляВторогоЭтапаBulkINSERT.remove(contentValuesInsert);
+                                                ДанныеДляОперацииUpdates.remove(contentValuesInsert);
                                             }
                                         }
                                         cursor.close();
@@ -428,7 +423,7 @@ public class ContentProviderSynsUpdate extends ContentProvider {
                                             + РезультатОперацииBurkUPDATE.size()+"\n"+"bulkPOTOK "+Thread.currentThread().getName()+"\n"+
                                             " FUTURE FUTURE SIZE  Task "+"\n"+
                                             "  isParallel isParallel isParallel" + " ДанныеДляВторогоЭтапаBulkINSERT ДанныеДляВторогоЭтапаBulkINSERT.size()  "
-                                            + ДанныеДляВторогоЭтапаBulkINSERT.size() );
+                                            + ДанныеДляОперацииUpdates.size() );
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     Create_Database_СамаБАзаSQLite.endTransaction();
@@ -459,6 +454,7 @@ public class ContentProviderSynsUpdate extends ContentProvider {
                                     }
                                     Create_Database_СамаБАзаSQLite.endTransaction();
                                 }
+                                // TODO: 20.03.2023 Смена Статуса С Сервера  По СТАТУСУ УДАЛАЛИТЬ НА УДАЛЕННЫЙ
                                 Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
@@ -479,14 +475,34 @@ public class ContentProviderSynsUpdate extends ContentProvider {
                         })
                         .blockingSubscribe();
             }
-            // TODO: 19.01.2023  ВТОРАЯ ОПЕРАЦИЯ  INSERT ПОСЛЕ UPDATE
+
+// TODO: 20.03.2023 статус удаленеи строчек статус Уданные С Сервраа
+            switch (table) {
+                case "data_tabels":
+                case "tabel":
+                case "get_materials_data":
+                    LinkedBlockingQueue<ContentValues> ДанныеДляОперацииСменыСтатусаУдалениесСервера = new LinkedBlockingQueue<ContentValues>(Arrays.asList(values));
+                    ContentValues[] ДляОперацииСменыСтатусаУдалениесСервера = new ContentValues[ДанныеДляОперацииСменыСтатусаУдалениесСервера.size()];
+                    ДляОперацииСменыСтатусаУдалениесСервера = ДанныеДляОперацииСменыСтатусаУдалениесСервера.toArray(ДляОперацииСменыСтатусаУдалениесСервера);
+                    // TODO: 24.11.2022 вторая смены статуса удаеннеы
+                    uri = Uri.parse("content://com.dsy.dsu.providerdatachangedeleting/" + table + "");
+                    ContentResolver contentResolverСменыСтатуса = getContext().getContentResolver();
+                    int РезультатВставкиМассовойСменыСтатуса = contentResolverСменыСтатуса.bulkInsert(uri, ДляОперацииСменыСтатусаУдалениесСервера);
+                    // TODO: 10.11.2022 получаем ответ данные
+                    Log.w(this.getClass().getName(), " BULK insert UPDATEs iРезультатВставкиМассовойСменыСтатуса" + РезультатВставкиМассовойСменыСтатуса + " table " +table);
+                    break;
+            }
+
+
+
+
             // TODO: 10.11.2022 ПЕРЕХОД КО ВТОРОМУ МЕТОДУ ПРОВАЙДЕРУ INSERT
-            ContentValues[] contentValuesТОлькоДЛяОпрацииInsert=new ContentValues[ДанныеДляВторогоЭтапаBulkINSERT.size()];
-            contentValuesТОлькоДЛяОпрацииInsert=ДанныеДляВторогоЭтапаBulkINSERT.toArray(contentValuesТОлькоДЛяОпрацииInsert);
+            ContentValues[] ДляОперацииInsert=new ContentValues[ДанныеДляОперацииUpdates.size()];
+            ДляОперацииInsert=ДанныеДляОперацииUpdates.toArray(ДляОперацииInsert);
             // TODO: 24.11.2022 вторая операция посл обновля пытаемся вставить данные
              uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + table + "");
             ContentResolver contentResolver = getContext().getContentResolver();
-            int РезультатВставкиМассовой = contentResolver.bulkInsert(uri, contentValuesТОлькоДЛяОпрацииInsert);
+            int РезультатВставкиМассовой = contentResolver.bulkInsert(uri, ДляОперацииInsert);
             РезультатОперацииBurkUPDATE.add(РезультатВставкиМассовой);
             // TODO: 08.12.2022 финальный результат двух операций
             Integer ФинальныйРезультаUpdateAndInsert=  РезультатОперацииBurkUPDATE.stream().reduce(0, (a, b) -> a + b);
@@ -505,47 +521,6 @@ public class ContentProviderSynsUpdate extends ContentProvider {
 
         return    РезультатОперацииBurkUPDATE.stream().reduce(0, (a, b) -> a + b);
     }
-
-    private void МетодСменыСтатусаУдалитьНаУдаленный(String Таблица,Object UUIDДляСменыСтатусУдалитьСервера) {
-        try {
-
-            switch (Таблица){
-                case "data_tabels":
-                case "tabel":
-                case  "get_materials_data" :
-                    ContentResolver resolver;
-                    ContentValues contentValuesСменыСтатусаВыбраногоМатериала=new ContentValues();
-                    contentValuesСменыСтатусаВыбраногоМатериала.put("status_send","Удаленная");
-                    // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
-                    Long ПовышенаяВерсияДанных =
-                            new SubClassUpVersionDATA().
-                                    МетодПовышаемВерсииCurrentTable(Таблица,getContext(),new CREATE_DATABASE(getContext()).getССылкаНаСозданнуюБазу());
-                    Log.d(this.getClass().getName(), " ПовышенаяВерсияДанных  " + ПовышенаяВерсияДанных);
-                    // TODO: 18.11.2022
-                    contentValuesСменыСтатусаВыбраногоМатериала.put("current_table",ПовышенаяВерсияДанных);
-                    // TODO: 21.10.2022 САМА ВСТАВКА
-                    Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + Таблица + "");
-                    //  Uri uri = Uri.parse("content://MyContentProviderDatabase/" +НазваниеОбрабоатываемойТаблицы + "");
-                    resolver = getContext().getContentResolver();
-                    // TODO: 22.09.2022 Само выполенение
-                    Integer     РезультатСменаСтатусаУдалитьНаУдаленный =
-                            resolver.update(uri,contentValuesСменыСтатусаВыбраногоМатериала,"status_send=?, uuid=?", new String[]{"УдалитьФлагСервера".toString(),UUIDДляСменыСтатусУдалитьСервера.toString()});
-                    РезультатСменаСтатусаУдалитьНаУдаленный = Optional.ofNullable(РезультатСменаСтатусаУдалитьНаУдаленный).map(Integer::new).orElse(0);
-                    Log.i(this.getClass().getName(),  "РезультатСменаСтатусаУдалитьНаУдаленный  "+РезультатСменаСтатусаУдалитьНаУдаленный
-                            + Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
-                    break;
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(getContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-            Log.e(getContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
-        }
-    }
-
 
 }
 
