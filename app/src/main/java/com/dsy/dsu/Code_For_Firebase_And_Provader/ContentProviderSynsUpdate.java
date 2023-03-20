@@ -33,6 +33,7 @@ import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -407,6 +408,10 @@ public class ContentProviderSynsUpdate extends ContentProvider {
                                         РезультатОперацииBurkUPDATE.add(Integer.parseInt(ОперацияUPDATE.toString()));
                                         // TODO: 24.11.2022  удаление с последующей вставкой
                                         ДанныеДляВторогоЭтапаBulkINSERT.remove(contentValuesInsert);
+                                        // TODO: 20.03.2023 МЕняем Статуст УдалелитьсСервера на Удаленный
+                                        // TODO: 20.03.2023 Смена Статуса С Сервера  По СТАТУСУ УДАЛАЛИТЬ НА УДАЛЕННЫЙ
+                                        МетодСменыСтатусаУдалитьНаУдаленный(table,UUID);
+
                                     }else{
                                            Cursor cursor=        Create_Database_СамаБАзаSQLite.rawQuery(" select "+
                                                     СтолбикСравнения+" from "+ table +" WHERE  "+СтолбикСравнения+" =?  ",new String[]{UUID.toString()});
@@ -501,6 +506,45 @@ public class ContentProviderSynsUpdate extends ContentProvider {
         return    РезультатОперацииBurkUPDATE.stream().reduce(0, (a, b) -> a + b);
     }
 
+    private void МетодСменыСтатусаУдалитьНаУдаленный(String Таблица,Object UUIDДляСменыСтатусУдалитьСервера) {
+        try {
+
+            switch (Таблица){
+                case "data_tabels":
+                case "tabel":
+                case  "get_materials_data" :
+                    ContentResolver resolver;
+                    ContentValues contentValuesСменыСтатусаВыбраногоМатериала=new ContentValues();
+                    contentValuesСменыСтатусаВыбраногоМатериала.put("status_send","Удаленная");
+                    // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+                    Long ПовышенаяВерсияДанных =
+                            new SubClassUpVersionDATA().
+                                    МетодПовышаемВерсииCurrentTable(Таблица,getContext(),new CREATE_DATABASE(getContext()).getССылкаНаСозданнуюБазу());
+                    Log.d(this.getClass().getName(), " ПовышенаяВерсияДанных  " + ПовышенаяВерсияДанных);
+                    // TODO: 18.11.2022
+                    contentValuesСменыСтатусаВыбраногоМатериала.put("current_table",ПовышенаяВерсияДанных);
+                    // TODO: 21.10.2022 САМА ВСТАВКА
+                    Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + Таблица + "");
+                    //  Uri uri = Uri.parse("content://MyContentProviderDatabase/" +НазваниеОбрабоатываемойТаблицы + "");
+                    resolver = getContext().getContentResolver();
+                    // TODO: 22.09.2022 Само выполенение
+                    Integer     РезультатСменаСтатусаУдалитьНаУдаленный =
+                            resolver.update(uri,contentValuesСменыСтатусаВыбраногоМатериала,"status_send=?, uuid=?", new String[]{"УдалитьФлагСервера".toString(),UUIDДляСменыСтатусУдалитьСервера.toString()});
+                    РезультатСменаСтатусаУдалитьНаУдаленный = Optional.ofNullable(РезультатСменаСтатусаУдалитьНаУдаленный).map(Integer::new).orElse(0);
+                    Log.i(this.getClass().getName(),  "РезультатСменаСтатусаУдалитьНаУдаленный  "+РезультатСменаСтатусаУдалитьНаУдаленный
+                            + Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
+                    break;
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            new Class_Generation_Errors(getContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+            Log.e(getContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
+        }
+    }
 
 
 }

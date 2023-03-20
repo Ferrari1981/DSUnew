@@ -438,41 +438,9 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                       Integer  УдалениеДанныхСоСтатусомУдаленная=   resolver.delete(uri,"status_send=?",new String[]{"Удаленная"});
                         Log.i(this.getClass().getName(),  "УдалениеДанныхСоСтатусомУдаленная  "+УдалениеДанныхСоСтатусомУдаленная
                                 + Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
-
-                        // TODO: 20.03.2023 Смена Статуса С Сервера  По СТАТУСУ УДАЛАЛИТЬ НА УДАЛЕННЫЙ
-                        МетодСменыСтатусаУдалитьНаУдаленный(Таблица);
                     }
 
-                    private void МетодСменыСтатусаУдалитьНаУдаленный(String Таблица) {
-                        try {
-                        ContentResolver resolver;
-                        ContentValues contentValuesСменыСтатусаВыбраногоМатериала=new ContentValues();
-                        contentValuesСменыСтатусаВыбраногоМатериала.put("status_send","Удаленная");
-                        // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
-                        Long ПовышенаяВерсияДанных =
-                                new SubClassUpVersionDATA().
-                                        МетодПовышаемВерсииCurrentTable(Таблица,getApplicationContext(),new CREATE_DATABASE(context).getССылкаНаСозданнуюБазу());
-                        Log.d(this.getClass().getName(), " ПовышенаяВерсияДанных  " + ПовышенаяВерсияДанных);
-                        // TODO: 18.11.2022
-                        contentValuesСменыСтатусаВыбраногоМатериала.put("current_table",ПовышенаяВерсияДанных);
-                        // TODO: 21.10.2022 САМА ВСТАВКА
-                        Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + Таблица + "");
-                        //  Uri uri = Uri.parse("content://MyContentProviderDatabase/" +НазваниеОбрабоатываемойТаблицы + "");
-                        resolver = context.getContentResolver();
-                        // TODO: 22.09.2022 Само выполенение
-                        Integer     РезультатСменаСтатусаУдалитьНаУдаленный = resolver.update(uri,contentValuesСменыСтатусаВыбраногоМатериала,"status_send=?", new String[]{"УдалитьФлагСервера".toString()});
-                        РезультатСменаСтатусаУдалитьНаУдаленный = Optional.ofNullable(РезультатСменаСтатусаУдалитьНаУдаленный).map(Integer::new).orElse(0);
-                        Log.i(this.getClass().getName(),  "РезультатСменаСтатусаУдалитьНаУдаленный  "+РезультатСменаСтатусаУдалитьНаУдаленный
-                                + Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
-                    }
-                    }
+
                 });
             } catch (Exception e) {
                 e.printStackTrace();
