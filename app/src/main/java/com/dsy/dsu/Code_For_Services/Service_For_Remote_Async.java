@@ -1291,8 +1291,7 @@ public class Service_For_Remote_Async extends IntentService {
                                 МетодBulkUPDATEChangeStatusServerDeleting(ИмяТаблицыОтАндройда_Локальноая, context);
                             }
                             // TODO: 20.03.2023  Запуск Метода Смены Статуса Удаление на Сервера
-                            ТекущийАдаптерДляВсего.clear();
-                            АдаптерДляВставкиИОбновления.clear();
+                            МетодОчисткаПеременныхПослеСинхроации();
                         }
                     }
 
@@ -1312,6 +1311,23 @@ public class Service_For_Remote_Async extends IntentService {
             return  ПубличныйРезультатОтветаОтСерврераУспешно;
         }
 
+        private void МетодОчисткаПеременныхПослеСинхроации() {
+            try{
+            if (ТекущийАдаптерДляВсего!=null) {
+                ТекущийАдаптерДляВсего.clear();
+            }
+            if (АдаптерДляВставкиИОбновления!=null) {
+                АдаптерДляВставкиИОбновления.clear();
+            }
+                Log.d(this.getClass().getName(), "  АдаптерДляВставкиИОбновления   " + АдаптерДляВставкиИОбновления );
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+        }
+        }
 
 
         private Integer МетодОбменаЗаданиеДляСервера_ПосылаемНа_Сервер(String ИмяТаблицыОтАндройда_Локальноая,
