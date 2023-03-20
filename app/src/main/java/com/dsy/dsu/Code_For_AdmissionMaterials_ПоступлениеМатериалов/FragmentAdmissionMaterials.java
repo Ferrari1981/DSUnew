@@ -1,10 +1,6 @@
 package com.dsy.dsu.Code_For_AdmissionMaterials_ПоступлениеМатериалов;
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.DataSetObserver;
@@ -23,16 +19,13 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +42,6 @@ import android.widget.TextView;
 
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
-import com.dsy.dsu.Code_For_Services.Service_For_Public;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
 import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
 import com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_App;
@@ -63,25 +55,10 @@ import com.google.android.material.card.MaterialCardView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.PrimitiveIterator;
 import java.util.Random;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.ToDoubleBiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
 
 
 // TODO: 29.09.2022 фрагмент для получение материалов
@@ -96,7 +73,7 @@ public class FragmentAdmissionMaterials extends Fragment {
     private BottomNavigationItemView bottomNavigationItemView3обновить;
     private ProgressBar progressBarСканирование;
     private LayoutAnimationController layoutAnimationController;
-    private Animation animation;
+    private Animation animationПолучениеМатериалов;
     private  Handler handler;
     private  Cursor cursorНомерЦФО;
     private  Cursor cursorНомерМатериала;
@@ -179,9 +156,11 @@ public class FragmentAdmissionMaterials extends Fragment {
             bottomNavigationItemView3обновить = bottomNavigationView.findViewById(R.id.id_async);
             bottomNavigationItemView3обновить.setIconSize(50);
            // animation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_row_vibrator1);
-            animation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_row_tabellist);
+           // animation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_row_tabellist);
+            animationПолучениеМатериалов = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_row);
             progressBarСканирование=  view.findViewById(R.id.ProgressBar);
             progressBarСканирование.setVisibility(View.VISIBLE);
+
             //todo запуск методов в фрагменте
             МетодИнициализацииRecycreView();
             МетодHandlerCallBack();
@@ -328,6 +307,8 @@ public class FragmentAdmissionMaterials extends Fragment {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.startAnimation(animationПолучениеМатериалов);
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(getContext().getClass().getName(),
@@ -1267,7 +1248,7 @@ public class FragmentAdmissionMaterials extends Fragment {
                 tableLayout.removeView(rowПервыеДанные);
                 rowПервыеДанные.setId(new Random().nextInt());
                 tableLayout.recomputeViewAttributes(rowПервыеДанные);
-                rowПервыеДанные.startAnimation(animation);
+                rowПервыеДанные.startAnimation(animationПолучениеМатериалов);
                 // TODO: 18.10.2022 добавляем  сами данные
                 МетодДобаленияНовыхСтрокДанных(rowПервыеДанные, tableLayoutРодительская);
                 // TODO: 19.10.2022

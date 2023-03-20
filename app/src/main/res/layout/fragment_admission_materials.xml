@@ -43,11 +43,12 @@
         <ScrollView
             android:id="@+id/scrollview_new_materials"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="631dp"
+            android:fillViewport="true"
             android:scrollbars="horizontal|vertical"
             android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll"
-            android:fillViewport="true">
+            android:transcriptMode="alwaysScroll">
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/RecyclerView"
                 android:layout_width="match_parent"

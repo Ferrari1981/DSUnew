@@ -16,6 +16,8 @@ import java.util.concurrent.TimeoutException;
 
 import javax.crypto.NoSuchPaddingException;
 
+import io.reactivex.rxjava3.core.Observable;
+
 public class Class_Connections_Server  extends  Class_GRUD_SQL_Operations {
     private Context context1;
     private  Class_GRUD_SQL_Operations class_grud_sql_operations=null;
@@ -52,15 +54,17 @@ public class Class_Connections_Server  extends  Class_GRUD_SQL_Operations {
             throws ExecutionException, InterruptedException, TimeoutException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
          Boolean результатПрозвонаСокетом = false;
         try {
-            PUBLIC_CONTENT public_content=   new PUBLIC_CONTENT(context1);
-            Map<Integer,String> concurrentHashMapАдресаПодключенияКСерверу   =  new PUBLIC_CONTENT(context1).getМассивПортовСервера();
+            Map<Integer,String> concurrentHashMapАдресаПодключенияКСерверу   =  new PUBLIC_CONTENT(КонтекстКоторыйДляСинхронизации).getМассивПортовСервера();
             for (Map.Entry<Integer,String> entry : concurrentHashMapАдресаПодключенияКСерверу.entrySet()) {
                 Integer   ИмяПорта =    entry.getKey();
                 String     ИмяСервера=     entry.getValue();
-                Log.d(Class_MODEL_synchronized.class.getName()," ИмяСервера"+ ИмяСервера+" ИмяПорта "+ИмяПорта);
+                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                        " ИмяСервера"+ ИмяСервера+" ИмяПорта "+ИмяПорта);
                 // TODO: 10.11.2022  пинг к сервера
                    Integer  БуферПолучениеДанныхРЕальныйСтатусРАботыSQLServer =
-                      new Class_MODEL_synchronized(context1).
+                      new Class_MODEL_synchronized(КонтекстКоторыйДляСинхронизации).
                               МетодУниверсальногоПинга(null, "",
                         "", "application/gzip",
                                       "Хотим Получить Статус Реальной Работы SQL SERVER",

@@ -138,7 +138,8 @@ public class MainActivity_Face_App extends AppCompatActivity {
             constraintLayoutFaceApp.setBackgroundColor(Color.WHITE);
             drawerLayoutFaceApp.setBackgroundColor(Color.WHITE);
             drawerLayoutFaceApp.setDrawingCacheBackgroundColor(Color.RED);//todo
-            animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_row_tabel);//TODO animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_row_vibrator1);
+        //    animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_row_tabel);//TODO animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_row_vibrator1);
+            animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_row);//TODO animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_row_vibrator1);
             preferences = getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
             progressBarTabel.setVisibility(View.INVISIBLE);
             progressCommitpay.setVisibility(View.INVISIBLE);
