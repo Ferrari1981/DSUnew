@@ -1237,6 +1237,16 @@ public class Service_For_Remote_Async extends IntentService {
                         Integer    ДанныеПосылаемНаСервер = МетодОбменаЗаданиеДляСервера_ПосылаемНа_Сервер(ИмяТаблицыОтАндройда_Локальноая,
                                 МенеджерПотоковВнутрений, ВерсияДанныхЛокальнаяСерверная);
 
+                        // TODO: 28.10.2021 ПЕРЕРДАЕМ ВОЗМОЖНЫЙ ОТВЕТ
+                        Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                                " ВерсияДанныхсСамогоSqlServer  " + ВерсияДанныхсСамогоSqlServer +
+                                "  ВерсияДанныхЛокальнаяСерверная "
+                                + ВерсияДанныхЛокальнаяСерверная
+                                + " ФлагКакуюЧастьСинхронизацииЗапускаем " + ФлагКакуюЧастьСинхронизацииЗапускаем+
+                                "  ДанныеПосылаемНаСервер " +ДанныеПосылаемНаСервер);
+
                         if(ДанныеПосылаемНаСервер>0 ){
                             ПубличныйРезультатОтветаОтСерврераУспешно=ДанныеПосылаемНаСервер;///"Серверный"
                             // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
@@ -1825,26 +1835,32 @@ public class Service_For_Remote_Async extends IntentService {
         private void МетодBulkUPDATEChangeStatusServerDeleting(@NonNull String имяТаблицыОтАндройда_локальноая,@NonNull Context context) {
             Long результат_ОбновлениенымисСервераСменаСтатусаУдаления=0l;
             try{
-                Uri uri = Uri.parse("content://com.dsy.dsu.providerdatachangedeleting/" + имяТаблицыОтАндройда_локальноая + "");
-                //   Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + имяТаблицыОтАндройда_локальноая + "");
-                if (АдаптерДляВставкиИОбновления.size()>0) {
-                    //TODO  ПОСЛЕ ОБРАБОТКИ ВСЕЙ ТАБЛИЦЫ ТЕСТОВО ЗАПУСКАЕМ ЕТОД МАССОВОЙ ВСТАВКИ ЧЕРЕЗ КОНТЕНТ ПРОВАЙДЕР МЕТОД BurkInset
-                    Log.w(context.getClass().getName(), " АдаптерДляВставкиИОбновления.size()  " + АдаптерДляВставкиИОбновления.size()+
-                            "\n" + " АдаптерПриОбновленияДанныхсСервера.size()  " + ТекущийАдаптерДляВсего.size()+" uri  " + uri);/////
-                    ContentResolver contentResolver  = context.getContentResolver();
-                    // TODO: 09.11.2022 визуальна часть синхрониазции по таблице
-                    МетодCallBasksВизуальноИзСлужбы(МаксималноеКоличествоСтрочекJSON,
-                            ИндексВизуальнойДляPrograssBar,имяТаблицыОтАндройда_локальноая,
-                            Проценты,"ПроцессеAsyncBackground",
-                            true,false);
-                    ContentValues[] contentValuesМассив=new ContentValues[АдаптерДляВставкиИОбновления.size()];
-                    contentValuesМассив=АдаптерДляВставкиИОбновления.toArray(contentValuesМассив);
-                    int РезультатОбновлениеМассовой = contentResolver.bulkInsert(uri, contentValuesМассив);
-                    // TODO: 27.10.2021
-                    результат_ОбновлениенымисСервераСменаСтатусаУдаления = Long.valueOf(РезультатОбновлениеМассовой);
-                    Log.d(this.getClass().getName(), " РезультатОбновлениеМассовой :::  "
-                            + РезультатОбновлениеМассовой+"\n"+
-                            "  имяТаблицыОтАндройда_локальноая " +имяТаблицыОтАндройда_локальноая);
+                switch (имяТаблицыОтАндройда_локальноая) {
+                    case "data_tabels":
+                    case "tabel":
+                    case  "get_materials_data" :
+                        Uri uri = Uri.parse("content://com.dsy.dsu.providerdatachangedeleting/" + имяТаблицыОтАндройда_локальноая + "");
+                        //   Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + имяТаблицыОтАндройда_локальноая + "");
+                        if (АдаптерДляВставкиИОбновления.size()>0) {
+                            //TODO  ПОСЛЕ ОБРАБОТКИ ВСЕЙ ТАБЛИЦЫ ТЕСТОВО ЗАПУСКАЕМ ЕТОД МАССОВОЙ ВСТАВКИ ЧЕРЕЗ КОНТЕНТ ПРОВАЙДЕР МЕТОД BurkInset
+                            Log.w(context.getClass().getName(), " АдаптерДляВставкиИОбновления.size()  " + АдаптерДляВставкиИОбновления.size()+
+                                    "\n" + " АдаптерПриОбновленияДанныхсСервера.size()  " + ТекущийАдаптерДляВсего.size()+" uri  " + uri);/////
+                            ContentResolver contentResolver  = context.getContentResolver();
+                            // TODO: 09.11.2022 визуальна часть синхрониазции по таблице
+                            МетодCallBasksВизуальноИзСлужбы(МаксималноеКоличествоСтрочекJSON,
+                                    ИндексВизуальнойДляPrograssBar,имяТаблицыОтАндройда_локальноая,
+                                    Проценты,"ПроцессеAsyncBackground",
+                                    true,false);
+                            ContentValues[] contentValuesМассив=new ContentValues[АдаптерДляВставкиИОбновления.size()];
+                            contentValuesМассив=АдаптерДляВставкиИОбновления.toArray(contentValuesМассив);
+                            int РезультатОбновлениеМассовой = contentResolver.bulkInsert(uri, contentValuesМассив);
+                            // TODO: 27.10.2021
+                            результат_ОбновлениенымисСервераСменаСтатусаУдаления = Long.valueOf(РезультатОбновлениеМассовой);
+                            Log.d(this.getClass().getName(), " РезультатОбновлениеМассовой :::  "
+                                    + РезультатОбновлениеМассовой+"\n"+
+                                    "  имяТаблицыОтАндройда_локальноая " +имяТаблицыОтАндройда_локальноая);
+                        }
+                        break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();

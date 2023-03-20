@@ -454,27 +454,6 @@ public class ContentProviderSynsUpdate extends ContentProvider {
                                     }
                                     Create_Database_СамаБАзаSQLite.endTransaction();
                                 }
-
-                                // TODO: 10.11.2022 ПЕРЕХОД КО ВТОРОМУ МЕТОДУ ПРОВАЙДЕРУ INSERT
-                                ContentValues[] ДляОперацииInsert=new ContentValues[ДанныеДляОперацииUpdates.size()];
-                                ДляОперацииInsert=ДанныеДляОперацииUpdates.toArray(ДляОперацииInsert);
-                                // TODO: 24.11.2022 вторая операция посл обновля пытаемся вставить данные
-                               Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + table + "");
-                                ContentResolver contentResolver = getContext().getContentResolver();
-                                int РезультатВставкиМассовой = contentResolver.bulkInsert(uri, ДляОперацииInsert);
-                                РезультатОперацииBurkUPDATE.add(РезультатВставкиМассовой);
-                                // TODO: 08.12.2022 финальный результат двух операций
-                                Integer ФинальныйРезультаUpdateAndInsert=  РезультатОперацииBurkUPDATE.stream().reduce(0, (a, b) -> a + b);
-                                // TODO: 10.11.2022 получаем ответ данные
-                                Log.w(this.getClass().getName(), " BULK insert updaet ibsetyРезультатВнутренаяbulkЗеркало.size()" + РезультатОперацииBurkUPDATE.size());
-                                Log.w(this.getClass().getName(), " BULK insert updaet ФинальныйРезультаUpdateAndInsert"
-                                        +ФинальныйРезультаUpdateAndInsert);
-                                // TODO: 20.03.2023 Смена Статуса С Сервера  По СТАТУСУ УДАЛАЛИТЬ НА УДАЛЕННЫЙ
-                                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
-                                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
-                                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
-                                        " table  " + table + "  РезультатОперацииBurkUPDATE.size() " + РезультатОперацииBurkUPDATE.size());
-
                             }
                         })
                         .onErrorComplete(new Predicate<Throwable>() {
@@ -490,6 +469,26 @@ public class ContentProviderSynsUpdate extends ContentProvider {
                         })
                         .blockingSubscribe();
             }
+            // TODO: 20.03.2023 ВТОРАЯ ОПЕРАЦИЯ вставка после обновления
+            // TODO: 10.11.2022 ПЕРЕХОД КО ВТОРОМУ МЕТОДУ ПРОВАЙДЕРУ INSERT
+            ContentValues[] ДляОперацииInsert=new ContentValues[ДанныеДляОперацииUpdates.size()];
+            ДляОперацииInsert=ДанныеДляОперацииUpdates.toArray(ДляОперацииInsert);
+            // TODO: 24.11.2022 вторая операция посл обновля пытаемся вставить данные
+             uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + table + "");
+            ContentResolver contentResolver = getContext().getContentResolver();
+            int РезультатВставкиМассовой = contentResolver.bulkInsert(uri, ДляОперацииInsert);
+            РезультатОперацииBurkUPDATE.add(РезультатВставкиМассовой);
+            // TODO: 08.12.2022 финальный результат двух операций
+            Integer ФинальныйРезультаUpdateAndInsert=  РезультатОперацииBurkUPDATE.stream().reduce(0, (a, b) -> a + b);
+            // TODO: 10.11.2022 получаем ответ данные
+            Log.w(this.getClass().getName(), " BULK insert updaet ibsetyРезультатВнутренаяbulkЗеркало.size()" + РезультатОперацииBurkUPDATE.size());
+            Log.w(this.getClass().getName(), " BULK insert updaet ФинальныйРезультаUpdateAndInsert"
+                    +ФинальныйРезультаUpdateAndInsert);
+            // TODO: 20.03.2023 Смена Статуса С Сервера  По СТАТУСУ УДАЛАЛИТЬ НА УДАЛЕННЫЙ
+            Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                    " table  " + table + "  РезультатОперацииBurkUPDATE.size() " + РезультатОперацииBurkUPDATE.size());
 
 
         } catch (Exception e) {

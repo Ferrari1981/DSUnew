@@ -514,12 +514,7 @@ try{
             Log.d(this.getClass().getName(), " ПубличноеИмяПользовательДлСервлета "+
                    ПубличноеИмяПользовательДлСервлета+" ПубличноеПарольДлСервлета " +ПубличноеПарольДлСервлета+
                     " ФиналПолучаемРазницуМеждуДатами " +ФиналПолучаемРазницуМеждуДатами );
-                /////данные с потока
-                Интент_ЗапускаетFaceApp.putExtra("РежимЗапускаСинхронизации","ПовторныйЗапускСинхронизации");
-            // TODO: 01.12.2022   Записываем дама
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("РежимЗапускаСинхронизации","ПовторныйЗапускСинхронизации");
-            editor.commit();
+
                 /////TODO ЗАПУСКАМ ОБНОЛВЕНИЕ ДАННЫХ С СЕРВЕРА ПЕРЕРД ЗАПУСКОМ ПРИЛОЖЕНИЯ ВСЕ ПРИЛОЖЕНИЯ ДСУ-1
             if (СтатусРаботыСервера ==true) {
                 Интент_ЗапускаетFaceApp.setClass(getApplicationContext(),  MainActivity_Visible_Async.class); //MainActivity_Visible_Async //MainActivity_Face_App
@@ -541,13 +536,7 @@ try{
             ///TODO принудительно устанвливаем редим работы синхронизации
             Log.d(this.getClass().getName(), " ПубличноеИмяПользовательДлСервлета "+ПубличноеИмяПользовательДлСервлета+
                     " ПубличноеПарольДлСервлета " +ПубличноеПарольДлСервлета);
-
-            // TODO: 01.12.2022   Записываем дама
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("РежимЗапускаСинхронизации","СамыйПервыйЗапускСинхронизации");
-            editor.commit();
             Интент_ЗапускаетFaceApp.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_FROM_BACKGROUND);//////FLAG_ACTIVITY_SINGLE_TOP
-
             Log.d(this.getClass().getName(), " Нет Связи с сервером  Face_Start СтатусРаботыСервера "+ СтатусРаботыСервера);
 
             //// TODO ЗАПУСКАЕМ СНАЧАЛА АУНТИФКАУИЮ И ЕСЛИ УСПЕШНО ЗАПУСКАМ ДАННЫЕ   -----ЭТО ПЕРВЫЙ ЗАПУСК ПРИЛОЖЕНИЯ
