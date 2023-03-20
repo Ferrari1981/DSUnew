@@ -363,7 +363,13 @@ public class ContentProviderSynsUpdateChangeDeleting extends ContentProvider {
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         ArrayList<Integer> РезультатОперацииBurkUPDATEСменаСтатусуУдаланиеСервера = new ArrayList<>();
         try {
+
             String     table = МетодОпределяемТаблицу(uri);
+
+            final Long[] ПовышенаяВерсияДанных = {new SubClassUpVersionDATA().
+                    МетодПовышаемВерсииCurrentTable(table, getContext(), Create_Database_СамаБАзаSQLite)};
+            Log.d(this.getClass().getName(), " ПовышенаяВерсияДанных  " + ПовышенаяВерсияДанных[0]);
+
             String ФлагКакойСинхронизацияПерваяИлиНет=         preferences.getString("РежимЗапускаСинхронизации", "");
             if (ФлагКакойСинхронизацияПерваяИлиНет.equalsIgnoreCase("ПовторныйЗапускСинхронизации") ||
                     table.equalsIgnoreCase("settings_tabels") ||  table.equalsIgnoreCase("view_onesignal") ) {
@@ -403,11 +409,7 @@ public class ContentProviderSynsUpdateChangeDeleting extends ContentProvider {
                                     ContentValues contentValuesСменыСтатусаУдаленногоСервера=new ContentValues();
                                     contentValuesСменыСтатусаУдаленногоСервера.put("status_send","Удаленная");
                                     // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
-                                    Long ВерсияДанныхТекущейСтроки=Long.parseLong(contentValuesInsert.get("current_table").toString());
-
-                                    Log.d(this.getClass().getName(), " ВерсияДанныхТекущейСтроки  " + ВерсияДанныхТекущейСтроки);
-                                    // TODO: 18.11.2022
-                                    contentValuesСменыСтатусаУдаленногоСервера.put("current_table",ВерсияДанныхТекущейСтроки+1);
+                                    contentValuesСменыСтатусаУдаленногоСервера.put("current_table", ПовышенаяВерсияДанных[0]);
                                     String ДатаДляТекущеОперации=     new Class_Generation_Data(getContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
                                     contentValuesСменыСтатусаУдаленногоСервера.put("date_update", ДатаДляТекущеОперации);
                                     String table = МетодОпределяемТаблицу(uri);
@@ -419,6 +421,7 @@ public class ContentProviderSynsUpdateChangeDeleting extends ContentProvider {
                                     if (ОперацияUPDATEСменыСтатусаУдаление>0) {
                                         РезультатОперацииBurkUPDATEСменаСтатусуУдаланиеСервера.add(Integer.parseInt(ОперацияUPDATEСменыСтатусаУдаление.toString()));
                                         // TODO: 20.03.2023 МЕняем Статуст УдалелитьсСервера на Удаленный
+                                        ПовышенаяВерсияДанных[0]++;
                                     }
                                     Log.w(this.getClass().getName(), "count  bulkInsert  РезультатОперацииBurkUPDATEСменаСтатусуУдаланиеСервера.size() "
                                             + РезультатОперацииBurkUPDATEСменаСтатусуУдаланиеСервера.size()+"\n"+"bulkPOTOK "+Thread.currentThread().getName()+"\n"+
@@ -440,16 +443,9 @@ public class ContentProviderSynsUpdateChangeDeleting extends ContentProvider {
                             @Override
                             public void run() throws Throwable {
                                 // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
-                                Integer РезультатПовышенииВерсииДанных=0;
-                                if(РезультатОперацииBurkUPDATEСменаСтатусуУдаланиеСервера.size()>0 ){
-                                    РезультатПовышенииВерсииДанных =
-                                            new SubClassUpVersionDATA().МетодVesrionUPMODIFITATION_Client(table,getContext(),Create_Database_СамаБАзаSQLite);
-                                    Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
-                                }
-
                                 if (Create_Database_СамаБАзаSQLite.inTransaction()  ) {
                                     // TODO: 09.11.2022 закрывает ТРАНЗАКЦИИ ВНУТРИ
-                                    if ( РезультатПовышенииВерсииДанных>0) {
+                                    if ( РезультатОперацииBurkUPDATEСменаСтатусуУдаланиеСервера.size()>0) {
                                         Create_Database_СамаБАзаSQLite.setTransactionSuccessful();
                                     }
                                     Create_Database_СамаБАзаSQLite.endTransaction();

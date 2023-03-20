@@ -1275,6 +1275,14 @@ public class Service_For_Remote_Async extends IntentService {
                                 // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
                                 Integer РезультатПовышенииВерсииДанных = subClassUpVersionDATA.МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая,context,getССылкаНаСозданнуюБазу());
                                 Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
+                                // TODO: 20.03.2023 удаляем им ПАМЯТИ переменнфые
+
+                                // TODO: 20.03.2023 МЕням Статус Удаление на Сервере
+                                МетодBulkUPDATEChangeStatusServerDeleting(ИмяТаблицыОтАндройда_Локальноая, context);
+                                // TODO: 20.03.2023  Запуск Метода Смены Статуса Удаление на Сервера
+                                ТекущийАдаптерДляВсего.clear();
+                                АдаптерДляВставкиИОбновления.clear();
+
                             }
 
                         }
@@ -1515,6 +1523,7 @@ public class Service_For_Remote_Async extends IntentService {
         /////// TODO МЕТОД ПАСРИНГА ПРИШЕДШЕГО  С СЕРВЕРА ВНУТРИ ASYNSTASK В ФОНЕ
         Integer МетодПарсингJSONФайлаОтСервреравФоне(@NonNull  StringBuffer БуферПолученныйJSON,
                                                    @NonNull  String имяТаблицыОтАндройда_локальноая) throws InterruptedException, JSONException {
+            final Long[] РезультатРаботыСинхрониазциии = {0l};
             try {
                 Log.d(this.getClass().getName(), " БуферПолученныйJSON " + БуферПолученныйJSON.toString());
               //  JsonObject     ПришелJsonОтСервера = new PUBLIC_CONTENT(context).gson.fromJson(БуферПолученныйJSON.toString(), JsonObject.class);
@@ -1577,9 +1586,10 @@ public class Service_For_Remote_Async extends IntentService {
                                             Log.d(this.getClass().getName(), " массова вставка МетодContentProvoderForUpdateJrInsert  АдаптерПриОбновленияДанныхсСервера.size() :::  "
                                                     + ТекущийАдаптерДляВсего.size());
                                             // TODO: 09.11.2022 ПОСЛЕ ОБРАБОТКИ НАЧИНАЕМ ВСТАКУ ДАННЫХ ЧЕРЕЗ BULK INSERT
-                                            МетодBulkUPDATE(имяТаблицыОтАндройда_локальноая, context);
+                                            РезультатРаботыСинхрониазциии[0] =            МетодBulkUPDATE(имяТаблицыОтАндройда_локальноая, context);
                                             Log.d(this.getClass().getName(), " Конец  ПАРСИНГА ОБРАБОАТЫВАЕМОМЙ ТАБЛИЦЫ МетодBulkUPDATE   ::::: "
-                                                    + имяТаблицыОтАндройда_локальноая+" АдаптерДляВставкиИОбновления.size() " +АдаптерДляВставкиИОбновления.size());
+                                                    + имяТаблицыОтАндройда_локальноая+" АдаптерДляВставкиИОбновления.size() "
+                                                    +АдаптерДляВставкиИОбновления.size() + " РезультатРаботыСинхрониазциии "+РезультатРаботыСинхрониазциии[0]);
                                         }
                                     })
                             .forEach(new io.reactivex.rxjava3.functions.Consumer<JsonElement>() {
@@ -1700,198 +1710,6 @@ public class Service_For_Remote_Async extends IntentService {
                         }
                     })
                     .blockingSubscribe();
-
-
-
-
-
-/*                Flowable.fromIterable(ПришелJsonОтСервера.entrySet())
-                        .onBackpressureBuffer( true)
-                        .buffer(500)
-                        .doOnError(new io.reactivex.rxjava3.functions.Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Throwable {
-                                Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" +
-                                        Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(throwable.toString(),
-                                        this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                        Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            }
-                        })
-                        .doOnNext(new io.reactivex.rxjava3.functions.Consumer<List<Map.Entry<String, JsonElement>>>() {
-                            @Override
-                            public void accept(List<Map.Entry<String, JsonElement>> entriesbuffer) throws Throwable {
-                                Log.d(this.getClass().getName(),  " date "+ "jsonObjects "  +new Date().toGMTString().toString());
-                                try{
-                                    // TODO: 12.12.2022
-                                    // TODO: 08.12.2022 ДЛЯ БУФЕРА
-                                    АдаптерДляВставкиИОбновления = new ArrayList<>();//JSON_ПерваяЧасть.names().length()
-                                    Flowable.fromIterable(entriesbuffer)
-                                            .onBackpressureBuffer( true)
-                                            .doOnError(new io.reactivex.rxjava3.functions.Consumer<Throwable>() {
-                                                @Override
-                                                public void accept(Throwable throwable) throws Throwable {
-                                                    Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" +
-                                                            Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                                            " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                    new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(throwable.toString(),
-                                                            this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                                            Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                }
-                                            }).doOnNext(new io.reactivex.rxjava3.functions.Consumer<Map.Entry<String, JsonElement>>() {
-                                                @Override
-                                                public void accept(Map.Entry<String, JsonElement> stringJsonElementEntry) throws Throwable {
-                                                    Log.d(this.getClass().getName(), " БуферПолученныйJSON " + stringJsonElementEntry.getKey() +
-                                                            "stringJsonElementEntry" + stringJsonElementEntry.getValue());
-                                                    try {
-                                                        ///TODO  ДЛЯ СТРОКИ
-                                                        ТекущийАдаптерДляВсего = new ContentValues();
-                                                        // TODO: 06.10.2022  ВНУТрений СТрочка обработки данных сами Столбикки
-                                                        JsonObject jsonObjectСамаСтрочка = stringJsonElementEntry.getValue().getAsJsonObject();
-                                                        Log.d(this.getClass().getName(), " POOL THREAD ROWS JSON " + Thread.currentThread().getName());
-                                                        // TODO: 14.11.2022  ОБРАБОТКА ВТОРОЙ ДАНЫХ САМИ СТОЛБИКИ
-                                                        Flowable.fromIterable(jsonObjectСамаСтрочка.entrySet())
-                                                                .onBackpressureBuffer( true)
-                                                                        .doOnError(new io.reactivex.rxjava3.functions.Consumer<Throwable>() {
-                                                                            @Override
-                                                                            public void accept(Throwable throwable) throws Throwable {
-                                                                                Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" +
-                                                                                        Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                                                                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                                                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(throwable.toString(),
-                                                                                        this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                                                                        Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                                            }
-                                                                        })
-                                                                                .doOnNext(new io.reactivex.rxjava3.functions.Consumer<Map.Entry<String, JsonElement>>() {
-                                                                                    @Override
-                                                                                    public void accept(Map.Entry<String, JsonElement> stringJsonElementEntryВнутриJSONСтрочки) throws Throwable {
-                                                                                        String ПолеОтJSONKEY = stringJsonElementEntryВнутриJSONСтрочки.getKey().toString().trim();
-                                                                                        switch (имяТаблицыОтАндройда_локальноая.trim().toLowerCase()) {
-                                                                                            case "tabels":
-                                                                                            case "chats":
-                                                                                            case "data_chat":
-                                                                                            case "chat_users":
-                                                                                            case "fio":
-                                                                                            case "tabel":
-                                                                                            case "cfo":
-                                                                                            case "data_tabels":
-                                                                                            case "nomen_vesov":
-                                                                                            case "type_materials":
-                                                                                            case "company":
-                                                                                            case "track":
-                                                                                                System.out.println("  ПолеОтJSONKEY  " + ПолеОтJSONKEY);
-                                                                                                if (stringJsonElementEntryВнутриJSONСтрочки.getKey().contentEquals("id") == true) {
-                                                                                                    ПолеОтJSONKEY = "_id";
-                                                                                                }
-                                                                                                break;
-                                                                                        }
-                                                                                        // TODO: 27.10.2022 Дополнительна Обработка
-                                                                                        String ПолеЗначениеJson = stringJsonElementEntryВнутриJSONСтрочки.getValue().toString()
-                                                                                                .replace("\"", "").replace("\\n", "")
-                                                                                                .replace("\\r", "").replace("\\", "")
-                                                                                                .replace("\\t", "").trim();//todo .replaceAll("[^A-Za-zА-Яа-я0-9]", "")
-                                                                                        if (ПолеОтJSONKEY.equalsIgnoreCase("status_carried_out") ||
-                                                                                                ПолеОтJSONKEY.equalsIgnoreCase("closed") ||
-                                                                                                ПолеОтJSONKEY.equalsIgnoreCase("locked")) {
-                                                                                            if (ПолеЗначениеJson.equalsIgnoreCase("false") ||
-                                                                                                    ПолеЗначениеJson.equalsIgnoreCase("0")) {
-                                                                                                ПолеЗначениеJson = "False";
-                                                                                            }
-                                                                                            if (ПолеЗначениеJson.equalsIgnoreCase("true") ||
-                                                                                                    ПолеЗначениеJson.equalsIgnoreCase("1")) {
-                                                                                                ПолеЗначениеJson = "True";
-                                                                                            }
-                                                                                        }
-                                                                                        Log.d(this.getClass().getName(), " ПолеОтJSONKEY " + ПолеОтJSONKEY + " ПолеЗначениеJson" + ПолеЗначениеJson);
-                                                                                        // TODO: 27.10.2022  UUID есть Обновление
-                                                                                        ТекущийАдаптерДляВсего.put(ПолеОтJSONKEY, ПолеЗначениеJson);//
-                                                                                    }
-                                                                                })
-                                                                .onErrorComplete(new Predicate<Throwable>() {
-                                                                    @Override
-                                                                    public boolean test(Throwable throwable) throws Throwable {
-                                                                        Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                                                                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                                        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
-                                                                                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                                        return false;
-                                                                    }
-                                                                })
-                                                                .doOnComplete(new Action() {
-                                                                    @Override
-                                                                    public void run() throws Throwable {
-                                                                        // TODO: 14.11.2022  Заполем  Обновление ЧЕРЕЗ КОНТЕКТ ПРОВАЙДЕР
-                                                                        МетодContentProvoderForUpdateJrInsert(context,  имяТаблицыОтАндройда_локальноая);
-                                                                        Log.d(this.getClass().getName(), " массова вставка МетодContentProvoderForUpdateJrInsert  АдаптерПриОбновленияДанныхсСервера.size() :::  "
-                                                                                + ТекущийАдаптерДляВсего.size());
-                                                                    }
-                                                                }).blockingSubscribe();
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                                                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                                                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                    }
-
-                                                }
-                                            })
-                                                    .doOnError(new io.reactivex.rxjava3.functions.Consumer<Throwable>() {
-                                                        @Override
-                                                        public void accept(Throwable throwable) throws Throwable {
-                                                            Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" +
-                                                                    Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                                                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
-                                                                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                                        }
-                                                    }).doOnComplete(new Action() {
-                                                @Override
-                                                public void run() throws Throwable {
-                                                    // TODO: 04.12.2022 end buffer
-                                                    Log.d(this.getClass().getName(), " массова вставка МетодContentProvoderForUpdateJrInsert  АдаптерПриОбновленияДанныхсСервера.size() :::  "
-                                                            + ТекущийАдаптерДляВсего.size());
-                                                    // TODO: 09.11.2022 ПОСЛЕ ОБРАБОТКИ НАЧИНАЕМ ВСТАКУ ДАННЫХ ЧЕРЕЗ BULK INSERT
-                                                    МетодBulkUPDATE(имяТаблицыОтАндройда_локальноая, context);
-                                                    Log.d(this.getClass().getName(), " Конец  ПАРСИНГА ОБРАБОАТЫВАЕМОМЙ ТАБЛИЦЫ МетодBulkUPDATE   ::::: "
-                                                            + имяТаблицыОтАндройда_локальноая+" АдаптерДляВставкиИОбновления.size() " +АдаптерДляВставкиИОбновления.size());
-                                                    // TODO: 11.10.2022 ПОСЛЕ ОПЕРАЦИИ ВИЗАУЛИЗИРУЕМ КОНЕЦ ОПЕРАЦИИ ПОЛЬЗОВАТЕЛЮ
-                                                    МетодCallBasksВизуальноИзСлужбы(МаксималноеКоличествоСтрочекJSON,ИндексВизуальнойДляPrograssBar,имяТаблицыОтАндройда_локальноая,
-                                                            Проценты,"ПроцессеAsyncBackground",false,false);
-                                                }
-                                            }).blockingSubscribe();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            }
-                            }
-                        })
-                        .doOnComplete(new Action() {
-                            @Override
-                            public void run() throws Throwable {
-                                // TODO: 04.12.2022 end buffer
-                                Log.d(this.getClass().getName(), " массова вставка МетодContentProvoderForUpdateJrInsert  АдаптерПриОбновленияДанныхсСервера.size() :::  "
-                                        + ТекущийАдаптерДляВсего.size());
-                            }
-                        })
-                        .onErrorComplete(new Predicate<Throwable>() {
-                            @Override
-                            public boolean test(Throwable throwable) throws Throwable {
-                                throwable.printStackTrace();
-                                Log.e(this.getClass().getName(), "Ошибка " + throwable + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(throwable.toString(), this.getClass().getName(),
-                                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                                return false;
-                            }
-                        }).blockingSubscribe();
-                                Log.d(this.getClass().getName(), " массова вставка МетодContentProvoderForUpdateJrInsert  АдаптерПриОбновленияДанныхсСервера.size() :::  "
-                                        + ТекущийАдаптерДляВсего.size());*/
                 Log.d(this.getClass().getName(),  " date "+ "jsonObjects "  +new Date().toGMTString().toString());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1900,8 +1718,8 @@ public class Service_For_Remote_Async extends IntentService {
                 new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                         Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
             }
-            Log.d(this.getClass().getName(), "  ИндексТекущейОперацииРеальногРезультатОбработкиАтблицы " + ИндексТекущейОперацииРеальногРезультатОбработкиАтблицы);
-            return ИндексТекущейОперацииРеальногРезультатОбработкиАтблицы;
+            Log.d(this.getClass().getName(), "   РезультатРаботыСинхрониазциии[0] " +  РезультатРаботыСинхрониазциии[0]);
+            return  РезультатРаботыСинхрониазциии[0].intValue();
         }
 
 
@@ -1961,11 +1779,11 @@ public class Service_For_Remote_Async extends IntentService {
         }
         }
 
-        private void МетодBulkUPDATE(@NonNull String имяТаблицыОтАндройда_локальноая,@NonNull Context context) {
-           Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabasemirror/" + имяТаблицыОтАндройда_локальноая + "");
-         //   Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + имяТаблицыОтАндройда_локальноая + "");
+        private Long МетодBulkUPDATE(@NonNull String имяТаблицыОтАндройда_локальноая,@NonNull Context context) {
             Long результат_ОбновлениенымисСервера=0l;
             try{
+                Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabasemirror/" + имяТаблицыОтАндройда_локальноая + "");
+                //   Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + имяТаблицыОтАндройда_локальноая + "");
                     if (АдаптерДляВставкиИОбновления.size()>0) {
                         //TODO  ПОСЛЕ ОБРАБОТКИ ВСЕЙ ТАБЛИЦЫ ТЕСТОВО ЗАПУСКАЕМ ЕТОД МАССОВОЙ ВСТАВКИ ЧЕРЕЗ КОНТЕНТ ПРОВАЙДЕР МЕТОД BurkInset
                         Log.w(context.getClass().getName(), " АдаптерДляВставкиИОбновления.size()  " + АдаптерДляВставкиИОбновления.size()+
@@ -1980,10 +1798,13 @@ public class Service_For_Remote_Async extends IntentService {
                         contentValuesМассив=АдаптерДляВставкиИОбновления.toArray(contentValuesМассив);
                         int РезультатОбновлениеМассовой = contentResolver.bulkInsert(uri, contentValuesМассив);
                         // TODO: 27.10.2021
-                        if (РезультатОбновлениеМассовой>0) {
+                  /*      if (РезультатОбновлениеМассовой>0) {
                             ИндексТекущейОперацииРеальногРезультатОбработкиАтблицы++;
                             ТекущийАдаптерДляВсего.clear();
                             АдаптерДляВставкиИОбновления.clear();
+                        }*/
+                              if (РезультатОбновлениеМассовой>0) {
+                            ИндексТекущейОперацииРеальногРезультатОбработкиАтблицы++;
                         }
                         результат_ОбновлениенымисСервера = Long.valueOf(РезультатОбновлениеМассовой);
                         Log.d(this.getClass().getName(), " РезультатОбновлениеМассовой :::  "
@@ -1997,7 +1818,47 @@ public class Service_For_Remote_Async extends IntentService {
                 new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                         Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
             }
+            return результат_ОбновлениенымисСервера;
         }
+
+        // TODO: 20.03.2023  метод смены статуса при удаление на СЕРВРЕРЕ
+        private void МетодBulkUPDATEChangeStatusServerDeleting(@NonNull String имяТаблицыОтАндройда_локальноая,@NonNull Context context) {
+            Long результат_ОбновлениенымисСервераСменаСтатусаУдаления=0l;
+            try{
+                Uri uri = Uri.parse("content://com.dsy.dsu.providerdatachangedeleting/" + имяТаблицыОтАндройда_локальноая + "");
+                //   Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + имяТаблицыОтАндройда_локальноая + "");
+                if (АдаптерДляВставкиИОбновления.size()>0) {
+                    //TODO  ПОСЛЕ ОБРАБОТКИ ВСЕЙ ТАБЛИЦЫ ТЕСТОВО ЗАПУСКАЕМ ЕТОД МАССОВОЙ ВСТАВКИ ЧЕРЕЗ КОНТЕНТ ПРОВАЙДЕР МЕТОД BurkInset
+                    Log.w(context.getClass().getName(), " АдаптерДляВставкиИОбновления.size()  " + АдаптерДляВставкиИОбновления.size()+
+                            "\n" + " АдаптерПриОбновленияДанныхсСервера.size()  " + ТекущийАдаптерДляВсего.size()+" uri  " + uri);/////
+                    ContentResolver contentResolver  = context.getContentResolver();
+                    // TODO: 09.11.2022 визуальна часть синхрониазции по таблице
+                    МетодCallBasksВизуальноИзСлужбы(МаксималноеКоличествоСтрочекJSON,
+                            ИндексВизуальнойДляPrograssBar,имяТаблицыОтАндройда_локальноая,
+                            Проценты,"ПроцессеAsyncBackground",
+                            true,false);
+                    ContentValues[] contentValuesМассив=new ContentValues[АдаптерДляВставкиИОбновления.size()];
+                    contentValuesМассив=АдаптерДляВставкиИОбновления.toArray(contentValuesМассив);
+                    int РезультатОбновлениеМассовой = contentResolver.bulkInsert(uri, contentValuesМассив);
+                    // TODO: 27.10.2021
+                    результат_ОбновлениенымисСервераСменаСтатусаУдаления = Long.valueOf(РезультатОбновлениеМассовой);
+                    Log.d(this.getClass().getName(), " РезультатОбновлениеМассовой :::  "
+                            + РезультатОбновлениеМассовой+"\n"+
+                            "  имяТаблицыОтАндройда_локальноая " +имяТаблицыОтАндройда_локальноая);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+            }
+        }
+
+
+
+
+
         private void МетодContentProvoderForUpdateJrInsert(Context context, String имяТаблицыОтАндройда_локальноая) {
 
             try{
