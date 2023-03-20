@@ -412,7 +412,6 @@ public class MainActivity_Tabels_Users_And_Passwords extends AppCompatActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
             // TODO: 01.09.2021 метод вызова

@@ -178,7 +178,6 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{
-
             super.onCreate(savedInstanceState);
             ////todo запрещает поворот экрана
             setContentView(R.layout.activity_main__tabel_four_colums);
@@ -1823,35 +1822,13 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
 
 
     private void МетодЗаполенияТабелемСотрудникаДнемиИДаннымиКним(int еслиСмещениеВдАнныхДляСкрола,
-                                                                  SQLiteCursor ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп,
+                                                                  SQLiteCursor ГлавныйКурсорДаннымиСвайпы,
                                                                   int ЦифровоеИмяНовгоТабеля)
             throws ParseException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, ExecutionException, InterruptedException {
-
-
-
         try{
-
-            /////TODO ВАЖНО ПОЛУЧИЛИ ДАННЫЕ ИЗ БАЗЫ В КУРСОР СОЗДАННЫХ ТАБЕЛЕЙ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            if (ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getCount()>0) {
-
-
-
-                ////TODO даты обработки
-                Log.d(this.getClass().getName()," ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп "+ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getCount() );
-
-
-
-
-
-
-                // TODO: 28.04.2021  копируем курсор
-
-
-
-
-                ///TODO ищем имя если его не хватает
+            if (ГлавныйКурсорДаннымиСвайпы.getCount()>0) {
+                Log.d(this.getClass().getName()," ГлавныйКурсорДаннымиСвайпы "+ГлавныйКурсорДаннымиСвайпы.getCount() );
                 String УниверсальноеИмяТабеля= "";
-                /////////
                 if (ПолноеИмяТабеляПослеСозданиеНовогоСотрудника!=null) {
                     УниверсальноеИмяТабеля=ПолноеИмяТабеляПослеСозданиеНовогоСотрудника;
                 }else if (ПолноеИмяТабеляПослеСозданиеНовогоСотрудникаПослеУспешнойВставки!=null) {
@@ -1860,52 +1837,22 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                     УниверсальноеИмяТабеля=     ДепартаментПришелПослеСоздангоНового;
                 }
 
-                //todo обнуляем
-                //TODO заполения табеля из базы через элемент TableLauy
-                //
-                Log.d(this.getClass().getName()," ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getCount() " + ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getCount()+"\n" +
-                        " ПолноеИмяТабеляПослеСозданиеНовогоСотрудника " +ПолноеИмяТабеляПослеСозданиеНовогоСотрудника);
-                Log.d(this.getClass().getName()," ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getColumnCount() " + ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getColumnCount()
-                        + " ПолноеИмяТабеляПослеСозданиеНовогоСотрудникаПослеУспешнойВставки "
-                        +ПолноеИмяТабеляПослеСозданиеНовогоСотрудникаПослеУспешнойВставки+ " UUIDТабеляКнопкаBACKУниверсальный " +UUIDТабеляКнопкаBACKУниверсальный);
-                /////
-
-
-
-                // КонтейнерДляТабеляВнутириСотрудники.removeAllViews();/////удалем данные с актиывти
-                ///TODO определяем массив и заполнем его ниже данными из базы массив двухмерный определяем размер массива
-                /*   ГлавныйКонтерйнерДляКомпнентовТабеля.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));*/
-                //TODO запоминаем название табеля
-                try {
-                    НазваниеЗагруженногТАбеля =         new Class_MODEL_synchronized(this).  МетодПолучениеНазваниеТабеляНаОснованииСФО(this,ЦифровоеИмяНовгоТабеля);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                    НазваниеЗагруженногТАбеля =
+                            new Class_MODEL_synchronized(this).  МетодПолучениеНазваниеТабеляНаОснованииСФО(this,ЦифровоеИмяНовгоТабеля);
                 Log.d(this.getClass().getName(), " НазваниеЗагруженногТАбеля" + НазваниеЗагруженногТАбеля);
-                ///TODO  проверяем станус проведенный или нет
-                int ИндексГдеНаходитьсяСтутсПроведенных = ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getColumnIndex("status_carried_out");
-                СтаттусТабеля =Boolean.parseBoolean( ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getString(ИндексГдеНаходитьсяСтутсПроведенных)); ///строго имя
+                int ИндексГдеНаходитьсяСтутсПроведенных = ГлавныйКурсорДаннымиСвайпы.getColumnIndex("status_carried_out");
+                СтаттусТабеля =Boolean.parseBoolean( ГлавныйКурсорДаннымиСвайпы.getString(ИндексГдеНаходитьсяСтутсПроведенных)); ///строго имя
                 Log.d(this.getClass().getName(), " СтаттусТабеля" + СтаттусТабеля);
                 if (СтаттусТабеля==true) {
                     Toast.makeText(getApplicationContext(), " Табель Проведен !!!. " + "\n" + "(редактирование запрещено).", Toast.LENGTH_SHORT).show();
                 }
-                //////TODO цикл заполения Табеля
                 final int[] ИндексСтрокКомпонентовТабеля = {0};
-                /////
                 int ИндексКолонокКомпонентовТабеля = 0;
-                ////TODO выжный компонет СОЕДИНЯЕМ ДВЕ АКТИВТИ НЕМЖУ СЕБЯ ЗАГРУЖАЕМ ОДНЦУ АКТИВТИ В ДРУГУЮ
-                /////TODO заполение реальными днями в табеле конкретного указаного месяца ДНИ  МЕСЯЦА
                 МетодСозданиеМесяцыСокращенно();
-                //TODO запускаем цикл загрузки на активити табель данными из базы
                 try{
                     ГлавныйКонтейнерТабель.removeAllViews();
-                    ///////
                     ГлавныйКонтейнерТабель.removeAllViewsInLayout();
                 } catch (Exception e) {
-                    // e.printStackTrace();
-       /*         ///метод запись ошибок в таблицу
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());*/
                 }
                 Log.d(this.getClass().getName(), " ХЭШНазваниеДнейНедели.get(1) " + ХЭШНазваниеДнейНедели.get(1));
                 LayoutInflater МеханизмЗагрузкиОдногЛайАутавДругой = getLayoutInflater();
@@ -1913,93 +1860,49 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                 if (Build.BRAND.toString().contains("Samsung") ||Build.BRAND.toString().contains("Galaxy")
                         || Build.BRAND.toString().contains("samsung") ||Build.BRAND.toString().contains("galaxy") ) {
                     Log.d(this.getClass().getName(), "Внешний вид САМСУНГА  "  +Build.BRAND.toString() );
-                    КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла = МеханизмЗагрузкиОдногЛайАутавДругой.inflate(R.layout.activity_main_grid_for_tables_four_columns_samsung,//activity_main_find_customer_for_tables // activity_main_grid_for_tables
+                    КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла =
+                            МеханизмЗагрузкиОдногЛайАутавДругой.inflate(R.layout.activity_main_grid_for_tables_four_columns_samsung,//activity_main_find_customer_for_tables // activity_main_grid_for_tables
                             ГлавныйКонтейнерТабель, false);
                     ViewGroup.LayoutParams ПараментыКонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла = КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.getLayoutParams();
 
                     // TODO: 24.05.2021 ВЫБОР КАКОЙ АКТИВТИ МАКЕТ ЗАГРУЗАТЬ НА HTC
                 } else if (Build.BRAND.toString().contains("HTC") ){
                     Log.d(this.getClass().getName(), "Внешний вид HTC "  +Build.BRAND.toString() );
-                    КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла = МеханизмЗагрузкиОдногЛайАутавДругой.inflate(R.layout.activity_main_grid_for_tables_four_columns_in_mm_htc,//activity_main_find_customer_for_tables // activity_main_grid_for_tables
+                    КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла =
+                            МеханизмЗагрузкиОдногЛайАутавДругой.inflate(R.layout.activity_main_grid_for_tables_four_columns_in_mm_htc,//activity_main_find_customer_for_tables // activity_main_grid_for_tables
                             ГлавныйКонтейнерТабель, false);
-                    ViewGroup.LayoutParams ПараментыКонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла = КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.getLayoutParams();
+                    ViewGroup.LayoutParams ПараментыКонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла =
+                            КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.getLayoutParams();
                     // TODO: 24.05.2021 ВЫБОР КАКОЙ АКТИВТИ МАКЕТ ЗАГРУЗАТЬ ВСЕ ОСТАЛЬНЫЕ ТЕЛЕФОНЫ
                 } else {
                     Log.d(this.getClass().getName(), "Внешний вид ДЛЯ ВСЕХ ОСТАЛЬНЫХ "  +Build.BRAND.toString() );
-                    КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла = МеханизмЗагрузкиОдногЛайАутавДругой.inflate(R.layout.activity_main_grid_for_tables_four_columns_in_mm,//activity_main_find_customer_for_tables // activity_main_grid_for_tables
+                    КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла =
+                            МеханизмЗагрузкиОдногЛайАутавДругой.inflate(R.layout.activity_main_grid_for_tables_four_columns_in_mm,//activity_main_find_customer_for_tables // activity_main_grid_for_tables
                             ГлавныйКонтейнерТабель, false);
                     ViewGroup.LayoutParams ПараментыКонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла = КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.getLayoutParams();
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 // TODO: 09.05.2021
-
-
-
-                HorizontalScrollViewВТабелеОдинСотрудник     =(HorizontalScrollView)     КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.findViewById(R.id.ГоризонтльнаяПрокруткаВнутриСамТабель);
-
-  /*          if (!Build.BRAND.toString().contains("Redmi") ) {
-                КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.setPadding(35,20,0,0);
-            }else{
-                КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.setPadding(0,20,0,0);
-            }
-
-            КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.setForegroundGravity(Gravity.CENTER_HORIZONTAL);*/
-
-
-
+                HorizontalScrollViewВТабелеОдинСотрудник
+                        =(HorizontalScrollView)     КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.findViewById(R.id.ГоризонтльнаяПрокруткаВнутриСамТабель);
                 /////TODO ТАБЕЛЬ ФИО создаем textview названия дней понелельник вторик среда четеварг
-                ///////// todo фио
                 НазваниеДанныхВТабелеФИО = КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.findViewById(R.id.КонтейнерКудаЗагружаетьсяФИО);
-
                 НазваниеДанныхВТабелеФИО.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-                ///todo  снилс
-
-                // НазваниеДанныхВТабелеСНИЛС = КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла.findViewById(R.id. КонтейнерКудаЗагружаетьсяСНИЛС);
-
                 ///toDO ПОСИК И ВСТАВКИ ИМСЯ ТАБЕЛЯ
-                int РасположениеИмениСотркдника = ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getColumnIndex("fio");//name
+                int РасположениеИмениСотркдника = ГлавныйКурсорДаннымиСвайпы.getColumnIndex("fio");//name
+                Long ПолученыйUUIDФИОСледующий=     ГлавныйКурсорДаннымиСвайпы.getLong(РасположениеИмениСотркдника);////  String ФИОСледующий
 
+                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                        " РасположениеИмениСотркдника  " + РасположениеИмениСотркдника + "  НазваниеДанныхВТабелеФИО " + НазваниеДанныхВТабелеФИО);
 
-
-                Long ПолученыйUUIDФИОСледующий=     ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getLong(РасположениеИмениСотркдника);////  String ФИОСледующий
-
-
-                ////////////////
-                ФИОДляТабеляНаАктивти=null;
-
-                ///
                 Log.d(this.getClass().getName(), "ПолученыйUUIDФИОСледующий " + ПолученыйUUIDФИОСледующий);
-
-                // TODO: 26.08.2021 НОВЫЙ ВЫЗОВ НОВОГО КЛАСС GRUD - ОПЕРАЦИИ
-                Class_GRUD_SQL_Operations class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯДляSingleтабеляДва= new Class_GRUD_SQL_Operations(getApplicationContext());
-                ///
-                class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯДляSingleтабеляДва. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СамFreeSQLКОд",
+                Class_GRUD_SQL_Operations classGrudSqlOperations= new Class_GRUD_SQL_Operations(getApplicationContext());
+                classGrudSqlOperations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СамFreeSQLКОд",
                         " SELECT name  FROM fio  WHERE  uuid = '" + ПолученыйUUIDФИОСледующий + "' ;");
                 ///////
-                SQLiteCursor            Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО= (SQLiteCursor) class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯДляSingleтабеляДва.
-                        new GetаFreeData(getApplicationContext()).getfreedata(class_grud_sql_operationsПолучаемНаБазуUUIDфиоПолучаемИзТаблицыФИОИМЯДляSingleтабеляДва.
+                SQLiteCursor            Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО= (SQLiteCursor) classGrudSqlOperations.
+                        new GetаFreeData(getApplicationContext()).getfreedata(classGrudSqlOperations.
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
                         Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков
                         ,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
@@ -2013,44 +1916,32 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                     ///
                     Log.d(  this.getClass().getName(), "ФИОСледующий "
                             +"uuid"+ФИОДляТабеляНаАктивти);
-
-
                     ///TODO ЕСЛИ НЕ ПУСТОЙ ТАБЕЛЬ
                     ///TODO НАЧИНАЕМ ЗАПОЛНЯТЬЕ ЕСЛИ СОТРУДНИКА ЕСТЬ
                     НазваниеДанныхВТабелеФИО.setText("");
                     НазваниеДанныхВТабелеФИО.setText(ФИОДляТабеляНаАктивти.trim()); ///строго имя
                     Log.d(this.getClass().getName(), " ФИО " + ФИОДляТабеляНаАктивти);
                     // TODO проверяем если в столбике Табеля Есть id поле если поле NULL  значит отн небыло на сервера
-                    Integer ПроверкаЕсливСтолбикеID_NULLзначения=ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getInt(0);
+                    Integer ПроверкаЕсливСтолбикеID_NULLзначения=ГлавныйКурсорДаннымиСвайпы.getInt(0);
                     if(ПроверкаЕсливСтолбикеID_NULLзначения==null){
                         // TODO: 15.11.2021
                         ПроверкаЕсливСтолбикеID_NULLзначения=0;
                     }
                     /////TODO создавние строк из linerlouyto в табеле сколько сткром в базе данных андройда столлько на активити строк
                     Log.d(this.getClass().getName(), " ПроверкаЕсливСтолбикеID_NULLзначения " + ПроверкаЕсливСтолбикеID_NULLзначения);
-           /*         if (ПроверкаЕсливСтолбикеID_NULLзначения==0) {
-                        // TODO: 15.11.2021
-                        view2Линия.setBackgroundColor(Color.GRAY);
-                    }else {
-// TODO: 15.11.202
-                        view2Линия.setBackgroundColor(Color.parseColor("#00ACC1"));
-                    }*/
                     ///TODO ГЛАВНЫЙ ЦИКЛ ЗАПОЛЕНИЕНИ ТАБЕЛЕМ СОТРУДНИКАМИ
                     do {
-                        /////TODO SLEEP
                         /////TODO создавние строк из linerlouyto в табеле сколько сткром в базе данных андройда столлько на активити строк
-                        Log.d(this.getClass().getName(), " ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getCount() " + ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getCount());
+                        Log.d(this.getClass().getName(), " ГлавныйКурсорДаннымиСвайпы.getCount() " + ГлавныйКурсорДаннымиСвайпы.getCount());
                         ///todo ПРИСВАИВАЕМ UUID НАЗВАНИЮ ФИО
-                        ПосикДня = ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getColumnIndex("uuid"); ////TODO СЮДА ПОЛЕ UUID
-                        НазваниеСтолбикаДляЛобкальногоОбноления = ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getColumnName(ПосикДня);
-                        НазваниеДанныхВТабелеФИО.setTag(ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getString(ПосикДня));
-                        Log.d(this.getClass().getName(), " UUID пристваем Внутри ФИО  " + ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.getString(ПосикДня));
-                        ////todo УСТАНАВЛИВАЕМ КЛИК НА ФИО
-                        //НазваниеДанныхВТабелеФИО.setOnLongClickListener(СлушательУдаланиеСотрудникаИзТабеля);
+                        ПосикДня = ГлавныйКурсорДаннымиСвайпы.getColumnIndex("uuid"); ////TODO СЮДА ПОЛЕ UUID
+                        НазваниеСтолбикаДляЛобкальногоОбноления = ГлавныйКурсорДаннымиСвайпы.getColumnName(ПосикДня);
+                        НазваниеДанныхВТабелеФИО.setTag(ГлавныйКурсорДаннымиСвайпы.getString(ПосикДня));
+                        Log.d(this.getClass().getName(), " UUID пристваем Внутри ФИО  " + ГлавныйКурсорДаннымиСвайпы.getString(ПосикДня));
                         НазваниеДанныхВТабелеФИО.setOnClickListener(СлушательИнформацияОСотрудника);
                         /////TODO     ПЕРВАЯ СТРОКА
                         ///todo главный МЕТОД ОФОРМЛЕНИЯ ТАБЕЛЯ ДАННЫМИ И ДНЯМИ
-                        МетодГлавныйОрмленияТабеляДнямиИЗначениямиДляЭтиДней(ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп,
+                        МетодГлавныйОрмленияТабеляДнямиИЗначениямиДляЭтиДней(ГлавныйКурсорДаннымиСвайпы,
                                 ИндексСтрокКомпонентовТабеля,
                                 ХЭШНазваниеДнейНедели,НазваниеДанныхВТабелеДниНедели ,СамиДанныеТабеля,КонтентТабеляКоторыйМыИБудемЗаполнятьВнутриЦикла );
 /////TODO ФИНАЛ ЗАПОЛЕНИЕ ДАННЫМИ АКТИВИТИ ЧЕРЕЗ ДРУГОЕ АКТВИТИ
@@ -2060,35 +1951,28 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                             break;
                         }
                     }
-                    while (ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.moveToNext()) ;
+                    while (ГлавныйКурсорДаннымиСвайпы.moveToNext()) ;
                     ОбщееКоличествоЛюдейВТабелеТекущем = new Class_MODEL_synchronized(getApplicationContext()).
-                            МетодПосчётаЧасовСотрудниковВТабеле(getApplicationContext(),UUIDТабеляПослеУспешногоСозданиеСотрудникаВсехСотридников ,МЕсяцДляКурсораТабелейДЛяПермещения, ГодДляКурсораТабелей );
+                            МетодПосчётаЧасовСотрудниковВТабеле(getApplicationContext(),UUIDТабеляПослеУспешногоСозданиеСотрудникаВсехСотридников
+                                    ,МЕсяцДляКурсораТабелейДЛяПермещения, ГодДляКурсораТабелей );
                     Log.d(Class_MODEL_synchronized.class.getName()," ОбщееКоличествоЛюдейВТабелеТекущем  "+ОбщееКоличествоЛюдейВТабелеТекущем  +
                             "  ТекущееПоложенияВТабелеДляСкрола "  +ТекущееПоложенияВТабелеДляСкрола);
-                    
-
                 }else{
-
                     Toast.makeText(getApplicationContext(), " Ошибка  нет ФИО " , Toast.LENGTH_SHORT).show();
-
                     ///TODO В УКАЗАНОМ ТАБЕЛЕ НЕТ НИОДНОГО СОТРУДНИКА СТОРОЧЕК COUNT()* 0 НЕТ СТРОЧЕК В ТАБЕЛЕ
                     МетодКогдаНетЗаписейВКурсоре();
                 }
-
             }else{
                 ///TODO В УКАЗАНОМ ТАБЕЛЕ НЕТ НИОДНОГО СОТРУДНИКА СТОРОЧЕК COUNT()* 0 НЕТ СТРОЧЕК В ТАБЕЛЕ
                 МетодКогдаНетЗаписейВКурсоре();
             }
             // TODO: 17.08.2022  after peossesuinbg
-            ГлавныйКурсорКогдаМыКликаемПоСпискуТабелейИлиСфайп.close();
+            ГлавныйКурсорДаннымиСвайпы.close();
             ScrollСамогоТабеля.setBackgroundResource(R.drawable.textlines_tabel_row_color_green_mini);
             ScrollСамогоТабеля.requestLayout();
             ScrollСамогоТабеля.pageScroll(View.FOCUS_BACKWARD);
             ГлавныйКонтейнерТабель.requestLayout();
             ГлавныйКонтейнерТабель.forceLayout();
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " +e + " Метод :"+Thread.currentThread().getStackTrace()[2].getMethodName()
@@ -3237,209 +3121,77 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
         }
         }
     };
-    ///////КОНЕЦ  СОЗДАГНИЕ СЛУШАТЕЛЯ ДЛЯ ПЕРЕДАЧИ ЕГО В КОД ОБНОВЛЕНИЯ ПОЛУЧАЕМ ID  СТРОЧКИ И ДЛЯ ПРОВЕРКИ ЗНАЧЕНИЕ ЯЧЕЙКИ
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    ///TODO  удаление ОБРАБОТКА КЛИКА ПО ФИО
     View.OnClickListener СлушательИнформацияОСотрудника = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            /////
             SQLiteCursor Курсор_ЗагружаемИнформациюПоФИО = null;
-            ////
-            //
-
             // TODO: 27.08.2021  ПОЛУЧЕНИЕ ДАННЫХ ОТ КЛАССА GRUD-ОПЕРАЦИИ
             SQLiteCursor    Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО=null;/////
-
-            //////
             Class_GRUD_SQL_Operations class_grud_sql_operationsСлушательИнформацияОСотрудника=new Class_GRUD_SQL_Operations(getApplicationContext());
-
-////////////////
             try{
-                //
                 if (МыУжеВКодеУденияСотрудника==false) {
-
                     TextView ФИОДляУдаление = (TextView) v;
-
                     Log.d(this.getClass().getName(), " v " + v.getTag() + " ФИОДляУдаление.getText() " + ФИОДляУдаление.getText() +
                             "  ФИОДляУдаление.getTag() " +ФИОДляУдаление.getTag());
-
-
                     //////TODO ГЛАВНЫЙ КУРСОР ДЛЯ НЕПОСРЕДТСВЕНОГО ЗАГРУЗКИ СОТРУДНИКА
                     // TODO: 26.08.2021 НОВЫЙ ВЫЗОВ НОВОГО КЛАСС GRUD - ОПЕРАЦИИ
-
                     ((TextView) v).setBackgroundColor(Color.GRAY);
-
-                    ///
-
                     class_grud_sql_operationsСлушательИнформацияОСотрудника. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы","viewtabel");
-                    ///////
                     class_grud_sql_operationsСлушательИнформацияОСотрудника. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","fio");//name ,BirthDate ,snils
-                    //
                     class_grud_sql_operationsСлушательИнформацияОСотрудника. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика","uuid=? ");
                     ///"_id > ?   AND _id< ?"
-
                     Long ФИОЧТОБЫПОКАЗАТЬВтруриТАбеля=Long.parseLong(ФИОДляУдаление.getTag().toString());
-                    //
                     Log.d(this.getClass().getName(), " ФИОЧТОБЫПОКАЗАТЬВтруриТАбеля" +ФИОЧТОБЫПОКАЗАТЬВтруриТАбеля);
-                    //////
                     class_grud_sql_operationsСлушательИнформацияОСотрудника. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1",ФИОЧТОБЫПОКАЗАТЬВтруриТАбеля);
-                    ///
-                    //class_grud_sql_operationsСлушательИнформацияОСотрудника. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска2","Удаленная");
-                    ///
-          /*          class_grud_sql_operations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска3",МЕсяцДляКурсораТабелей);
-                    //
-                    class_grud_sql_operations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска4",ГодДляКурсораТабелей);////УсловиеПоискаv4,........УсловиеПоискаv5 .......
-*/
-                    ////TODO другие поля
-
-                    ///classGrudSqlOperations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПоляГрупировки",null);
-                    ////
-                    //class_grud_sql_operations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеГрупировки",null);
-                    ////
                     class_grud_sql_operationsСлушательИнформацияОСотрудника. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеСортировки","date_update desc");
-                    ////
-                    /// class_grud_sql_operations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеЛимита","1");
-                    ////
-
                     // TODO: 27.08.2021  ПОЛУЧЕНИЕ ДАННЫХ ОТ КЛАССА GRUD-ОПЕРАЦИИ
-                    Курсор_ЗагружаемИнформациюПоФИО=null;
-
                     Курсор_ЗагружаемИнформациюПоФИО= (SQLiteCursor)  class_grud_sql_operationsСлушательИнформацияОСотрудника.
-                            new GetData(getApplicationContext()).getdata(class_grud_sql_operationsСлушательИнформацияОСотрудника. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
+                            new GetData(getApplicationContext()).getdata(class_grud_sql_operationsСлушательИнформацияОСотрудника.
+                                    concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
                             Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков
                             ,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
-
                     Log.d(this.getClass().getName(), "GetData "  +Курсор_ЗагружаемИнформациюПоФИО);
-
-//TODO  ОЧИЩАЕМ ПАМТЬ Результат Курсора
                     if (Курсор_ЗагружаемИнформациюПоФИО.getCount()>0){
-                        /////
                         Курсор_ЗагружаемИнформациюПоФИО.moveToFirst();
-                        /////
                         Long UUIDИзТаблицыФИОфинал= Курсор_ЗагружаемИнформациюПоФИО.getLong(0);
-                        ////
-
-//////////
                         Log.d(this.getClass().getName(), " UUIDИзТаблицыФИОфинал " + UUIDИзТаблицыФИОфинал);
-                        // TODO: 27.09.2021 ВТОРАЯ ЧАСТЬ НАХОДИМ САМУ ИНОРМАЦИЯ
-
-                        Class_GRUD_SQL_Operations     class_grud_sql_operationsСлушательИнформацияОСотрудникаУжеПолучаемДанныеИзФИО=new Class_GRUD_SQL_Operations(getApplicationContext());
-                        ///
-
-                        class_grud_sql_operationsСлушательИнформацияОСотрудникаУжеПолучаемДанныеИзФИО. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы","fio");
-                        ///////
-                        class_grud_sql_operationsСлушательИнформацияОСотрудникаУжеПолучаемДанныеИзФИО. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","name ,BirthDate ,snils");//name ,BirthDate ,snils
-                        //
-                        class_grud_sql_operationsСлушательИнформацияОСотрудникаУжеПолучаемДанныеИзФИО. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика","uuid=? ");
-                        ///"_id > ?   AND _id< ?"
-
-                        //
+                        Class_GRUD_SQL_Operations     class_grud_sql_operatioСлушатель=new Class_GRUD_SQL_Operations(getApplicationContext());
+                        class_grud_sql_operatioСлушатель. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы","fio");
+                        class_grud_sql_operatioСлушатель. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","name ,BirthDate ,snils");//name ,BirthDate ,snils
+                        class_grud_sql_operatioСлушатель. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика","uuid=? ");
                         Log.d(this.getClass().getName(), " UUIDИзТаблицыФИО" +UUIDИзТаблицыФИОфинал);
-                        //////
-                        class_grud_sql_operationsСлушательИнформацияОСотрудникаУжеПолучаемДанныеИзФИО. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1",UUIDИзТаблицыФИОфинал);
-                        ///
-                        /// class_grud_sql_operationsСлушательИнформацияОСотрудникаУжеПолучаемДанныеИзФИО. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска2","Удаленная");
-                        ///
-          /*          class_grud_sql_operations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска3",МЕсяцДляКурсораТабелей);
-                    //
-                    class_grud_sql_operations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска4",ГодДляКурсораТабелей);////УсловиеПоискаv4,........УсловиеПоискаv5 .......
-*/
-                        ////TODO другие поля
-
-                        ///classGrudSqlOperations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПоляГрупировки",null);
-                        ////
-                        //class_grud_sql_operations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеГрупировки",null);
-                        ////
-                        class_grud_sql_operationsСлушательИнформацияОСотрудникаУжеПолучаемДанныеИзФИО. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеСортировки","date_update desc");
-                        ////
-                        /// class_grud_sql_operations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеЛимита","1");
-
-                        // TODO: 27.08.2021  ПОЛУЧЕНИЕ ДАННЫХ ОТ КЛАССА GRUD-ОПЕРАЦИИ
-                        Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО=null;
-
-                        Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО= (SQLiteCursor)  class_grud_sql_operationsСлушательИнформацияОСотрудникаУжеПолучаемДанныеИзФИО.
-                                new GetData(getApplicationContext()).getdata(class_grud_sql_operationsСлушательИнформацияОСотрудникаУжеПолучаемДанныеИзФИО.
+                        class_grud_sql_operatioСлушатель. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1",UUIDИзТаблицыФИОфинал);
+                        class_grud_sql_operatioСлушатель. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеСортировки","date_update desc");
+                        Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО= (SQLiteCursor)  class_grud_sql_operatioСлушатель.
+                                new GetData(getApplicationContext()).getdata(class_grud_sql_operatioСлушатель.
                                         concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
                                 Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков
                                 ,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
-
                         Log.d(this.getClass().getName(), "GetData "  +Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО);
-
                     }
-
-
-
                     //TODO  ОЧИЩАЕМ ПАМТЬ Результат Курсора
                     if (Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО.getCount()>0){
-                        /////
                         Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО.moveToFirst();
-                        /////
                         String ФИОИнфо= Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО.getString(0);
-                        ////
                         String ДеньРОжденияИНФО= Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО.getString(1);
-                        ///
                         String СНИЛСИНфо= Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО.getString(2);
-//////////
+                        // TODO: 20.03.2023  ПОказываем Данные Для Обзора
                         СообщениеИнформацияОФИО("Информация о сотруднике",  "ФИО: " +ФИОИнфо+
                                 "\n"+"День рождения: " +ДеньРОжденияИНФО+
                                 "\n"+"СНИЛС: " +СНИЛСИНфо+"\n");
-
                     }
                 }
                 Курсор_ЗагружаемИнформациюПоФИО.close();
-                ///
-
                 Курсор_ЗагружаемИнформациюПоФИОПолучениеДанныхИзФИО.close();
-
             } catch (Exception e) {
                 e.printStackTrace();
-                ///метод запись ошибок в таблицу
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                         " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
                 new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                         Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
             }
         }};
-
-
-
-
-
-
-
-
-
     ///todo  конец метода удаления третий обработчки нажатия
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //////
     //////TODO локального обнвлени с Активити в базу
     private Long МетодЛокальногоОбновлениеЧерезКликвТабеле(ContentValues КонтейнерЗаполненияДаннымиПриЛокальномОбновлении ,String ПолучениеЗначениеСтолбикUUID)
             throws InterruptedException, ExecutionException,
