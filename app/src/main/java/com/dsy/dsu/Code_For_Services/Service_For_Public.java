@@ -46,9 +46,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import io.reactivex.rxjava3.core.Emitter;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.functions.Action;
@@ -202,6 +204,8 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
         Integer МесяцСейчас=0;
         private void МетодЗапускЗаполенеияИзПрошлыхМесяцев(@NonNull Context context, @NonNull Intent intent) {
             try {
+
+                SubClassCursorLoader cursorLoader=     new SubClassCursorLoader();
                 Log.w(this.getClass().getName(), "   context  " + context);
                 SQLiteDatabase sqLiteDatabaseДляЗаполенеяИзПрошлогоМесяца = new CREATE_DATABASE(getApplicationContext()).getССылкаНаСозданнуюБазу();
                 Integer ПубличныйIDДляЗаполененияИзПрошлогоМесяца = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplicationContext());
@@ -234,11 +238,25 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.MONTH,МесяцСейчас);
                 gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.DATE, 1);
                 Log.d(this.getClass().getName(), " gregorianCalendarИзПрошлыхМесяцев" + gregorianCalendarИзПрошлыхМесяцев.getTime().toLocaleString());
+
+                Flowable flowable=  Flowable.fromIterable(Stream.iterate(0, integer -> integer + 0).limit(20)
+                        .map(new java.util.function.Function<Integer, Object>() {
+                            @Override
+                            public Object apply(Integer integer) {
+                                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                                        " integer  " +integer);
+                                return integer;
+                            }
+                        }).collect(Collectors.toSet()));
+
+                flowable.blockingSubscribe();
+
+
                 // TODO: 21.03.2023  Заполение из прошлого месяца
                 Flowable.range(1,100)
-                        .subscribeOn(Schedulers.single())
                         .onBackpressureBuffer(true)
-                        .subscribeOn(Schedulers.single())
                         .repeatWhen(repeat->repeat.delay(500,TimeUnit.MILLISECONDS))
                         .takeWhile(new Predicate<Integer>() {
                             @Override
@@ -269,7 +287,7 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                                 bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(gregorianCalendarИзПрошлыхМесяцев.get(Calendar.YEAR)),
                                         String.valueOf( gregorianCalendarИзПрошлыхМесяцев.get(Calendar.MONTH)),String.valueOf(СФОУжеСозданогоТАбеля),"Удаленная"});
                                 bundle.putString("Таблица","viewtabel");
-                           Cursor     Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    new SubClassCursorLoader().  CursorLoaders(context, bundle);
+                           Cursor     Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    cursorLoader.  CursorLoaders(context, bundle);
                                 Log.d(this.getClass().getName(), " Курсор_ВытаскиваемПоследнийМесяцТабеля" + Курсор_ВытаскиваемПоследнийМесяцТабеля);
                                 if (Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() > 0 ) {
                                     Log.d(this.getClass().getName(), "Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() " + Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());
