@@ -37,13 +37,16 @@ import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYearHONLY_Только
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -223,9 +226,52 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 //TODO ВЫЧИСЛЯЕМ ДАННЫЕ КОТОРЫЕ НА ВСТАВИТЬ
                 Integer РезультатВставкиИзПрошлогоМесяца = 0;
                 // TODO: 15.02.2023 ГОД бежим по ЦИКЛЦУ
+                GregorianCalendar gregorianCalendarИзПрошлыхМесяцев = new GregorianCalendar();
+                gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.YEAR, ГодНазадДляЗаполнени);
+                gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.MONTH,МесяцПростоАнализа-1);
+                gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.DATE, 1);
+                Log.d(this.getClass().getName(), " gregorianCalendarИзПрошлыхМесяцев" + gregorianCalendarИзПрошлыхМесяцев.getTime().toLocaleString());
+                gregorianCalendarИзПрошлыхМесяцев.add(Calendar.MONTH, -100);
+                Log.d(this.getClass().getName(),  " gregorianCalendarИзПрошлыхМесяцев" + gregorianCalendarИзПрошлыхМесяцев.getTime().toLocaleString());
+
+                gregorianCalendarИзПрошлыхМесяцев.add(Calendar.MONTH, -100);
+
+                IntStream intStream = IntStream.range(1, 10);
+                intStream.limit(100).forEach(new IntStream.Builder() {
+                    @Override
+                    public void accept(int t) {
+                        Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+t );
+                    }
+
+                    @Override
+                    public IntStream build() {
+                        Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+0 );
+                        return null;
+                    }
+                });
+                IntStream stream = IntStream.generate(() -> 1);
+
+                // Displaying the randomly generated values
+                stream.limit(10).forEach(new IntStream.Builder() {
+                    @Override
+                    public void accept(int t) {
+                        Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+t );
+                    }
+
+                    @Override
+                    public IntStream build() {
+                        Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+0 );
+                        return null;
+                    }
+                });
+
+
+
+
                 for ( ГодНазадДляЗаполнени = ГодНазадДляЗаполнени; ГодНазадДляЗаполнени > 0; ГодНазадДляЗаполнени--) {
                     // TODO: 15.02.2023 месяцы
                     Cursor     Курсор_ВытаскиваемПоследнийМесяцТабеля = null;
+
                     for (Integer месяцПростоАнализа = МесяцПростоАнализа; месяцПростоАнализа > 0; месяцПростоАнализа--) {
                         Log.d(this.getClass().getName(), " месяцПростоАнализа" + месяцПростоАнализа);
                         Bundle bundle=new Bundle();
