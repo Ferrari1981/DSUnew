@@ -49,6 +49,13 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.functions.Predicate;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
@@ -236,36 +243,42 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
 
                 gregorianCalendarИзПрошлыхМесяцев.add(Calendar.MONTH, -100);
 
-                IntStream intStream = IntStream.range(1, 10);
-                intStream.limit(100).forEach(new IntStream.Builder() {
-                    @Override
-                    public void accept(int t) {
-                        Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+t );
-                    }
 
-                    @Override
-                    public IntStream build() {
-                        Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+0 );
-                        return null;
-                    }
-                });
-                IntStream stream = IntStream.generate(() -> 1);
+                Flowable.range(-1,100)
+                        .subscribeOn(Schedulers.single())
+                        .onBackpressureBuffer(true)
+                        .subscribeOn(Schedulers.single())
+                        .repeatWhen(repeat->repeat.delay(2,TimeUnit.SECONDS))
+                        .takeWhile(new Predicate<Integer>() {
+                            @Override
+                            public boolean test(Integer integer) throws Throwable {
+                                return true;
+                            }
+                        })
+                        .map(new Function<Integer, Object>() {
+                            @Override
+                            public Object apply(Integer integer) throws Throwable {
+                                return integer;
+                            }
+                        })
+                        .doOnError(new io.reactivex.rxjava3.functions.Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Throwable {
+                                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() );
+                            }
+                        })
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() throws Throwable {
+                                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() );
+                            }
+                        })
 
-                // Displaying the randomly generated values
-                stream.limit(10).forEach(new IntStream.Builder() {
-                    @Override
-                    public void accept(int t) {
-                        Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+t );
-                    }
-
-                    @Override
-                    public IntStream build() {
-                        Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+0 );
-                        return null;
-                    }
-                });
-
-
+                        .blockingSubscribe();
 
 
                 for ( ГодНазадДляЗаполнени = ГодНазадДляЗаполнени; ГодНазадДляЗаполнени > 0; ГодНазадДляЗаполнени--) {
