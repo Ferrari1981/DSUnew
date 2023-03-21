@@ -198,8 +198,8 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
     // TODO: 28.09.2022  класс заполнения из прошлых месяцев
 
     class SibClassApplyFromBackPeriodof_ЗаполененияТабеляИзПрошлогоМесяца {
-        public SibClassApplyFromBackPeriodof_ЗаполененияТабеляИзПрошлогоМесяца() {
-        }
+        Integer ГодСейчас = 0;
+        Integer МесяцСейчас=0;
         private void МетодЗапускЗаполенеияИзПрошлыхМесяцев(@NonNull Context context, @NonNull Intent intent) {
             try {
                 Log.w(this.getClass().getName(), "   context  " + context);
@@ -212,39 +212,32 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 //  Long ГенерироватьUUIDРОДИТЕЛЬСКАЯ = (Long) new Class_Generation_UUID(getApplicationContext()).МетодГенерацииUUID(getApplicationContext());
                 // TODO: 21.09.2022
                 String ПолученяМесяцПростоАнализа = new SubClassMONTHONLY_ТолькоАнализ(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
-                Integer МесяцПростоАнализа = Optional.ofNullable(ПолученяМесяцПростоАнализа).map(Integer::new).orElse(0);
-                String ПолученаяДатаТолькоГод;
-                Integer ГодНазадДляЗаполнени = 0;
+                 МесяцСейчас = Optional.ofNullable(ПолученяМесяцПростоАнализа).map(Integer::new).orElse(0);
                 Log.d(this.getClass().getName(), "ПолученяМесяцПростоАнализа " + ПолученяМесяцПростоАнализа);
-                switch (МесяцПростоАнализа) {
+                switch (МесяцСейчас) {
                     case 12:
-                        ПолученаяДатаТолькоГод = new SubClassYEARONLY(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
-                        ГодНазадДляЗаполнени = Optional.ofNullable(ПолученаяДатаТолькоГод).map(Integer::new).orElse(0);
+                        String   ПолученаяДатаТолькоГод12 = new SubClassYEARONLY(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
+                        ГодСейчас = Optional.ofNullable(ПолученаяДатаТолькоГод12).map(Integer::new).orElse(0);
                         break;
                     default:
-                        ПолученаяДатаТолькоГод = new SubClassYearHONLY_ТолькоАнализ(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
-                        ГодНазадДляЗаполнени = Optional.ofNullable(ПолученаяДатаТолькоГод).map(Integer::new).orElse(0);
+                        String    ПолученаяДатаТолькоГод = new SubClassYearHONLY_ТолькоАнализ(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
+                        ГодСейчас = Optional.ofNullable(ПолученаяДатаТолькоГод).map(Integer::new).orElse(0);
                         break;
                 }
-                String ПолученаяДатаИзПрошлогоМесяца = new SubClassMONTHONLY(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
-                Integer МесяцИзПрошлогоМесяца = Optional.ofNullable(ПолученаяДатаИзПрошлогоМесяца).map(Integer::new).orElse(0);
                 // TODO: 22.09.2022
-                Log.d(this.getClass().getName(), "МесяцИзПрошлогоМесяца " + МесяцИзПрошлогоМесяца + " ГодНазадДляЗаполнени " + ГодНазадДляЗаполнени);
+                Log.d(this.getClass().getName(), "ГодСейчас " + ГодСейчас + " МесяцСейчас " + МесяцСейчас);
                 //TODO ВЫЧИСЛЯЕМ ДАННЫЕ КОТОРЫЕ НА ВСТАВИТЬ
-                Integer РезультатВставкиИзПрошлогоМесяца = 0;
+                final Integer[] РезультатВставкиИзПрошлогоМесяца = {0};
                 // TODO: 15.02.2023 ГОД бежим по ЦИКЛЦУ
                 GregorianCalendar gregorianCalendarИзПрошлыхМесяцев = new GregorianCalendar();
-                gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.YEAR, ГодНазадДляЗаполнени);
-                gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.MONTH,МесяцПростоАнализа-1);
+                gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.YEAR, ГодСейчас);
+                gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.MONTH,МесяцСейчас-1);
                 gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.DATE, 1);
                 Log.d(this.getClass().getName(), " gregorianCalendarИзПрошлыхМесяцев" + gregorianCalendarИзПрошлыхМесяцев.getTime().toLocaleString());
                 gregorianCalendarИзПрошлыхМесяцев.add(Calendar.MONTH, -100);
                 Log.d(this.getClass().getName(),  " gregorianCalendarИзПрошлыхМесяцев" + gregorianCalendarИзПрошлыхМесяцев.getTime().toLocaleString());
 
-                gregorianCalendarИзПрошлыхМесяцев.add(Calendar.MONTH, -100);
-
-
-                Flowable.range(-1,100)
+                Flowable.range(1,100)
                         .subscribeOn(Schedulers.single())
                         .onBackpressureBuffer(true)
                         .subscribeOn(Schedulers.single())
@@ -252,12 +245,48 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                         .takeWhile(new Predicate<Integer>() {
                             @Override
                             public boolean test(Integer integer) throws Throwable {
-                                return true;
+                                if (РезультатВставкиИзПрошлогоМесяца[0] >0) {
+                                    Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                                            " РезультатВставкиИзПрошлогоМесяца  " + РезультатВставкиИзПрошлогоМесяца[0]);
+                                    return true;
+                                } else {
+                                    Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                                            " РезультатВставкиИзПрошлогоМесяца  " + РезультатВставкиИзПрошлогоМесяца[0]);
+                                    return false;
+                                }
                             }
                         })
                         .map(new Function<Integer, Object>() {
                             @Override
                             public Object apply(Integer integer) throws Throwable {
+                                gregorianCalendarИзПрошлыхМесяцев.add(Calendar.MONTH, -integer);
+                                Log.d(this.getClass().getName(), "  gregorianCalendarИзПрошлыхМесяцев.get(Calendar.YEAR)" +  gregorianCalendarИзПрошлыхМесяцев.get(Calendar.YEAR)
+                                  + "   gregorianCalendarИзПрошлыхМесяцев.get(Calendar.MONTH) "+    gregorianCalendarИзПрошлыхМесяцев.get(Calendar.MONTH));
+                                Bundle bundle=new Bundle();
+                                bundle.putString("СамЗапрос","  SELECT * FROM  viewtabel WHERE year_tabels=?  AND month_tabels=?  AND cfo=?  AND status_send!=?");
+                                bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(gregorianCalendarИзПрошлыхМесяцев.get(Calendar.YEAR)),
+                                        String.valueOf( gregorianCalendarИзПрошлыхМесяцев.get(Calendar.MONTH)),String.valueOf(СФОУжеСозданогоТАбеля),"Удаленная"});
+                                bundle.putString("Таблица","viewtabel");
+                           Cursor     Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    new SubClassCursorLoader().  CursorLoaders(context, bundle);
+                                Log.d(this.getClass().getName(), " Курсор_ВытаскиваемПоследнийМесяцТабеля" + Курсор_ВытаскиваемПоследнийМесяцТабеля);
+                                if (Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() > 0 ) {
+                                    Log.d(this.getClass().getName(), "Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() " + Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());
+                                    Class_GRUD_SQL_Operations       class_grud_sql_operationЗаполнениеИзПрошлогоМесяца = new Class_GRUD_SQL_Operations(getApplicationContext());
+                                    String ДатаОперации = new SubClassMONTHONLY(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
+                                    // TODO: 16.02.2023 сама вставка
+                                    РезультатВставкиИзПрошлогоМесяца[0] =      МетодЗаопленияДаннымиИзПрошлогоМесяца(context,
+                                            UUIDПОискаПредыдущегоМЕсяцаТАбеля, ГодСейчас,
+                                            МесяцСейчас
+                                            , Курсор_ВытаскиваемПоследнийМесяцТабеля,
+                                            class_grud_sql_operationЗаполнениеИзПрошлогоМесяца);
+                                    Log.d(this.getClass().getName(), "  РезультатВставкиИзПрошлогоМесяца[0] " +  РезультатВставкиИзПрошлогоМесяца[0] );
+                                }
+                                Log.d(this.getClass().getName(), "  РезультатВставкиИзПрошлогоМесяца[0] " +  РезультатВставкиИзПрошлогоМесяца[0] );
+                                Курсор_ВытаскиваемПоследнийМесяцТабеля.close();
                                 return integer;
                             }
                         })
@@ -275,55 +304,12 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                                 Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() );
+                                // TODO: 25.11.2022 выход
+                                МетодОтображениеОперацииИзПрошлогоМЕсяца(context, "ВыходИзВставкиИзПрошлогоМесяца", РезультатВставкиИзПрошлогоМесяца[0]);
                             }
                         })
 
-                        .blockingSubscribe();
-
-
-                for ( ГодНазадДляЗаполнени = ГодНазадДляЗаполнени; ГодНазадДляЗаполнени > 0; ГодНазадДляЗаполнени--) {
-                    // TODO: 15.02.2023 месяцы
-                    Cursor     Курсор_ВытаскиваемПоследнийМесяцТабеля = null;
-
-                    for (Integer месяцПростоАнализа = МесяцПростоАнализа; месяцПростоАнализа > 0; месяцПростоАнализа--) {
-                        Log.d(this.getClass().getName(), " месяцПростоАнализа" + месяцПростоАнализа);
-                        Bundle bundle=new Bundle();
-                        bundle.putString("СамЗапрос","  SELECT * FROM  viewtabel WHERE year_tabels=?  AND month_tabels=?  AND cfo=?  AND status_send!=?");
-                        bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(ГодНазадДляЗаполнени), String.valueOf(месяцПростоАнализа),String.valueOf(СФОУжеСозданогоТАбеля),"Удаленная"});
-                        bundle.putString("Таблица","viewtabel");
-                        Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    new SubClassCursorLoader().  CursorLoaders(context, bundle);
-                        Log.d(this.getClass().getName(), " Курсор_ВытаскиваемПоследнийМесяцТабеля" + Курсор_ВытаскиваемПоследнийМесяцТабеля);
-                        if (Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() > 0 && РезультатВставкиИзПрошлогоМесяца==0) {
-                            Log.d(this.getClass().getName(), "Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() " + Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());
-                            Class_GRUD_SQL_Operations       class_grud_sql_operationЗаполнениеИзПрошлогоМесяца = new Class_GRUD_SQL_Operations(getApplicationContext());
-                            
-                            // TODO: 16.02.2023 сама вставка
-                             РезультатВставкиИзПрошлогоМесяца=      МетодЗаопленияДаннымиИзПрошлогоМесяца(context,
-                                    UUIDПОискаПредыдущегоМЕсяцаТАбеля, ГодНазадДляЗаполнени,
-                                    МесяцИзПрошлогоМесяца
-                                    , Курсор_ВытаскиваемПоследнийМесяцТабеля,
-                                    class_grud_sql_operationЗаполнениеИзПрошлогоМесяца);
-
-                            Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+РезультатВставкиИзПрошлогоМесяца );
-                            if (РезультатВставкиИзПрошлогоМесяца>0) {
-                                Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+РезультатВставкиИзПрошлогоМесяца );
-                                break;
-                            }
-                        }
-                        Log.d(this.getClass().getName(), " месяцПростоАнализа" + месяцПростоАнализа);
-                        Курсор_ВытаскиваемПоследнийМесяцТабеля.close();
-                    }
-                    if (РезультатВставкиИзПрошлогоМесяца>0) {
-                        Log.d(this.getClass().getName(), " Выходим"+ " РезультатВставкиИзПрошлогоМесяца "+РезультатВставкиИзПрошлогоМесяца );
-                        break;
-                    }
-                    if(ГодНазадДляЗаполнени<=2010){
-                        Log.d(this.getClass().getName(), " ГодНазадДляЗаполнени" + ГодНазадДляЗаполнени);
-                        break;
-                    }
-                }
-                    // TODO: 25.11.2022 выход
-                    МетодОтображениеОперацииИзПрошлогоМЕсяца(context, "ВыходИзВставкиИзПрошлогоМесяца",РезультатВставкиИзПрошлогоМесяца);
+                        .subscribe();
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
