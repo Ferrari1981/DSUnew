@@ -235,7 +235,7 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 // TODO: 21.03.2023  Заполение из прошлого месяца
                 Flowable.range(1,100)
                         .onBackpressureBuffer(true)
-
+                        .repeatWhen(repeat->repeat.delay(500,TimeUnit.MILLISECONDS))
                         .takeWhile(new Predicate<Integer>() {
                             @Override
                             public boolean test(Integer integer) throws Throwable {
@@ -366,7 +366,6 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                         // TODO: 25.11.2022 выход
                         МетодОтображениеОперацииИзПрошлогоМЕсяца(context, "РезультатДобавенияСотрудникаИзПрошлогоМесяца",integerArrayListВствавкаИзПрошлогоМесяц.size());
                         Log.d(this.getClass().getName(), " Вторая Таблиуа Из Прошлого МЕссяца РезультатВставкиВНИжнуюТаюблицу");
-                        Курсор_ВытаскиваемПоследнийМесяцТабеля.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -428,10 +427,12 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 Uri insertData = resolver.insert(uri, contentValuesДляДатаТабель);
                 if (insertData!=null) {
                     ответОперцииВставки = Optional.ofNullable(insertData).map(Emmeter -> Emmeter.toString().replace("content://", "")).get();
-                    Integer РезультатВставкаВыходныхДНей=
-                            new Class_Generation_Weekend_For_Tabels(getApplicationContext())
-                                    .МетодТретийАвтоматическаяВставкаВыходныхДней(ДляНовойЗаписиUUID,ПолученаяДатаТолькоГод,МесяцИзПрошлогоМесяца );
-                    Log.d(this.getClass().getName(), "   РезультатВставкаВыходныхДНей  "+  РезультатВставкаВыходныхДНей);
+                    if (     Integer.parseInt(ответОперцииВставки)>0) {
+                        Integer РезультатВставкаВыходныхДНей=
+                                new Class_Generation_Weekend_For_Tabels(getApplicationContext())
+                                        .МетодТретийАвтоматическаяВставкаВыходныхДней(ДляНовойЗаписиUUID,ПолученаяДатаТолькоГод,МесяцИзПрошлогоМесяца );
+                        Log.d(this.getClass().getName(), "   РезультатВставкаВыходныхДНей  "+  РезультатВставкаВыходныхДНей);
+                    }
                 }else {
                     ответОперцииВставки="0";
                 }
@@ -469,7 +470,7 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 String СгенерированованныйДатаДляДаннойОперации = new Class_Generation_Data(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
                 contentValuesДляТабель.put("date_update", СгенерированованныйДатаДляДаннойОперации);
                 contentValuesДляТабель.put("uuid", ParentUUID);
-                contentValuesДляТабель.put("сfo",СФОУжеСозданогоТАбеля);
+                contentValuesДляТабель.put("cfo",СФОУжеСозданогоТАбеля);
                 contentValuesДляТабель.put("month_tabels", МесяцИзПрошлогоМесяца);
                 contentValuesДляТабель.put("year_tabels",ГодНазадДляЗаполнени);
                 // TODO: 22.09.2022 дополнительные параменты ДатаТабель
