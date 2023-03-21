@@ -10,10 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
 import android.os.Parcel;
 import android.os.RemoteException;
 import android.util.Log;
@@ -46,17 +43,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import io.reactivex.rxjava3.core.Emitter;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Predicate;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -293,11 +285,11 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                                     Log.d(this.getClass().getName(), "Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() " + Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());
                                     String ДатаОперации = new SubClassMONTHONLY(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
                                     // TODO: 16.02.2023 сама вставка
-                                    РезультатВставкиИзПрошлогоМесяца[0] =      МетодЗаопленияДаннымиИзПрошлогоМесяца(context, ГодСейчас, МесяцСейчас, Курсор_ВытаскиваемПоследнийМесяцТабеля,СФОУжеСозданогоТАбеля);
+                                    РезультатВставкиИзПрошлогоМесяца[0] =
+                                            МетодСозданиеТабеляИДАнныхПрошлогоМесяца(context, ГодСейчас, МесяцСейчас, Курсор_ВытаскиваемПоследнийМесяцТабеля,СФОУжеСозданогоТАбеля);
                                     Log.d(this.getClass().getName(), "  РезультатВставкиИзПрошлогоМесяца[0] " +  РезультатВставкиИзПрошлогоМесяца[0] );
                                 }
                                 Log.d(this.getClass().getName(), "  РезультатВставкиИзПрошлогоМесяца[0] " +  РезультатВставкиИзПрошлогоМесяца[0] );
-                                Курсор_ВытаскиваемПоследнийМесяцТабеля.close();
                             }
                         })
                         .doOnError(new io.reactivex.rxjava3.functions.Consumer<Throwable>() {
@@ -330,11 +322,11 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
             }
         }
 
-        private Integer МетодЗаопленияДаннымиИзПрошлогоМесяца(@NonNull Context context,
-                                                              @NonNull  Integer ГодНазадДляЗаполнени,
-                                                              @NonNull   Integer МесяцИзПрошлогоМесяца,
-                                                              @NonNull    Cursor Курсор_ВытаскиваемПоследнийМесяцТабеля,
-                                                              @NonNull Integer СФОУжеСозданогоТАбеля) {
+        private Integer МетодСозданиеТабеляИДАнныхПрошлогоМесяца(@NonNull Context context,
+                                                                 @NonNull  Integer ГодНазадДляЗаполнени,
+                                                                 @NonNull   Integer МесяцИзПрошлогоМесяца,
+                                                                 @NonNull    Cursor Курсор_ВытаскиваемПоследнийМесяцТабеля,
+                                                                 @NonNull Integer СФОУжеСозданогоТАбеля) {
             ArrayList<Integer> integerArrayListВствавкаИзПрошлогоМесяц = null;
             try {
               integerArrayListВствавкаИзПрошлогоМесяц=new ArrayList<>();
@@ -344,8 +336,12 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 reentrantLock.lock();
                 Long ParentUUID = (Long) new Class_Generation_UUID(getApplicationContext()).МетодГенерацииUUID(getApplicationContext());
                 // TODO: 23.09.2022 ВСТАВЛЯЕМ ДАННЫЕ ВО ВТОРУЮ ТАБЛИЦЫ ДАТА_ТАБЕЛЬ
-                Integer РезультатВставкиВверхнеюТаблицы = МетодВставкивТаблицуДата_Табель(context,
-                        Курсор_ВытаскиваемПоследнийМесяцТабеля, ParentUUID, ГодНазадДляЗаполнени, МесяцИзПрошлогоМесяца);
+                Integer РезультатВставкиВверхнеюТаблицы = МетодВставкивТаблицуTaбель(context,
+                        Курсор_ВытаскиваемПоследнийМесяцТабеля,
+                        ГодНазадДляЗаполнени,
+                        МесяцИзПрошлогоМесяца,
+                        СФОУжеСозданогоТАбеля,
+                        ParentUUID);
                 Log.d(this.getClass().getName(), " РезультатВставкиВверхнеюТаблицы" + РезультатВставкиВверхнеюТаблицы);
                 condition.await(200, TimeUnit.MILLISECONDS);
                 condition.signal();
@@ -382,6 +378,7 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                         reentrantLock.unlock();
                     }
                 } while (Курсор_ВытаскиваемПоследнийМесяцТабеля.moveToNext());//TODO конец цикла заполения даными
+                Курсор_ВытаскиваемПоследнийМесяцТабеля.close();
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -452,17 +449,18 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
 
         private Integer МетодВставкивТаблицуTaбель(@NonNull Context context,
                                                         @NonNull Cursor Курсор_ВытаскиваемПоследнийМесяцТабеля,
-                                                        @NonNull Integer ПолученаяДатаТолькоГод,
+                                                        @NonNull Integer ГодНазадДляЗаполнени,
                                                         @NonNull Integer  МесяцИзПрошлогоМесяца,
-                                                         @NonNull Integer  ЦФОИзПрошлогоМесяца
-                                                                     ,@NonNull Long ParentUUID) {
+                                                   @NonNull Integer   СФОУжеСозданогоТАбеля,
+                                                   @NonNull Long ParentUUID) {
             String ответОперцииВставкиТабель = null;
             try {
 
                 Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
-                        " ПолученаяДатаТолькоГод  " + ПолученаяДатаТолькоГод + "  МесяцИзПрошлогоМесяца " + МесяцИзПрошлогоМесяца + " ЦФОИзПрошлогоМесяца " +ЦФОИзПрошлогоМесяца);
+                        " ГодНазадДляЗаполнени  " + ГодНазадДляЗаполнени + "  МесяцИзПрошлогоМесяца "
+                        + МесяцИзПрошлогоМесяца + " СФОУжеСозданогоТАбеля " +СФОУжеСозданогоТАбеля);
                 Class_GRUD_SQL_Operations       class_grud_sql_operationЗаполнениеИзПрошлогоМесяца = new Class_GRUD_SQL_Operations(getApplicationContext());
                 String НазваниеОбрабоатываемойТаблицы = "tabel";
                 ContentValues contentValuesДляТабель = new ContentValues();
@@ -470,10 +468,10 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 contentValuesДляТабель.put("user_update", Курсор_ВытаскиваемПоследнийМесяцТабеля.getInt(ИндексFIOuser_update));
                 String СгенерированованныйДатаДляДаннойОперации = new Class_Generation_Data(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
                 contentValuesДляТабель.put("date_update", СгенерированованныйДатаДляДаннойОперации);
-                contentValuesДляТабель.put("uuid", ParentUUID);;
-                contentValuesДляТабель.put("сfo",ЦФОИзПрошлогоМесяца);
+                contentValuesДляТабель.put("uuid", ParentUUID);
+                contentValuesДляТабель.put("сfo",СФОУжеСозданогоТАбеля);
                 contentValuesДляТабель.put("month_tabels", МесяцИзПрошлогоМесяца);
-                contentValuesДляТабель.put("year_tabels",ЦФОИзПрошлогоМесяца);
+                contentValuesДляТабель.put("year_tabels",ГодНазадДляЗаполнени);
                 // TODO: 22.09.2022 дополнительные параменты ДатаТабель
                 // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
                 Long РезультатУвеличиваемВерсияДатаТАбель =
