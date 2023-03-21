@@ -231,17 +231,15 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 // TODO: 15.02.2023 ГОД бежим по ЦИКЛЦУ
                 GregorianCalendar gregorianCalendarИзПрошлыхМесяцев = new GregorianCalendar();
                 gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.YEAR, ГодСейчас);
-                gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.MONTH,МесяцСейчас-1);
+                gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.MONTH,МесяцСейчас);
                 gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.DATE, 1);
                 Log.d(this.getClass().getName(), " gregorianCalendarИзПрошлыхМесяцев" + gregorianCalendarИзПрошлыхМесяцев.getTime().toLocaleString());
-                gregorianCalendarИзПрошлыхМесяцев.add(Calendar.MONTH, -100);
-                Log.d(this.getClass().getName(),  " gregorianCalendarИзПрошлыхМесяцев" + gregorianCalendarИзПрошлыхМесяцев.getTime().toLocaleString());
-
+                // TODO: 21.03.2023  Заполение из прошлого месяца
                 Flowable.range(1,100)
                         .subscribeOn(Schedulers.single())
                         .onBackpressureBuffer(true)
                         .subscribeOn(Schedulers.single())
-                        .repeatWhen(repeat->repeat.delay(2,TimeUnit.SECONDS))
+                        .repeatWhen(repeat->repeat.delay(500,TimeUnit.MILLISECONDS))
                         .takeWhile(new Predicate<Integer>() {
                             @Override
                             public boolean test(Integer integer) throws Throwable {
@@ -250,13 +248,13 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                                             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                                             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
                                             " РезультатВставкиИзПрошлогоМесяца  " + РезультатВставкиИзПрошлогоМесяца[0]);
-                                    return true;
+                                    return false;
                                 } else {
                                     Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                                             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                                             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
                                             " РезультатВставкиИзПрошлогоМесяца  " + РезультатВставкиИзПрошлогоМесяца[0]);
-                                    return false;
+                                    return true;
                                 }
                             }
                         })
