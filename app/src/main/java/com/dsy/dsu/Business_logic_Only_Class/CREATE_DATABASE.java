@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 //этот класс создает базу данных SQLite
 public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
-     static final int VERSION =     970;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
+     static final int VERSION =       1003;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
    private   Context context;
     private      SQLiteDatabase ССылкаНаСозданнуюБазу;
     private     CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда;
@@ -595,30 +595,29 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
 
 
     private void МетодСозданияViewТабеля(SQLiteDatabase ССылкаНаСозданнуюБазу) {
-        //
-
         // TODO: 26.08.2021 старый view табель
-
-        //ВИД View_TABEL
-
         ССылкаНаСозданнуюБазу.execSQL("drop view  if exists viewtabel");//test
         //ВИД View_TABEL
-        ССылкаНаСозданнуюБазу.execSQL("CREATE VIEW if not exists viewtabel AS  SELECT             data_tabels._id,  tabel.cfo," +
-                "  tabel.month_tabels,  tabel.year_tabels,  data_tabels.fio,  data_tabels.d1,  data_tabels.d2, " +
-                " data_tabels.d3,  data_tabels.d4,  data_tabels.d5,  data_tabels.d6, \n" +
-                "                          data_tabels.d7,  data_tabels.d8,  data_tabels.d9,  data_tabels.d10," +
-                "  data_tabels.d11,  data_tabels.d12,  data_tabels.d13,  data_tabels.d14,  data_tabels.d15,  data_tabels.d16, \n" +
-                "                          data_tabels.d17,  data_tabels.d18,  data_tabels.d20,  data_tabels.d19," +
-                "  data_tabels.d21,  data_tabels.d22,  data_tabels.d23,  data_tabels.d25,  data_tabels.d24,  data_tabels.d26, \n" +
-                "                          data_tabels.d27,  data_tabels.d28,  data_tabels.d29,  data_tabels.d30," +
-                "  data_tabels.d31,  data_tabels.date_update,  data_tabels.uuid,  data_tabels.uuid_tabel,  data_tabels.user_update, \n" +
-                "                          data_tabels.current_table,  data_tabels.status_send,  data_tabels.status_carried_out\n" +
-                "FROM             tabel LEFT OUTER JOIN\n" +
-                "                          data_tabels ON  tabel.uuid =  data_tabels.uuid_tabel\n" +
-                "WHERE        ( data_tabels.fio IS NOT NULL) ");
-
-
-
+        ССылкаНаСозданнуюБазу.execSQL("CREATE VIEW if not exists viewtabel AS  SELECT   " +
+                "         data_tabels._id,   fio.name,   tabel.cfo,   tabel.month_tabels, " +
+                "  tabel.year_tabels,   data_tabels.fio,   data_tabels.d1,   data_tabels.d2, " +
+                "  data_tabels.d3,   data_tabels.d4,   data_tabels.d5, \n" +
+                "                           data_tabels.d6,   data_tabels.d7,   data_tabels.d8," +
+                "   data_tabels.d9,   data_tabels.d10,   data_tabels.d11,   data_tabels.d12, " +
+                "  data_tabels.d13,   data_tabels.d14,   data_tabels.d15, \n" +
+                "                           data_tabels.d16,   data_tabels.d17,   data_tabels.d18," +
+                "   data_tabels.d20,   data_tabels.d19,   data_tabels.d21,   data_tabels.d22, " +
+                "  data_tabels.d23,   data_tabels.d25,   data_tabels.d24, \n" +
+                "                           data_tabels.d26,   data_tabels.d27,   data_tabels.d28," +
+                "   data_tabels.d29,   data_tabels.d30,   data_tabels.d31,   data_tabels.date_update," +
+                "   data_tabels.uuid,   data_tabels.uuid_tabel, \n" +
+                "                           data_tabels.user_update,   data_tabels.current_table," +
+                "   data_tabels.status_send,   data_tabels.status_carried_out,   data_tabels.prof\n" +
+                "FROM              fio INNER JOIN\n" +
+                "                           data_tabels ON   fio.uuid =   data_tabels.fio INNER JOIN\n" +
+                "                           prof ON   fio.prof =   prof._id LEFT OUTER JOIN\n" +
+                "                           tabel ON   tabel.uuid =   data_tabels.uuid_tabel\n" +
+                "WHERE        (  data_tabels.fio <> 0)");
         Log.d(this.getClass().getName(), " сработала ...  создание вид  viewtabel");
 
 
@@ -719,9 +718,9 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                 "status_send TEXT ," +
                 "status_carried_out   INTEGER DEFAULT 0   ,"+
                 "prof   INTEGER    ,"+
-                " UNIQUE (fio,user_update,uuid_tabel,prof),"+
+                " UNIQUE (fio,user_update,uuid_tabel,prof,uuid),"+
                 "FOREIGN KEY(fio ) REFERENCES fio (uuid)  ON UPDATE CASCADE   ,"+
-                "FOREIGN KEY(prof) REFERENCES prof  (id)  ON UPDATE CASCADE) ");//  "PRIMARY KEY(fio,uuid_tabel)) ");
+                "FOREIGN KEY(prof) REFERENCES prof  (_id)  ON UPDATE CASCADE) ");//  "PRIMARY KEY(fio,uuid_tabel)) ");
         ///             "FOREIGN KEY(uuid_tabel ) REFERENCES tabel (uuid)  ON UPDATE CASCADE  ON DELETE CASCADE," +
         ////////////////////
         Log.d(this.getClass().getName(), " сработала ...  создание таблицы   новая data_tabels");//"FOREIGN KEY(organizations) REFERENCES SuccessLogin (organizations)  ON UPDATE CASCADE ,"+
@@ -797,10 +796,10 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                 " current_organization INTEGER," +
                 " current_table  NUMERIC UNIQUE   ," +
                 " prof  INTEGER   ," +
-                "  UNIQUE (name,f,n,o,BirthDate, snils,current_table)," +
+                "  UNIQUE (name,f,n,o,BirthDate, snils)," +
                 "FOREIGN KEY(user_update) REFERENCES users  (id)  ON UPDATE CASCADE," +
                 "FOREIGN KEY(current_organization) REFERENCES organization  (id)  ON UPDATE CASCADE ," +
-                " FOREIGN KEY(prof) REFERENCES prof  (id)  ON UPDATE CASCADE" +
+                " FOREIGN KEY(prof) REFERENCES prof  (_id)  ON UPDATE CASCADE" +
                 ")");
 
         Log.d(this.getClass().getName(), " сработала ...  создание таблицы   fio");
@@ -1139,23 +1138,10 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
             Log.d(this.getClass().getName(), " после СЛУЖБА  содание базы newVersion==  652   (например)   " + new Date() + " newVersion " + newVersion);
 
             
-        /*    if(newVersion ==   962){
+      if(newVersion ==     1001){
                //TODO table создание
-                МетодСозданиеТаблицаДанныеКомпания(ССылкаНаСозданнуюБазу);
-                        МетодСозданиеТаблицаДанныеТрак(ССылкаНаСозданнуюБазу);
-                МетодСозданиеТаблицаДанныеПолученныхМатериалов(ССылкаНаСозданнуюБазу);
-
-                //   МетодСозданиеТаблицаДанныеПолученныхМатериалов(ССылкаНаСозданнуюБазу);
-                *//*
-                   МетодСозданиеViewПолученныхМатериалов(ССылкаНаСозданнуюБазу);
-                МетодСозданиеViewПолученныхМатериаловGroup(ССылкаНаСозданнуюБазу);
-
-                МетодСозданиеТаблицаДанныеПолученныхМатериалов(ССылкаНаСозданнуюБазу);
-                // TODO: 03.06.2022  создаение тригера
-                МетодСозданиеТрирераМодификаценКлиент(ССылкаНаСозданнуюБазу,ИменаТаблицыОтАндройда);*//*
-                  // TODO: 03.06.2022  создаение тригера
-            МетодСозданиеТрирераМодификаценКлиент(ССылкаНаСозданнуюБазу,ИменаТаблицыОтАндройда);
-                   }else*/
+          МетодСозданияViewТабеля(ССылкаНаСозданнуюБазу);
+                   }else
             if (newVersion > oldVersion) {
                    // TODO: 08.06.2021 создание Базы Данных
                    onCreate(ССылкаНаСозданнуюБазу);

@@ -390,125 +390,31 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     // TODO: 28.04.2021 обработка свайпов
     private void МетодОбработкиСвайповНаЭкране() {
         try{
-
-// TODO: 30.04.2021 обрабаотывает TOCUCH   создание свайпов
-
-///
             Log.d(this.getClass().getName(), "   setOnTouchListenera ");
-
-
-     /*       ScrollСамогоТабеля.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                @Override
-                public void onScrollChanged() {
-                    // horizontal scroll position
-                    int scrollX1 = ScrollСамогоТабеля.getScrollX();
-
-                    // vertical scroll position
-                    int scrollY1 = ScrollСамогоТабеля.getScrollY();
-
-                    int scrollY = ScrollСамогоТабеля.getHeight();
-                    int scrollX = ScrollСамогоТабеля.getWidth();
-
-                    int scrollEND = ScrollСамогоТабеля.getPaddingEnd();
-                    int scrollStart= ScrollСамогоТабеля.getPaddingStart();
-                    ////
-                    int scrollLeft = ScrollСамогоТабеля.getPaddingLeft();
-                    int scrollRight= ScrollСамогоТабеля.getPaddingRight();
-
-                    int heightDiff = ScrollСамогоТабеля.getChildAt(0).getPaddingLeft() - ScrollСамогоТабеля.getChildAt(0).getLeft();
-                    ///ScrollСамогоТабеля.smoothScrollTo(0, ScrollСамогоТабеля.getPaddingStart());
-
-
-                    if (scrollRight > 0) {
-                        Log.d(this.getClass().getName(),"Movement occurred outside bounds " +
-                                " больше 500");
-
-                      //  МетодСвайпВпередПоДАнным();
-                        //
-
-                    }
-
-                }
-            });
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            // TODO: 19.07.2021 тач
-
-            // TODO: 24.09.2021  ГЛАВНЫЙ ЭЛЕМЕНТ ГОРИЗОНАЛЬНОЙ ПРОКРУТРКИК ПО X
-
             HorizontalScrollViewВТабелеОдинСотрудник.setOnTouchListener(new OnTouchListener() {
-
-
-                // TODO: 07.05.2021 Точу
-
                 final float[] downy = {0l};
-                //
-
                 final float[] downx = {0l};
-
-
                 Long  getDownTime=0l;
                 Long  getEventTime=0l;
-
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-
                     Log.d(this.getClass().getName(),"Свайп просто сфайп");
-
                     try{
-
-                        ////
                         if (downx[0]==0l){
                             downx[0]=event.getX();
-
                         }
-
-
                         if (getDownTime==0) {
                             getDownTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
                         }
-
-
                         float     upy,upx;
-
                         float deltaY,deltax;
-
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN: // нажатие
                                 Log.d(this.getClass().getName(),"Movement occurred outside bounds " +
                                         "of current screen element ACTION_DOWN");
-
-
-
                                 break;
                             case MotionEvent.ACTION_MOVE: // движение
                                 Log.d(this.getClass().getName(),"Movement occurred outside bounds " +
@@ -518,29 +424,17 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                             case MotionEvent.ACTION_CANCEL:
                                 Log.d(this.getClass().getName(),"Movement occurred outside bounds " +
                                         "of current screen element ACTION_UP ACTION_CANCEL ");
-
-
                                 upy=event.getX();
-                                //  deltaY=upy- downy[0];
-                                //////
                                 upx=event.getX();
                                 deltax=upx-downx[0];
-
                                 // TODO: 07.05.2021  формула
                                 final int MIN_DISTANCEY=50;
-                                ////
                                 final int MIN_DISTANCEX=50;
-
                                 getEventTime = TimeUnit.MILLISECONDS.toSeconds( System.currentTimeMillis());
-
-
                                 float duration = getEventTime - getDownTime;
-
                                 StringBuffer БуферФиналВремениПрошлло=      new StringBuffer(String.valueOf(duration));
-                                /////
                                 int ФиналСколькоПрошллоВремени=     Integer.parseInt(БуферФиналВремениПрошлло.substring(0,1));
                                 // TODO: 19.05.2021 конец прокрутки
-
                                 int КонецПрокрутки=      v.getRight();
                                 int НачалоПрокрутки=      v.getLeft();
 
@@ -549,132 +443,45 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                                 int sy = ScrollСамогоТабеля.getScrollX();
                                 int sh = ScrollСамогоТабеля.getWidth();
                                 int delta = bottom - (sy + sh);
-
-
                                 // TODO: 08.05.2021  Y
-
                                 if (Math.abs(deltax) > MIN_DISTANCEY ) {
                                     if ( deltax > 0 && delta>10) {
-                                        /////
-
                                         int scrollX = HorizontalScrollViewВТабелеОдинСотрудник.getScrollX();
-
-
                                         HorizontalScrollViewВТабелеОдинСотрудник.scrollTo(scrollX,0);
-                                        ///
                                         HorizontalScrollViewВТабелеОдинСотрудник.smoothScrollTo(scrollX,0);
-
                                         // TODO: 24.09.2021 двигаемся вперед
-
-
-
-
                                         МетодСвайпНазаПоДанным();
-
-                                        ///
                                         Log.d(getApplicationContext().getClass().getName(), " МетодСвайпНазаПоДанным ");/////
-
-                 /*       МетодСвайпВпередПоДАнным();
-
-
-
-                        ///
-                        Log.d(getApplicationContext().getClass().getName(), " МетодСвайпВпередПоДАнным ");/////*/
-
-                                        //
                                         downy[0]=0;
-
-
-
                                     }else if  (  deltax<0 && delta>0) {
-                                        ///TODO плюс время
                                         int scrollX = HorizontalScrollViewВТабелеОдинСотрудник.getScrollX();
-                                        //
                                         HorizontalScrollViewВТабелеОдинСотрудник.scrollTo(scrollX,0);
-                                        ///
                                         HorizontalScrollViewВТабелеОдинСотрудник.smoothScrollTo(scrollX,0);
-
-
                                         // TODO: 24.09.2021 двигаемся назад
-
-                /*             МетодСвайпНазаПоДанным();
-
-                        ///
-                        Log.d(getApplicationContext().getClass().getName(), " МетодСвайпНазаПоДанным ");/////*/
-
-
                                         МетодСвайпВпередПоДАнным();
-
-
-
-                                        ///
                                         Log.d(getApplicationContext().getClass().getName(), " МетодСвайпВпередПоДАнным ");/////
-
-                                        ////
                                         downy[0]=0;
-                                        //////////////
                                         // TODO: 07.05.2021  обработка горизонта X
                                     }
-                                    /////
-
                                     // TODO: 09.05.2021  при успешном срабоатывании true
                                     return true;
-
-
-
-                                }/*else {
-
-                    // TODO: 07.05.2021  обработка горизонта X
-
-                   if (Math.abs(deltax)>MIN_DISTANCEX){
-                        if(deltax>0){
-                            // TODO: 07.05.2021 вперед по дпнным
-                            МетодСвайпВпередПоДАнным();
-                            //
-                            downx[0]=0;
-                        }else if(deltax<0){
-                            // TODO: 07.05.2021 движение назад
-                            МетодСвайпНазаПоДанным();
-                            //
-                            downx[0]=0;
-                        }
-                        // TODO: 09.05.2021  при успешном срабоатывании true
-                        return true;
-
-                    }
-
-
-                }*/
-
+                                }
                                 // TODO: 19.05.2021 обнуялем
                                 getDownTime=0l;
 
                                 break;
                         }
 
-
-
-
-
-                        /////////
                     } catch (Exception e) {
-                        //  Block of code to handle errors
                         e.printStackTrace();
-                        ///метод запись ошибок в таблицу
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
                         new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                                 Thread.currentThread().getStackTrace()[2].getLineNumber());
 
                     }
-
-
                     return false;
                 }
-
-
-
-
             });
 
 
@@ -1900,7 +1707,7 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                 Log.d(this.getClass().getName(), "ПолученыйUUIDФИОСледующий " + ПолученыйUUIDФИОСледующий);
                 Class_GRUD_SQL_Operations classGrudSqlOperations= new Class_GRUD_SQL_Operations(getApplicationContext());
                 classGrudSqlOperations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СамFreeSQLКОд",
-                        " SELECT name  FROM fio  WHERE  uuid = '" + ПолученыйUUIDФИОСледующий + "' ;");
+                        " SELECT name,prof  FROM fio  WHERE  uuid = '" + ПолученыйUUIDФИОСледующий + "' ;");
                 ///////
                 SQLiteCursor            Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО= (SQLiteCursor) classGrudSqlOperations.
                         new GetаFreeData(getApplicationContext()).getfreedata(classGrudSqlOperations.
@@ -1918,6 +1725,11 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                     Log.d(  this.getClass().getName(), "ФИОСледующий "
                             +"uuid"+ФИОДляТабеляНаАктивти);
                     ///TODO ЕСЛИ НЕ ПУСТОЙ ТАБЕЛЬ
+
+            Integer  ИндексПрофессия  =    ГлавныйКурсорДаннымиСвайпы.getColumnIndex("prof");
+            Integer  Профессия  =    ГлавныйКурсорДаннымиСвайпы.getInt(ИндексПрофессия);
+
+
                     ///TODO НАЧИНАЕМ ЗАПОЛНЯТЬЕ ЕСЛИ СОТРУДНИКА ЕСТЬ
                     НазваниеДанныхВТабелеФИО.setText("");
                     НазваниеДанныхВТабелеФИО.setText(ФИОДляТабеляНаАктивти.trim()); ///строго имя
