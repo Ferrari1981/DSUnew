@@ -239,25 +239,11 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 gregorianCalendarИзПрошлыхМесяцев.set(GregorianCalendar.DATE, 1);
                 Log.d(this.getClass().getName(), " gregorianCalendarИзПрошлыхМесяцев" + gregorianCalendarИзПрошлыхМесяцев.getTime().toLocaleString());
 
-                Flowable flowable=  Flowable.fromIterable(Stream.iterate(0, integer -> integer + 0).limit(20)
-                        .map(new java.util.function.Function<Integer, Object>() {
-                            @Override
-                            public Object apply(Integer integer) {
-                                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
-                                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
-                                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
-                                        " integer  " +integer);
-                                return integer;
-                            }
-                        }).collect(Collectors.toSet()));
-
-                flowable.blockingSubscribe();
-
 
                 // TODO: 21.03.2023  Заполение из прошлого месяца
                 Flowable.range(1,100)
                         .onBackpressureBuffer(true)
-                        .repeatWhen(repeat->repeat.delay(500,TimeUnit.MILLISECONDS))
+
                         .takeWhile(new Predicate<Integer>() {
                             @Override
                             public boolean test(Integer integer) throws Throwable {
@@ -279,15 +265,29 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                         .map(new Function<Integer, Object>() {
                             @Override
                             public Object apply(Integer integer) throws Throwable {
-                                gregorianCalendarИзПрошлыхМесяцев.add(Calendar.MONTH, -integer);
-                                Log.d(this.getClass().getName(), "  gregorianCalendarИзПрошлыхМесяцев.get(Calendar.YEAR)" +  gregorianCalendarИзПрошлыхМесяцев.get(Calendar.YEAR)
-                                  + "   gregorianCalendarИзПрошлыхМесяцев.get(Calendar.MONTH) "+    gregorianCalendarИзПрошлыхМесяцев.get(Calendar.MONTH));
+                                Log.d(this.getClass().getName(), " ДО  gregorianCalendarИзПрошлыхМесяцев.get(Calendar.YEAR)" +  gregorianCalendarИзПрошлыхМесяцев.get(Calendar.YEAR)
+                                        + "   gregorianCalendarИзПрошлыхМесяцев.get(Calendar.MONTH) "+    gregorianCalendarИзПрошлыхМесяцев.get(Calendar.MONTH));
+                                // TODO: 21.03.2023  уменяем месяц
+                                gregorianCalendarИзПрошлыхМесяцев.add(Calendar.MONTH, -1);
+                                return integer;
+                            }
+                        })
+                        .doOnNext(new io.reactivex.rxjava3.functions.Consumer<Object>() {
+                            @Override
+                            public void accept(Object o) throws Throwable {
+                                Integer ФиналМесяцВставки=       gregorianCalendarИзПрошлыхМесяцев.get(Calendar.MONTH);
+                                Integer ФиналГодВставки=       gregorianCalendarИзПрошлыхМесяцев.get(Calendar.YEAR);
+                                if(ФиналМесяцВставки==0){
+                                    ФиналМесяцВставки=12;
+                                    ФиналГодВставки--;
+                                }
+                                Log.d(this.getClass().getName(), " ПОСЛЕ ФиналГодВставки" +  ФиналГодВставки + "  ФиналМесяцВставки "+  ФиналМесяцВставки);
                                 Bundle bundle=new Bundle();
                                 bundle.putString("СамЗапрос","  SELECT * FROM  viewtabel WHERE year_tabels=?  AND month_tabels=?  AND cfo=?  AND status_send!=?");
-                                bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(gregorianCalendarИзПрошлыхМесяцев.get(Calendar.YEAR)),
-                                        String.valueOf( gregorianCalendarИзПрошлыхМесяцев.get(Calendar.MONTH)),String.valueOf(СФОУжеСозданогоТАбеля),"Удаленная"});
+                                bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(ФиналГодВставки),
+                                        String.valueOf( ФиналМесяцВставки),String.valueOf(СФОУжеСозданогоТАбеля),"Удаленная"});
                                 bundle.putString("Таблица","viewtabel");
-                           Cursor     Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    cursorLoader.  CursorLoaders(context, bundle);
+                                Cursor     Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    cursorLoader.  CursorLoaders(context, bundle);
                                 Log.d(this.getClass().getName(), " Курсор_ВытаскиваемПоследнийМесяцТабеля" + Курсор_ВытаскиваемПоследнийМесяцТабеля);
                                 if (Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() > 0 ) {
                                     Log.d(this.getClass().getName(), "Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() " + Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());
@@ -303,7 +303,6 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                                 }
                                 Log.d(this.getClass().getName(), "  РезультатВставкиИзПрошлогоМесяца[0] " +  РезультатВставкиИзПрошлогоМесяца[0] );
                                 Курсор_ВытаскиваемПоследнийМесяцТабеля.close();
-                                return integer;
                             }
                         })
                         .doOnError(new io.reactivex.rxjava3.functions.Consumer<Throwable>() {
