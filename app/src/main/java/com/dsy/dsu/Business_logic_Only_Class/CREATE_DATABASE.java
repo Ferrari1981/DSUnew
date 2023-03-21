@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 //этот класс создает базу данных SQLite
 public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
-     static final int VERSION =     969;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
+     static final int VERSION =     970;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
    private   Context context;
     private      SQLiteDatabase ССылкаНаСозданнуюБазу;
     private     CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда;
@@ -719,7 +719,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                 "status_send TEXT ," +
                 "status_carried_out   INTEGER DEFAULT 0   ,"+
                 "prof   INTEGER    ,"+
-                " UNIQUE (fio,user_update,date_update,uuid),"+
+                " UNIQUE (fio,user_update,uuid_tabel,prof),"+
                 "FOREIGN KEY(fio ) REFERENCES fio (uuid)  ON UPDATE CASCADE   ,"+
                 "FOREIGN KEY(prof) REFERENCES prof  (id)  ON UPDATE CASCADE) ");//  "PRIMARY KEY(fio,uuid_tabel)) ");
         ///             "FOREIGN KEY(uuid_tabel ) REFERENCES tabel (uuid)  ON UPDATE CASCADE  ON DELETE CASCADE," +
