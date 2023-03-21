@@ -291,14 +291,9 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                                 Log.d(this.getClass().getName(), " Курсор_ВытаскиваемПоследнийМесяцТабеля" + Курсор_ВытаскиваемПоследнийМесяцТабеля);
                                 if (Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() > 0 ) {
                                     Log.d(this.getClass().getName(), "Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount() " + Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());
-                                    Class_GRUD_SQL_Operations       class_grud_sql_operationЗаполнениеИзПрошлогоМесяца = new Class_GRUD_SQL_Operations(getApplicationContext());
                                     String ДатаОперации = new SubClassMONTHONLY(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
                                     // TODO: 16.02.2023 сама вставка
-                                    РезультатВставкиИзПрошлогоМесяца[0] =      МетодЗаопленияДаннымиИзПрошлогоМесяца(context,
-                                            UUIDПОискаПредыдущегоМЕсяцаТАбеля, ГодСейчас,
-                                            МесяцСейчас
-                                            , Курсор_ВытаскиваемПоследнийМесяцТабеля,
-                                            class_grud_sql_operationЗаполнениеИзПрошлогоМесяца);
+                                    РезультатВставкиИзПрошлогоМесяца[0] =      МетодЗаопленияДаннымиИзПрошлогоМесяца(context, ГодСейчас, МесяцСейчас, Курсор_ВытаскиваемПоследнийМесяцТабеля,СФОУжеСозданогоТАбеля);
                                     Log.d(this.getClass().getName(), "  РезультатВставкиИзПрошлогоМесяца[0] " +  РезультатВставкиИзПрошлогоМесяца[0] );
                                 }
                                 Log.d(this.getClass().getName(), "  РезультатВставкиИзПрошлогоМесяца[0] " +  РезультатВставкиИзПрошлогоМесяца[0] );
@@ -336,36 +331,46 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
         }
 
         private Integer МетодЗаопленияДаннымиИзПрошлогоМесяца(@NonNull Context context,
-                                                           Long UUIDПОискаПредыдущегоМЕсяцаТАбеля,
-                                                           Integer ГодНазадДляЗаполнени,
-                                                           Integer МесяцИзПрошлогоМесяца,
-                                                           Cursor Курсор_ВытаскиваемПоследнийМесяцТабеля,
-                                                           Class_GRUD_SQL_Operations class_grud_sql_operationЗаполнениеИзПрошлогоМесяца) {
+                                                              @NonNull  Integer ГодНазадДляЗаполнени,
+                                                              @NonNull   Integer МесяцИзПрошлогоМесяца,
+                                                              @NonNull    Cursor Курсор_ВытаскиваемПоследнийМесяцТабеля,
+                                                              @NonNull Integer СФОУжеСозданогоТАбеля) {
             ArrayList<Integer> integerArrayListВствавкаИзПрошлогоМесяц = null;
             try {
               integerArrayListВствавкаИзПрошлогоМесяц=new ArrayList<>();
                 ReentrantLock reentrantLock = new ReentrantLock();
                 Condition condition = reentrantLock.newCondition();
                 Курсор_ВытаскиваемПоследнийМесяцТабеля.moveToFirst();
+                reentrantLock.lock();
+                Long ParentUUID = (Long) new Class_Generation_UUID(getApplicationContext()).МетодГенерацииUUID(getApplicationContext());
+                // TODO: 23.09.2022 ВСТАВЛЯЕМ ДАННЫЕ ВО ВТОРУЮ ТАБЛИЦЫ ДАТА_ТАБЕЛЬ
+                Integer РезультатВставкиВверхнеюТаблицы = МетодВставкивТаблицуДата_Табель(context,
+                        Курсор_ВытаскиваемПоследнийМесяцТабеля, ParentUUID, ГодНазадДляЗаполнени, МесяцИзПрошлогоМесяца);
+                Log.d(this.getClass().getName(), " РезультатВставкиВверхнеюТаблицы" + РезультатВставкиВверхнеюТаблицы);
+                condition.await(200, TimeUnit.MILLISECONDS);
+                condition.signal();
+                reentrantLock.unlock();
                 do {
                     try {
                         reentrantLock.lock();
-                        // TODO: 23.09.2022 сама вставка в таблиц Дата ТАбель #2
-                        Integer РезультатВставкиВНИжнуюТаюблицу = МетодВставкивТаблицуДата_Табель(context,
-                                class_grud_sql_operationЗаполнениеИзПрошлогоМесяца,
-                                Курсор_ВытаскиваемПоследнийМесяцТабеля, UUIDПОискаПредыдущегоМЕсяцаТАбеля, ГодНазадДляЗаполнени, МесяцИзПрошлогоМесяца);
-                        Log.d(this.getClass().getName(), " Вторая Таблиуа Из Прошлого МЕссяца РезультатВставкиВНИжнуюТаюблицу"
-                                + РезультатВставкиВНИжнуюТаюблицу);
-                        if (РезультатВставкиВНИжнуюТаюблицу > 0) {
-                            integerArrayListВствавкаИзПрошлогоМесяц.add(РезультатВставкиВНИжнуюТаюблицу);
+                        if (РезультатВставкиВверхнеюТаблицы > 0) {
+                            integerArrayListВствавкаИзПрошлогоМесяц.add(РезультатВставкиВверхнеюТаблицы);
+                            // TODO: 23.09.2022 ВСТАВЛЯЕМ ДАННЫЕ ВО ВТОРУЮ ТАБЛИЦЫ ДАТА_ТАБЕЛЬ
+                            Integer РезультатВставкиВНИжнуюТаюблицу = МетодВставкивТаблицуДата_Табель(context,
+                                    Курсор_ВытаскиваемПоследнийМесяцТабеля, ParentUUID, ГодНазадДляЗаполнени, МесяцИзПрошлогоМесяца);
+                            Log.d(this.getClass().getName(), " Вторая Таблиуа Из Прошлого МЕссяца РезультатВставкиВНИжнуюТаюблицу"
+                                    + РезультатВставкиВНИжнуюТаюблицу);
+                            if (РезультатВставкиВНИжнуюТаюблицу > 0) {
+                                integerArrayListВствавкаИзПрошлогоМесяц.add(РезультатВставкиВНИжнуюТаюблицу);
 
+                            }
+                            condition.await(200, TimeUnit.MILLISECONDS);
+                            condition.signal();
                         }
-                        // TODO: 21.09.2022 отображае
-                        condition.await(300, TimeUnit.MILLISECONDS);
-                        condition.signal();
                         // TODO: 25.11.2022 выход
                         МетодОтображениеОперацииИзПрошлогоМЕсяца(context, "РезультатДобавенияСотрудникаИзПрошлогоМесяца",integerArrayListВствавкаИзПрошлогоМесяц.size());
-                        Log.d(this.getClass().getName(), "insertData   ");
+                        Log.d(this.getClass().getName(), " Вторая Таблиуа Из Прошлого МЕссяца РезультатВставкиВНИжнуюТаюблицу");
+                        Курсор_ВытаскиваемПоследнийМесяцТабеля.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -390,13 +395,17 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
 
 
         private Integer МетодВставкивТаблицуДата_Табель(@NonNull Context context,
-                                                        @NonNull Class_GRUD_SQL_Operations class_grud_sql_operationЗаполнениеИзПрошлогоМесяца,
                                                         @NonNull Cursor Курсор_ВытаскиваемПоследнийМесяцТабеля
                 ,@NonNull Long ParentUUID,
                                                         @NonNull Integer ПолученаяДатаТолькоГод,
                                                         @NonNull Integer  МесяцИзПрошлогоМесяца) {
             String ответОперцииВставки = null;
             try {
+                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                        " ПолученаяДатаТолькоГод  " + ПолученаяДатаТолькоГод + "  МесяцИзПрошлогоМесяца " + МесяцИзПрошлогоМесяца + " Курсор_ВытаскиваемПоследнийМесяцТабеля " +Курсор_ВытаскиваемПоследнийМесяцТабеля);
+                Class_GRUD_SQL_Operations       class_grud_sql_operationЗаполнениеИзПрошлогоМесяца = new Class_GRUD_SQL_Operations(getApplicationContext());
                 String НазваниеОбрабоатываемойТаблицы = "data_tabels";
                 ContentValues contentValuesДляДатаТабель = new ContentValues();
                 int ИндексСтолбикаДляЗаполненияФИО = Курсор_ВытаскиваемПоследнийМесяцТабеля.getColumnIndex("fio");
@@ -416,26 +425,16 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 Long РезультатУвеличиваемВерсияДатаТАбель =
                         new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(    НазваниеОбрабоатываемойТаблицы,getApplicationContext(),new CREATE_DATABASE(getApplicationContext()).getССылкаНаСозданнуюБазу());
                 Log.d(this.getClass().getName(), " РезультатУвеличиваемВерсияДатаТАбель  " + РезультатУвеличиваемВерсияДатаТАбель);
-                // TODO: 18.11.2022
                 contentValuesДляДатаТабель.put("current_table", РезультатУвеличиваемВерсияДатаТАбель);
-                // TODO: 22.09.2022
-                // TODO: 30.08.2021  ОРМИРУЕМ КОРКАТ БУДЩЕЙ ВСТАВКИ ДАННЫХ
                 Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + НазваниеОбрабоатываемойТаблицы + "");
-                //  Uri uri = Uri.parse("content://MyContentProviderDatabase/" +НазваниеОбрабоатываемойТаблицы + "");
                 ContentResolver resolver = context.getContentResolver();
-                // TODO: 22.09.2022 Само выполенение
                 Uri insertData = resolver.insert(uri, contentValuesДляДатаТабель);
                 if (insertData!=null) {
                     ответОперцииВставки = Optional.ofNullable(insertData).map(Emmeter -> Emmeter.toString().replace("content://", "")).get();
-
-
                     Integer РезультатВставкаВыходныхДНей=
                             new Class_Generation_Weekend_For_Tabels(getApplicationContext())
                                     .МетодТретийАвтоматическаяВставкаВыходныхДней(ДляНовойЗаписиUUID,ПолученаяДатаТолькоГод,МесяцИзПрошлогоМесяца );
                     Log.d(this.getClass().getName(), "   РезультатВставкаВыходныхДНей  "+  РезультатВставкаВыходныхДНей);
-
-
-
                 }else {
                     ответОперцииВставки="0";
                 }
@@ -451,6 +450,52 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
             return Integer.parseInt(ответОперцииВставки);
         }
 
+        private Integer МетодВставкивТаблицуTaбель(@NonNull Context context,
+                                                        @NonNull Cursor Курсор_ВытаскиваемПоследнийМесяцТабеля,
+                                                        @NonNull Integer ПолученаяДатаТолькоГод,
+                                                        @NonNull Integer  МесяцИзПрошлогоМесяца,
+                                                         @NonNull Integer  ЦФОИзПрошлогоМесяца
+                                                                     ,@NonNull Long ParentUUID) {
+            String ответОперцииВставкиТабель = null;
+            try {
+
+                Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                        " ПолученаяДатаТолькоГод  " + ПолученаяДатаТолькоГод + "  МесяцИзПрошлогоМесяца " + МесяцИзПрошлогоМесяца + " ЦФОИзПрошлогоМесяца " +ЦФОИзПрошлогоМесяца);
+                Class_GRUD_SQL_Operations       class_grud_sql_operationЗаполнениеИзПрошлогоМесяца = new Class_GRUD_SQL_Operations(getApplicationContext());
+                String НазваниеОбрабоатываемойТаблицы = "tabel";
+                ContentValues contentValuesДляТабель = new ContentValues();
+                int ИндексFIOuser_update = Курсор_ВытаскиваемПоследнийМесяцТабеля.getColumnIndex("user_update");
+                contentValuesДляТабель.put("user_update", Курсор_ВытаскиваемПоследнийМесяцТабеля.getInt(ИндексFIOuser_update));
+                String СгенерированованныйДатаДляДаннойОперации = new Class_Generation_Data(getApplicationContext()).ГлавнаяДатаИВремяОперацийСБазойДанных();
+                contentValuesДляТабель.put("date_update", СгенерированованныйДатаДляДаннойОперации);
+                contentValuesДляТабель.put("uuid", ParentUUID);;
+                contentValuesДляТабель.put("сfo",ЦФОИзПрошлогоМесяца);
+                contentValuesДляТабель.put("month_tabels", МесяцИзПрошлогоМесяца);
+                contentValuesДляТабель.put("year_tabels",ЦФОИзПрошлогоМесяца);
+                // TODO: 22.09.2022 дополнительные параменты ДатаТабель
+                // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
+                Long РезультатУвеличиваемВерсияДатаТАбель =
+                        new SubClassUpVersionDATA().МетодПовышаемВерсииCurrentTable(    НазваниеОбрабоатываемойТаблицы,getApplicationContext(),
+                                new CREATE_DATABASE(getApplicationContext()).getССылкаНаСозданнуюБазу());
+                Log.d(this.getClass().getName(), " РезультатУвеличиваемВерсияДатаТАбель  " + РезультатУвеличиваемВерсияДатаТАбель);
+                contentValuesДляТабель.put("current_table", РезультатУвеличиваемВерсияДатаТАбель);
+                Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + НазваниеОбрабоатываемойТаблицы + "");
+                ContentResolver resolver = context.getContentResolver();
+                Uri insertData = resolver.insert(uri, contentValuesДляТабель);
+                ответОперцииВставкиТабель = Optional.ofNullable(insertData).map(Emmeter -> Emmeter.toString().replace("content://", "")).get();
+                Log.d(this.getClass().getName(), "ответОперцииВставкиТабель   " + ответОперцииВставкиТабель );
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+                Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
+            }
+            return Integer.parseInt(ответОперцииВставкиТабель);
+        }
 
 
 
