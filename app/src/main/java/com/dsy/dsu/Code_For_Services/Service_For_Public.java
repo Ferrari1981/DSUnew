@@ -416,6 +416,7 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 contentValuesДляДатаТабель.put("uuid_tabel", ParentUUID);
                 contentValuesДляДатаТабель.put("status_send", " ");
                 contentValuesДляДатаТабель.put("status_carried_out", "False");
+                contentValuesДляДатаТабель.putNull("_id");
                 // TODO: 22.09.2022 дополнительные параменты ДатаТабель
                 // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
                 Long РезультатУвеличиваемВерсияДатаТАбель =
@@ -473,6 +474,8 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 contentValuesДляТабель.put("cfo",СФОУжеСозданогоТАбеля);
                 contentValuesДляТабель.put("month_tabels", МесяцИзПрошлогоМесяца);
                 contentValuesДляТабель.put("year_tabels",ГодНазадДляЗаполнени);
+                contentValuesДляТабель.put("status_send", " ");
+                contentValuesДляТабель.putNull("_id");
                 // TODO: 22.09.2022 дополнительные параменты ДатаТабель
                 // TODO: 18.03.2023  получаем ВЕСИЮ ДАННЫХ
                 Long РезультатУвеличиваемВерсияДатаТАбель =
