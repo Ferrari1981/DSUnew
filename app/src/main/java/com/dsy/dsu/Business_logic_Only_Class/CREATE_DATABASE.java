@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 //этот класс создает базу данных SQLite
 public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
-     static final int VERSION =       1009;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
+     static final int VERSION =      1010;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
    private   Context context;
     private      SQLiteDatabase ССылкаНаСозданнуюБазу;
     private     CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда;
@@ -93,7 +93,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
             МетодСозданияВидаЧатаViewChat(ССылкаНаСозданнуюБазу);
             МетодСозданияВидаЗадания(ССылкаНаСозданнуюБазу);
             МетодСозданиеview_onesignal(ССылкаНаСозданнуюБазу);
-           // МетодСозданияViewТабеля(ССылкаНаСозданнуюБазу);
+            МетодСозданияViewТабеля(ССылкаНаСозданнуюБазу);
             МетодСозданиеViewПолученныхМатериалов(ССылкаНаСозданнуюБазу);
             МетодСозданиеViewПолученныхМатериаловGroup(ССылкаНаСозданнуюБазу);
 // TODO: 12.10.2022  создание Trigers
@@ -593,25 +593,24 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         // TODO: 26.08.2021 старый view табель
         ССылкаНаСозданнуюБазу.execSQL("drop view  if exists viewtabel");//test
         //ВИД View_TABEL
-        ССылкаНаСозданнуюБазу.execSQL("CREATE VIEW if not exists viewtabel AS  SELECT         data_tabels._id,  fio.name, " +
-                " tabel.cfo,  tabel.month_tabels,  tabel.year_tabels,  data_tabels.fio,  data_tabels.d1," +
-                "  data_tabels.d2,  data_tabels.d3,  data_tabels.d4,  data_tabels.d5, \n" +
-                "                          data_tabels.d6,  data_tabels.d7,  data_tabels.d8,  data_tabels.d9, " +
-                " data_tabels.d10,  data_tabels.d11,  data_tabels.d12,  data_tabels.d13,  data_tabels.d14,  data_tabels.d15, \n" +
-                "                          data_tabels.d16,  data_tabels.d17,  data_tabels.d18,  data_tabels.d20," +
-                "  data_tabels.d19,  data_tabels.d21,  data_tabels.d22,  data_tabels.d23,  data_tabels.d25,  data_tabels.d24, \n" +
-                "                          data_tabels.d26,  data_tabels.d27,  data_tabels.d28,  data_tabels.d29, " +
-                " data_tabels.d30,  data_tabels.d31,  data_tabels.date_update,  data_tabels.uuid,  data_tabels.uuid_tabel, \n" +
-                "                          data_tabels.user_update,  data_tabels.current_table,  data_tabels.status_send,  data_tabels.status_carried_out,  data_tabels.prof\n" +
-                "FROM             fio INNER JOIN\n" +
-                "                          data_tabels ON  fio.uuid =  data_tabels.fio INNER JOIN\n" +
-                "                          tabel ON  tabel.uuid =  data_tabels.uuid_tabel\n" +
+        ССылкаНаСозданнуюБазу.execSQL("CREATE VIEW if not exists viewtabel AS  SELECT  data_tabels._id,  fio.name,\n" +
+                "\n" +
+                "\n" +
+                "tabel.cfo,  tabel.month_tabels,  tabel.year_tabels,  data_tabels.fio,  data_tabels.d1,\n" +
+                "                  data_tabels.d2,  data_tabels.d3,  data_tabels.d4,  data_tabels.d5, \n" +
+                "                                          data_tabels.d6,  data_tabels.d7,  data_tabels.d8,  data_tabels.d9,\n" +
+                "                 data_tabels.d10,  data_tabels.d11,  data_tabels.d12,  data_tabels.d13,  data_tabels.d14,  data_tabels.d15, \n" +
+                "                                          data_tabels.d16,  data_tabels.d17,  data_tabels.d18,  data_tabels.d20,\n" +
+                "                  data_tabels.d19,  data_tabels.d21,  data_tabels.d22,  data_tabels.d23,  data_tabels.d25,  data_tabels.d24, \n" +
+                "                                          data_tabels.d26,  data_tabels.d27,  data_tabels.d28,  data_tabels.d29,\n" +
+                "                 data_tabels.d30,  data_tabels.d31,  data_tabels.date_update,  data_tabels.uuid,  data_tabels.uuid_tabel, \n" +
+                "                                          data_tabels.user_update,  data_tabels.current_table,  data_tabels.status_send,  data_tabels.status_carried_out,data_tabels.prof\n" +
+                "\n" +
+                " FROM  fio           \n" +
+                " INNER JOIN  data_tabels ON fio.uuid=data_tabels.fio \n" +
+                "INNER JOIN tabel ON  tabel.uuid =  data_tabels.uuid_tabel\n" +
                 "WHERE        ( data_tabels.fio IS NOT NULL)");
         Log.d(this.getClass().getName(), " сработала ...  создание вид  viewtabel");
-
-
-
-
 
     }
 
