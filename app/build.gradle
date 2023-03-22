@@ -179,4 +179,9 @@ dependencies {
     implementation 'com.squareup.okhttp:okhttp:2.7.5'
 
    /* implementation 'com.squareup.okhttp3:okhttp-ws:3.4.2'*/
+
+    implementation 'com.squareup.retrofit2:converter-jackson:2.7.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.3'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.10.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.10.3'
 }

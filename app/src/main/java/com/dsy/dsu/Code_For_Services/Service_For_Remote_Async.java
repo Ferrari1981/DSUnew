@@ -36,6 +36,10 @@ import com.dsy.dsu.Business_logic_Only_Class.Class__Generation_Genetal_Tables;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Connection_BroadcastReceiver_Sous_Asyns_Glassfish;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -45,6 +49,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -2397,12 +2404,38 @@ public class Service_For_Remote_Async extends IntentService {
                     int ИндексСтолбикаJsonТолькоUUID= КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnIndex("uuid");
                     Long    СтолбикаJsonСамUUID= Optional.ofNullable(КурсорДляОтправкиДанныхНаСерверОтАндройда.getLong(ИндексСтолбикаJsonТолькоUUID)).map(Long::new).orElse(0l) ;
                     //////////todo КОНКРЕТАНАЯ ГЕНЕРАЦИЯ  JSON ВЕРХНЕГО КЛЮЧА
-                    ГенерацияJSONВсейТаблицы.put(СтолбикаJsonСамUUID.toString(), ГенерацияJSONСтроки);////ВСТАВЛЯЕМ ОДИН JSON в ДРУГОЙ JSON ПОЛУЧАЕМ ФИНАЛЬНЫЙ РЕЗУЛЬТАТ JSON"А
-
+                    //ГенерацияJSONВсейТаблицы.put(null, ГенерацияJSONСтроки);////ВСТАВЛЯЕМ ОДИН JSON в ДРУГОЙ JSON ПОЛУЧАЕМ ФИНАЛЬНЫЙ РЕЗУЛЬТАТ JSON"А
                     Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                             + " ГенерацияJSONВсейТаблицы " +ГенерацияJSONВсейТаблицы +" СтолбикаJsonСамUUID " +СтолбикаJsonСамUUID);
+
+
+
+                    ObjectMapper      mapper=new ObjectMapper();
+                    mapper.writerWithDefaultPrettyPrinter();
+                    mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+                    List<String> eventsList = new ArrayList<>();
+                    eventsList.add("{\n" + "  \"isA\": \"Customer\",\n" + "  \"name\": \"Rise Against\",\n" + "  \"age\": \"2000\"\n" + "}");
+                    eventsList.add("{\n" + "  \"isA\": \"Owener\",\n" + "  \"name\": \"Linkin Park\",\n" + "  \"age\": \"2ßß8\"\n" + "}");
+                    eventsList.add("{\n" + "  \"isA\": \"Customer\",\n" + "  \"name\": \"Breaking Benjamin\",\n" + "  \"age\": \"2005\"\n" + "}");
+                    StringWriter jsonObjectWriter = new StringWriter();
+                    JsonGenerator jsonGenerator = mapper.getFactory().createGenerator(jsonObjectWriter).useDefaultPrettyPrinter();
+                    jsonGenerator.writeStartObject();
+                    jsonGenerator.writeStringField("schema","2.0");
+                    jsonGenerator.writeStringField("date","2021-06-22");
+
+
+                    //Current Approach
+                    jsonGenerator.writeFieldName("eventList");
+                    jsonGenerator.writeStartArray();
+                    jsonGenerator.writeEndArray();
+                    jsonGenerator.writeEndObject();
+                    jsonGenerator.close();
+                    jsonGenerator.flush();
+
+                    System.out.println(jsonObjectWriter.toString());
+
 
                 } while (КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToNext());////ДАННЫЕ КРУТИЯТЬСЯ ДО КОНЦА ДАННЫХ И ГЕНЕРИРУЮ JSON
 
