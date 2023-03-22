@@ -2,26 +2,21 @@
 //////КНАЧАЛО  КЛАССА ПО СОЗДАНИЮ СХЕМЫ ДАННЫХ
 package com.dsy.dsu.Business_logic_Only_Class;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.util.concurrent.AtomicDouble;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
-import java.util.Random;
-import java.util.Spliterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 //этот класс создает базу данных SQLite
 public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
-     static final int VERSION =       1003;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
+     static final int VERSION =       1007;//ПРИ ЛЮБОМ ИЗМЕНЕНИЕ В СТРУКТУРЕ БАЗЫ ДАННЫХ НУЖНО ДОБАВИТЬ ПЛЮС ОДНУ ЦИФРУ К ВЕРСИИ 1=1+1=2 ИТД.1
    private   Context context;
     private      SQLiteDatabase ССылкаНаСозданнуюБазу;
     private     CopyOnWriteArrayList<String> ИменаТаблицыОтАндройда;
@@ -64,17 +59,18 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
             // TODO: 24.10.2022 Генерируем Список Таблиц
             ИменаТаблицыОтАндройда=    new SubClassCreatingMainAllTables(context).  МетодТОлькоЗаполенияНазваниямиТаблицДляОмена(context);
 
-            // TODO: 12.10.2022  создание TABLE
-            МетодСозданиеСистемнойТаблицыMODIFITATION_Client(ССылкаНаСозданнуюБазу);
+            // TODO: 12.10.2022  СИСТЕМНЫЕ ТАБЛИЦЫ
+            МетодТаблицаMODIFITATION_Client(ССылкаНаСозданнуюБазу);
             МетодСозданиеТаблицыОшибок(ССылкаНаСозданнуюБазу);
-            МетодСозданияСистемнойТаблицыСФО(ССылкаНаСозданнуюБазу);
             МетодСозданиеТаблицыЛогинов(ССылкаНаСозданнуюБазу);
+            // TODO: 22.03.2023 ТАБЛИЦЫ С ДАННЫМИ
+            МетодСозданияСистемнойТаблицыСФО(ССылкаНаСозданнуюБазу);
+            МетодСоздания_ТаблицыПрофесии(ССылкаНаСозданнуюБазу);
             МетодСозданиеОрганизацииТаблицы(ССылкаНаСозданнуюБазу);
             МетодСозданиеТаблицыДепартамент(ССылкаНаСозданнуюБазу);
             МетодСозданиеТаблицыФИО(ССылкаНаСозданнуюБазу);
             МетодСозданияТаблицыРегион(ССылкаНаСозданнуюБазу);
             МетодСоздания_ТаблицыТабель(ССылкаНаСозданнуюБазу);
-            МетодСоздания_ТаблицыПрофесии(ССылкаНаСозданнуюБазу);
             МетодСоздания_ТаблицыДатаТабель(ССылкаНаСозданнуюБазу);
             МетодСозданиеМетокТабеля(ССылкаНаСозданнуюБазу);
             МетодСозданиеSettingTabels(ССылкаНаСозданнуюБазу);
@@ -97,7 +93,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
             МетодСозданияВидаЧатаViewChat(ССылкаНаСозданнуюБазу);
             МетодСозданияВидаЗадания(ССылкаНаСозданнуюБазу);
             МетодСозданиеview_onesignal(ССылкаНаСозданнуюБазу);
-            МетодСозданияViewТабеля(ССылкаНаСозданнуюБазу);
+           // МетодСозданияViewТабеля(ССылкаНаСозданнуюБазу);
             МетодСозданиеViewПолученныхМатериалов(ССылкаНаСозданнуюБазу);
             МетодСозданиеViewПолученныхМатериаловGroup(ССылкаНаСозданнуюБазу);
 // TODO: 12.10.2022  создание Trigers
@@ -116,7 +112,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists templates");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'templates'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists    templates  (" +
-                "id  INTEGER ," +
+                "id  INTEGER PRIMARY KEY ," +
                 " name_templates TEXT  ," +
                 " user_update INTEGER ,"+
                 " date_update NUMERIC,"+
@@ -129,7 +125,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists date_work");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'date_work'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists    date_work  (" +
-                "id  INTEGER  ," +
+                "id  INTEGER PRIMARY KEY ," +
                 "date_work NUMERIC,"+
                 " date_update NUMERIC)");
         /////todo встака данных по умолчанию
@@ -144,7 +140,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists  region");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'region'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists   region (" +
-                "id  INTEGER     ," +
+                "id  INTEGER PRIMARY KEY    ," +
                 " name TEXT ," +
                 " date_update NUMERIC  ," +
                 " user_update INTEGER ," +
@@ -158,7 +154,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists   cfo");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'cfo'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists   cfo (" +
-                "_id  INTEGER     ," +
+                "_id  INTEGER  PRIMARY KEY   ," +
                 " name TEXT ," +
                 " region  INTEGER ," +
                 " boss  INTEGER ," +
@@ -168,8 +164,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                 " closed INTEGER  ," +
                 "  current_table NUMERIC UNIQUE ," +
                 " organization INTEGER DEFAULT 1 ," +
-                " uuid NUMERIC UNIQUE  ,"+
-                "FOREIGN KEY(boss) REFERENCES fio   (_id)  ON UPDATE CASCADE)");
+                " uuid NUMERIC UNIQUE  )");
         Log.d(this.getClass().getName(), " сработала ...  создание таблицы   cfo");
     }
 
@@ -178,7 +173,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists depatment");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'depatment'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists depatment (" +
-                "id  INTEGER    ," +
+                "id  INTEGER PRIMARY KEY   ," +
                 " name TEXT  ," +
                 " organization INTEGER ," +
                 " date_update NUMERIC," +
@@ -195,7 +190,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0' ,versionserveraandroid_version='0' WHERE name =  'organization'");//test
         /////
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists organization (" +
-                "id  INTEGER    ," +
+                "id  INTEGER  PRIMARY KEY    ," +
                 " name TEXT  ," +
                 " fullname  TEXT ," +
                 " inn TEXT ," +
@@ -218,7 +213,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists notifications");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'notifications'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists    notifications  (" +
-                "id  INTEGER ," +
+                "id  INTEGER PRIMARY KEY ," +
                 " date_update NUMERIC,"+
                 " user_update INTEGER ,"+
                 "uuid  NUMERIC UNIQUE ,"+
@@ -235,7 +230,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists data_pay");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'data_pay'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists    data_pay  (" +
-                "id  INTEGER ," +
+                "id  INTEGER  PRIMARY KEY ," +
                 " cfo  TEXT ," +
                 " organisazia TEXT ," +
                 " kontragent TEXT ," +
@@ -257,7 +252,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists data_notification");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'data_notification'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists    data_notification  (" +
-                "id  INTEGER ," +
+                "id  INTEGER PRIMARY KEY ," +
                 " message  TEXT ," +
                 " date_start NUMERIC ," +
                 " clock NUMERIC," +
@@ -313,7 +308,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists  settings_tabels");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0' ,versionserveraandroid_version='0' WHERE name =  'settings_tabels'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists    settings_tabels  (" +
-                "id  INTEGER  ," +
+                "id  INTEGER PRIMARY KEY ," +
                 " date_update NUMERIC  ," +
                 " user_update INTEGER  ," +
                 " version_dsu1 INTEGER ," +
@@ -334,7 +329,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists  view_onesignal");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'view_onesignal'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists    view_onesignal  (" +
-                "id  INTEGER  ," +
+                "id  INTEGER  PRIMARY KEY ," +
                 "uuid  NUMERIC  UNIQUE ," +
                 " onesignal TEXT ," +
                 "  current_table NUMERIC UNIQUE    ," +
@@ -361,7 +356,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
 
 
 
-    private void МетодСозданиеСистемнойТаблицыMODIFITATION_Client(SQLiteDatabase ССылкаНаСозданнуюБазу) throws InterruptedException {
+    private void МетодТаблицаMODIFITATION_Client(SQLiteDatabase ССылкаНаСозданнуюБазу) throws InterruptedException {
         try {
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists MODIFITATION_Client");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table  if not exists MODIFITATION_Client (" +
@@ -468,7 +463,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
 
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'chat_users'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists    chat_users  (" +
-                "_id  INTEGER ," +
+                "_id  INTEGER PRIMARY KEY ," +
                 " name TEXT  ," +
                 " rights INTEGER ,"+
                 " telephone TEXT,"+
@@ -492,7 +487,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
 
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'data_chat'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists    data_chat  (" +
-                "_id  INTEGER   ," +
+                "_id  INTEGER PRIMARY KEY  ," +
                 " uuid  NUMERIC UNIQUE," +
                 " message TEXT ," +
                 " image_chat BLOB ," +
@@ -526,7 +521,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         //////
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0' ,versionserveraandroid_version='0' WHERE name =  'chats'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists    chats  (" +
-                "_id  INTEGER   ," +
+                "_id  INTEGER PRIMARY KEY  ," +
                 " user_update INTEGER ,"+
                 " date_update NUMERIC,"+
                 " uuid  NUMERIC UNIQUE," +
@@ -636,7 +631,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists tabel");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'tabel'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists tabel(" +
-                "_id  INTEGER    ," +
+                "_id  INTEGER  PRIMARY KEY  ," +
                 "cfo NUMERIC ," +
                 " month_tabels TEXT check(length(month_tabels) <13 ) ," +
                 "year_tabels NUMERIC," +
@@ -658,7 +653,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists prof");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0',versionserveraandroid_version='0'  WHERE name =  'prof'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists prof (" +
-                "_id  INTEGER    ," +
+                "_id  INTEGER   PRIMARY KEY   ," +
                 " name TEXT ," +
                 " user_update INTEGER ," +
                 "date_update  NUMERIC   ," +
@@ -677,7 +672,7 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
         ССылкаНаСозданнуюБазу.execSQL("drop table  if exists data_tabels");//test
         ССылкаНаСозданнуюБазу.execSQL(" UPDATE MODIFITATION_Client SET  localversionandroid_version='0' ,versionserveraandroid_version='0' WHERE name ='data_tabels'");//test
         ССылкаНаСозданнуюБазу.execSQL("Create table if not exists data_tabels(" +
-                "_id  INTEGER     ," +
+                "_id  INTEGER  PRIMARY KEY   ," +
                 "fio NUMERIC ," +
                 "d1 INTEGER  DEFAULT 0   ," +
                 "d2 INTEGER  DEFAULT 0    ," +
@@ -717,10 +712,10 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                 " user_update INTEGER  ," +
                 "status_send TEXT ," +
                 "status_carried_out   INTEGER DEFAULT 0   ,"+
-                "prof   INTEGER    ,"+
+                " prof   INTEGER    ,"+
                 " UNIQUE (fio,user_update,uuid_tabel,prof,uuid),"+
-                "FOREIGN KEY(fio ) REFERENCES fio (uuid)  ON UPDATE CASCADE   ,"+
-                "FOREIGN KEY(prof) REFERENCES prof  (_id)  ON UPDATE CASCADE) ");//  "PRIMARY KEY(fio,uuid_tabel)) ");
+                "FOREIGN KEY(prof) REFERENCES prof  (_id)  ON UPDATE CASCADE," +
+                "FOREIGN KEY(fio ) REFERENCES fio (uuid)  ON UPDATE CASCADE )  ");//  "PRIMARY KEY(fio,uuid_tabel)) ");
         ///             "FOREIGN KEY(uuid_tabel ) REFERENCES tabel (uuid)  ON UPDATE CASCADE  ON DELETE CASCADE," +
         ////////////////////
         Log.d(this.getClass().getName(), " сработала ...  создание таблицы   новая data_tabels");//"FOREIGN KEY(organizations) REFERENCES SuccessLogin (organizations)  ON UPDATE CASCADE ,"+
@@ -796,10 +791,10 @@ public class CREATE_DATABASE extends SQLiteOpenHelper{ ///SQLiteOpenHelper
                 " current_organization INTEGER," +
                 " current_table  NUMERIC UNIQUE   ," +
                 " prof  INTEGER   ," +
-                "  UNIQUE (name,f,n,o,BirthDate, snils)," +
+                "  UNIQUE (name,f,n,o,BirthDate, snils,prof)," +
                 "FOREIGN KEY(user_update) REFERENCES users  (id)  ON UPDATE CASCADE," +
-                "FOREIGN KEY(current_organization) REFERENCES organization  (id)  ON UPDATE CASCADE ," +
-                " FOREIGN KEY(prof) REFERENCES prof  (_id)  ON UPDATE CASCADE" +
+                "FOREIGN KEY(prof) REFERENCES prof  (_id)  ON UPDATE CASCADE," +
+                "FOREIGN KEY(current_organization) REFERENCES organization  (id)  ON UPDATE CASCADE " +
                 ")");
 
         Log.d(this.getClass().getName(), " сработала ...  создание таблицы   fio");
