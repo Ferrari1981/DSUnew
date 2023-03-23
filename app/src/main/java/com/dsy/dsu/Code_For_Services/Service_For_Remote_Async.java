@@ -2628,8 +2628,7 @@ public class Service_For_Remote_Async extends IntentService {
                             Log.d(this.getClass().getName(), "  ДанныеПришёлВОтветОтМетодаPOST  " + ДанныеПришёлВОтветОтМетодаPOST);
 
                             ////todo дОПОЛНИТЕЛЬНЫЙ КОД ПОСИКА ДВННЫХ ИЗ ОТВЕТА ОТ СЕРВЕРА
-                            РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера =
-                                    МетодАнализОтветаОтСервера(БуферОтправкаДанныхвФоне);
+                            РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера = МетодАнализОтветаОтСервера(БуферОтправкаДанныхвФоне);
                         }
                         ////TODO ответ от сервера РЕЗУЛЬТАТ
                         Log.d(this.getClass().getName(), "Успешный Ответ от сервера ДанныеПришёлВОтветОтМетодаPOST в фоне " + ДанныеПришёлВОтветОтМетодаPOST+"" +
@@ -2672,7 +2671,7 @@ public class Service_For_Remote_Async extends IntentService {
                     String[] words = ПолучениееыкОтветыОтСервераSQlServerАнализ.split("таблица");
                     for (String word : words) {
                         System.out.println(word);
-                        Integer ЕслиТакойПоискаОригинальноВерсииДанныхОтСервера = word.indexOf(":::");
+                        Integer ЕслиТакойПоискаОригинальноВерсииДанныхОтСервера = word.indexOf("OriginalVesion :::");
                         if (ЕслиТакойПоискаОригинальноВерсииДанныхОтСервера>0) {
                             //TODO
                             Integer КонецПоискаОригинальноВерсииДанныхОтСервера = word.lastIndexOf(":::")+3;
