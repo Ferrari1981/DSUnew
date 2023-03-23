@@ -2374,6 +2374,7 @@ public class Service_For_Remote_Async extends IntentService {
                             new PUBLIC_CONTENT(context).getGeneratorJackson()
                                     .getFactory()
                                     .createGenerator(jsonObjectWriter).useDefaultPrettyPrinter();
+                    jsonGenerator.writeStartArray();
                 do {
                     jsonGenerator.writeStartObject();
                     // TODO: 14.03.2023  генериуем по столбцам
@@ -2395,6 +2396,7 @@ public class Service_For_Remote_Async extends IntentService {
                     jsonGenerator.writeEndObject();
                     Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString());
                 } while (КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToNext());////ДАННЫЕ КРУТИЯТЬСЯ ДО КОНЦА ДАННЫХ И ГЕНЕРИРУЮ JSON
+                    jsonGenerator.writeEndArray();
                     jsonGenerator.flush();
                     jsonGenerator.close();
                     КурсорДляОтправкиДанныхНаСерверОтАндройда.close();
