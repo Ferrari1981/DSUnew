@@ -2144,8 +2144,6 @@ public class Service_For_Remote_Async extends IntentService {
                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                         + " РезультатОтправкиДанныхНасервер "+РезультатОтправкиДанныхНасервер );
-                ///todo закрываем куроср
-                КурсорДляОтправкиДанныхНаСервер.close();
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -2407,7 +2405,8 @@ public class Service_For_Remote_Async extends IntentService {
 
                     // TODO: 14.03.2023 ПОСЫЛАЕМ ДАННЫЕ СГЕНЕРИРОНГО JSON НА СЕРВЕР ---->SERVER
                     РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления =
-                            new SubClass_SendToServer(context).МетодПосылаетНаСерверСозданныйJSONФайлвФоне(jsonObjectWriter.toString(), имяТаблицыОтАндройда_локальноая, МенеджерПотоковВнутрений); ////СГЕНЕРИРОВАНЫЙ JSON ФАЙЛ ЕСЛИ БОЛЬШЕ 2 ССИМВОЛОМ В НЕМ ТО ОТПРАВЛЯЕМ
+                            new SubClass_SendToServer(context)
+                                    .МетодПосылаетНаСерверСозданныйJSONФайлвФоне(jsonObjectWriter.toString(), имяТаблицыОтАндройда_локальноая, МенеджерПотоковВнутрений); ////СГЕНЕРИРОВАНЫЙ JSON ФАЙЛ ЕСЛИ БОЛЬШЕ 2 ССИМВОЛОМ В НЕМ ТО ОТПРАВЛЯЕМ
                     Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"

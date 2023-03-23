@@ -2935,31 +2935,17 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
 
 
     //todo загружет уже готовые созданные табеля
-    public SQLiteCursor МетодЗагружетУжеготовыеТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек(Context КонтекстДляЗагружемыхТАбелей, int ЦифровоеИмяНовгоТабеля, int месяцДляПермещенияПоТабелю, int годДляПермещенияПоТабелю) {
-        /*Cursor asyncTaskLoaderЗагружаемТабеляСозданный = (Cursor) new AsyncTaskLoader(КонтекстДляЗагружемыхТАбелей) {
-            @Override
-            public Object loadInBackground() {*/
-//////TODO ГЛАВНЫЙ КУРСОР ДЛЯ НЕПОСРЕДТСВЕНОГО ЗАГРУЗКИ СОТРУДНИКА
-        ////
+    public SQLiteCursor МетодЗагружетУжеготовыеТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек(Context КонтекстДляЗагружемыхТАбелей,
+                                                                                               int ЦифровоеИмяНовгоТабеля,
+                                                                                               int месяцДляПермещенияПоТабелю,
+                                                                                               int годДляПермещенияПоТабелю) {
 
         SQLiteCursor Курсор_ЗагружаемТабеляСозданный_ПервыйКурсорКоторыйСамЗагружаетьсяКогадМыЗаходимНААктивти = null;
-        //
         Class_GRUD_SQL_Operations class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти;
-
         try {
-
             class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти=new Class_GRUD_SQL_Operations(context);
-
-
-
-
-            // TODO: 26.08.2021 НОВЫЙ ВЫЗОВ НОВОГО КЛАСС GRUD - ОПЕРАЦИИ
-
-            ///
             class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы","viewtabel");
-            ///////
             class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","*");
-            //
             class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика",
                     "cfo=? " +
                     "AND status_send !=? AND" +
@@ -2967,59 +2953,24 @@ Class_GRUD_SQL_Operations classGrudSqlOperationsУдалениеДанныхЧе
                     "  year_tabels=? " +
                             "AND fio IS NOT NULL");
             ///"_id > ?   AND _id< ?"
-            //////
             class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1",ЦифровоеИмяНовгоТабеля);
-            ///
             class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска2","Удаленная");
-            //
             class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска3",месяцДляПермещенияПоТабелю);
-            //
             class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска4",годДляПермещенияПоТабелю);
-            ///
-             /*       concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска2","12");
-                    //
-                    concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска3","13");////УсловиеПоискаv4,........УсловиеПоискаv5 .......*/
-
-            ////TODO другие поля
-
-            /////classGrudSqlOperations. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПоляГрупировки",null);
-            ////
-            //class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеГрупировки","date_update ");
-            ////
             class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеСортировки","date_update ");
-            ////
-            // class_grud_sql_operationsУжеготовыеТабеляДляСкролаПОТабелю. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеЛимита","1");
-            ////
-
-            // TODO: 27.08.2021  ПОЛУЧЕНИЕ ДАННЫХ ОТ КЛАССА GRUD-ОПЕРАЦИИ
-
-            Курсор_ЗагружаемТабеляСозданный_ПервыйКурсорКоторыйСамЗагружаетьсяКогадМыЗаходимНААктивти=null;
-            ////
-            // TODO: 12.10.2021  Ссылка Менеджер Потоков
-
-
-
             Курсор_ЗагружаемТабеляСозданный_ПервыйКурсорКоторыйСамЗагружаетьсяКогадМыЗаходимНААктивти= (SQLiteCursor)
                     class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти.
                     new GetData(context).getdata(class_grud_sql_operationsТабеляДляСкролаПОТабелюТолькоКоличествоСТорочек_ПервыйЗапускаПриЗАгрузкеАктивти.
                             concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
                             Class_Engine_SQLГдеНаходитьсяМенеджерПотоков.МенеджерПотоков,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
-
             Log.d(this.getClass().getName(), "GetData "+Курсор_ЗагружаемТабеляСозданный_ПервыйКурсорКоторыйСамЗагружаетьсяКогадМыЗаходимНААктивти  );
-
-
-
-            ///////todo\
         } catch (Exception e) {
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
-
-///TODO ЗАПУСКАЕМ  ПуллПамяти
         return Курсор_ЗагружаемТабеляСозданный_ПервыйКурсорКоторыйСамЗагружаетьсяКогадМыЗаходимНААктивти;
     }
 
