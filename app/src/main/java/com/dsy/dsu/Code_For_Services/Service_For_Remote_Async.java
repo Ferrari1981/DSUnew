@@ -2325,6 +2325,12 @@ public class Service_For_Remote_Async extends IntentService {
                                     Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString() + " IDПрофесии " +IDПрофесии);
                                 }
                                 break;
+                            case "uuid":
+                            case "current_table":
+                              Long UUIDandCurrenttableValue=  Long.parseLong(СодержимоеСтолбикаJson.toString());
+                                    jsonGenerator.writeStringField(НазваниеСтолбикаJson,UUIDandCurrenttableValue.toString());
+                                    Log.d(this.getClass().getName(), " UUIDandCurrenttableValue.toString()   " + UUIDandCurrenttableValue.toString());
+                                break;
                             default:
                                     jsonGenerator.writeStringField(НазваниеСтолбикаJson,СодержимоеСтолбикаJson.toString());
                                 Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString());

@@ -55,7 +55,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
     private Service_For_Remote_Async serviceForTabelAsync;
     private  Messenger           messengerWorkManager;
     private     IBinder binder;
-   private ExecutorService executorService= Executors.newSingleThreadExecutor();
+
     // TODO: 28.09.2022
     public MyWork_Async_Синхронизация_Одноразовая(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -78,7 +78,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
     private void МетодПодключениекСлубе() {
         try{
         Intent intentОбноразоваяСинхронизациия = new Intent(context, Service_For_Remote_Async.class);
-        context.    bindService(intentОбноразоваяСинхронизациия, Context.BIND_AUTO_CREATE,executorService , new ServiceConnection() {
+        context.    bindService(intentОбноразоваяСинхронизациия, new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 try{
@@ -86,12 +86,11 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                     Log.d(context.getClass().getName().toString(), "\n"
                             + "onServiceConnected  одноразовая messengerActivity  " + messengerWorkManager.getBinder().pingBinder());
                     binder=   messengerWorkManager.getBinder();
-                    if (binder.isBinderAlive()) {
-                        getTaskExecutor().postToMainThread(()->{
+                    if (service.isBinderAlive()) {
                             serviceForTabelAsync=new Service_For_Remote_Async();
-                        });
+                        Log.d(context.getClass().getName().toString(), "\n"
+                                + "onServiceConnected  одноразовая serviceForTabelAsync  " + serviceForTabelAsync);
                     }
-                    executorService.shutdown();
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -105,8 +104,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                 Log.d(context.getClass().getName().toString(), "\n"
                         + "onServiceConnected  одноразовая  messengerActivity  " );
             }
-        });
-        executorService.awaitTermination(1, TimeUnit.MINUTES);
+        },Context.BIND_AUTO_CREATE);
     } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -139,6 +137,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
     public Result doWork() {
         Data    myDataОтветОдноразовойСлужбы=null;
  try{
+     while (serviceForTabelAsync==null);
      class_generation_sendBroadcastReceiver_and_firebase_oneSignallass=
              new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(context);
      // TODO: 12.10.2022  КТО ЗАПУСТИЛ
