@@ -3,7 +3,15 @@ package com.dsy.dsu.Business_logic_Only_Class;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,10 +19,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionService;
@@ -124,6 +137,39 @@ public Gson gson = new GsonBuilder()
         МассивПортовСервера.putIfAbsent(8890,"185.136.77.98");// TODO: 10.11.2022 РЕЛИЗ  Москвовский*/
         return МассивПортовСервера;
     }
+
+    // TODO: 23.03.2023  ПАСРСИНГ  JSON JSCSON
+// TODO: 23.03.2023  БИБЛИОТКЕ Jackson для созданиия И ПАРСИНГА JSON
+    public ObjectMapper   getGeneratorJackson()   {
+        ObjectMapper mapperJackson = null;
+        try{
+            JsonFactory factory = new JsonFactory();
+            mapperJackson = new ObjectMapper(factory);
+            mapperJackson.writerWithDefaultPrettyPrinter();
+            mapperJackson.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", new Locale("ru"));
+            mapperJackson.setDateFormat(df);
+            mapperJackson.setLocale(new Locale("ru"));
+            mapperJackson.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                    + " mapperJackson "+mapperJackson );
+} catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+    }
+        return  mapperJackson;
+    
+}
+  
+
+
+
+
 }
 ///////-------------------------TODO    КЛАСС ВСТАВКИ ОШИБОК------------------
 

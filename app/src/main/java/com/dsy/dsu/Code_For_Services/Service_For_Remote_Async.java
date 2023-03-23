@@ -36,12 +36,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class__Generation_Genetal_Tables;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Connection_BroadcastReceiver_Sous_Asyns_Glassfish;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -51,19 +46,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionService;
@@ -2146,7 +2136,7 @@ public class Service_For_Remote_Async extends IntentService {
 
                     //////// todo упаковываем в  json ПЕРЕХОДИМ НА СЛЕДУЩИМ МЕТОД для отрправки на сервер метод POST() POST() POST() POST() POST() POST()POST()
                         РезультатОтправкиДанныхНасервер =
-                                МетодГенеррируемJSONДляОтправкиНАсервер(КурсорДляОтправкиДанныхНаСервер, имяТаблицыОтАндройда_локальноая,МенеджерПотоковВнутрений);
+                                МетодГенерацииJSON(КурсорДляОтправкиДанныхНаСервер, имяТаблицыОтАндройда_локальноая,МенеджерПотоковВнутрений);
                         Log.d(this.getClass().getName(), "РезультатОтправкиДанныхНасервер " + РезультатОтправкиДанныхНасервер);
 
                 }
@@ -2370,95 +2360,50 @@ public class Service_For_Remote_Async extends IntentService {
         ////////TODO     МЕТОД ГЕНЕРИРОУЕМ JSON ПОЛЯ НА ОСНОВАНИЕ НАШИХ ДАННЫХ ДЛЯ ПОСЛЕДЖУЮЩЕ ОТПРАВКИ  POST()->
         ////////TODO     МЕТОД ГЕНЕРИРОУЕМ JSON ПОЛЯ НА ОСНОВАНИЕ НАШИХ ДАННЫХ ДЛЯ ПОСЛЕДЖУЮЩЕ ОТПРАВКИ  POST()->
 
-        Integer МетодГенеррируемJSONДляОтправкиНАсервер( @NonNull  Cursor КурсорДляОтправкиДанныхНаСерверОтАндройда,
-                                                       @NonNull String имяТаблицыОтАндройда_локальноая,
-                                                      @NonNull  CompletionService МенеджерПотоковВнутрений) {
+        Integer МетодГенерацииJSON(@NonNull  Cursor КурсорДляОтправкиДанныхНаСерверОтАндройда,
+                                   @NonNull String имяТаблицыОтАндройда_локальноая,
+                                   @NonNull  CompletionService МенеджерПотоковВнутрений) {
             Integer РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления = 0;
             try {
-                JSONObject ГенерацияJSONВсейТаблицы = new JSONObject();
                 if (КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount()>0) {
                     КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToFirst();
-
                 Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                         + " КурсорДляОтправкиДанныхНаСерверОтАндройда "+КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() );
-
-                    JsonFactory factory = new JsonFactory();
-                    ObjectMapper      mapper=new ObjectMapper();
-                    mapper.writerWithDefaultPrettyPrinter();
-                    mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", new Locale("ru"));
-                    final ObjectMapper mapperJackson = new ObjectMapper(factory);
-                    mapperJackson.setDateFormat(df);
-                    mapperJackson.setLocale(new Locale("ru"));
-                    mapperJackson.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-                    List<String> eventsList = new ArrayList<>();
-                    eventsList.add("{\n" + "  \"isA\": \"Customer\",\n" + "  \"name\": \"Rise Against\",\n" + "  \"age\": \"2000\"\n" + "}");
-                    eventsList.add("{\n" + "  \"isA\": \"Owener\",\n" + "  \"name\": \"Linkin Park\",\n" + "  \"age\": \"2ßß8\"\n" + "}");
-                    eventsList.add("{\n" + "  \"isA\": \"Customer\",\n" + "  \"name\": \"Breaking Benjamin\",\n" + "  \"age\": \"2005\"\n" + "}");
                     StringWriter jsonObjectWriter = new StringWriter();
-                    JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter).useDefaultPrettyPrinter();
-
-
-
+                    JsonGenerator jsonGenerator =
+                            new PUBLIC_CONTENT(context).getGeneratorJackson()
+                                    .getFactory()
+                                    .createGenerator(jsonObjectWriter).useDefaultPrettyPrinter();
                 do {
-                    JSONObject ГенерацияJSONСтроки = new JSONObject();
-
                     jsonGenerator.writeStartObject();
                     // TODO: 14.03.2023  генериуем по столбцам
                     for (int ИндексСтолбикаJson = 0; ИндексСтолбикаJson < КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnCount(); ИндексСтолбикаJson++) {
-                        //    int ИндексСтолбикаJson = КурсорДляОтправкиДанныхНаСерверОтАндройда.getInt(i);//TODO индекс цифрв столбика в JSON
                         String НазваниеСтолбикаJson = КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnName(ИндексСтолбикаJson);// TODO: 14.03.2023 Название как текст столбика в JSON  NAme
                         Object СодержимоеСтолбикаJson =Optional.ofNullable(КурсорДляОтправкиДанныхНаСерверОтАндройда.getString(ИндексСтолбикаJson)).map(String::new).orElse("") ;// TODO: 14.03.2023  Само Полученое содеожимое столбика Value
-                        Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
-                                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
-                                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
-                                + " ИндексСтолбикаJson " + ИндексСтолбикаJson + " НазваниеСтолбикаJson " + НазваниеСтолбикаJson +
-                                " СодержимоеСтолбикаJson " + СодержимоеСтолбикаJson);
-                        //todo Пропускаем СТолбик ID и _ID
-                        if (!НазваниеСтолбикаJson.trim().equalsIgnoreCase("_id")) {
-                            if (!НазваниеСтолбикаJson.trim().equalsIgnoreCase("id")) {
-                            Log.d(this.getClass().getName(), " НазваниеСтолбикаJson ::    " + НазваниеСтолбикаJson +  " СодержимоеСтолбикаJson " +СодержимоеСтолбикаJson);
-                            // TODO: 14.03.2023  ГЕНЕРИРУЕМ СТРОЧКУ json
-                            ГенерацияJSONСтроки.put(НазваниеСтолбикаJson, СодержимоеСтолбикаJson); ////заполение полей JSON
-                            Log.d(this.getClass().getName(), " ГенерацияJSONСтроки ::    " + ГенерацияJSONСтроки);
+                        switch (НазваниеСтолбикаJson.trim()){
+                            case "_id":
+                                case "id":
+                                    Log.d(this.getClass().getName(), " НазваниеСтолбикаJson ::    " + НазваниеСтолбикаJson +  " СодержимоеСтолбикаJson " +СодержимоеСтолбикаJson);
+                                break;
+                            default:
+                                Log.d(this.getClass().getName(), " НазваниеСтолбикаJson ::    " + НазваниеСтолбикаJson +  " СодержимоеСтолбикаJson " +СодержимоеСтолбикаJson);
+                                jsonGenerator.writeStringField(НазваниеСтолбикаJson,СодержимоеСтолбикаJson.toString());
+                                Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString());
+                                break;
                         }
                     }
-
-
-
-                        jsonGenerator.writeStringField(НазваниеСтолбикаJson,СодержимоеСтолбикаJson.toString());
-
-                        System.out.println(jsonObjectWriter.toString());
-
-                    }
                     jsonGenerator.writeEndObject();
-                    Log.d(this.getClass().getName(), " ГенерацияJSONСтроки ::    " + ГенерацияJSONСтроки);
-                    int ИндексСтолбикаJsonТолькоUUID= КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnIndex("uuid");
-                    Long    СтолбикаJsonСамUUID= Optional.ofNullable(КурсорДляОтправкиДанныхНаСерверОтАндройда.getLong(ИндексСтолбикаJsonТолькоUUID)).map(Long::new).orElse(0l) ;
-                    //////////todo КОНКРЕТАНАЯ ГЕНЕРАЦИЯ  JSON ВЕРХНЕГО КЛЮЧА
-                    //ГенерацияJSONВсейТаблицы.put(null, ГенерацияJSONСтроки);////ВСТАВЛЯЕМ ОДИН JSON в ДРУГОЙ JSON ПОЛУЧАЕМ ФИНАЛЬНЫЙ РЕЗУЛЬТАТ JSON"А
+                    Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString());
+                } while (КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToNext());////ДАННЫЕ КРУТИЯТЬСЯ ДО КОНЦА ДАННЫХ И ГЕНЕРИРУЮ JSON
+                    jsonGenerator.flush();
+                    jsonGenerator.close();
+                    КурсорДляОтправкиДанныхНаСерверОтАндройда.close();
                     Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
-                            + " ГенерацияJSONВсейТаблицы " +ГенерацияJSONВсейТаблицы +" СтолбикаJsonСамUUID " +СтолбикаJsonСамUUID);
-
-
-
-
-
-
-
-                } while (КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToNext());////ДАННЫЕ КРУТИЯТЬСЯ ДО КОНЦА ДАННЫХ И ГЕНЕРИРУЮ JSON
-
-
-                    //Current Approach
-                    jsonGenerator.close();
-                    jsonGenerator.flush();
-
-                    System.out.println(jsonObjectWriter.toString());
-                    System.out.println(jsonObjectWriter.toString());
+                            + " jsonObjectWriter.toString() "+jsonObjectWriter.toString() );
 
                     // TODO: 14.03.2023 ПОСЫЛАЕМ ДАННЫЕ СГЕНЕРИРОНГО JSON НА СЕРВЕР ---->SERVER
                     РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления =
@@ -2474,7 +2419,6 @@ public class Service_For_Remote_Async extends IntentService {
                             + " РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления " +РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления +
                              " КурсорДляОтправкиДанныхНаСерверОтАндройда " +КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount());
                 }
-                КурсорДляОтправкиДанныхНаСерверОтАндройда.close();
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
