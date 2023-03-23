@@ -27,6 +27,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_UUID;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Weekend_For_Tabels;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.Class_Generation_Data;
+import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassCursorLoader;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassMONTHONLY;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassMONTHONLY_ТолькоАнализ;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYEARONLY;
@@ -196,7 +197,6 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
         Integer МесяцСейчас=0;
         private void МетодЗапускЗаполенеияИзПрошлыхМесяцев(@NonNull Context context, @NonNull Intent intent) {
             try {
-
                 SubClassCursorLoader cursorLoader=     new SubClassCursorLoader();
                 Log.w(this.getClass().getName(), "   context  " + context);
                 SQLiteDatabase sqLiteDatabaseДляЗаполенеяИзПрошлогоМесяца = new CREATE_DATABASE(getApplicationContext()).getССылкаНаСозданнуюБазу();
@@ -563,38 +563,5 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
             }
         }
     }
-class SubClassCursorLoader {
-    // TODO: 25.11.2022 новы метод получение данных для всех
-    public Cursor CursorLoaders(@NonNull Context context, @NonNull Bundle bundle) {
-        Cursor cursor=null;
-        CursorLoader cursorLoader=null;
-        try{
-            cursorLoader=new CursorLoader(context);
-            String[] УсловияВыборки=      bundle.getStringArray("УсловияВыборки");
-            String  СамЗапрос=      bundle.getString("СамЗапрос");
-            String  Таблица=      bundle.getString("Таблица");
-            Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabasecursorloader/" + Таблица + "");
-            cursorLoader.setUri(uri);
-            cursorLoader.setSelection(СамЗапрос);
-            cursorLoader.setSelectionArgs(УсловияВыборки);//МесяцПростоАнализа
-            cursor=    cursorLoader.loadInBackground();
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                Log.d(this.getClass().getName(), "cursor.getCount() "
-                        + cursor.getCount());
-                cursorLoader.reset();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-            Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
-        }finally {
-            cursorLoader.commitContentChanged();
-        }
-        return  cursor;
-    }
-}
+
 }

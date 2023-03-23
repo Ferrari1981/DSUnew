@@ -33,6 +33,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Visible_Processing_Async;
 import com.dsy.dsu.Business_logic_Only_Class.Class__Generation_Genetal_Tables;
+import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassCursorLoader;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Connection_BroadcastReceiver_Sous_Asyns_Glassfish;
@@ -2372,6 +2373,8 @@ public class Service_For_Remote_Async extends IntentService {
                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                         + " КурсорДляОтправкиДанныхНаСерверОтАндройда "+КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() );
+                    // TODO: 23.03.2023 ID ПРОФЕСИИ
+                     Integer IDПрофесии=    МетодIdПрофесии();
                     StringWriter jsonObjectWriter = new StringWriter();
                     JsonGenerator jsonGenerator =
                             new PUBLIC_CONTENT(context).getGeneratorJackson()
@@ -2383,15 +2386,23 @@ public class Service_For_Remote_Async extends IntentService {
                     // TODO: 14.03.2023  генериуем по столбцам
                     for (int ИндексСтолбикаJson = 0; ИндексСтолбикаJson < КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnCount(); ИндексСтолбикаJson++) {
                         String НазваниеСтолбикаJson = КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnName(ИндексСтолбикаJson);// TODO: 14.03.2023 Название как текст столбика в JSON  NAme
-                        Object СодержимоеСтолбикаJson =Optional.ofNullable(КурсорДляОтправкиДанныхНаСерверОтАндройда.getString(ИндексСтолбикаJson)).map(String::new).orElse("") ;// TODO: 14.03.2023  Само Полученое содеожимое столбика Value
+                        Object СодержимоеСтолбикаJson= КурсорДляОтправкиДанныхНаСерверОтАндройда.getString(ИндексСтолбикаJson) ;// TODO: 14.03.2023  Само Полученое содеожимое столбика Value
                         switch (НазваниеСтолбикаJson.trim()){
                             case "_id":
                                 case "id":
                                     Log.d(this.getClass().getName(), " НазваниеСтолбикаJson ::    " + НазваниеСтолбикаJson +  " СодержимоеСтолбикаJson " +СодержимоеСтолбикаJson);
                                 break;
+                            case "prof":
+                                if (СодержимоеСтолбикаJson!=null) {
+                                    jsonGenerator.writeStringField(НазваниеСтолбикаJson,СодержимоеСтолбикаJson.toString());
+                                    Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString());
+                                } else {
+                                    jsonGenerator.writeStringField(НазваниеСтолбикаJson,IDПрофесии.toString());
+                                    Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString() + " IDПрофесии " +IDПрофесии);
+                                }
+                                break;
                             default:
-                                Log.d(this.getClass().getName(), " НазваниеСтолбикаJson ::    " + НазваниеСтолбикаJson +  " СодержимоеСтолбикаJson " +СодержимоеСтолбикаJson);
-                                jsonGenerator.writeStringField(НазваниеСтолбикаJson,СодержимоеСтолбикаJson.toString());
+                                    jsonGenerator.writeStringField(НазваниеСтолбикаJson,СодержимоеСтолбикаJson.toString());
                                 Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString());
                                 break;
                         }
@@ -2689,6 +2700,38 @@ public class Service_For_Remote_Async extends IntentService {
             }
 
         }
+    }
+
+    private Integer МетодIdПрофесии() {
+        Integer IDПрофесии=0;
+        try{
+        Class_GRUD_SQL_Operations         class_grud_sql_operationsПрофесии=new Class_GRUD_SQL_Operations(context);
+        class_grud_sql_operationsПрофесии. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы","prof");
+        class_grud_sql_operationsПрофесии. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","_id");
+        class_grud_sql_operationsПрофесии.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика", "   name=? " );
+        class_grud_sql_operationsПрофесии.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", "Выбрать должность".trim());
+        // TODO: 12.10.2021  Ссылка Менеджер Потоков
+        SQLiteCursor Курсор_Професии= (SQLiteCursor) class_grud_sql_operationsПрофесии.
+                new GetData(context).getdata(class_grud_sql_operationsПрофесии. concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций,
+                new PUBLIC_CONTENT(context).МенеджерПотоков,new CREATE_DATABASE(context).getССылкаНаСозданнуюБазу());
+        if (Курсор_Професии.getCount()>0){
+            Курсор_Професии.moveToFirst();
+            IDПрофесии=Курсор_Професии.getInt(0);
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                    + " IDПрофесии "+IDПрофесии );
+        }
+        Курсор_Професии.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        // TODO: 01.09.2021 метод вызова
+        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+    }
+        return  IDПрофесии;
     }
 
 

@@ -152,7 +152,6 @@ public Gson gson = new GsonBuilder()
             mapperJackson.setDateFormat(df);
             mapperJackson.setLocale(new Locale("ru"));
             mapperJackson.enable(SerializationFeature.FLUSH_AFTER_WRITE_VALUE);
-            mapperJackson.enable(SerializationFeature.WRITE_NULL_MAP_VALUES);
             mapperJackson.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
