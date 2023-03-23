@@ -36,6 +36,8 @@ import com.dsy.dsu.Business_logic_Only_Class.Class__Generation_Genetal_Tables;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Connection_BroadcastReceiver_Sous_Asyns_Glassfish;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -54,11 +56,14 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionService;
@@ -2378,8 +2383,29 @@ public class Service_For_Remote_Async extends IntentService {
                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                         + " КурсорДляОтправкиДанныхНаСерверОтАндройда "+КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() );
+
+                    JsonFactory factory = new JsonFactory();
+                    ObjectMapper      mapper=new ObjectMapper();
+                    mapper.writerWithDefaultPrettyPrinter();
+                    mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", new Locale("ru"));
+                    final ObjectMapper mapperJackson = new ObjectMapper(factory);
+                    mapperJackson.setDateFormat(df);
+                    mapperJackson.setLocale(new Locale("ru"));
+                    mapperJackson.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                    List<String> eventsList = new ArrayList<>();
+                    eventsList.add("{\n" + "  \"isA\": \"Customer\",\n" + "  \"name\": \"Rise Against\",\n" + "  \"age\": \"2000\"\n" + "}");
+                    eventsList.add("{\n" + "  \"isA\": \"Owener\",\n" + "  \"name\": \"Linkin Park\",\n" + "  \"age\": \"2ßß8\"\n" + "}");
+                    eventsList.add("{\n" + "  \"isA\": \"Customer\",\n" + "  \"name\": \"Breaking Benjamin\",\n" + "  \"age\": \"2005\"\n" + "}");
+                    StringWriter jsonObjectWriter = new StringWriter();
+                    JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter).useDefaultPrettyPrinter();
+
+
+
                 do {
                     JSONObject ГенерацияJSONСтроки = new JSONObject();
+
+                    jsonGenerator.writeStartObject();
                     // TODO: 14.03.2023  генериуем по столбцам
                     for (int ИндексСтолбикаJson = 0; ИндексСтолбикаJson < КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnCount(); ИндексСтолбикаJson++) {
                         //    int ИндексСтолбикаJson = КурсорДляОтправкиДанныхНаСерверОтАндройда.getInt(i);//TODO индекс цифрв столбика в JSON
@@ -2399,7 +2425,15 @@ public class Service_For_Remote_Async extends IntentService {
                             Log.d(this.getClass().getName(), " ГенерацияJSONСтроки ::    " + ГенерацияJSONСтроки);
                         }
                     }
+
+
+
+                        jsonGenerator.writeStringField(НазваниеСтолбикаJson,СодержимоеСтолбикаJson.toString());
+
+                        System.out.println(jsonObjectWriter.toString());
+
                     }
+                    jsonGenerator.writeEndObject();
                     Log.d(this.getClass().getName(), " ГенерацияJSONСтроки ::    " + ГенерацияJSONСтроки);
                     int ИндексСтолбикаJsonТолькоUUID= КурсорДляОтправкиДанныхНаСерверОтАндройда.getColumnIndex("uuid");
                     Long    СтолбикаJsonСамUUID= Optional.ofNullable(КурсорДляОтправкиДанныхНаСерверОтАндройда.getLong(ИндексСтолбикаJsonТолькоUUID)).map(Long::new).orElse(0l) ;
@@ -2412,36 +2446,23 @@ public class Service_For_Remote_Async extends IntentService {
 
 
 
-                    ObjectMapper      mapper=new ObjectMapper();
-                    mapper.writerWithDefaultPrettyPrinter();
-                    mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
-                    List<String> eventsList = new ArrayList<>();
-                    eventsList.add("{\n" + "  \"isA\": \"Customer\",\n" + "  \"name\": \"Rise Against\",\n" + "  \"age\": \"2000\"\n" + "}");
-                    eventsList.add("{\n" + "  \"isA\": \"Owener\",\n" + "  \"name\": \"Linkin Park\",\n" + "  \"age\": \"2ßß8\"\n" + "}");
-                    eventsList.add("{\n" + "  \"isA\": \"Customer\",\n" + "  \"name\": \"Breaking Benjamin\",\n" + "  \"age\": \"2005\"\n" + "}");
-                    StringWriter jsonObjectWriter = new StringWriter();
-                    JsonGenerator jsonGenerator = mapper.getFactory().createGenerator(jsonObjectWriter).useDefaultPrettyPrinter();
-                    jsonGenerator.writeStartObject();
-                    jsonGenerator.writeStringField("schema","2.0");
-                    jsonGenerator.writeStringField("date","2021-06-22");
 
 
-                    //Current Approach
-                    jsonGenerator.writeFieldName("eventList");
-                    jsonGenerator.writeStartArray();
-                    jsonGenerator.writeEndArray();
-                    jsonGenerator.writeEndObject();
-                    jsonGenerator.close();
-                    jsonGenerator.flush();
-
-                    System.out.println(jsonObjectWriter.toString());
 
 
                 } while (КурсорДляОтправкиДанныхНаСерверОтАндройда.moveToNext());////ДАННЫЕ КРУТИЯТЬСЯ ДО КОНЦА ДАННЫХ И ГЕНЕРИРУЮ JSON
 
+
+                    //Current Approach
+                    jsonGenerator.close();
+                    jsonGenerator.flush();
+
+                    System.out.println(jsonObjectWriter.toString());
+                    System.out.println(jsonObjectWriter.toString());
+
                     // TODO: 14.03.2023 ПОСЫЛАЕМ ДАННЫЕ СГЕНЕРИРОНГО JSON НА СЕРВЕР ---->SERVER
                     РезультатОтветаОтСервреУспешнаяВставкаИлиОбновления =
-                            new SubClass_SendToServer(context).МетодПосылаетНаСерверСозданныйJSONФайлвФоне(ГенерацияJSONВсейТаблицы, имяТаблицыОтАндройда_локальноая, МенеджерПотоковВнутрений); ////СГЕНЕРИРОВАНЫЙ JSON ФАЙЛ ЕСЛИ БОЛЬШЕ 2 ССИМВОЛОМ В НЕМ ТО ОТПРАВЛЯЕМ
+                            new SubClass_SendToServer(context).МетодПосылаетНаСерверСозданныйJSONФайлвФоне(jsonObjectWriter.toString(), имяТаблицыОтАндройда_локальноая, МенеджерПотоковВнутрений); ////СГЕНЕРИРОВАНЫЙ JSON ФАЙЛ ЕСЛИ БОЛЬШЕ 2 ССИМВОЛОМ В НЕМ ТО ОТПРАВЛЯЕМ
                     Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
@@ -2602,7 +2623,7 @@ public class Service_For_Remote_Async extends IntentService {
             // TODO: 22.03.2022
 
             //////todo МЕТОД НЕПОСТРЕДСТВЕННО ОТПРАВЛЯЕМ ДАННЫЕ НА СЕРВЕР МЕТОД POST
-            Integer МетодПосылаетНаСерверСозданныйJSONФайлвФоне(@NonNull JSONObject ГенерацияJSONполейФиналДляОтправкиНаСеврерОтАндройда, @NonNull String имяТаблицыОтАндройда_локальноая,
+            Integer МетодПосылаетНаСерверСозданныйJSONФайлвФоне(@NonNull String ГенерацияJSONполейФиналДляОтправкиНаСеврерОтАндройда, @NonNull String имяТаблицыОтАндройда_локальноая,
                                                                 CompletionService МенеджерПотоковВнутрений) {
                 /////
                 Integer РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера = 0;
