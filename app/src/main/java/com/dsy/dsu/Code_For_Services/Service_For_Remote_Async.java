@@ -2192,7 +2192,7 @@ public class Service_For_Remote_Async extends IntentService {
                                         " WHERE current_table > "+ ВерсияДанныхДляСравения );
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
                                 .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер2","  SELECT * FROM " + имяТаблицыОтАндройда_локальноая +" " +
-                                        "  WHERE user_update=" + ПубличныйIDДляФрагмента +"  OR _id IS NULL  ");
+                                        "  WHERE user_update=" + ПубличныйIDДляФрагмента );
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая Все остальные  _id " + имяТаблицыОтАндройда_локальноая);
                         break;
                     // TODO: 12.03.2023  выделенная таблицы чат юзерсс
@@ -2213,9 +2213,6 @@ public class Service_For_Remote_Async extends IntentService {
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
                                 .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер1"," SELECT * FROM " + имяТаблицыОтАндройда_локальноая +
                                         " WHERE current_table > "+ ВерсияДанныхДляСравения );
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки
-                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер2","  SELECT * FROM " + имяТаблицыОтАндройда_локальноая +" " +
-                                        "    WHERE  _id IS NULL  ");
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая Все остальные  _id " + имяТаблицыОтАндройда_локальноая);
                         break;
            //TOdo две табЛИЦЫ ДЛЯ ЧАТА  1
@@ -2238,7 +2235,7 @@ public class Service_For_Remote_Async extends IntentService {
                         // TODO: 19.10.2021
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
                                 .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика","  user_update = ?" +
-                                        " AND current_table > ?  OR _id IS NULL ");
+                                        " AND current_table > ?   ");
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для Чата с _id " + имяТаблицыОтАндройда_локальноая);
                         break;
                 //TOdo две табЛИЦЫ ДЛЯ ЧАТА  2
@@ -2248,8 +2245,7 @@ public class Service_For_Remote_Async extends IntentService {
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
                                 .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер1"," SELECT * FROM " + имяТаблицыОтАндройда_локальноая +
                                         " WHERE current_table > "+ ВерсияДанныхДляСравения +
-                                        "  AND user_update= "+ ПубличныйIDДляФрагмента +
-                                        " OR _id IS NULL   ");
+                                        "  AND user_update= "+ ПубличныйIDДляФрагмента );
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
                                 .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер2"," SELECT * FROM " + имяТаблицыОтАндройда_локальноая +
                                         " WHERE current_table > "+ ВерсияДанныхДляСравения +
@@ -2275,7 +2271,7 @@ public class Service_For_Remote_Async extends IntentService {
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   "
                                 + имяТаблицыОтАндройда_локальноая + "  ВерсияДанныхДляСравения ");
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
-                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика","  current_table > ? OR id IS NULL   ");
+                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика","  current_table > ?     ");
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для Чата с _id " + имяТаблицыОтАндройда_локальноая);
                         break;
 
@@ -2293,7 +2289,7 @@ public class Service_For_Remote_Async extends IntentService {
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", имяТаблицыОтАндройда_локальноая);
                         // TODO: 19.10.2021
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика", "  current_table > ? OR  id IS NULL  ");
+                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика", "  current_table > ?    ");
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   " + имяТаблицыОтАндройда_локальноая);
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1",
                                 ВерсияДанныхДляСравения);
