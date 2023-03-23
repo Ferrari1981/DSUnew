@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -150,6 +151,8 @@ public Gson gson = new GsonBuilder()
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", new Locale("ru"));
             mapperJackson.setDateFormat(df);
             mapperJackson.setLocale(new Locale("ru"));
+            mapperJackson.enable(SerializationFeature.FLUSH_AFTER_WRITE_VALUE);
+            mapperJackson.enable(SerializationFeature.WRITE_NULL_MAP_VALUES);
             mapperJackson.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
