@@ -90,6 +90,10 @@ public class Class_GRUD_SQL_Operations extends CREATE_DATABASE {
                         String ПодЗапросНомер3=null;
                         String ПодЗапросНомер4=null;
                         String ПодЗапросНомер5=null;
+                        String ПодЗапросНомер6=null;
+                        String ПодЗапросНомер7=null;
+                        String ПодЗапросНомер8=null;
+                        String ПодЗапросНомер9=null;
                         Log.w(context.getClass().getName(), "concurrentHashMap " + concurrentHashMap.values());
                         //TODO ЦИКЛ ПО ПАРАМЕТРАМ
                         for (Object КлючconcurrentHashMap : concurrentHashMap.keySet()) {
@@ -200,6 +204,28 @@ public class Class_GRUD_SQL_Operations extends CREATE_DATABASE {
                                     // TODO: 31.01.2022  add union
                                     subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер5);
                                     break;
+                                case "ПодЗапросНомер6" :
+                                    ПодЗапросНомер6=ЗначениеconcurrentHashMap.toString().trim();
+                                    // TODO: 31.01.2022  add union
+                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер6);
+                                    break;
+                                    case "ПодЗапросНомер7" :
+                                    ПодЗапросНомер7=ЗначениеconcurrentHashMap.toString().trim();
+                                    // TODO: 31.01.2022  add union
+                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер7);
+                                    break;
+                                case "ПодЗапросНомер8" :
+                                    ПодЗапросНомер8=ЗначениеconcurrentHashMap.toString().trim();
+                                    // TODO: 31.01.2022  add union
+                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер8);
+                                    break;
+                                case "ПодЗапросНомер9" :
+                                    ПодЗапросНомер9=ЗначениеconcurrentHashMap.toString().trim();
+                                    // TODO: 31.01.2022  add union
+                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер9);
+                                    break;
+
+
                             }
                         }
                         // TODO: 27.08.2021  проверка параметров чтоюбы небыло NULL

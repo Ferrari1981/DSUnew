@@ -2167,132 +2167,60 @@ public class Service_For_Remote_Async extends IntentService {
             Class_GRUD_SQL_Operations class_grud_sql_operationsГенерируемКурсорДляОтправки = null;
 
             try{
+                ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(context);
                 Log.w(this.getClass().getName(), "имяТаблицыОтАндройда_локальноая " + имяТаблицыОтАндройда_локальноая);
                 switch (имяТаблицыОтАндройда_локальноая.trim()) {
+                    // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ____ID    // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ____ID    // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ____ID
+                    // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ____ID    // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ____ID    // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ____ID
                     case "tabels":
                     case "fio":
                     case "tabel":
                     case "data_tabels":
                     case "prof":
+                    case "chats":
+                    case "data_chat":
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для tabels  chat_users  fio  tabel  data_tabels  " + имяТаблицыОтАндройда_локальноая);
                         class_grud_sql_operationsГенерируемКурсорДляОтправки = new Class_GRUD_SQL_Operations(context);
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","*");
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", имяТаблицыОтАндройда_локальноая);
+
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", ВерсияДанныхДляСравения);
-
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   "
-                                + имяТаблицыОтАндройда_локальноая + "  ВерсияДанныхДляСравения " + ВерсияДанныхДляСравения);
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска2", ПубличныйIDДляФрагмента);
+
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
                                 .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер1"," SELECT * FROM " + имяТаблицыОтАндройда_локальноая +
                                         " WHERE current_table > "+ ВерсияДанныхДляСравения );
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
                                 .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер2","  SELECT * FROM " + имяТаблицыОтАндройда_локальноая +" " +
-                                        "  WHERE user_update=" + ПубличныйIDДляФрагмента );
+                                        "  WHERE user_update=" + ПубличныйIDДляФрагмента  + " AND _id IS NULL " );
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая Все остальные  _id " + имяТаблицыОтАндройда_локальноая);
                         break;
-                    // TODO: 12.03.2023  выделенная таблицы чат юзерсс
-                    case "chat_users":
+                    // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ID   // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ID // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ID // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ID
+                    // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ID // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ID // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ID // TODO: 23.03.2023 ТАБЛИЦЫ С ПОЛЕМ ID
+                    default:
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для tabels  chat_users  fio  tabel  data_tabels  " + имяТаблицыОтАндройда_локальноая);
                         class_grud_sql_operationsГенерируемКурсорДляОтправки = new Class_GRUD_SQL_Operations(context);
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","*");
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", имяТаблицыОтАндройда_локальноая);
+
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", ВерсияДанныхДляСравения);
-
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   "
-                                + имяТаблицыОтАндройда_локальноая + "  ВерсияДанныхДляСравения " + ВерсияДанныхДляСравения);
                         class_grud_sql_operationsГенерируемКурсорДляОтправки.
                                 concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска2", ПубличныйIDДляФрагмента);
+
                         class_grud_sql_operationsГенерируемКурсорДляОтправки
                                 .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер1"," SELECT * FROM " + имяТаблицыОтАндройда_локальноая +
                                         " WHERE current_table > "+ ВерсияДанныхДляСравения );
+                        class_grud_sql_operationsГенерируемКурсорДляОтправки
+                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер2","  SELECT * FROM " + имяТаблицыОтАндройда_локальноая +" " +
+                                        "  WHERE user_update=" + ПубличныйIDДляФрагмента  + " AND id IS NULL " );
                         Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая Все остальные  _id " + имяТаблицыОтАндройда_локальноая);
-                        break;
-           //TOdo две табЛИЦЫ ДЛЯ ЧАТА  1
-                    case "chats":
-                        // TODO: 19.10.2021
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для chats " + имяТаблицыОтАндройда_локальноая);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки = new Class_GRUD_SQL_Operations(context);
-                        ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(context);
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для Чата с _id " + имяТаблицыОтАндройда_локальноая);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", ПубличныйIDДляФрагмента);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска2", ВерсияДанныхДляСравения);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","*");
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", имяТаблицыОтАндройда_локальноая);
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   "
-                                + имяТаблицыОтАндройда_локальноая + "  ВерсияДанныхДляСравения ");
-                        // TODO: 19.10.2021
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки
-                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика","  user_update = ?" +
-                                        " AND current_table > ?   ");
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для Чата с _id " + имяТаблицыОтАндройда_локальноая);
-                        break;
-                //TOdo две табЛИЦЫ ДЛЯ ЧАТА  2
-                    case "data_chat":
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для data_chat  " + имяТаблицыОтАндройда_локальноая);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки = new Class_GRUD_SQL_Operations(context);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки
-                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер1"," SELECT * FROM " + имяТаблицыОтАндройда_локальноая +
-                                        " WHERE current_table > "+ ВерсияДанныхДляСравения +
-                                        "  AND user_update= "+ ПубличныйIDДляФрагмента );
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки
-                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер2"," SELECT * FROM " + имяТаблицыОтАндройда_локальноая +
-                                        " WHERE current_table > "+ ВерсияДанныхДляСравения +
-                                        "  AND status_write=1 ");//AND _id IS NULL//"  current_table > ? OR _id IS NULL  AND date_update IS NOT NULL "
-                        // TODO: 15.02.2022  тут сообещния написанфые мною жополнительное условия где поле ID еще NULL в догонку какбы
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки
-                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ПодЗапросНомер4"," SELECT * FROM " + имяТаблицыОтАндройда_локальноая +
-                                        " WHERE current_table > "+ ВерсияДанныхДляСравения +
-                                        "  AND alreadyshownnotifications=1 ");
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для Чата с _id " + имяТаблицыОтАндройда_локальноая);
-
-                        break;
-                    case "settings_tabels":
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для settings_tabels  " + имяТаблицыОтАндройда_локальноая);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки = new Class_GRUD_SQL_Operations(context);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","*");
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", имяТаблицыОтАндройда_локальноая);
-                        //////TODO dверсия данных для ВСЕХ ТАБЛИЦ КРОМЕ , ТАБЛИЦ ЧАТА
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", ВерсияДанныхДляСравения);
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   "
-                                + имяТаблицыОтАндройда_локальноая + "  ВерсияДанныхДляСравения ");
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки
-                                .concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика","  current_table > ?     ");
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для Чата с _id " + имяТаблицыОтАндройда_локальноая);
-                        break;
-
-                    default:
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая  Для          default: " + имяТаблицыОтАндройда_локальноая);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки = new Class_GRUD_SQL_Operations(context);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1", ВерсияДанныхДляСравения);
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   "
-                                + имяТаблицыОтАндройда_локальноая + "  ВерсияДанныхДляСравения ");
-                        // TODO: 01.02.2022 БЛОК КОДА ДЛЯ ВСЕХ ТАБОИЦ БЕЗ ПОД ЗАПРОСОD SUB QUERY
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("СтолбцыОбработки","*");
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("НазваниеОбрабоатываемойТаблицы", имяТаблицыОтАндройда_локальноая);
-                        // TODO: 19.10.2021
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.
-                                concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("ФорматПосика", "  current_table > ?    ");
-                        Log.d(this.getClass().getName(), " имяТаблицыОтАндройда_локальноая   " + имяТаблицыОтАндройда_локальноая);
-                        class_grud_sql_operationsГенерируемКурсорДляОтправки.concurrentHashMapНаборПараментовSQLBuilder_Для_GRUD_Операций.put("УсловиеПоиска1",
-                                ВерсияДанныхДляСравения);
                         break;
                 }
             } catch (Exception e) {
