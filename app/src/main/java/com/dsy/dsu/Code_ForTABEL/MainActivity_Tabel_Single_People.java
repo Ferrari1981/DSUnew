@@ -1218,18 +1218,20 @@ public class MainActivity_Tabel_Single_People extends AppCompatActivity  {
         ПолученаяПрофесииFio=     ГлавныйКурсорДанныеSwipes.getInt(ИндексПрофесииFio);////  String ФИОСледующий
         Log.d(this.getClass().getName(), " ПолученаяПрофесииFio " + ПолученаяПрофесииFio);
         // TODO: 24.03.2023 ВЫЧИСЛЯКЕМ ТЕКУЩАЮ ПРОФЕСИЮ
-        if (ПолученаяПрофесииdata_tabels==0 ||  ПолученаяПрофесииFio==0) {
-            Профессия= "Должность";
-            Log.d(this.getClass().getName(), " ПолученаяПрофесииdata_tabels " + ПолученаяПрофесииdata_tabels 
-                    + " ПолученаяПрофесииFio " +ПолученаяПрофесииFio);
-        } else {
             if (ПолученаяПрофесииdata_tabels>0) {
                 Профессия=МетодgetПрофесия(ПолученаяПрофесииdata_tabels);
             } else {
-                Профессия=МетодgetПрофесия(ПолученаяПрофесииFio);
+                if (ПолученаяПрофесииFio>0) {
+                    Профессия=МетодgetПрофесия(ПолученаяПрофесииFio);
+                    Log.d(this.getClass().getName(), " ПолученаяПрофесииdata_tabels " + ПолученаяПрофесииdata_tabels
+                            + " ПолученаяПрофесииFio " +ПолученаяПрофесииFio);
+                }else {
+                    Профессия= "Должность";
+                    Log.d(this.getClass().getName(), " ПолученаяПрофесииdata_tabels " + ПолученаяПрофесииdata_tabels
+                            + " ПолученаяПрофесииFio " +ПолученаяПрофесииFio);
+                }
             }
             Log.d(this.getClass().getName(), "Профессия" + Профессия);
-        }
     } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " +e + " Метод :"+Thread.currentThread().getStackTrace()[2].getMethodName()
