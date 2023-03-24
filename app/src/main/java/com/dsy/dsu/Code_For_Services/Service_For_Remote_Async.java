@@ -2298,7 +2298,7 @@ public class Service_For_Remote_Async extends IntentService {
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                         + " КурсорДляОтправкиДанныхНаСерверОтАндройда "+КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() );
                     // TODO: 23.03.2023 ID ПРОФЕСИИ
-                     Integer IDПрофесии=    МетодIdПрофесии(context);
+                     //Integer IDПрофесии=    МетодIdПрофесии(context);
                     StringWriter jsonObjectWriter = new StringWriter();
                     JsonGenerator jsonGenerator =
                             new PUBLIC_CONTENT(context).getGeneratorJackson()
@@ -2315,15 +2315,6 @@ public class Service_For_Remote_Async extends IntentService {
                             case "_id":
                                 case "id":
                                     Log.d(this.getClass().getName(), " НазваниеСтолбикаJson ::    " + НазваниеСтолбикаJson +  " СодержимоеСтолбикаJson " +СодержимоеСтолбикаJson);
-                                break;
-                            case "prof":
-                                if (СодержимоеСтолбикаJson!=null) {
-                                    jsonGenerator.writeStringField(НазваниеСтолбикаJson,СодержимоеСтолбикаJson.toString());
-                                    Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString());
-                                } else {
-                                    jsonGenerator.writeStringField(НазваниеСтолбикаJson,IDПрофесии.toString());
-                                    Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString() + " IDПрофесии " +IDПрофесии);
-                                }
                                 break;
                             case "uuid":
                             case "current_table":

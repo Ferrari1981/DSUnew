@@ -1175,13 +1175,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Code_ForTABEL.MainActivity_Tabel_Only_People"
+            android:name=".Code_ForTABEL.MainActivity_Tabel_Single_People"
             android:exported="true"
             android:label="Табель"
             android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.dsy.dsu.Code_ForTABEL.MainActivity_Tabel_Only_People" />
+                android:value="com.dsy.dsu.Code_ForTABEL.MainActivity_Tabel_Single_People" />
 
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />

@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -60,6 +61,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.Class_Generation_Data;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
+import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassCursorLoader;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
@@ -93,11 +95,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import java.util.function.ToDoubleBiFunction;
 
 import javax.crypto.NoSuchPaddingException;
 
 
-public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
+public class MainActivity_Tabel_Single_People extends AppCompatActivity  {
     private Spinner СпинерТАбельМЕсяцФинал;/////спинеры для создание табеля
     private Spinner СпинерТАбельДепартаментФинал;/////спинеры для создание табеля
     private ScrollView ScrollСамогоТабеля;
@@ -107,6 +110,8 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
     private ConstraintLayout ГлавныйВерхнийКонтейнер;
     private ProgressDialog progressDialogДляУдаления;
     private    String ФИОДляТабеляНаАктивти;
+    private    Integer ПолученаяПрофесииdata_tabels;
+    private    Integer ПолученаяПрофесииFio;
     private  int ОбщееКоличествоСОтрудниковДляСкролаПотабелю=0;
     private ImageButton imageButtonДвижениеПоСотрудникамВТАбеле,imageButtonНазадПоСотрудникамВТАбеле;
     private  String   ПолученныйПоследнийМесяцДляСортировкиЕгоВСпиноре;
@@ -203,7 +208,7 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
             ((Activity) context) .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             getSupportActionBar().hide(); ///скрывать тул бар
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-            Log.d(this.getClass().getName(), "  onCreate(Bundle savedInstanceState)   MainActivity_Tabel_Only_People  ");
+            Log.d(this.getClass().getName(), "  onCreate(Bundle savedInstanceState)   MainActivity_Tabel_Single_People  ");
             Locale locale = new Locale("rus");
             Locale.setDefault(locale);
             config = getBaseContext().getResources().getConfiguration();
@@ -1180,6 +1185,15 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                 Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.moveToFirst();
                 ФИОДляТабеляНаАктивти= Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0);
                 Log.d(  this.getClass().getName(), "ФИОСледующий " +"uuid"+ФИОДляТабеляНаАктивти);
+                int ИндексПрофесииdata_tabels = ГлавныйКурсорДанныеSwipes.getColumnIndex("dt_prof");//name
+                 ПолученаяПрофесииdata_tabels=     ГлавныйКурсорДанныеSwipes.getInt(ИндексПрофесииdata_tabels);////  String ФИОСледующий
+                Log.d(this.getClass().getName(), " ПолученаяПрофесииdata_tabels " + ПолученаяПрофесииdata_tabels);
+                // TODO: 23.03.2023 по таблиуе ФИо
+                int ИндексПрофесииFio = ГлавныйКурсорДанныеSwipes.getColumnIndex("fio_prof");//name
+                 ПолученаяПрофесииFio=     ГлавныйКурсорДанныеSwipes.getInt(ИндексПрофесииFio);////  String ФИОСледующий
+                Log.d(this.getClass().getName(), " ПолученаяПрофесииFio " + ПолученаяПрофесииFio);
+
+
                 // TODO: 23.03.2023  метод заполенния данными по циклу после анализа swipe
                 МетодПослеАнализаSwipesЗаполненияЦиклом(еслиСмещениеВдАнныхДляСкрола, ГлавныйКурсорДанныеSwipes, ИндексСтрокКомпонентовТабеля);
 
@@ -1204,12 +1218,8 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                                                          int[] ИндексСтрокКомпонентовТабеля) {
 
         try{
-            int ИндексПрофесииdata_tabels = ГлавныйКурсорДанныеSwipes.getColumnIndex("dt_prof");//name
-            String ПолученаяПрофесииdata_tabels=     ГлавныйКурсорДанныеSwipes.getString(ИндексПрофесииdata_tabels);////  String ФИОСледующий
-            // TODO: 23.03.2023 по таблиуе ФИо
-            int ИндексПрофесииFio = ГлавныйКурсорДанныеSwipes.getColumnIndex("fio_prof");//name
-            String ПолученаяПрофесииFio=     ГлавныйКурсорДанныеSwipes.getString(ИндексПрофесииFio);////  String ФИОСледующий
-            Log.d(this.getClass().getName(), " ПолученаяПрофесииFio " + ПолученаяПрофесииFio);
+            // TODO: 24.03.2023 метод Для Получение ПРофесии
+        String Профессия=    МетодgetПрофесия();
 
             НазваниеДанныхВТабелеФИО.setText("");
             НазваниеДанныхВТабелеФИО.setText(ФИОДляТабеляНаАктивти.trim()); ///строго имя
@@ -1270,6 +1280,31 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
         new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),  this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
     }
+    }
+
+
+    //TODO получение проферсии ID
+    private String МетодgetПрофесия() {
+        String Професия;
+        try{
+       /*     Bundle bundle=new Bundle();
+            bundle.putString("СамЗапрос","  SELECT name  FROM  prof WHERE _id=?   ");
+            bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(ФиналГодВставки)});
+            bundle.putString("Таблица","viewtabel");
+            Cursor     Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    new SubClassCursorLoader(). CursorLoaders(context, bundle);
+            Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"  +  " Курсор_ВытаскиваемПоследнийМесяцТабеля "+
+                    Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());*/
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " +e + " Метод :"+Thread.currentThread().getStackTrace()[2].getMethodName()
+                + " Линия  :"+Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),  this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                Thread.currentThread().getStackTrace()[2].getLineNumber());
+    }
+        return  new String();
+
     }
 
     private void МетодПодсчетОбщегоКОличествоСотрудников() {
@@ -3416,7 +3451,7 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                 countDownLatchДляДвиженияПоДАннымВперед.await();
                 if (ТекущееПоложенияВТабелеДляСкрола <= ОбщееКоличествоСОтрудниковДляСкролаПотабелю) {
                     Intent Интент_ЗапускСозданиеНовогоСотрудника = new Intent();
-                    Интент_ЗапускСозданиеНовогоСотрудника.setClass(getApplicationContext(), MainActivity_Tabel_Only_People.class); //  ТЕСТ КОД КОТОРЫЙ ЗАПУСКАЕТ ACTIVITY VIEWDATA  ПРОВЕРИТЬ ОБМЕН
+                    Интент_ЗапускСозданиеНовогоСотрудника.setClass(getApplicationContext(), MainActivity_Tabel_Single_People.class); //  ТЕСТ КОД КОТОРЫЙ ЗАПУСКАЕТ ACTIVITY VIEWDATA  ПРОВЕРИТЬ ОБМЕН
                     Интент_ЗапускСозданиеНовогоСотрудника.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
                     Интент_ЗапускСозданиеНовогоСотрудника.putExtra("setIDСамогоТабеляВКотромМыНаходились", ТекущееПоложенияВТабелеДляСкрола);
                     Интент_ЗапускСозданиеНовогоСотрудника.putExtra("МЕсяцДляКурсораТабелей", МЕсяцДляКурсораТабелейДЛяПермещения);
@@ -3468,7 +3503,7 @@ public class MainActivity_Tabel_Only_People extends AppCompatActivity  {
                 countDownLatchДляДвиженияПоДАннымНазад.countDown();
                 countDownLatchДляДвиженияПоДАннымНазад.await();
                 Intent Интент_ЗапускСозданиеНовогоСотрудника = new Intent();
-                Интент_ЗапускСозданиеНовогоСотрудника.setClass(getApplicationContext(), MainActivity_Tabel_Only_People.class); //  ТЕСТ КОД КОТОРЫЙ ЗАПУСКАЕТ ACTIVITY VIEWDATA  ПРОВЕРИТЬ ОБМЕН
+                Интент_ЗапускСозданиеНовогоСотрудника.setClass(getApplicationContext(), MainActivity_Tabel_Single_People.class); //  ТЕСТ КОД КОТОРЫЙ ЗАПУСКАЕТ ACTIVITY VIEWDATA  ПРОВЕРИТЬ ОБМЕН
                 Интент_ЗапускСозданиеНовогоСотрудника.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
                 Интент_ЗапускСозданиеНовогоСотрудника.putExtra("setIDСамогоТабеляВКотромМыНаходились", ТекущееПоложенияВТабелеДляСкрола);
                 Интент_ЗапускСозданиеНовогоСотрудника.putExtra("ПередаемСозданнуюДатуНовогоТабеля", МесяцТабеляФинал);
