@@ -95,7 +95,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
-import java.util.function.ToDoubleBiFunction;
 
 import javax.crypto.NoSuchPaddingException;
 
@@ -109,7 +108,8 @@ public class MainActivity_Tabel_Single_People extends AppCompatActivity  {
     private  Activity activity;
     private ConstraintLayout ГлавныйВерхнийКонтейнер;
     private ProgressDialog progressDialogДляУдаления;
-    private    String ФИОДляТабеляНаАктивти;
+    private    String ФИОТекущегоСотрудника;
+    private    String Профессия;
     private    Integer ПолученаяПрофесииdata_tabels;
     private    Integer ПолученаяПрофесииFio;
     private  int ОбщееКоличествоСОтрудниковДляСкролаПотабелю=0;
@@ -348,13 +348,13 @@ public class MainActivity_Tabel_Single_People extends AppCompatActivity  {
                         ///////
 
                         Log.d(this.getClass().getName(), " ПолноеИмяТабеляПослеСозданиеНовогоСотрудника "+ПолноеИмяТабеляПослеСозданиеНовогоСотрудника+"\n"+
-                                " ФИОДляТабеляНаАктивти " +ФИОДляТабеляНаАктивти);
+                                " ФИОДляТабеляНаАктивти " + ФИОТекущегоСотрудника);
 
 
 
 
 
-                        МетолСозданиеТабеляФинал(ФИОДляТабеляНаАктивти);
+                        МетолСозданиеТабеляФинал(ФИОТекущегоСотрудника);
 
 
 
@@ -368,7 +368,7 @@ public class MainActivity_Tabel_Single_People extends AppCompatActivity  {
                         ///////
 
                         Log.d(this.getClass().getName(), " ПолноеИмяТабеляПослеСозданиеНовогоСотрудника "+ПолноеИмяТабеляПослеСозданиеНовогоСотрудника+"\n"+
-                                " ФИОДляТабеляНаАктивти " +ФИОДляТабеляНаАктивти);
+                                " ФИОДляТабеляНаАктивти " + ФИОТекущегоСотрудника);
 
                         МетолСозданиеТабеляФинал(ПолноеИмяТабеляПослеСозданиеНовогоСотрудника);
 
@@ -1183,17 +1183,9 @@ public class MainActivity_Tabel_Single_People extends AppCompatActivity  {
                         ,Create_Database_СсылкаНАБазовыйКласс.getССылкаНаСозданнуюБазу());
                 Log.d(this.getClass().getName(), "Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО "  +Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getCount());
                 Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.moveToFirst();
-                ФИОДляТабеляНаАктивти= Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0);
-                Log.d(  this.getClass().getName(), "ФИОСледующий " +"uuid"+ФИОДляТабеляНаАктивти);
-                int ИндексПрофесииdata_tabels = ГлавныйКурсорДанныеSwipes.getColumnIndex("dt_prof");//name
-                 ПолученаяПрофесииdata_tabels=     ГлавныйКурсорДанныеSwipes.getInt(ИндексПрофесииdata_tabels);////  String ФИОСледующий
-                Log.d(this.getClass().getName(), " ПолученаяПрофесииdata_tabels " + ПолученаяПрофесииdata_tabels);
-                // TODO: 23.03.2023 по таблиуе ФИо
-                int ИндексПрофесииFio = ГлавныйКурсорДанныеSwipes.getColumnIndex("fio_prof");//name
-                 ПолученаяПрофесииFio=     ГлавныйКурсорДанныеSwipes.getInt(ИндексПрофесииFio);////  String ФИОСледующий
-                Log.d(this.getClass().getName(), " ПолученаяПрофесииFio " + ПолученаяПрофесииFio);
 
-
+                // TODO: 24.03.2023  Получаем ФИо и ПРОФЕСИЮ
+                МетодПолучениеФИОиПрофессия(ГлавныйКурсорДанныеSwipes, Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО);
                 // TODO: 23.03.2023  метод заполенния данными по циклу после анализа swipe
                 МетодПослеАнализаSwipesЗаполненияЦиклом(еслиСмещениеВдАнныхДляСкрола, ГлавныйКурсорДанныеSwipes, ИндексСтрокКомпонентовТабеля);
 
@@ -1213,17 +1205,48 @@ public class MainActivity_Tabel_Single_People extends AppCompatActivity  {
         }
     }
 
+    private void МетодПолучениеФИОиПрофессия(@NonNull SQLiteCursor ГлавныйКурсорДанныеSwipes,
+                                             SQLiteCursor Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО) {
+        try{
+        ФИОТекущегоСотрудника = Курсор_ПолучаемИмяСотрудникаИзТаблицыФИО.getString(0);
+        Log.d(  this.getClass().getName(), "ФИОСледующий " +"uuid"+ ФИОТекущегоСотрудника);
+        int ИндексПрофесииdata_tabels = ГлавныйКурсорДанныеSwipes.getColumnIndex("dt_prof");//name
+        ПолученаяПрофесииdata_tabels=     ГлавныйКурсорДанныеSwipes.getInt(ИндексПрофесииdata_tabels);////  String ФИОСледующий
+        Log.d(this.getClass().getName(), " ПолученаяПрофесииdata_tabels " + ПолученаяПрофесииdata_tabels);
+        // TODO: 23.03.2023 по таблиуе ФИо
+        int ИндексПрофесииFio = ГлавныйКурсорДанныеSwipes.getColumnIndex("fio_prof");//name
+        ПолученаяПрофесииFio=     ГлавныйКурсорДанныеSwipes.getInt(ИндексПрофесииFio);////  String ФИОСледующий
+        Log.d(this.getClass().getName(), " ПолученаяПрофесииFio " + ПолученаяПрофесииFio);
+        // TODO: 24.03.2023 ВЫЧИСЛЯКЕМ ТЕКУЩАЮ ПРОФЕСИЮ
+        if (ПолученаяПрофесииdata_tabels==0 ||  ПолученаяПрофесииFio==0) {
+            Профессия= "Должность";
+            Log.d(this.getClass().getName(), " ПолученаяПрофесииdata_tabels " + ПолученаяПрофесииdata_tabels 
+                    + " ПолученаяПрофесииFio " +ПолученаяПрофесииFio);
+        } else {
+            if (ПолученаяПрофесииdata_tabels>0) {
+                Профессия=МетодgetПрофесия(ПолученаяПрофесииdata_tabels);
+            } else {
+                Профессия=МетодgetПрофесия(ПолученаяПрофесииFio);
+            }
+            Log.d(this.getClass().getName(), "Профессия" + Профессия);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " +e + " Метод :"+Thread.currentThread().getStackTrace()[2].getMethodName()
+                + " Линия  :"+Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),  this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                Thread.currentThread().getStackTrace()[2].getLineNumber());
+    }
+    }
+
     private void МетодПослеАнализаSwipesЗаполненияЦиклом(@NonNull int еслиСмещениеВдАнныхДляСкрола,
                                                          @NonNull SQLiteCursor ГлавныйКурсорДанныеSwipes,
                                                          int[] ИндексСтрокКомпонентовТабеля) {
 
         try{
-            // TODO: 24.03.2023 метод Для Получение ПРофесии
-        String Профессия=    МетодgetПрофесия();
-
             НазваниеДанныхВТабелеФИО.setText("");
-            НазваниеДанныхВТабелеФИО.setText(ФИОДляТабеляНаАктивти.trim()); ///строго имя
-            Log.d(this.getClass().getName(), " ФИО " + ФИОДляТабеляНаАктивти);
+            НазваниеДанныхВТабелеФИО.setText(ФИОТекущегоСотрудника.trim() + " \n"+ "( "+Профессия.trim()+ " )"); ///строго имя
+            Log.d(this.getClass().getName(), " ФИО " + ФИОТекущегоСотрудника + " Профессия " +Профессия);
             // TODO проверяем если в столбике Табеля Есть id поле если поле NULL  значит отн небыло на сервера
             Integer ПроверкаЕсливСтолбикеID_NULLзначения= ГлавныйКурсорДанныеSwipes.getInt(0);
             if(ПроверкаЕсливСтолбикеID_NULLзначения==null){
@@ -1284,18 +1307,22 @@ public class MainActivity_Tabel_Single_People extends AppCompatActivity  {
 
 
     //TODO получение проферсии ID
-    private String МетодgetПрофесия() {
-        String Професия;
+    private String МетодgetПрофесия(@NonNull Integer IDПрофесии) {
+        String Професия = null;
         try{
-       /*     Bundle bundle=new Bundle();
-            bundle.putString("СамЗапрос","  SELECT name  FROM  prof WHERE _id=?   ");
-            bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(ФиналГодВставки)});
-            bundle.putString("Таблица","viewtabel");
-            Cursor     Курсор_ВытаскиваемПоследнийМесяцТабеля=      (Cursor)    new SubClassCursorLoader(). CursorLoaders(context, bundle);
+            Bundle bundle=new Bundle();
+            bundle.putString("СамЗапрос",  "SELECT name  FROM  prof WHERE _id=?   ");
+            bundle.putStringArray("УсловияВыборки" ,new String[]{String.valueOf(IDПрофесии)});
+            bundle.putString("Таблица","prof");
+            Cursor КурсорПрофессия=      (Cursor)    new SubClassCursorLoader(). CursorLoaders(context, bundle);
+            if (КурсорПрофессия.getCount()>0){
+                КурсорПрофессия.moveToFirst();
+                Професия=КурсорПрофессия.getString(0);
+            }
             Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
-                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"  +  " Курсор_ВытаскиваемПоследнийМесяцТабеля "+
-                    Курсор_ВытаскиваемПоследнийМесяцТабеля.getCount());*/
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"  +  " КурсорПрофессия "+
+                    КурсорПрофессия.getCount()  + " Професия " +Професия);
     } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " +e + " Метод :"+Thread.currentThread().getStackTrace()[2].getMethodName()
@@ -1303,7 +1330,7 @@ public class MainActivity_Tabel_Single_People extends AppCompatActivity  {
         new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(),  this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
     }
-        return  new String();
+        return  Професия;
 
     }
 
