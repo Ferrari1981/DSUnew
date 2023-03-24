@@ -295,8 +295,8 @@ import okio.BufferedSink;
                             Request newRequest = builder.build();
                             return chain.proceed(newRequest);
                         }
-                    }).connectTimeout(5, TimeUnit.SECONDS)
-                    .readTimeout(20, TimeUnit.SECONDS).build();
+                    }).connectTimeout(2, TimeUnit.SECONDS)
+                    .readTimeout(5, TimeUnit.SECONDS).build();
             ///  MediaType JSON = MediaType.parse("application/json; charset=utf-16");
             Request requestGET = new Request.Builder().get().url(Adress).build();
             Log.d(this.getClass().getName(), "  request  " + requestGET);

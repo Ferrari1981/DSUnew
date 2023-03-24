@@ -326,10 +326,10 @@ public class MainActivity_Face_App extends AppCompatActivity {
                             item.setChecked(true);
                             Log.w(getPackageName().getClass().getName(), "item.getItemId() Сменить пользователя и смена данных    " + item.getItemId() + "\n");/////////
                             try {
-                                Boolean РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных =
+                                Boolean ЕслиСвязьсСервером =
                                         new Class_Connections_Server(getApplicationContext()).МетодПингаСервераРаботаетИлиНет(getApplicationContext());
 
-                                if (РезультатЕслиСвязьСерверомПередНачаломВизуальнойСинхронизцииПередСменыДанных == true) {
+                                if (ЕслиСвязьсСервером == true) {
                                     String ПолученыйТекущееИмяПользователя = new Class_MODEL_synchronized(getApplicationContext())
                                             .МетодПолучениеИмяСистемыДляСменыПользователя(getApplicationContext());
                                     Log.d(this.getClass().getName(), "  ПолученыйТекущееИмяПользователя " +
@@ -355,13 +355,33 @@ public class MainActivity_Face_App extends AppCompatActivity {
                             item.setChecked(true);
                             Log.w(getPackageName().getClass().getName(), "item.getItemId()  Синхронизация Данных с Web-сервера ДСУ-1  " + item.getItemId() + "\n");/////////
                             try {
-                                // TODO: 28.09.2022 ЗАпускаем синхронизацию
-                                МетодЗапускаСинихрниазцииИзМенюНаАктивтиFACEAPP();
+                                Boolean ЕслиСвязьсСервером =
+                                        new Class_Connections_Server(getApplicationContext()).МетодПингаСервераРаботаетИлиНет(getApplicationContext());
+                                      if(ЕслиСвязьсСервером==true){
+                                          // TODO: 28.09.2022 ЗАпускаем синхронизацию
+                                          МетодЗапускаСинихрниазцииИзМенюНаАктивтиFACEAPP();
+                                          Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                                  " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                                  " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                                  + " ЕслиСвязьсСервером "+ЕслиСвязьсСервером );
+                                      }else {
+                                          activity.runOnUiThread(new Runnable() {
+                                              @Override
+                                              public void run() {
+                                                      Toast toast = Toast.makeText(  getApplicationContext(), "Нет связи c Cервером !!!", Toast.LENGTH_LONG);
+                                                      toast.setGravity(Gravity.BOTTOM, 0, 40);
+                                                      toast.show();
+                                                      Log.i(this.getClass().getName(),  Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
+                                              }
+                                          });
+                                          Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                                  " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                                  " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                                  + " ЕслиСвязьсСервером "+ЕслиСвязьсСервером );
+                                      }
                                 Log.d(this.getClass().getName(), "Отработала синх.. Из Меню Активти FACEAPP Синхронизация Данных с Web-сервера ДСУ-1 ?");
                             } catch (Exception e) {
-                                //  Block of code to handle errors
                                 e.printStackTrace();
-                                ///метод запись ошибок в таблицу
                                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                                         + Thread.currentThread().getStackTrace()[2].getLineNumber());
                                 new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
