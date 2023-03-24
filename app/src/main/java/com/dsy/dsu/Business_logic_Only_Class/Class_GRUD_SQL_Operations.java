@@ -94,9 +94,10 @@ public class Class_GRUD_SQL_Operations extends CREATE_DATABASE {
                         String ПодЗапросНомер7=null;
                         String ПодЗапросНомер8=null;
                         String ПодЗапросНомер9=null;
-                        Log.w(context.getClass().getName(), "concurrentHashMap " + concurrentHashMap.values());
                         //TODO ЦИКЛ ПО ПАРАМЕТРАМ
-                        if (concurrentHashMap!=null) {
+                        if (concurrentHashMap!=null && getБазаДанныхДЛяОперацийВнутри!=null ) {
+                            Log.w(context.getClass().getName(), "concurrentHashMap " + concurrentHashMap.values()
+                                    + " getБазаДанныхДЛяОперацийВнутри" +getБазаДанныхДЛяОперацийВнутри);
                             for (Object КлючconcurrentHashMap : concurrentHashMap.keySet()) {
                                 Object ЗначениеconcurrentHashMap = concurrentHashMap.get(КлючconcurrentHashMap);
                                 Log.w(context.getClass().getName(), "concurrentHashMap.toString() " + concurrentHashMap.toString());
@@ -229,6 +230,9 @@ public class Class_GRUD_SQL_Operations extends CREATE_DATABASE {
 
                                 }
                             }
+                        }else {
+                            Log.w(context.getClass().getName(), " getБазаДанныхДЛяОперацийВнутри  "+
+                                    getБазаДанныхДЛяОперацийВнутри );
                         }
                         // TODO: 27.08.2021  проверка параметров чтоюбы небыло NULL
                         LinkedHashMap<Integer,Object> concurrentHashMapТолькоДляЗбораЗаполенныхПараметровУсловияФильтра=new LinkedHashMap<Integer,Object> ();

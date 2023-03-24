@@ -2298,7 +2298,7 @@ public class Service_For_Remote_Async extends IntentService {
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                         + " КурсорДляОтправкиДанныхНаСерверОтАндройда "+КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() );
                     // TODO: 23.03.2023 ID ПРОФЕСИИ
-                     Integer IDПрофесии=    МетодIdПрофесии();
+                     Integer IDПрофесии=    МетодIdПрофесии(context);
                     StringWriter jsonObjectWriter = new StringWriter();
                     JsonGenerator jsonGenerator =
                             new PUBLIC_CONTENT(context).getGeneratorJackson()
@@ -2639,7 +2639,7 @@ public class Service_For_Remote_Async extends IntentService {
         }
     }
 
-    private Integer МетодIdПрофесии() {
+    private Integer МетодIdПрофесии(@NonNull Context context) {
         Integer IDПрофесии=0;
         try{
         Class_GRUD_SQL_Operations         class_grud_sql_operationsПрофесии=new Class_GRUD_SQL_Operations(context);
