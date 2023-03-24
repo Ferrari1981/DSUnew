@@ -2332,7 +2332,15 @@ public class Service_For_Remote_Async extends IntentService {
                                     Log.d(this.getClass().getName(), " UUIDandCurrenttableValue.toString()   " + UUIDandCurrenttableValue.toString());
                                 break;
                             default:
-                                    jsonGenerator.writeStringField(НазваниеСтолбикаJson,СодержимоеСтолбикаJson.toString());
+                                    jsonGenerator.writeStringField(НазваниеСтолбикаJson, String.valueOf(Optional.ofNullable(СодержимоеСтолбикаJson).map(new java.util.function.Function<Object, Object>() {
+                                        @Override
+                                        public Object apply(Object o) {
+                                            if(o==null){
+                                                o="";
+                                            }
+                                            return o;
+                                        }
+                                    }).orElse("")));
                                 Log.d(this.getClass().getName(), " jsonObjectWriter.toString()   " + jsonObjectWriter.toString());
                                 break;
                         }

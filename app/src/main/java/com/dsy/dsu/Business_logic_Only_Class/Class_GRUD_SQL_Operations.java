@@ -96,136 +96,138 @@ public class Class_GRUD_SQL_Operations extends CREATE_DATABASE {
                         String ПодЗапросНомер9=null;
                         Log.w(context.getClass().getName(), "concurrentHashMap " + concurrentHashMap.values());
                         //TODO ЦИКЛ ПО ПАРАМЕТРАМ
-                        for (Object КлючconcurrentHashMap : concurrentHashMap.keySet()) {
-                            Object ЗначениеconcurrentHashMap = concurrentHashMap.get(КлючconcurrentHashMap);
-                            Log.w(context.getClass().getName(), "concurrentHashMap.toString() " + concurrentHashMap.toString());
-                            // TODO: 27.08.2021  присваевываем значения полям для получение данных
-                            switch (КлючconcurrentHashMap.toString().trim()){
-                                case "НазваниеОбрабоатываемойТаблицы" :
-                                    НазваниеОбрабоатываемойТаблицы=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "СтолбцыОбработки" :
-                                    СтолбцыОбработки=ЗначениеconcurrentHashMap.toString().trim();;
-                                    break;
-                                case "ФорматПосика" :
-                                    ФорматПосика=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска1" :
-                                    УсловиеПоиска[0]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска2" :
-                                    УсловиеПоиска[1]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска3" :
-                                    УсловиеПоиска[2]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска4" :
-                                    УсловиеПоиска[3]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска5" :
-                                    УсловиеПоиска[4]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска6" :
-                                    УсловиеПоиска[5]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска7" :
-                                    УсловиеПоиска[6]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска8" :
-                                    УсловиеПоиска[7]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска9" :
-                                    УсловиеПоиска[8]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска10" :
-                                    УсловиеПоиска[9]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска11" :
-                                    УсловиеПоиска[10]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска12" :
-                                    УсловиеПоиска[11]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска13" :
-                                    УсловиеПоиска[12]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска14" :
-                                    УсловиеПоиска[13]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска15" :
-                                    УсловиеПоиска[14]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска16" :
-                                    УсловиеПоиска[15]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска17" :
-                                    УсловиеПоиска[16]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеПоиска18" :
-                                    УсловиеПоиска[17]=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "ПоляГрупировки" :
-                                    ПоляГрупировки=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеГрупировки" :
-                                    УсловиеГрупировки=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеСортировки" :
-                                    УсловиеСортировки=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "УсловиеЛимита" :
-                                    УсловиеЛимита=ЗначениеconcurrentHashMap.toString().trim();
-                                    break;
-                                case "ФлагНепотораяемостиСтрок" :
-                                    ФлагНепотораяемостиСтрок=  (Boolean) ЗначениеconcurrentHashMap;
-                                    break;
-                                case "ПодЗапросНомер1" :
-                                    ПодЗапросНомер1=ЗначениеconcurrentHashMap.toString().trim();
-                                    // TODO: 31.01.2022  add union
-                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер1);
-                                    break;
-                                case "ПодЗапросНомер2" :
-                                    ПодЗапросНомер2=ЗначениеconcurrentHashMap.toString().trim();
-                                    // TODO: 31.01.2022  add union
-                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер2);
-                                    break;
-                                case "ПодЗапросНомер3" :
-                                    ПодЗапросНомер3=ЗначениеconcurrentHashMap.toString().trim();
-                                    // TODO: 31.01.2022  add union
-                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер3);
-                                    break;
-                                case "ПодЗапросНомер4" :
-                                    ПодЗапросНомер4=ЗначениеconcurrentHashMap.toString().trim();
-                                    // TODO: 31.01.2022  add union
-                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер4);
-                                    break;
-                                case "ПодЗапросНомер5" :
-                                    ПодЗапросНомер5=ЗначениеconcurrentHashMap.toString().trim();
-                                    // TODO: 31.01.2022  add union
-                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер5);
-                                    break;
-                                case "ПодЗапросНомер6" :
-                                    ПодЗапросНомер6=ЗначениеconcurrentHashMap.toString().trim();
-                                    // TODO: 31.01.2022  add union
-                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер6);
-                                    break;
-                                    case "ПодЗапросНомер7" :
-                                    ПодЗапросНомер7=ЗначениеconcurrentHashMap.toString().trim();
-                                    // TODO: 31.01.2022  add union
-                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер7);
-                                    break;
-                                case "ПодЗапросНомер8" :
-                                    ПодЗапросНомер8=ЗначениеconcurrentHashMap.toString().trim();
-                                    // TODO: 31.01.2022  add union
-                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер8);
-                                    break;
-                                case "ПодЗапросНомер9" :
-                                    ПодЗапросНомер9=ЗначениеconcurrentHashMap.toString().trim();
-                                    // TODO: 31.01.2022  add union
-                                    subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер9);
-                                    break;
+                        if (concurrentHashMap!=null) {
+                            for (Object КлючconcurrentHashMap : concurrentHashMap.keySet()) {
+                                Object ЗначениеconcurrentHashMap = concurrentHashMap.get(КлючconcurrentHashMap);
+                                Log.w(context.getClass().getName(), "concurrentHashMap.toString() " + concurrentHashMap.toString());
+                                // TODO: 27.08.2021  присваевываем значения полям для получение данных
+                                switch (КлючconcurrentHashMap.toString().trim()){
+                                    case "НазваниеОбрабоатываемойТаблицы" :
+                                        НазваниеОбрабоатываемойТаблицы=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "СтолбцыОбработки" :
+                                        СтолбцыОбработки=ЗначениеconcurrentHashMap.toString().trim();;
+                                        break;
+                                    case "ФорматПосика" :
+                                        ФорматПосика=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска1" :
+                                        УсловиеПоиска[0]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска2" :
+                                        УсловиеПоиска[1]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска3" :
+                                        УсловиеПоиска[2]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска4" :
+                                        УсловиеПоиска[3]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска5" :
+                                        УсловиеПоиска[4]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска6" :
+                                        УсловиеПоиска[5]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска7" :
+                                        УсловиеПоиска[6]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска8" :
+                                        УсловиеПоиска[7]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска9" :
+                                        УсловиеПоиска[8]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска10" :
+                                        УсловиеПоиска[9]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска11" :
+                                        УсловиеПоиска[10]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска12" :
+                                        УсловиеПоиска[11]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска13" :
+                                        УсловиеПоиска[12]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска14" :
+                                        УсловиеПоиска[13]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска15" :
+                                        УсловиеПоиска[14]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска16" :
+                                        УсловиеПоиска[15]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска17" :
+                                        УсловиеПоиска[16]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеПоиска18" :
+                                        УсловиеПоиска[17]=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "ПоляГрупировки" :
+                                        ПоляГрупировки=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеГрупировки" :
+                                        УсловиеГрупировки=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеСортировки" :
+                                        УсловиеСортировки=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "УсловиеЛимита" :
+                                        УсловиеЛимита=ЗначениеconcurrentHashMap.toString().trim();
+                                        break;
+                                    case "ФлагНепотораяемостиСтрок" :
+                                        ФлагНепотораяемостиСтрок=  (Boolean) ЗначениеconcurrentHashMap;
+                                        break;
+                                    case "ПодЗапросНомер1" :
+                                        ПодЗапросНомер1=ЗначениеconcurrentHashMap.toString().trim();
+                                        // TODO: 31.01.2022  add union
+                                        subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер1);
+                                        break;
+                                    case "ПодЗапросНомер2" :
+                                        ПодЗапросНомер2=ЗначениеconcurrentHashMap.toString().trim();
+                                        // TODO: 31.01.2022  add union
+                                        subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер2);
+                                        break;
+                                    case "ПодЗапросНомер3" :
+                                        ПодЗапросНомер3=ЗначениеconcurrentHashMap.toString().trim();
+                                        // TODO: 31.01.2022  add union
+                                        subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер3);
+                                        break;
+                                    case "ПодЗапросНомер4" :
+                                        ПодЗапросНомер4=ЗначениеconcurrentHashMap.toString().trim();
+                                        // TODO: 31.01.2022  add union
+                                        subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер4);
+                                        break;
+                                    case "ПодЗапросНомер5" :
+                                        ПодЗапросНомер5=ЗначениеconcurrentHashMap.toString().trim();
+                                        // TODO: 31.01.2022  add union
+                                        subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер5);
+                                        break;
+                                    case "ПодЗапросНомер6" :
+                                        ПодЗапросНомер6=ЗначениеconcurrentHashMap.toString().trim();
+                                        // TODO: 31.01.2022  add union
+                                        subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер6);
+                                        break;
+                                        case "ПодЗапросНомер7" :
+                                        ПодЗапросНомер7=ЗначениеconcurrentHashMap.toString().trim();
+                                        // TODO: 31.01.2022  add union
+                                        subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер7);
+                                        break;
+                                    case "ПодЗапросНомер8" :
+                                        ПодЗапросНомер8=ЗначениеconcurrentHashMap.toString().trim();
+                                        // TODO: 31.01.2022  add union
+                                        subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер8);
+                                        break;
+                                    case "ПодЗапросНомер9" :
+                                        ПодЗапросНомер9=ЗначениеconcurrentHashMap.toString().trim();
+                                        // TODO: 31.01.2022  add union
+                                        subQueriesОбьединенныйЗапросыUNION.add(ПодЗапросНомер9);
+                                        break;
 
 
+                                }
                             }
                         }
                         // TODO: 27.08.2021  проверка параметров чтоюбы небыло NULL
