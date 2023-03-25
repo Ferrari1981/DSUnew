@@ -495,7 +495,7 @@ return  РезультатЗапускаФоновойСинхронизации
                  МетодПодключениекСлубе();
              }
                  ///////todo запускем синхронизации ОДНОРАЗОВАНАЯ
-                       РезультатЗапускаФоновойСинхронизации = serviceForTabelAsync.МетодЗапускаAsyncBackgronudДляWorkManager(context);
+                       РезультатЗапускаФоновойСинхронизации = serviceForTabelAsync.МетодAsyncИзСлужбы(context);
                                  Log.d(context.getClass().getName().toString(), "\n"
                                          + "        MyWork_Async_Синхронизация_Одноразовая     РезультатЗапускаФоновойСинхронизации   " + РезультатЗапускаФоновойСинхронизации+
                                          "  serviceForTabelAsync " + serviceForTabelAsync);

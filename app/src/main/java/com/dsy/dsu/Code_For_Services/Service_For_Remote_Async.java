@@ -66,6 +66,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.ToDoubleBiFunction;
@@ -224,13 +225,13 @@ public class Service_For_Remote_Async extends IntentService {
                 " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName());
         this.context =getApplicationContext();
         // TODO: 28.09.2022  запускаем службу табелей
-            МетодAsyncИзСлужбы(context, intent);
+            МетодAsyncИзСлужбы(context);
 // TODO: 30.06.2022 сама не постредствено запуск метода
     }
 
 
 
-    public Integer МетодAsyncИзСлужбы(@NonNull Context context, @NonNull Intent intent) {
+    public Integer МетодAsyncИзСлужбы(@NonNull Context context) {
         Integer ФинальныйРезультатAsyncBackgroud=0;
         try {
             if( this.context==null){
@@ -259,14 +260,7 @@ public class Service_For_Remote_Async extends IntentService {
             // TODO: 25.03.2023 ДОПОЛНИТЕОТНЕ УДЛАНИЕ СТАТУСА УДАЛЕНИЕ ПОСЛЕ СИНХРОНИАЗЦИИ
             МетодБиндинuCлужбыPublicPo();
 
-                ФинальныйРезультатAsyncBackgroud[0] = new Class_Engine_SQL(context).МетодЗАпускаФоновойСинхронизации(context);
-                    Log.d(context.getClass().getName(), "\n"
-                            + "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud[0]);
-
-                    МетодПослеAsyncTaskЗавершающий( context);
-                    // TODO: 25.03.2023
-                    МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
-                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
         } catch (Exception e) {
@@ -298,36 +292,6 @@ public class Service_For_Remote_Async extends IntentService {
                 Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
         Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
     }
-    }
-
-    // TODO: 22.12.2022  запск СИНХРОНИЗАЦИИ сИНХРОННО длЯ WORK MANAGER
-    public Integer МетодЗапускаAsyncBackgronudДляWorkManager(@NonNull Context context)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, RemoteException, InvalidKeyException {
-        final Integer[] ФинальныйРезультатAsyncBackgroud = new Integer[1];
-        try{
-            // TODO: 11.10.2022  запускаем главную фоновую синхрониазцию
-            // TODO: 25.03.2023 ДОПОЛНИТЕОТНЕ УДЛАНИЕ СТАТУСА УДАЛЕНИЕ ПОСЛЕ СИНХРОНИАЗЦИИ
-            МетодБиндинuCлужбыPublicPo();
-
-            ФинальныйРезультатAsyncBackgroud[0] = new Class_Engine_SQL(context).МетодЗАпускаФоновойСинхронизации(context);
-            Log.d(context.getClass().getName(), "\n"
-                    + "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud[0]+ " время work manager starting async "+new  Date().toLocaleString());
-            МетодПослеAsyncTaskЗавершающий( context);
-            // TODO: 25.03.2023 дополнительное удаление после синхрониации статус Удаленынй с сервера
-            // TODO: 25.03.2023
-            МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
-            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
-                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
-                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-            Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
-        }
-        return ФинальныйРезультатAsyncBackgroud[0];
     }
 
     private void МетодПослеAsyncTaskЗавершающий( @NonNull Context context) {
@@ -2639,13 +2603,19 @@ public class Service_For_Remote_Async extends IntentService {
         try {
             Intent intentЗапускPublicPO = new Intent(context, Service_For_Public.class);
             intentЗапускPublicPO.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
-            context.bindService(intentЗапускPublicPO, new ServiceConnection() {
+            context.bindService(intentЗапускPublicPO, Context.BIND_AUTO_CREATE, Executors.newSingleThreadExecutor(), new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     try {
                         localBinderОбщий = (Service_For_Public.LocalBinderОбщий) service;
                         if (service.isBinderAlive()) {
                             // TODO: 16.11.2022
+                       Integer     ФинальныйРезультатAsyncBackgroud  = new Class_Engine_SQL(context).МетодЗАпускаФоновойСинхронизации(context);
+                            Log.d(context.getClass().getName(), "\n"
+                                    + "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud);
+                            МетодПослеAsyncTaskЗавершающий( context);
+                            // TODO: 25.03.2023
+                            МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
                             Log.d(getApplicationContext().getClass().getName(), "\n"
                                     + " время: " + new Date() + "\n+" +
                                     " Класс в процессе... " + this.getClass().getName() + "\n" +
@@ -2681,7 +2651,7 @@ public class Service_For_Remote_Async extends IntentService {
 
                     }
                 }
-                }, Context.BIND_AUTO_CREATE);
+                });
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
