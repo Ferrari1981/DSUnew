@@ -33,10 +33,10 @@ public class Class_Generation_Errors {
     // TODO: 05.07.2021
 
     //// второй метод с современный
-    public void МетодЗаписиВЖурналНовойОшибки(String ТекстОшибки,
-                                              String КлассГнерацииОшибки,
-                                              String МетодаОшибки,
-                                              Integer ЛинияОшибки) {
+    public void МетодЗаписиВЖурналНовойОшибки(@NonNull  String ТекстОшибки,
+                                              @NonNull String КлассГнерацииОшибки,
+                                              @NonNull String МетодаОшибки,
+                                              @NonNull  Integer ЛинияОшибки) {
 
         Long PезультатВставкиНовойОшибки = 0l;
         try {

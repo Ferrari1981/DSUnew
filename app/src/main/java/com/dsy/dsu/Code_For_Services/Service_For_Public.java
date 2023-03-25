@@ -17,6 +17,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.loader.content.CursorLoader;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
@@ -32,7 +33,11 @@ import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassMONTHONLY_Только
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYEARONLY;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYearHONLY_ТолькоАнализ;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -152,7 +157,8 @@ public class Service_For_Public extends IntentService {
                     break;
                 // TODO: 25.09.2022 удаление статуса удаленных строк
                 case "ЗапускУдалениеСтатусаУдаленияСтрок":
-                    new SubClassFromDeleteRemoteRows_УдалениеСтатусУдаленныхСтрок(context).МетодУдаленияСтатусаУдаленных(intent);
+                  new SubClassFromУдалениеСтатусУдаленный(context).МетодУдаленияСтатусаУдаленных(intent);
+                   // new SubClassFromУдалениеСтатусУдаленный(context).МетодУдаленияСтатусаУдаленных(intent);
                     Log.w(this.getClass().getName(), "   intent.getAction()  " + intent.getAction());
                     break;
                 default:
@@ -531,32 +537,33 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
     }
 
     // TODO: 25.09.2022 класс удаление статуса удаленных записей
-    class  SubClassFromDeleteRemoteRows_УдалениеСтатусУдаленныхСтрок extends  AsyncQueryHandler{
-        Uri uri;
-        public SubClassFromDeleteRemoteRows_УдалениеСтатусУдаленныхСтрок(@NonNull  Context context) {
-            super(context.getContentResolver());
-        }
-        public SubClassFromDeleteRemoteRows_УдалениеСтатусУдаленныхСтрок(ContentResolver cr) {
-            super(cr);
+    class SubClassFromУдалениеСтатусУдаленный {
+        Context context;
+        public SubClassFromУдалениеСтатусУдаленный(Context context) {
+            this.context=context;
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
+
         }
 
         // TODO: 25.09.2022 запуск метода
         public void МетодУдаленияСтатусаУдаленных(@NonNull Intent intent){
             try{
-                Integer Toren=new Random().nextInt();
                 Stream<String> streamУдалениеСтатусаУдаленный=Stream.of("data_tabels","tabel","get_materials_data");
                 streamУдалениеСтатусаУдаленный.forEachOrdered(new Consumer<String>() {
                     @Override
                     public void accept(String Таблица) {
-                        uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + Таблица + "");
+                     Uri  uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + Таблица + "");
                         ContentResolver resolver = context.getContentResolver();
-                      Integer  УдалениеДанныхСоСтатусомУдаленная=   resolver.delete(uri,"status_send=?",new String[]{"Удаленная"});
+                        Integer  УдалениеДанныхСоСтатусомУдаленная=   resolver.delete(uri,"status_send=?",new String[]{"Удаленная"});
                         Log.i(this.getClass().getName(),  "УдалениеДанныхСоСтатусомУдаленная  "+УдалениеДанныхСоСтатусомУдаленная
                                 + Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
                     }
-
-
                 });
+                Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -567,5 +574,4 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
             }
         }
     }
-
 }
