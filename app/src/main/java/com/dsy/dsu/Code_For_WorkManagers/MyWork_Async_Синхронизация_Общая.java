@@ -52,9 +52,7 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
     private     Data myDataОтветОБЩЕЙСИНХРОНИЗАЦИИСлужбы = null;
     private Service_For_Remote_Async serviceForTabelAsync;
     private  Messenger           messengerWorkManager;
-    private Handler      handler;
     private  String КлючДляFirebaseNotification = "2a1819db-60c8-4ca3-a752-1b6cd9cadfa1";
-    private   ExecutorService executorServiceОбщий=Executors.newSingleThreadExecutor();
     // TODO: 28.09.2022
     public MyWork_Async_Синхронизация_Общая(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -75,7 +73,7 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
     private void МетодБиндингаОбщая() throws InterruptedException {
         try {
         Intent intentГлавнаяСинхрониазция = new Intent(getApplicationContext(), Service_For_Remote_Async.class);
-        getApplicationContext().bindService(intentГлавнаяСинхрониазция,Context.BIND_AUTO_CREATE,executorServiceОбщий, new ServiceConnection() {
+        getApplicationContext().bindService(intentГлавнаяСинхрониазция, new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 messengerWorkManager = new Messenger(service);
@@ -89,15 +87,13 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                                 + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + binder.isBinderAlive());
                     });
                 }
-                executorServiceОбщий.shutdown();
             }
             @Override
             public void onServiceDisconnected(ComponentName name) {
                 Log.d(getApplicationContext().getClass().getName().toString(), "\n"
                         + "onServiceConnected  ОБЩАЯ messengerActivity  ");
             }
-        });
-        executorServiceОбщий.awaitTermination(1, TimeUnit.MINUTES);
+        },Context.BIND_AUTO_CREATE);
     } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -156,6 +152,8 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
     @Override
     public Result doWork() {
         try {
+            // TODO: 25.03.2023  ждем биндинга с службой синхронизации
+            while (serviceForTabelAsync==null);
             class_generation_sendBroadcastReceiver_and_firebase_oneSignal = new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext());
 // TODO: 10.12.2022  РЕГЕСТИРУЕМСЯ НА ONESIGNAL FIREBASE
             МетодРегистрацииУстройсвоНАFirebaseAndOneSignal();
@@ -239,6 +237,12 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                     .putLong("WorkManangerVipolil",
                            Long.parseLong(РезультатЗапускаФоновойСинхронизацииСтрогоВФОне.toString()))
                     .build();
+// TODO: 25.03.2023
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                    + " РезультатЗапускаФоновойСинхронизацииСтрогоВФОне "+РезультатЗапускаФоновойСинхронизацииСтрогоВФОне );
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
