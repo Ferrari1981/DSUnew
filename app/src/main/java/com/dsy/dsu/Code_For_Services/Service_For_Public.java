@@ -551,19 +551,15 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
         public void МетодУдаленияСтатусаУдаленных(@NonNull Intent intent){
             try{
                 Stream<String> streamУдалениеСтатусаУдаленный=Stream.of("data_tabels","tabel","get_materials_data");
-                streamУдалениеСтатусаУдаленный.forEachOrdered(new Consumer<String>() {
-                    @Override
-                    public void accept(String Таблица) {
-                     Uri  uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + Таблица + "");
-                        ContentResolver resolver = context.getContentResolver();
-                        Integer  УдалениеДанныхСоСтатусомУдаленная=   resolver.delete(uri,"status_send=?",new String[]{"Удаленная"});
-                        Log.i(this.getClass().getName(),  "УдалениеДанныхСоСтатусомУдаленная  "+УдалениеДанныхСоСтатусомУдаленная
-                                + Thread.currentThread().getStackTrace()[2].getMethodName()+ " время " +new Date().toLocaleString() );
-                    }
+                streamУдалениеСтатусаУдаленный.forEach(Таблица->{
+                    Uri  uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + Таблица + "");
+                    ContentResolver resolver = context.getContentResolver();
+                    Integer  УдалениеДанныхСоСтатусомУдаленная=   resolver.delete(uri,"status_send=?",new String[]{"Удаленная"});
+                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"+
+                             " УдалениеДанныхСоСтатусомУдаленная "+ УдалениеДанныхСоСтатусомУдаленная);
                 });
-                Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
-                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
-                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
