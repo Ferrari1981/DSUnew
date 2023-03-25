@@ -17,7 +17,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.loader.content.CursorLoader;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
@@ -117,13 +116,15 @@ public class Service_For_Public extends IntentService {
                 " УДАЛЕНИЕ СТАТУСА Удаленная !!!!!   Класс в процессе... " +  this.getClass().getName()+"\n"+
                 " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName());
         this.context=getApplicationContext();
-        МетодЗапускаОбщиеКоды(getApplicationContext(),intent);
+        МетодГлавныйPublicPO(getApplicationContext(),intent);
 // TODO: 30.06.2022 сама не постредствено запуск метода
     }
 
     public class LocalBinderОбщий extends Binder {
         public Service_For_Public getService() {
-            // Return this instance of LocalService so clients can call public methods
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
             return Service_For_Public.this;
         }
 
@@ -137,7 +138,7 @@ public class Service_For_Public extends IntentService {
         }
     }
 
-    public Integer МетодЗапускаОбщиеКоды(@NonNull Context context, @NonNull Intent intent) {
+    public Integer МетодГлавныйPublicPO(@NonNull Context context, @NonNull Intent intent) {
         Integer РезультатСинхрониазции=0;
         try{
             if( this.context==null){
@@ -157,6 +158,9 @@ public class Service_For_Public extends IntentService {
                 default:
                     break;
             }
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +

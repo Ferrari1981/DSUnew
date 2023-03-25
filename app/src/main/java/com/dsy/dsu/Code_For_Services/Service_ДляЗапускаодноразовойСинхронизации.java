@@ -170,7 +170,10 @@ public class Service_ДляЗапускаодноразовойСинхрони�
      */
     public class LocalBinderДляЗапускаОдноразовойСнхронизации extends Binder {
         public Service_ДляЗапускаодноразовойСинхронизации getService() {
-            setCallingWorkSourceUid(78);
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n" );
+
             return Service_ДляЗапускаодноразовойСинхронизации.this;
         }
     }

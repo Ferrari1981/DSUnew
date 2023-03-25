@@ -1,10 +1,12 @@
 package com.dsy.dsu.Code_For_Services;
 
 import android.app.IntentService;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
@@ -41,6 +43,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.SerializableString;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.util.concurrent.AtomicDouble;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -65,6 +68,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import java.util.function.ToDoubleBiFunction;
 
 import javax.crypto.NoSuchPaddingException;
 
@@ -94,6 +98,8 @@ public class Service_For_Remote_Async extends IntentService {
     private   String Проценты;
     private Integer ИндексВизуальнойДляPrograssBar=0;
     private      Integer ПубличныйIDДляФрагмента=0;
+
+    private Service_For_Public.LocalBinderОбщий localBinderОбщий;
     public Service_For_Remote_Async() {
         super("Service_For_Remote_Async");
     }
@@ -250,6 +256,8 @@ public class Service_For_Remote_Async extends IntentService {
         final Integer[] ФинальныйРезультатAsyncBackgroud = new Integer[1];
         try{
         // TODO: 11.10.2022  запускаем главную фоновую синхрониазцию
+            // TODO: 25.03.2023 ДОПОЛНИТЕОТНЕ УДЛАНИЕ СТАТУСА УДАЛЕНИЕ ПОСЛЕ СИНХРОНИАЗЦИИ
+            МетодБиндинuCлужбыPublicPo();
             Completable.fromSupplier(new Supplier<Object>() {
                 @Override
                 public Object get() throws Throwable {
@@ -275,7 +283,11 @@ public class Service_For_Remote_Async extends IntentService {
                         @Override
                         public void run() throws Throwable {
                             МетодПослеAsyncTaskЗавершающий( context);
-                            Log.d(context.getClass().getName(), "\n" + "   ФинальныйРезультатAsyncBackgroud ");
+                            // TODO: 25.03.2023
+                            МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
+                            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
                         }
                     })
                     .onErrorComplete(new Predicate<Throwable>() {
@@ -300,12 +312,36 @@ public class Service_For_Remote_Async extends IntentService {
     }
         return  ФинальныйРезультатAsyncBackgroud[0] ;
     }
+
+    private void МетодПослеСинхрониазцииУдалениеСтатусаУдаленный() {
+        try {
+            Intent intentПослеСинхроницииРегламентаняРаботаУдалениеДанных=new Intent();
+            intentПослеСинхроницииРегламентаняРаботаУдалениеДанных.setClass(getApplicationContext(), Service_For_Public.class);
+            intentПослеСинхроницииРегламентаняРаботаУдалениеДанных.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
+            // TODO: 25.03.2023 дополнительное удаление после синхрониазции статус Удаленныц
+            localBinderОбщий.getService().МетодГлавныйPublicPO(context,intentПослеСинхроницииРегламентаняРаботаУдалениеДанных);
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
+
+        } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+        Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
+    }
+    }
+
     // TODO: 22.12.2022  запск СИНХРОНИЗАЦИИ сИНХРОННО длЯ WORK MANAGER
     public Integer МетодЗапускаAsyncBackgronudДляWorkManager(@NonNull Context context)
             throws NoSuchPaddingException, NoSuchAlgorithmException, RemoteException, InvalidKeyException {
         final Integer[] ФинальныйРезультатAsyncBackgroud = new Integer[1];
         try{
             // TODO: 11.10.2022  запускаем главную фоновую синхрониазцию
+            // TODO: 25.03.2023 ДОПОЛНИТЕОТНЕ УДЛАНИЕ СТАТУСА УДАЛЕНИЕ ПОСЛЕ СИНХРОНИАЗЦИИ
+            МетодБиндинuCлужбыPublicPo();
             Completable.fromSupplier(new Supplier<Object>() {
                         @Override
                         public Object get() throws Throwable {
@@ -331,7 +367,12 @@ public class Service_For_Remote_Async extends IntentService {
                         @Override
                         public void run() throws Throwable {
                             МетодПослеAsyncTaskЗавершающий( context);
-                            Log.d(context.getClass().getName(), "\n" + "   ФинальныйРезультатAsyncBackgroud ");
+                            // TODO: 25.03.2023 дополнительное удаление после синхрониации статус Удаленынй с сервера 
+                            МетодБиндинuCлужбыPublicPo();
+                            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
+
                         }
                     })
                     .onErrorComplete(new Predicate<Throwable>() {
@@ -2662,5 +2703,60 @@ public class Service_For_Remote_Async extends IntentService {
         return  IDПрофесии;
     }
 
+    public void МетодБиндинuCлужбыPublicPo() {
+        try {
+            Intent intentЗапускPublicPO = new Intent(context, Service_ДляЗапускаодноразовойСинхронизации.class);
+            intentЗапускPublicPO.setAction("com.Service_ДляЗапускаодноразовойСинхронизации");
+            context.bindService(intentЗапускPublicPO, new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    try {
+                        localBinderОбщий = (Service_For_Public.LocalBinderОбщий) service;
+                        if (service.isBinderAlive()) {
+                            // TODO: 16.11.2022
+                            Log.d(getApplicationContext().getClass().getName(), "\n"
+                                    + " время: " + new Date() + "\n+" +
+                                    " Класс в процессе... " + this.getClass().getName() + "\n" +
+                                    " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
+                                    + "    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации binderAsyns.pingBinder() " + service.pingBinder());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    }
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    try {
+                        localBinderОбщий = null;
+                        Log.d(getApplicationContext().getClass().getName(), "\n"
+                                + " время: " + new Date() + "\n+" +
+                                " Класс в процессе... " + this.getClass().getName() + "\n" +
+                                " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
+                                + "    onServiceDisconnected  localBinderОбщий" + localBinderОбщий);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        // TODO: 11.05.2021 запись ошибок
+
+                    }
+                }
+                }, Context.BIND_AUTO_CREATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+        }
+    }
 
 }
