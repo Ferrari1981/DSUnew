@@ -273,6 +273,58 @@ public class Service_For_Remote_Async extends IntentService {
         return  ФинальныйРезультатAsyncBackgroud[0] ;
     }
 
+
+
+
+    // TODO: 22.12.2022  запск СИНХРОНИЗАЦИИ АСИНХРОНННО
+    public Integer МетодЗапускИзWorkmanagerAsyncBackgronud(@NonNull Context context)
+            throws NoSuchPaddingException, NoSuchAlgorithmException, RemoteException, InvalidKeyException {
+        Integer   ФинальныйРезультатAsyncBackgroud=0;
+        try{
+            // TODO: 11.10.2022  запускаем главную фоновую синхрониазцию
+            // TODO: 16.11.2022
+          ФинальныйРезультатAsyncBackgroud  = new Class_Engine_SQL(context).МетодЗАпускаФоновойСинхронизации(context);
+            Log.d(context.getClass().getName(), "\n"
+                    + "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud);
+            МетодПослеAsyncTaskЗавершающий( context);
+            Log.d(getApplicationContext().getClass().getName(), "\n"
+                    + " время: " + new Date() + "\n+" +
+                    " Класс в процессе... " + this.getClass().getName() + "\n" +
+                    " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
+                    + "    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации binderAsyns.pingBinder() ");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+        }
+        return  ФинальныйРезультатAsyncBackgroud ;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private void МетодПослеСинхрониазцииУдалениеСтатусаУдаленный() {
         try {
             Intent intentПослеСинхроницииРегламентаняРаботаУдалениеДанных=new Intent();
