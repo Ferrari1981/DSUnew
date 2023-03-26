@@ -33,11 +33,10 @@ import javax.inject.Inject;
 public class MyWork_Async_Синхронизация_Общая extends Worker {
 
     private String ИмяСлужбыСинхронизации="WorkManager Synchronizasiy_Data";
+
     private WorkInfo WorkManagerОБЩИЙ;
-    private   Integer РезультатЗапускаФоновойСинхронизацииСтрогоВФОне=0;
     @Inject
     private Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal class_generation_sendBroadcastReceiver_and_firebase_oneSignal;
-    private     Data myDataОтветОБЩЕЙСИНХРОНИЗАЦИИСлужбы = null;
     private Service_For_Remote_Async localBinderAsync;
     private  Messenger           messengerWorkManager;
     private  String КлючДляFirebaseNotification = "2a1819db-60c8-4ca3-a752-1b6cd9cadfa1";
@@ -139,9 +138,12 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+           Data myDataОтветОБЩЕЙСИНХРОНИЗАЦИИСлужбы = null;
+        Integer    РезультатЗапускаОбщейСинх=0;
         try {
             // TODO: 25.03.2023  ждем биндинга с службой синхронизации
-            class_generation_sendBroadcastReceiver_and_firebase_oneSignal = new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext());
+            class_generation_sendBroadcastReceiver_and_firebase_oneSignal =
+                    new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext());
 // TODO: 10.12.2022  РЕГЕСТИРУЕМСЯ НА ONESIGNAL FIREBASE
             МетодРегистрацииУстройсвоНАFirebaseAndOneSignal();
 
@@ -153,38 +155,37 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                 ПубличныйIDДляОбщейСинхрониазции = 0;
             }
             Log.d(this.getClass().getName(), "ПубличныйIDДляОбщейСинхрониазции " + ПубличныйIDДляОбщейСинхрониазции);
-            ActivityManager ЗапущенныйПроуессыДляОбщейСинхрониазации = (ActivityManager) getApplicationContext().getSystemService(ACTIVITY_SERVICE);
-            if (ЗапущенныйПроуессыДляОбщейСинхрониазации != null) {
-                // TODO: 24.11.2021
-                List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессы = ЗапущенныйПроуессыДляОбщейСинхрониазации.getAppTasks();
+            ActivityManager ЗапущенныйПроуессыДляОбщейСинхрониазации =
+                    (ActivityManager) getApplicationContext().getSystemService(ACTIVITY_SERVICE);
+                List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессы =
+                        ЗапущенныйПроуессыДляОбщейСинхрониазации.getAppTasks();
                 if (КоличествоЗапущенныйПроуессы.size() > 0) {
-                    // TODO: 01.12.2021
-                    for (ActivityManager.AppTask ТекущаяАктивти : КоличествоЗапущенныйПроуессы) {
-                        String АктивностьЕслиЕстьTOP = null;
-                        if (ТекущаяАктивти != null) {
-                            if (ТекущаяАктивти.getTaskInfo().numActivities > 0) {
-                                АктивностьЕслиЕстьTOP = ТекущаяАктивти.getTaskInfo().topActivity.getClassName().toString();
-
-                            }
-                        }
-                        Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName()
+                                + "\n" +
                                 " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                                 " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
-                                + " КоличествоЗапущенныйПроуессы "+КоличествоЗапущенныйПроуессы  + " АктивностьЕслиЕстьTOP " +АктивностьЕслиЕстьTOP);
-                    }
+                          + " КоличествоЗапущенныйПроуессы.size() " +КоличествоЗапущенныйПроуессы.size());
+                }else {
+                    // TODO: 26.03.2023
+                 РезультатЗапускаОбщейСинх=     МетодЗапускаОбщей();
+                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                            + " КоличествоЗапущенныйПроуессы.size() " +КоличествоЗапущенныйПроуессы.size()
+                            +  "РезультатЗапускаОбщейСинх " +РезультатЗапускаОбщейСинх);
                 }
-            }
+
             myDataОтветОБЩЕЙСИНХРОНИЗАЦИИСлужбы = new Data.Builder()
                     .putInt("ReturnPublicAsyncWorkMananger",
-                            РезультатЗапускаФоновойСинхронизацииСтрогоВФОне)
+                            РезультатЗапускаОбщейСинх)
                     .putLong("WorkManangerVipolil",
-                           Long.parseLong(РезультатЗапускаФоновойСинхронизацииСтрогоВФОне.toString()))
+                           Long.parseLong(РезультатЗапускаОбщейСинх.toString()))
                     .build();
 // TODO: 25.03.2023
             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                     " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
-                    + " РезультатЗапускаФоновойСинхронизацииСтрогоВФОне "+РезультатЗапускаФоновойСинхронизацииСтрогоВФОне );
+                    + " РезультатЗапускаОбщейСинх "+РезультатЗапускаОбщейСинх );
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -195,7 +196,7 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
             Log.e(getApplicationContext().getClass().getName(), " ОШИБКА В WORK MANAGER MyWork_Async_Синхронизация_Общая из FaceApp в MyWork_Async_Синхронизация_Общая Exception  ошибка в классе MyWork_Async_Синхронизация_Общая"
                     + e.toString());
         }
-        if (РезультатЗапускаФоновойСинхронизацииСтрогоВФОне>0 ) {
+        if (РезультатЗапускаОбщейСинх>0 ) {
             return Result.success(myDataОтветОБЩЕЙСИНХРОНИЗАЦИИСлужбы);
        /*    if (WorkManagerОБЩИЙ.getRunAttemptCount()<2) {
                 return Result.retry();
@@ -224,7 +225,7 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                         "\n" + "      MyWork_Async_Синхронизация_Общая       РезультатЗапускаОбщейСинх[0]   " + РезультатЗапускаОбщейСинх);
                 Log.d(this.getClass().getName(), "  serviceForTabelAsync " + localBinderAsync);
             }
-            if (РезультатЗапускаФоновойСинхронизацииСтрогоВФОне>0 ) {
+            if (РезультатЗапускаОбщейСинх>0 ) {
                 Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     v2.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.EFFECT_HEAVY_CLICK));
                 // TODO: 16.11.2022 запускаем ondesingle FIREBASE
