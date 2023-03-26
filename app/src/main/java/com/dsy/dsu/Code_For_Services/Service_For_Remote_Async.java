@@ -35,15 +35,10 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Visible_Processing_Async;
 import com.dsy.dsu.Business_logic_Only_Class.Class__Generation_Genetal_Tables;
-import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassCursorLoader;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Connection_BroadcastReceiver_Sous_Asyns_Glassfish;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.SerializableString;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.util.concurrent.AtomicDouble;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -71,16 +66,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.function.ToDoubleBiFunction;
 
 import javax.crypto.NoSuchPaddingException;
 
-import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Predicate;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 /**
@@ -192,8 +184,6 @@ public class Service_For_Remote_Async extends IntentService {
     @Override
     public IBinder onBind(Intent intent) {
   try{
-        // TODO: 25.03.2023 ДОПОЛНИТЕОТНЕ УДЛАНИЕ СТАТУСА УДАЛЕНИЕ ПОСЛЕ СИНХРОНИАЗЦИИ
-        МетодБиндинuCлужбыPublicPo();
         Log.d(context.getClass().getName(), "\n"
                 + " время: " + new Date() + "\n+" +
                 " Класс в процессе... " + this.getClass().getName() + "\n" +
@@ -237,6 +227,8 @@ public class Service_For_Remote_Async extends IntentService {
                 " Класс в процессе... " + this.getClass().getName() + "\n" +
                 " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName());
         this.context =getApplicationContext();
+            // TODO: 25.03.2023 ДОПОЛНИТЕОТНЕ УДЛАНИЕ СТАТУСА УДАЛЕНИЕ ПОСЛЕ СИНХРОНИАЗЦИИ
+            МетодБиндинuCлужбыPublic();
         CompletableFuture.supplyAsync(new Supplier<Object>() {
             @Override
             public Object get() {
@@ -278,6 +270,8 @@ public class Service_For_Remote_Async extends IntentService {
             if( this.context==null){
                 this.context=context;
             }
+            // TODO: 25.03.2023 ДОПОЛНИТЕОТНЕ УДЛАНИЕ СТАТУСА УДАЛЕНИЕ ПОСЛЕ СИНХРОНИАЗЦИИ
+            МетодБиндинuCлужбыPublic();
             // TODO: 16.11.2022
             ФинальныйРезультатAsyncBackgroud  = new Class_Engine_SQL(context).МетодЗАпускаФоновойСинхронизации(context);
             Log.d(context.getClass().getName(), "\n"
@@ -287,7 +281,7 @@ public class Service_For_Remote_Async extends IntentService {
             if (ФинальныйРезультатAsyncBackgroud>0) {
                 МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
             }
-            Log.d(getApplicationContext().getClass().getName(), "\n"
+            Log.d(context.getClass().getName(), "\n"
                     + " время: " + new Date() + "\n+" +
                     " Класс в процессе... " + this.getClass().getName() + "\n" +
                     " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
@@ -306,7 +300,7 @@ public class Service_For_Remote_Async extends IntentService {
     private void МетодПослеСинхрониазцииУдалениеСтатусаУдаленный() {
         try {
             Intent intentПослеСинхроницииРегламентаняРаботаУдалениеДанных=new Intent();
-            intentПослеСинхроницииРегламентаняРаботаУдалениеДанных.setClass(getApplicationContext(), Service_For_Public.class);
+            intentПослеСинхроницииРегламентаняРаботаУдалениеДанных.setClass(context, Service_For_Public.class);
             intentПослеСинхроницииРегламентаняРаботаУдалениеДанных.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
             // TODO: 25.03.2023 дополнительное удаление после синхрониазции статус Удаленныц
             localBinderОбщий.getService().МетодГлавныйPublicPO(context,intentПослеСинхроницииРегламентаняРаботаУдалениеДанных);
@@ -2629,22 +2623,22 @@ public class Service_For_Remote_Async extends IntentService {
         return  IDПрофесии;
     }
 
-    public void МетодБиндинuCлужбыPublicPo() {
+    public void МетодБиндинuCлужбыPublic() {
         try {
-            Intent intentЗапускPublicPO = new Intent(context, Service_For_Public.class);
-            intentЗапускPublicPO.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
-            context.bindService(intentЗапускPublicPO, Context.BIND_AUTO_CREATE, Executors.newSingleThreadExecutor(), new ServiceConnection() {
+            Intent intentЗапускPublicService = new Intent(context, Service_For_Public.class);
+            intentЗапускPublicService.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
+            context.bindService(intentЗапускPublicService,  new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     try {
                         localBinderОбщий = (Service_For_Public.LocalBinderОбщий) service;
                         if (service.isBinderAlive()) {
                             // TODO: 16.11.2022
-                            Log.d(getApplicationContext().getClass().getName(), "\n"
+                            Log.d(context.getClass().getName(), "\n"
                                     + " время: " + new Date() + "\n+" +
                                     " Класс в процессе... " + this.getClass().getName() + "\n" +
                                     " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                                    + "    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации binderAsyns.pingBinder() " + service.pingBinder());
+                                    + "   service.pingBinder() " + service.pingBinder());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -2675,7 +2669,7 @@ public class Service_For_Remote_Async extends IntentService {
 
                     }
                 }
-                });
+                },Context.BIND_AUTO_CREATE);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"

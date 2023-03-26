@@ -488,8 +488,6 @@ return  РезультатЗапускаФоновойСинхронизации
      try {
          boolean ФлагРазрешениеРаботысСетьюПользователем = new Class_Find_Setting_User_Network(context).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
          if (ФлагРазрешениеРаботысСетьюПользователем==true) {
-
-             while (serviceForTabelAsync==null)
                  ///////todo запускем синхронизации ОДНОРАЗОВАНАЯ
                        РезультатЗапускаФоновойСинхронизации = serviceForTabelAsync.МетодAsyncИзСлужбы(context);
                                  Log.d(context.getClass().getName().toString(), "\n"
