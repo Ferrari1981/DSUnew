@@ -22,12 +22,9 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Find_Setting_User_Network;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
-import com.dsy.dsu.Code_For_Services.Service_For_Public;
 import com.dsy.dsu.Code_For_Services.Service_For_Remote_Async;
 
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -44,7 +41,6 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
     private Service_For_Remote_Async localBinderAsync;
     private  Messenger           messengerWorkManager;
     private  String КлючДляFirebaseNotification = "2a1819db-60c8-4ca3-a752-1b6cd9cadfa1";
-    private Service_For_Public.LocalBinderОбщий localBinderОбщий;
     // TODO: 28.09.2022
     public MyWork_Async_Синхронизация_Общая(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -52,8 +48,6 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
         Log.i(getApplicationContext().getClass().getName(), " public MyWork_Async_Синхронизация_Общая(@NonNull Context context, @NonNull WorkerParameters workerParams) {  Контекст "+"\n"+ this.getApplicationContext());
             // TODO: 22.12.2022
             МетодБиндингаОбщая();
-            // TODO: 26.03.2023
-            МетодБиндинuCлужбыPublicPo();
         } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -160,70 +154,26 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
             }
             Log.d(this.getClass().getName(), "ПубличныйIDДляОбщейСинхрониазции " + ПубличныйIDДляОбщейСинхрониазции);
             ActivityManager ЗапущенныйПроуессыДляОбщейСинхрониазации = (ActivityManager) getApplicationContext().getSystemService(ACTIVITY_SERVICE);
-            // TODO: 29.09.2021  перед началом СИНХРОНИЗАЦИИ ПРОВЕРЯЕМ УСТАНОВКИ СЕТИ ПОЛЬЗОВАТЕЛЯ НА АКТИВТИ НАСТРОЙКИ
             if (ЗапущенныйПроуессыДляОбщейСинхрониазации != null) {
                 // TODO: 24.11.2021
                 List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессы = ЗапущенныйПроуессыДляОбщейСинхрониазации.getAppTasks();
                 if (КоличествоЗапущенныйПроуессы.size() > 0) {
-                    Log.i(getApplicationContext().getClass().getName(), "ЗАПУСК    ВНУТРИ метода        " +
-                            " public Result doWork()  MyWork_Async_Синхронизация_Общая  КоличествоЗапущенныйПроуессы " + "\n"
-                            + КоличествоЗапущенныйПроуессы.size());
                     // TODO: 01.12.2021
                     for (ActivityManager.AppTask ТекущаяАктивти : КоличествоЗапущенныйПроуессы) {
                         String АктивностьЕслиЕстьTOP = null;
-                        // TODO: 20.02.2022
                         if (ТекущаяАктивти != null) {
-                            // TODO: 20.02.2022
-                            Log.i(getApplicationContext().getClass().getName(), "ЗАПУСК    ВНУТРИ метода         " +
-                                    "ТекущаяАктивти.getTaskInfo().numActivities  " + "\n"
-                                    + ТекущаяАктивти.getTaskInfo().numActivities);
-                            // TODO: 20.02.2022
                             if (ТекущаяАктивти.getTaskInfo().numActivities > 0) {
-                                // TODO: 20.02.2022
                                 АктивностьЕслиЕстьTOP = ТекущаяАктивти.getTaskInfo().topActivity.getClassName().toString();
+
                             }
-                            Log.i(getApplicationContext().getClass().getName(), "ТекущаяАктивти " + ТекущаяАктивти +
-                                    " АктивностьЕслиЕстьTOP  " + АктивностьЕслиЕстьTOP +
-                                    "ТекущаяАктивти.getTaskInfo().numActivities  " + "\n"
-                                    + ТекущаяАктивти.getTaskInfo().numActivities);////   case "com.dsy.dsu.Code_For_Chats_КодДля_Чата.MainActivity_List_Chats" :
                         }
-                        if (АктивностьЕслиЕстьTOP != null) {
-                            switch (АктивностьЕслиЕстьTOP) {// case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_App" :
-                                case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Visible_Async":
-                                case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Tabels_Users_And_Passwords":
-                                case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_Start":
-                                case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_App":
-                                    break;
-                                // TODO: 01.12.2021 САМ ЗАПУСК WORK MANAGER  СИНХРОНИАЗЦИИ ПРИ ВКЛЮЧЕННОЙ АКТИВТИ
-                                default:
-                                    Log.i(getApplicationContext().getClass().getName(), "сРАБОТАЛО ......ТекущаяАктивти " + ТекущаяАктивти +
-                                            " АктивностьЕслиЕстьTOP  " + АктивностьЕслиЕстьTOP);////   case "com.dsy.dsu.Code_For_Chats_КодДля_Чата.MainActivity_List_Chats" :
-                                    МетодЗапускаФоновойСинхронизацииИзОбщегоWorkManager();
-                                    Log.i(getApplicationContext().getClass().getName(), "ЗАПУСК   ЗАПУСК в АКТВИНОЙ АКТВИТИ   АктивностьЕслиЕстьTOP"
-                                            + АктивностьЕслиЕстьTOP);
-                                    ///////todo  КОНЕЦ  код запуска уведомлений для чата
-                                    break;
-                            }
-                        } else {
-                            // TODO: 20.02.2022  нет активтиви
-                            МетодЗапускаФоновойСинхронизацииИзОбщегоWorkManager();
-                            Log.i(getApplicationContext().getClass().getName(), "ЗАПУСК   запуск синхрониазции в фоне когда вообще коиличсетво активти РАВНО 0 " + "\n"
-                                    + КоличествоЗапущенныйПроуессы);
-                        }
+                        Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                + " КоличествоЗапущенныйПроуессы "+КоличествоЗапущенныйПроуессы  + " АктивностьЕслиЕстьTOP " +АктивностьЕслиЕстьTOP);
                     }
-                } else {
-                    МетодЗапускаФоновойСинхронизацииИзОбщегоWorkManager();
-                    Log.i(getApplicationContext().getClass().getName(), "ЗАПУСК   запуск синхрониазции в фоне когда вообще коиличсетво активти РАВНО 0 " + "\n"
-                            + КоличествоЗапущенныйПроуессы);
                 }
-                // TODO: 31.12.2021  ЗАПУСК В ФОНЕ
-            } else {
-                МетодЗапускаФоновойСинхронизацииИзОбщегоWorkManager();
-                Log.i(getApplicationContext().getClass().getName(), "ЗАПУСК   ЗАПУСК В ФОНЕ    запуск синхрониазции в фоне когда вообще коиличсетво активти не изместно NULL ");
             }
-                WorkManagerОБЩИЙ = WorkManager.getInstance(getApplicationContext().getApplicationContext()).getWorkInfosByTag(ИмяСлужбыСинхронизации).get().get(0);
-            Log.i(getApplicationContext().getClass().getName(), "СИНХРОНИЗАЦИЯ ПРОШЛА ОБЩАЯ  workmanager РезультатЗапускаФоновойСинхронизацииСтрогоВФОне " + "\n"
-                    + РезультатЗапускаФоновойСинхронизацииСтрогоВФОне);
             myDataОтветОБЩЕЙСИНХРОНИЗАЦИИСлужбы = new Data.Builder()
                     .putInt("ReturnPublicAsyncWorkMananger",
                             РезультатЗапускаФоновойСинхронизацииСтрогоВФОне)
@@ -231,11 +181,6 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                            Long.parseLong(РезультатЗапускаФоновойСинхронизацииСтрогоВФОне.toString()))
                     .build();
 // TODO: 25.03.2023
-            if (РезультатЗапускаФоновойСинхронизацииСтрогоВФОне>0 ) {
-                // TODO: 25.03.2023
-                МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
-            }
-
             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                     " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
@@ -263,17 +208,22 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
     }
 
     // TODO: 16.12.2021 МЕтод ЗАпуска  Сихрониазации Чисто В форне без актвтити
-    private void МетодЗапускаФоновойСинхронизацииИзОбщегоWorkManager() {
+    private Integer    МетодЗапускаОбщей() {
+        Integer РезультатЗапускаОбщейСинх=0;
         try {
-            // TODO: 16.11.2022  запускаем синхрониази из work manager ОБЩАЯ
-           РезультатЗапускаФоновойСинхронизацииСтрогоВФОне = МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити();
-           Log.i(getApplicationContext().getClass().getName(), "ЗАПУСК   ЧИСТЫЙ ФОНОВЫЙ ПОТОК НЕТ АКТИВТИ ПРОГРАММА SWODOWN  ВНУТРИ метода        "+"\n"+
-                   " public Result doWork()  MyWork_Async_Синхронизация_Общая  внутри WORK MANAGER "
-                   + new Date() + " СТАТУС WORKMANAGER MyWork_Async_Синхронизация_Общая  внутри WORK MANAGER "
-                   + WorkManager.getInstance(getApplicationContext()).getWorkInfosByTag("WorkManager Synchronizasiy_Data").get().get(0).getProgress() +
-                   " WorkManager Synchronizasiy_Data  "
-                   +"\n"+
-                   "  РезультатЗапускаФоновойСинхронизацииСтрогоВФОне " +РезультатЗапускаФоновойСинхронизацииСтрогоВФОне );
+            // TODO: 22.12.2022  сама запуска синхронищации из workmanager ОБЩЕГО
+            boolean ВыбранныйРежимСети =
+                    new Class_Find_Setting_User_Network(getApplicationContext()).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
+            Log.d(this.getClass().getName(), "  ВыбранныйРежимСети ВыбранныйРежимСети "
+                    + ВыбранныйРежимСети);
+
+            if (ВыбранныйРежимСети == true) {
+                // TODO: 21.11.2021  НАЧАЛО СИХРОНИЗХАЦИИИ общая
+                РезультатЗапускаОбщейСинх = localBinderAsync.МетодAsyncИзСлужбы(getApplicationContext());
+                Log.d(getApplicationContext().getClass().getName().toString(),
+                        "\n" + "      MyWork_Async_Синхронизация_Общая       РезультатЗапускаОбщейСинх[0]   " + РезультатЗапускаОбщейСинх);
+                Log.d(this.getClass().getName(), "  serviceForTabelAsync " + localBinderAsync);
+            }
             if (РезультатЗапускаФоновойСинхронизацииСтрогоВФОне>0 ) {
                 Vibrator v2 = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                     v2.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.EFFECT_HEAVY_CLICK));
@@ -288,68 +238,8 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                    Thread.currentThread().getStackTrace()[2].getMethodName(),
                    Thread.currentThread().getStackTrace()[2].getLineNumber());
        }
+        return РезультатЗапускаОбщейСинх;
     }
-
-
-    // TODO: 24.11.2021  Метод КОТОРЫЕ ОПРЕДЕЛЯЕТ КАК МЫ БУДЕМ ЗАПУСКАТЬ СИНХРОНИЗАЦИЮ В ФОНЕ ИЛИ НЕТ ВЗАВИСИМОСТИ КАКАЯ АКТИВИТИ АКТИВНА
-   protected Integer МетодЗапускаемприменяяДваВидаЕстьАктивнаяАктивтиИлиСтроговФоне() throws ExecutionException, InterruptedException {
-       Integer РезультатЗапускаФоновойСинхронизации = 0;
-        boolean ФлагЗапущенолиКакоеннибутьАктивтиИлинет = false;
-        try{
-            // TODO: 29.09.2021  перед началом СИНХРОНИЗАЦИИ ПРОВЕРЯЕМ УСТАНОВКИ СЕТИ ПОЛЬЗОВАТЕЛЯ НА АКТИВТИ НАСТРОЙКИ
-                Log.i(getApplicationContext().getClass().getName(), "ПОСЛЕ MyWork_Async_Синхронизация_Общая  внутри WORK MANAGER  внутри WORK MANGER  "
-                        + new Date() + " СТАТУС WORKMANAGER MyWork_Async_Синхронизация_Общая  внутри WORK MANAGER "
-                        + WorkManager.getInstance(getApplicationContext()).getWorkInfosByTag("WorkManager Synchronizasiy_Data").get().get(0).getState());
-                // TODO: 24.11.2021  ЗАПУСК СИНХРОНИАЗХЦИИ СТРОГОВ ФОНЕ БЕЗ АКТИВТИ
-               РезультатЗапускаФоновойСинхронизации=  МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити();
-
-            Log.i(getApplicationContext().getClass().getName(), "ПОСЛЕ MyWork_Async_Синхронизация_Общая  внутри WORK MANAGER  внутри WORK MANGER  "
-                    + new Date() + " СТАТУС WORKMANAGER MyWork_Async_Синхронизация_Общая  внутри WORK MANAGER " + WorkManager.getInstance(getApplicationContext()).getWorkInfosByTag("WorkManager Synchronizasiy_Data").get().get(0).getState()+
-                    "   РЕЗУЛЬТАТ MyWork_Async_Синхронизация_Общая  внутри WORK MANAGER   РезультатЗапускаФоновойСинхронизации    " +РезультатЗапускаФоновойСинхронизации );
-    } catch (Exception e) {
-        e.printStackTrace();
-        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new   Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                Thread.currentThread().getStackTrace()[2].getMethodName(),
-                Thread.currentThread().getStackTrace()[2].getLineNumber());
-
-    }
-return  РезультатЗапускаФоновойСинхронизации;
-}
-
-
-
-    // TODO: 24.11.2021  Метод КОТОРЫЕ   ЗАПСУКАЮ СИНХРОНИАЗЦИЮ БЕЗ АКТИВТИ СТРГО В ФОНЕ
-    protected  Integer МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити() throws InterruptedException {
-     Integer РезультатЗапускаФоновойСинхронизации = 0;
-        try{
-        // TODO: 22.12.2022  сама запуска синхронищации из workmanager ОБЩЕГО
-        boolean ВыбранныйРежимСети =
-                new Class_Find_Setting_User_Network(getApplicationContext()).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
-        Log.d(this.getClass().getName(), "  ВыбранныйРежимСети ВыбранныйРежимСети "
-                + ВыбранныйРежимСети);
-
-        if (ВыбранныйРежимСети == true) {
-            // TODO: 21.11.2021  НАЧАЛО СИХРОНИЗХАЦИИИ общая
-            РезультатЗапускаФоновойСинхронизации = localBinderAsync.МетодAsyncИзСлужбы(getApplicationContext());
-            Log.d(getApplicationContext().getClass().getName().toString(),
-                    "\n" + "      MyWork_Async_Синхронизация_Общая       РезультатЗапускаФоновойСинхронизации[0]   " + РезультатЗапускаФоновойСинхронизации);
-            Log.d(this.getClass().getName(), "  serviceForTabelAsync " + localBinderAsync);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                Thread.currentThread().getStackTrace()[2].getMethodName(),
-                Thread.currentThread().getStackTrace()[2].getLineNumber());
-    }
-        return РезультатЗапускаФоновойСинхронизации;
-    }
-
-    // TODO: 26.06.2022  запуска ONESIGNAL из общей синхрониазции
-
 
 
     private void МетодЗапускаПослеУспешнойСтинхронизацииOneSignalИУведомления() {
@@ -374,86 +264,7 @@ return  РезультатЗапускаФоновойСинхронизации
                     Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
 
-
-
-
     }
-    public void МетодБиндинuCлужбыPublicPo() {
-        try {
-            Intent intentЗапускPublicPO = new Intent(getApplicationContext(), Service_For_Public.class);
-            intentЗапускPublicPO.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
-            getApplicationContext().bindService(intentЗапускPublicPO, Context.BIND_AUTO_CREATE, Executors.newSingleThreadExecutor(), new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    try {
-                        localBinderОбщий = (Service_For_Public.LocalBinderОбщий) service;
-                        if (service.isBinderAlive()) {
-                            // TODO: 16.11.2022
-                            Log.d(getApplicationContext().getClass().getName(), "\n"
-                                    + " время: " + new Date() + "\n+" +
-                                    " Класс в процессе... " + this.getClass().getName() + "\n" +
-                                    " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                                    + "    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации binderAsyns.pingBinder() " + service.pingBinder());
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    }
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-                    try {
-                        localBinderОбщий = null;
-                        Log.d(getApplicationContext().getClass().getName(), "\n"
-                                + " время: " + new Date() + "\n+" +
-                                " Класс в процессе... " + this.getClass().getName() + "\n" +
-                                " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                                + "    onServiceDisconnected  localBinderОбщий" + localBinderОбщий);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        // TODO: 11.05.2021 запись ошибок
-
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
-    }
-/////
-private void МетодПослеСинхрониазцииУдалениеСтатусаУдаленный() {
-    try {
-        Intent intentПослеСинхроницииРегламентаняРаботаУдалениеДанныхИзWorkManager=new Intent();
-        intentПослеСинхроницииРегламентаняРаботаУдалениеДанныхИзWorkManager.setClass(getApplicationContext(), Service_For_Public.class);
-        intentПослеСинхроницииРегламентаняРаботаУдалениеДанныхИзWorkManager.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
-        // TODO: 25.03.2023 дополнительное удаление после синхрониазции статус Удаленныц
-        localBinderОбщий.getService().МетодГлавныйPublicPO(getApplicationContext(),intentПослеСинхроницииРегламентаняРаботаУдалениеДанныхИзWorkManager);
-        Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
-                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
-                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-        Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
-    }
-}
 
 }
 

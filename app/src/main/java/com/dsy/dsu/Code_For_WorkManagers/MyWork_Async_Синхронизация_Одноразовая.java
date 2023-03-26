@@ -40,7 +40,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
     private  String ИмяСлужбыСинхронизации="WorkManager Synchronizasiy_Data Disposable";
  @Inject
    private Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal  class_generation_sendBroadcastReceiver_and_firebase_oneSignallass ;
-    private   Integer РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне=0;
+    private   Integer РезультатЗапускаСинх =0;
     private Service_For_Remote_Async locaBinderAsync;
     private  Messenger           messengerWorkManager;
     private     IBinder binder;
@@ -76,9 +76,11 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                             + "onServiceConnected  одноразовая messengerActivity  " + messengerWorkManager.getBinder().pingBinder());
                     binder=   messengerWorkManager.getBinder();
                     if (service.isBinderAlive()) {
-                            locaBinderAsync =new Service_For_Remote_Async();
-                        Log.d(context.getClass().getName().toString(), "\n"
-                                + "onServiceConnected  одноразовая serviceForTabelAsync  " + locaBinderAsync);
+                        getTaskExecutor().postToMainThread(()->{
+                            locaBinderAsync = new Service_For_Remote_Async();
+                            Log.d(getApplicationContext().getClass().getName().toString(), "\n"
+                                    + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + binder.isBinderAlive());
+                        });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -190,7 +192,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                                      + new Date() +
                                      " WorkManager Synchronizasiy_Data  " + " РАБОТАЮЩИЙ ПРОЦЕСС КоличествоЗапущенныйПроуессы.size() " + КоличествоЗапущенныйПроуессы.size()
                                      + "\n" +
-                                     "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне);
+                                     "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаСинх);
                              ///////todo  КОНЕЦ  код запуска уведомлений для чата
                              break;
                      }
@@ -206,7 +208,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                              + new Date() +
                              " WorkManager Synchronizasiy_Data  " + " РАБОТАЮЩИЙ ПРОЦЕСС КоличествоЗапущенныйПроуессы.size() " + КоличествоЗапущенныйПроуессы.size()
                              + "\n" +
-                             "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне +
+                             "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаСинх +
                              " \n" +"  АктивностьЕслиЕстьTOP " +АктивностьЕслиЕстьTOP);
                  }
              }
@@ -221,7 +223,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                      + new Date() +
                      " WorkManager Synchronizasiy_Data  " + " РАБОТАЮЩИЙ ПРОЦЕСС КоличествоЗапущенныйПроуессы.size() " + КоличествоЗапущенныйПроуессы.size()
                      + "\n" +
-                     "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне +
+                     "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаСинх +
                      " \n" +"  АктивностьЕслиЕстьTOP " +АктивностьЕслиЕстьTOP);
          }
          //TODO ЗАПУСК Ф ОЕН ОДНОРАЗОВОЕ УВЕДОМЕНИЕ
@@ -236,22 +238,22 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                      + new Date() +
                      " WorkManager Synchronizasiy_Data  " + " РАБОТАЮЩИЙ ПРОЦЕСС КоличествоЗапущенныйПроуессы.size() " + КоличествоЗапущенныйПроуессы.size()
                      + "\n" +
-                     "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне +
+                     "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаСинх +
                      " \n" +"  АктивностьЕслиЕстьTOP " +АктивностьЕслиЕстьTOP);
          }
      }
 
 
-     if(РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне==null){
-         РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне=0;
+     if(РезультатЗапускаСинх ==null){
+         РезультатЗапускаСинх =0;
      }
      myDataОтветОдноразовойСлужбы = new Data.Builder()
              .putLong("ОтветПослеВыполения_MyWork_Async_Синхронизация_Одноразовая",
-                     РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне)
+                     РезультатЗапускаСинх)
            .putBoolean("Proccesing_MyWork_Async_Синхронизация_Одноразовая",true)
              .build();
      Log.i(context.getClass().getName(), "СИНХРОНИЗАЦИЯ ПРОШЛА ОДНОРАЗОВАЯ workmanager  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + "\n"
-             + РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне);
+             + РезультатЗапускаСинх);
  } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -260,7 +262,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
         Log.e(context.getClass().getName(), " ОШИБКА В WORK MANAGER  MyWork_Async_Синхронизация_Одноразовая из FaceApp в  MyWork_Async_Синхронизация_Одноразовая Exception  ошибка в классе  MyWork_Async_Синхронизация_Одноразовая" + e.toString());
     }
-        if (РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне > 0) {
+        if (РезультатЗапускаСинх > 0) {
             return Result.success(myDataОтветОдноразовойСлужбы);
         }else {
                return Result.failure(myDataОтветОдноразовойСлужбы);
@@ -278,11 +280,10 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
              List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессы, String АктивностьЕслиЕстьTOP) {
         try{
                 // TODO: 24.11.2021  ЗАПУСК СИНХРОНИАЗХЦИИ СТРОГОВ ФОНЕ БЕЗ АКТИВТИ
-                РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне = МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити(context);
-
+                РезультатЗапускаСинх = МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити(context);
                 Log.i(context.getClass().getName(), " observableДляWorkmanagerОдноразовойСинхрогнизации "+
-                        РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
-                if (РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне > 0) {
+                        РезультатЗапускаСинх + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
+                if (РезультатЗапускаСинх > 0) {
                     Vibrator v2 = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                         v2.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.EFFECT_HEAVY_CLICK));
 
@@ -291,11 +292,11 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                             (ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle, ПубличныйIDДляФрагмента);
                     // TODO: 27.06.2022
                     Log.i(context.getClass().getName(), " observableДляWorkmanagerОдноразовойСинхрогнизации doOnComplete  выход "+
-                            РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
+                            РезультатЗапускаСинх + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
                 }
             // TODO: 27.06.2022
             Log.i(context.getClass().getName(), " выход observableДляWorkmanagerОдноразовойСинхрогнизации doOnComplete  выход "+
-                    РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
+                    РезультатЗапускаСинх + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
     } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
@@ -308,7 +309,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
 
 
     }
- return  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне;
+ return РезультатЗапускаСинх;
 
     }
 
@@ -329,7 +330,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
             (@NonNull  Integer ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle, @NonNull Integer ПубличныйIDДляФрагмента) {
         try{
         Log.i(context.getClass().getName(), "ЗАПУСК   зПубличныйIDДляФрагмента "+"\n"
-                + ПубличныйIDДляФрагмента + " РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне  "  +РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне+
+                + ПубличныйIDДляФрагмента + " РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне  "  + РезультатЗапускаСинх +
                 " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
 
 
@@ -349,7 +350,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
 
 
         Log.i(context.getClass().getName(), "ЗАПУСК   зПубличныйIDДляФрагмента "+"\n"
-                + ПубличныйIDДляФрагмента + " РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне  "  +РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне);
+                + ПубличныйIDДляФрагмента + " РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне  "  + РезультатЗапускаСинх);
 
 
 
@@ -383,7 +384,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
 
 
             Log.i(context.getClass().getName(), "ЗАПУСК   зПубличныйIDДляФрагмента "+"\n"
-                    + ПубличныйIDДляФрагмента + " РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне  "  +РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне+
+                    + ПубличныйIDДляФрагмента + " РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне  "  + РезультатЗапускаСинх +
                     " ПубличныйIDДляФрагмента " +ПубличныйIDДляФрагмента + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle );
 
     } catch (Exception e) {
@@ -471,16 +472,16 @@ return  РезультатЗапускаФоновойСинхронизации
 }
     // TODO: 24.11.2021  Метод КОТОРЫЕ   ЗАПСУКАЮ СИНХРОНИАЗЦИЮ БЕЗ АКТИВТИ СТРГО В ФОНЕ
     protected  Integer МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити(@NonNull Context context) {
-         Integer РезультатЗапускаФоновойСинхронизации = 0;
+         Integer РезультатЗапускаСинхОдно = 0;
         Bundle data=new Bundle();
      try {
          boolean ФлагРазрешениеРаботысСетьюПользователем = new Class_Find_Setting_User_Network(context).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
          if (ФлагРазрешениеРаботысСетьюПользователем==true) {
                  ///////todo запускем синхронизации ОДНОРАЗОВАНАЯ
-                       РезультатЗапускаФоновойСинхронизации = locaBinderAsync.МетодAsyncИзСлужбы(context);
+                       РезультатЗапускаСинхОдно = locaBinderAsync.МетодAsyncИзСлужбы(context);
                                  Log.d(context.getClass().getName().toString(), "\n"
-                                         + "        MyWork_Async_Синхронизация_Одноразовая     РезультатЗапускаФоновойСинхронизации   "
-                                         + РезультатЗапускаФоновойСинхронизации+
+                                         + "        MyWork_Async_Синхронизация_Одноразовая     РезультатЗапускаСинхОдно   "
+                                         + РезультатЗапускаСинхОдно+
                                          "  serviceForTabelAsync " + locaBinderAsync);
 
              Log.d(this.getClass().getName(), " MyWork_Async_Синхронизация_Одноразовая ФлагРазрешениеРаботысСетьюПользователем "
@@ -494,7 +495,7 @@ return  РезультатЗапускаФоновойСинхронизации
                  Thread.currentThread().getStackTrace()[2].getMethodName(),
                  Thread.currentThread().getStackTrace()[2].getLineNumber());
      }
-     return РезультатЗапускаФоновойСинхронизации;
+     return РезультатЗапускаСинхОдно;
     }
 }
 

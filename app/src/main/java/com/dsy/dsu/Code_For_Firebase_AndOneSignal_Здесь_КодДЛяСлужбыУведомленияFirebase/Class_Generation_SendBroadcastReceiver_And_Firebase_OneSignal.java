@@ -73,7 +73,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
      public void МетодЗапускаетОБЩУЮСинхронизацию() {
         try {
-            BroadcastReceiver_Sous_Asyns_Glassfish broadcastReceiver_sous_asyns_glassfish= new BroadcastReceiver_Sous_Asyns_Glassfish();
             Intent ИнтретПоЗапускуПовторноШироковещательногоСинхрониазции = new Intent(context, BroadcastReceiver_Sous_Asyns_Glassfish.class);
             ИнтретПоЗапускуПовторноШироковещательногоСинхрониазции.setAction("BroadcastReceiver_Sous_Asyns_Glassfish");
             ИнтретПоЗапускуПовторноШироковещательногоСинхрониазции.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
