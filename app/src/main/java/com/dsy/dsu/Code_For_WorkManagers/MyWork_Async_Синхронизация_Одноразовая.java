@@ -40,7 +40,6 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
     private  String ИмяСлужбыСинхронизации="WorkManager Synchronizasiy_Data Disposable";
  @Inject
    private Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal  class_generation_sendBroadcastReceiver_and_firebase_oneSignallass ;
-    private   Integer РезультатЗапускаСинх =0;
     private Service_For_Remote_Async locaBinderAsync;
     private  Messenger           messengerWorkManager;
     private     IBinder binder;
@@ -126,16 +125,16 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
     @NonNull
     @Override
     public Result doWork() {
+        Integer РезультатЗапускаСинх =0;
         Data    myDataОтветОдноразовойСлужбы=null;
  try{
      class_generation_sendBroadcastReceiver_and_firebase_oneSignallass=
              new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(context);
      // TODO: 12.10.2022  КТО ЗАПУСТИЛ
       Integer ПубличныйID = getInputData().getInt("СообщениеЧатаДляКонктерногоСотрудника",0);
-
-     Log.i(context.getClass().getName(), "ПубличныйID"+"\n" + ПубличныйID);
-
-     if (ПубличныйID>0) {
+      Boolean СтатусЗапускаОдноразованаяWorkManger= getInputData().getBoolean("StatusOneWokManagers",false);
+     Log.i(context.getClass().getName(), "ПубличныйID"+"\n" + ПубличныйID  + " СтатусЗапускаОдноразованаяWorkManger "+СтатусЗапускаОдноразованаяWorkManger);
+     if (ПубличныйID>0 && СтатусЗапускаОдноразованаяWorkManger==true) {
          ActivityManager ЗапущенныйПроуессыДляОбщейСинхрониазации =
                  (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
          String АктивностьЕслиЕстьTOP =null;
@@ -143,16 +142,12 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
          List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессы=null;
          Integer ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(context);
          if (ПубличныйIDДляФрагмента == null) {
-             // TODO: 01.01.2022
              ПубличныйIDДляФрагмента = 0;
          }
          Log.i(context.getClass().getName(), "ЗАПУСК   зПубличныйIDДляФрагмента "+"\n" + ПубличныйIDДляФрагмента);
          if (ЗапущенныйПроуессыДляОбщейСинхрониазации!=null) {
-             // TODO: 24.11.2021
              КоличествоЗапущенныйПроуессы = ЗапущенныйПроуессыДляОбщейСинхрониазации.getAppTasks();
-
          if (КоличествоЗапущенныйПроуессы.size() > 0) {
-             // TODO: 01.12.2021
              for (ActivityManager.AppTask ТекущаяАктивти : КоличествоЗапущенныйПроуессы) {
                  if (ТекущаяАктивти!=null) {
                      Log.i(context.getClass().getName(), "ЗАПУСК    ВНУТРИ метода         " +
@@ -162,7 +157,6 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                      if (ТекущаяАктивти.getTaskInfo().numActivities>0) {
                          АктивностьЕслиЕстьTOP = ТекущаяАктивти.getTaskInfo().topActivity.getClassName().toString();
                      }
-
                      Log.i(context.getClass().getName(), "ТекущаяАктивти " + ТекущаяАктивти +
                              " АктивностьЕслиЕстьTOP  " + АктивностьЕслиЕстьTOP +
                              "ТекущаяАктивти.getTaskInfo().numActivities  " + "\n"
@@ -173,77 +167,28 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                     //     case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Visible_Async":
                          case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Tabels_Users_And_Passwords":
                          case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_Start":
+                         case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Visible_Async":
                              Log.i(context.getClass().getName(), " ВЫХОД  .....ТекущаяАктивтиАктивностьЕслиЕстьTOP" + ТекущаяАктивти +
                                      " АктивностьЕслиЕстьTOP  " + АктивностьЕслиЕстьTOP);////   case "com.dsy.dsu.Code_For_Chats_КодДля_Чата.MainActivity_List_Chats" :
                              break;
                          // TODO: 01.12.2021 САМ ЗАПУСК WORK MANAGER  СИНХРОНИАЗЦИИ ПРИ ВКЛЮЧЕННОЙ АКТИВТИ
                          default:
-                             Log.i(context.getClass().getName(), " СРАБОТАЛО .....ТекущаяАктивти " + ТекущаяАктивти +
-                                     " АктивностьЕслиЕстьTOP  " + АктивностьЕслиЕстьTOP);////   case "com.dsy.dsu.Code_For_Chats_КодДля_Чата.MainActivity_List_Chats" :
-                             Log.i(context.getClass().getName(), " СРАБОТАЛО .....Текущий Фрагмент  ПроверкаНаАктивностьФрагментаЧата ");////   case "com.dsy.dsu.Code_For_Chats_КодДля_Чата.MainActivity_List_Chats" :
-                             // TODO: 03.02.2022 запуск синхрониазции внутри одноразвого ворк менеджера
-                             МетодЗапускаКодаВнутриОдноразовойСинхронизации
-                                     (ПубличныйID,
-                                             ПубличныйIDДляФрагмента,
-                                             КоличествоЗапущенныйПроуессы, АктивностьЕслиЕстьTOP);
-                             Log.i(context.getClass().getName(), "ЗАПУСК  АКТИВТИТИ ЕСТЬ НО ОПРЕДЕЛЕННАЯ  ВНУТРИ метода        " + "\n" +
-                                     "  АктивностьЕслиЕстьTOP " + АктивностьЕслиЕстьTOP +
-                                     " public Result doWork()   MyWork_Async_Синхронизация_Одноразовая  внутри WORK MANAGER "
-                                     + new Date() +
-                                     " WorkManager Synchronizasiy_Data  " + " РАБОТАЮЩИЙ ПРОЦЕСС КоличествоЗапущенныйПроуессы.size() " + КоличествоЗапущенныйПроуессы.size()
-                                     + "\n" +
-                                     "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаСинх);
-                             ///////todo  КОНЕЦ  код запуска уведомлений для чата
+                             РезультатЗапускаСинх=
+                                     МетодЗапускаКодаВнутриОдноразовойСинхронизации(ПубличныйID,
+                                             ПубличныйIDДляФрагмента, КоличествоЗапущенныйПроуессы,
+                                             АктивностьЕслиЕстьTOP);
+                             // TODO: 26.03.2023
+                             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                     " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                     + " РезультатЗапускаСинх "+РезультатЗапускаСинх );
                              break;
                      }
-                 }else{
-                     // TODO: 03.02.2022 запуск синхрониазции внутри одноразвого ворк менеджера  реско не сталь активти
-                     МетодЗапускаКодаВнутриОдноразовойСинхронизации
-                             (ПубличныйID,
-                                     ПубличныйIDДляФрагмента,
-                                     КоличествоЗапущенныйПроуессы, АктивностьЕслиЕстьTOP);
-
-                     Log.i(context.getClass().getName(), "ЗАПУСК   СТРОГО В ФОНЕ  О ОПРЕДЕЛЕННАЯ  ВНУТРИ метода     РАВНО 0    " + "\n" +
-                             " public Result doWork()   MyWork_Async_Синхронизация_Одноразовая  внутри WORK MANAGER "
-                             + new Date() +
-                             " WorkManager Synchronizasiy_Data  " + " РАБОТАЮЩИЙ ПРОЦЕСС КоличествоЗапущенныйПроуессы.size() " + КоличествоЗапущенныйПроуессы.size()
-                             + "\n" +
-                             "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаСинх +
-                             " \n" +"  АктивностьЕслиЕстьTOP " +АктивностьЕслиЕстьTOP);
                  }
              }
-         } else {
-             // TODO: 03.02.2022 запуск синхрониазции внутри одноразвого ворк менеджера
-             МетодЗапускаКодаВнутриОдноразовойСинхронизации
-                     (ПубличныйID,
-                             ПубличныйIDДляФрагмента,
-                             КоличествоЗапущенныйПроуессы, АктивностьЕслиЕстьTOP);
-             Log.i(context.getClass().getName(), "ЗАПУСК   СТРОГО В ФОНЕ  О ОПРЕДЕЛЕННАЯ  ВНУТРИ метода     РАВНО 0    " + "\n" +
-                     " public Result doWork()   MyWork_Async_Синхронизация_Одноразовая  внутри WORK MANAGER "
-                     + new Date() +
-                     " WorkManager Synchronizasiy_Data  " + " РАБОТАЮЩИЙ ПРОЦЕСС КоличествоЗапущенныйПроуессы.size() " + КоличествоЗапущенныйПроуессы.size()
-                     + "\n" +
-                     "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаСинх +
-                     " \n" +"  АктивностьЕслиЕстьTOP " +АктивностьЕслиЕстьTOP);
-         }
-         //TODO ЗАПУСК Ф ОЕН ОДНОРАЗОВОЕ УВЕДОМЕНИЕ
-     }else{
-             // TODO: 03.02.2022 запуск синхрониазции внутри одноразвого ворк менеджера
-             МетодЗапускаКодаВнутриОдноразовойСинхронизации
-                     (ПубличныйID,
-                             ПубличныйIDДляФрагмента,
-                             КоличествоЗапущенныйПроуессы, АктивностьЕслиЕстьTOP);
-             Log.i(context.getClass().getName(), "ЗАПУСК   СТРОГО В ФОНЕ  О ОПРЕДЕЛЕННАЯ  ВНУТРИ метода     вообще NULL  " + "\n" +
-                     " public Result doWork()   MyWork_Async_Синхронизация_Одноразовая  внутри WORK MANAGER "
-                     + new Date() +
-                     " WorkManager Synchronizasiy_Data  " + " РАБОТАЮЩИЙ ПРОЦЕСС КоличествоЗапущенныйПроуессы.size() " + КоличествоЗапущенныйПроуессы.size()
-                     + "\n" +
-                     "  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + РезультатЗапускаСинх +
-                     " \n" +"  АктивностьЕслиЕстьTOP " +АктивностьЕслиЕстьTOP);
          }
      }
-
-
+     }
      if(РезультатЗапускаСинх ==null){
          РезультатЗапускаСинх =0;
      }
@@ -252,13 +197,18 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                      РезультатЗапускаСинх)
            .putBoolean("Proccesing_MyWork_Async_Синхронизация_Одноразовая",true)
              .build();
-     Log.i(context.getClass().getName(), "СИНХРОНИЗАЦИЯ ПРОШЛА ОДНОРАЗОВАЯ workmanager  РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне " + "\n"
-             + РезультатЗапускаСинх);
+// TODO: 26.03.2023
+     Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+             + " РезультатЗапускаСинх "+РезультатЗапускаСинх );
+
  } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                 " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+        new   Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(),
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
         Log.e(context.getClass().getName(), " ОШИБКА В WORK MANAGER  MyWork_Async_Синхронизация_Одноразовая из FaceApp в  MyWork_Async_Синхронизация_Одноразовая Exception  ошибка в классе  MyWork_Async_Синхронизация_Одноразовая" + e.toString());
     }
@@ -278,9 +228,10 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
             (Integer ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle,
              Integer ПубличныйIDДляФрагмента,
              List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессы, String АктивностьЕслиЕстьTOP) {
+        Integer   РезультатЗапускаСинх=0;
         try{
                 // TODO: 24.11.2021  ЗАПУСК СИНХРОНИАЗХЦИИ СТРОГОВ ФОНЕ БЕЗ АКТИВТИ
-                РезультатЗапускаСинх = МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити(context);
+               РезультатЗапускаСинх = МетодЗапускаСинхрониазцииСтрогоВФонеБезАктивити(context);
                 Log.i(context.getClass().getName(), " observableДляWorkmanagerОдноразовойСинхрогнизации "+
                         РезультатЗапускаСинх + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
                 if (РезультатЗапускаСинх > 0) {
@@ -304,106 +255,47 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
         new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(),
                 this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
-
-        // TODO: 11.05.2021 запись ошибок
-
-
     }
  return РезультатЗапускаСинх;
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void МетодЗапускаПослеУспешнойСтинхронизацииOneSignalИУведомления
             (@NonNull  Integer ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle, @NonNull Integer ПубличныйIDДляФрагмента) {
         try{
         Log.i(context.getClass().getName(), "ЗАПУСК   зПубличныйIDДляФрагмента "+"\n"
-                + ПубличныйIDДляФрагмента + " РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне  "  + РезультатЗапускаСинх +
+                + ПубличныйIDДляФрагмента + " РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне  "   +
                 " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
-
-
         // TODO: 14.11.2021  ПОВТОРНО ЗАПУСКАЕМ УВЕДОМЛЕНИЯ ТОЛЬКО ДЛЯ ОДНОРАЗОВАЯ СЛУЖБА
             class_generation_sendBroadcastReceiver_and_firebase_oneSignallass.МетодЗапускаУведомленияЧАТА();
-
-
-
             // TODO: 14.11.2021  ПОВТОРНО ЗАПУСКАЕМ УВЕДОМЛЕНИЯ ТОЛЬКО ДЛЯ ОДНОРАЗОВАЯ СЛУЖБА
             class_generation_sendBroadcastReceiver_and_firebase_oneSignallass.МетодЗапускаУведомленияДляЗАДАЧ();
-
-
-
-
             // TODO: 14.11.2021  ПОВТОРНО ЗАПУСКАЕМ УВЕДОМЛЕНИЯ ТОЛЬКО ДЛЯ  СЛУЖБА ТОЛЬКО ПРИ СМНИ СТТАУСА ОТКАЗИ ИЛ ВЫПОЛНИЛ
             class_generation_sendBroadcastReceiver_and_firebase_oneSignallass.МетодЗапускаУведомленияДляЗАДАЧТолькоПриСменеСтатусаОтказВыполнил();
-
-
-        Log.i(context.getClass().getName(), "ЗАПУСК   зПубличныйIDДляФрагмента "+"\n"
-                + ПубличныйIDДляФрагмента + " РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне  "  + РезультатЗапускаСинх);
-
-
-
         // TODO: 14.11.2021  из оДНОРАЗОВГО ВОРК МЕНЕДЖЕРА ЗАПУСКАЕМ ONE SINGNAL
-
             String КлючДляFirebaseNotification = "2a1819db-60c8-4ca3-a752-1b6cd9cadfa1";
-
                 // TODO: 04.11.2021   ЗАПУСКАЕМ СИНХРОНИАХЦИИЮ  через ONESIGNAL
                 Log.d(this.getClass().getName(), "ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle "
                         + ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle +
                         " ПубличныйIDДляФрагмента " +ПубличныйIDДляФрагмента);
-
-
-
                 if ( ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle.compareTo(ПубличныйIDДляФрагмента)!=0)  {
-
                     // TODO: 14.11.2021  ПОВТОРЫЙ ЗАПУСК Facebase and OneSignal  ///  КлючДляFirebaseNotification
                     class_generation_sendBroadcastReceiver_and_firebase_oneSignallass.
                             МетодПовторногоЗапускаFacebaseCloud_And_OndeSignal(КлючДляFirebaseNotification,
                                     ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
-
-
-                    // TODO: 04.11.2021   ЗАПУСКАЕМ СИНХРОНИАХЦИИЮ  через ONESIGNAL
-                    Log.d(this.getClass().getName(), "РезультатCallsBackСинхрониазцииЧата " + "\n" + " МОДЕЛЬ ТЕЛЕФОНА  Build.DEVICE   " + Build.DEVICE +
-                            "  ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " + ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle+
-                            " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle "+ ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
-
                 }
-
-
-
-
-            Log.i(context.getClass().getName(), "ЗАПУСК   зПубличныйIDДляФрагмента "+"\n"
-                    + ПубличныйIDДляФрагмента + " РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне  "  + РезультатЗапускаСинх +
-                    " ПубличныйIDДляФрагмента " +ПубличныйIDДляФрагмента + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle );
-
+            // TODO: 04.11.2021   ЗАПУСКАЕМ СИНХРОНИАХЦИИЮ  через ONESIGNAL
+            Log.d(this.getClass().getName(), "РезультатCallsBackСинхрониазцииЧата " + "\n" + " МОДЕЛЬ ТЕЛЕФОНА  Build.DEVICE   " + Build.DEVICE +
+                    "  ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " + ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle+
+                    " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle "+ ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
     } catch (Exception e) {
-        //  Block of code to handle errors
         e.printStackTrace();
-        ///метод запись ошибок в таблицу
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
         new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(),
                 this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                 Thread.currentThread().getStackTrace()[2].getLineNumber());
-
-        // TODO: 11.05.2021 запись ошибок
-
-
     }
-
-
-
 
     }
 

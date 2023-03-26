@@ -157,8 +157,8 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
             Log.d(this.getClass().getName(), "ПубличныйIDДляОбщейСинхрониазции " + ПубличныйIDДляОбщейСинхрониазции);
             ActivityManager ЗапущенныйПроуессыДляОбщейСинхрониазации =
                     (ActivityManager) getApplicationContext().getSystemService(ACTIVITY_SERVICE);
-                List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессы =
-                        ЗапущенныйПроуессыДляОбщейСинхрониазации.getAppTasks();
+            if (ЗапущенныйПроуессыДляОбщейСинхрониазации!=null) {
+                List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессы = ЗапущенныйПроуессыДляОбщейСинхрониазации.getAppTasks();
                 if (КоличествоЗапущенныйПроуессы.size() > 0) {
                         Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName()
                                 + "\n" +
@@ -174,6 +174,16 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                             + " КоличествоЗапущенныйПроуессы.size() " +КоличествоЗапущенныйПроуессы.size()
                             +  "РезультатЗапускаОбщейСинх " +РезультатЗапускаОбщейСинх);
                 }
+            } else {
+                // TODO: 26.03.2023
+                РезультатЗапускаОбщейСинх=     МетодЗапускаОбщей();
+                Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                        + " ЗапущенныйПроуессыДляОбщейСинхрониазации" +ЗапущенныйПроуессыДляОбщейСинхрониазации
+                        +  "РезультатЗапускаОбщейСинх " +РезультатЗапускаОбщейСинх);
+            }
+
 
             myDataОтветОБЩЕЙСИНХРОНИЗАЦИИСлужбы = new Data.Builder()
                     .putInt("ReturnPublicAsyncWorkMananger",

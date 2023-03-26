@@ -716,13 +716,15 @@ public class MainActivity_Face_App extends AppCompatActivity {
                                 PUBLIC_CONTENT public_contentЗапусСинхрониазцииИМеню = new PUBLIC_CONTENT(getApplicationContext());
 
                                 if (СтатусСетиВыбранныйПользователем == true) {
-                                   Boolean СтатусСервераСоюзаВключенИлиНЕт = class_connections_serverПингаСерераИзАктивтиМеню.МетодПингаСервераРаботаетИлиНет(getApplicationContext());
+                                   Boolean СтатусСервераСоюзаВключенИлиНЕт =
+                                           class_connections_serverПингаСерераИзАктивтиМеню.МетодПингаСервераРаботаетИлиНет(getApplicationContext());
                                     if (СтатусСервераСоюзаВключенИлиНЕт== true) {
                                         Integer ПубличныйIDДляОдноразовойСинхрониазции =
                                                 new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplicationContext());
 
                                         Bundle bundleДляПЕредачи=new Bundle();
                                         bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляОдноразовойСинхрониазции);
+                                        bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
                                         Intent  intentЗапускОднорworkanager=new Intent();
                                         intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
                                         // TODO: 02.08.2022
@@ -733,12 +735,6 @@ public class MainActivity_Face_App extends AppCompatActivity {
                                                 " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                                                 " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                                                 + " ПубличныйIDДляОдноразовойСинхрониазции "+ПубличныйIDДляОдноразовойСинхрониазции );
-
-
-
-                                        Log.d(this.getClass().getName(), "Синхронизация Данных с Web-сервера ДСУ-1 ?  ФинальныйРезультатФоновойСинхронизации[0] " +
-                                                ФинальныйРезультатФоновойСинхронизации[0]);
-
                                         handlerFaceAPP.postDelayed(() -> {
                                             progressDialogДляСинхронизации.dismiss();
                                             progressDialogДляСинхронизации.cancel();
