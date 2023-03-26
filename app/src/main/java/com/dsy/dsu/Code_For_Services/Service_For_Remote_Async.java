@@ -190,11 +190,22 @@ public class Service_For_Remote_Async extends IntentService {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+  try{
+        // TODO: 25.03.2023 ДОПОЛНИТЕОТНЕ УДЛАНИЕ СТАТУСА УДАЛЕНИЕ ПОСЛЕ СИНХРОНИАЗЦИИ
+        МетодБиндинuCлужбыPublicPo();
         Log.d(context.getClass().getName(), "\n"
                 + " время: " + new Date() + "\n+" +
                 " Класс в процессе... " + this.getClass().getName() + "\n" +
                 " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName());
         //   return super.onBind(intent);
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+        Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
+    }
         return messenger.getBinder();
     }
     @Override
@@ -237,9 +248,18 @@ public class Service_For_Remote_Async extends IntentService {
             if( this.context==null){
                 this.context=context;
             }
-                    // TODO: 05.11.2022 запуск синхрониазции 
-                          ФинальныйРезультатAsyncBackgroud=       МетодЗапускаAsyncBackgronud(context);
-                          Log.w(this.getClass().getName(), "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud);
+            // TODO: 16.11.2022
+            ФинальныйРезультатAsyncBackgroud  = new Class_Engine_SQL(context).МетодЗАпускаФоновойСинхронизации(context);
+            Log.d(context.getClass().getName(), "\n"
+                    + "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud);
+            МетодПослеAsyncTaskЗавершающий( context);
+            // TODO: 26.03.2023 дополнительное удаление после Удаление статсу удалнеенон
+            МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
+            Log.d(getApplicationContext().getClass().getName(), "\n"
+                    + " время: " + new Date() + "\n+" +
+                    " Класс в процессе... " + this.getClass().getName() + "\n" +
+                    " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
+                    + "    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации binderAsyns.pingBinder() ");
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -250,80 +270,6 @@ public class Service_For_Remote_Async extends IntentService {
         }
         return ФинальныйРезультатAsyncBackgroud;
     }
-
-    // TODO: 22.12.2022  запск СИНХРОНИЗАЦИИ АСИНХРОНННО
-    public Integer МетодЗапускаAsyncBackgronud(@NonNull Context context)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, RemoteException, InvalidKeyException {
-        final Integer[] ФинальныйРезультатAsyncBackgroud = new Integer[1];
-        try{
-        // TODO: 11.10.2022  запускаем главную фоновую синхрониазцию
-            // TODO: 25.03.2023 ДОПОЛНИТЕОТНЕ УДЛАНИЕ СТАТУСА УДАЛЕНИЕ ПОСЛЕ СИНХРОНИАЗЦИИ
-            МетодБиндинuCлужбыPublicPo();
-
-            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
-                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
-                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
-        } catch (Exception e) {
-        e.printStackTrace();
-        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-    }
-        return  ФинальныйРезультатAsyncBackgroud[0] ;
-    }
-
-
-
-
-    // TODO: 22.12.2022  запск СИНХРОНИЗАЦИИ АСИНХРОНННО
-    public Integer МетодЗапускИзWorkmanagerAsyncBackgronud(@NonNull Context context)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, RemoteException, InvalidKeyException {
-        Integer   ФинальныйРезультатAsyncBackgroud=0;
-        try{
-            // TODO: 11.10.2022  запускаем главную фоновую синхрониазцию
-            // TODO: 16.11.2022
-          ФинальныйРезультатAsyncBackgroud  = new Class_Engine_SQL(context).МетодЗАпускаФоновойСинхронизации(context);
-            Log.d(context.getClass().getName(), "\n"
-                    + "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud);
-            МетодПослеAsyncTaskЗавершающий( context);
-            Log.d(getApplicationContext().getClass().getName(), "\n"
-                    + " время: " + new Date() + "\n+" +
-                    " Класс в процессе... " + this.getClass().getName() + "\n" +
-                    " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                    + "    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации binderAsyns.pingBinder() ");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                    " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                    Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
-        return  ФинальныйРезультатAsyncBackgroud ;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private void МетодПослеСинхрониазцииУдалениеСтатусаУдаленный() {
         try {
@@ -2505,7 +2451,7 @@ public class Service_For_Remote_Async extends IntentService {
                 /////
                 Integer РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера = 0;
                 String ДанныеПришёлВОтветОтМетодаPOST = new String();
-                StringBuffer БуферОтправкаДанныхвФоне = new StringBuffer();
+                StringBuffer БуферДанныхНаСервер = new StringBuffer();
                 Class_GRUD_SQL_Operations class_grud_sql_operations;
                 class_grud_sql_operations = new Class_GRUD_SQL_Operations(context);
                 try {
@@ -2523,30 +2469,30 @@ public class Service_For_Remote_Async extends IntentService {
                     String   ИмяСерверИзХранилица = preferences.getString("ИмяСервера","");
                     Integer    ПортСерверИзХранилица = preferences.getInt("ИмяПорта",0);
                     // TODO: 21.09.2022 ОТПРАВЯЛЕТ ДАННЫЕ НА СЕРВЕР
-                    БуферОтправкаДанныхвФоне = УниверсальныйБуферОтправкиДанныхНаСервера(ГенерацияJSONполейФиналДляОтправкиНаСеврерОтАндройда,
+                    БуферДанныхНаСервер = УниверсальныйБуферОтправкиДанныхНаСервера(ГенерацияJSONполейФиналДляОтправкиНаСеврерОтАндройда,
                             ПубличноеIDПолученныйИзСервлетаДляUUID, имяТаблицыОтАндройда_локальноая,
                             "Получение JSON файла от Андройда",
                             60000,  ИмяСерверИзХранилица ,ПортСерверИзХранилица);
                     ///БУФЕР ОТПРАВКИ ДАННЫХ НА СЕРВЕР  //TODO original "tabel.dsu1.ru", 8888        //TODO "192.168.254.40", 8080
-                    Log.d(this.getClass().getName(), "  СЛУЖБА ВЕРНУЛЬСЯ ОТВЕТ ОТ СЕРВЕРА ОБРАТНО АНДРОЙДУ  БуферОтправкаДанных.toString() " + БуферОтправкаДанныхвФоне.toString());
-                    if (БуферОтправкаДанныхвФоне == null) {
-                        БуферОтправкаДанныхвФоне = new StringBuffer();
+                    Log.d(this.getClass().getName(), "  СЛУЖБА ВЕРНУЛЬСЯ ОТВЕТ ОТ СЕРВЕРА ОБРАТНО АНДРОЙДУ  БуферОтправкаДанных.toString() " + БуферДанныхНаСервер.toString());
+                    if (БуферДанныхНаСервер == null) {
+                        БуферДанныхНаСервер = new StringBuffer();
                     }
-                    if (БуферОтправкаДанныхвФоне.length() > 0) {
+                    if (БуферДанныхНаСервер.length() > 0) {
                         ПубличныйРезультатОтветаОтСерврераУспешно = 0;
-                        ПубличныйРезультатОтветаОтСерврераУспешно = БуферОтправкаДанныхвФоне.length();
+                        ПубличныйРезультатОтветаОтСерврераУспешно = БуферДанныхНаСервер.length();
                     }
-                    Log.d(this.getClass().getName(), "БуферОтправкаДанныхвФоне.length() " + БуферОтправкаДанныхвФоне.length() +
-                            " БуферОтправкаДанныхвФоне " + БуферОтправкаДанныхвФоне.toString() );
+                    Log.d(this.getClass().getName(), "БуферДанныхНаСервер.length() " + БуферДанныхНаСервер.length() +
+                            " БуферДанныхНаСервер " + БуферДанныхНаСервер.toString() );
                     ////TODO  ОТВЕТ ОТ СЕРВЕРА ПОСЛЕ ОТПРАВКИ ДАННЫХ НА СЕРВЕР
-                    if (БуферОтправкаДанныхвФоне != null) {
-                        if (БуферОтправкаДанныхвФоне.length() > 0) {
-                            Log.d(this.getClass().getName(), "  БуферОтправкаДанныхвФоне.toString()  " + БуферОтправкаДанныхвФоне.toString());
-                            ДанныеПришёлВОтветОтМетодаPOST = БуферОтправкаДанныхвФоне.toString();
+                    if (БуферДанныхНаСервер != null) {
+                        if (БуферДанныхНаСервер.length() > 0) {
+                            Log.d(this.getClass().getName(), "  БуферДанныхНаСервер.toString()  " + БуферДанныхНаСервер.toString());
+                            ДанныеПришёлВОтветОтМетодаPOST = БуферДанныхНаСервер.toString();
                             Log.d(this.getClass().getName(), "  ДанныеПришёлВОтветОтМетодаPOST  " + ДанныеПришёлВОтветОтМетодаPOST);
 
                             ////todo дОПОЛНИТЕЛЬНЫЙ КОД ПОСИКА ДВННЫХ ИЗ ОТВЕТА ОТ СЕРВЕРА
-                            РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера = МетодАнализОтветаОтСервера(БуферОтправкаДанныхвФоне);
+                            РезультатУспешнойВставкиИлиОбновлениеCallBacksОтСервера = МетодАнализОтветаОтСервера(БуферДанныхНаСервер);
                         }
                         ////TODO ответ от сервера РЕЗУЛЬТАТ
                         Log.d(this.getClass().getName(), "Успешный Ответ от сервера ДанныеПришёлВОтветОтМетодаPOST в фоне " + ДанныеПришёлВОтветОтМетодаPOST+"" +
@@ -2561,7 +2507,7 @@ public class Service_For_Remote_Async extends IntentService {
                             Log.d(this.getClass().getName(), " NULL НОЛЬ ОБНОВЛЕНИЙ ИЛИ ВСТАВОК С СЕРВЕРА  СЛУЖБА УСПЕШНЫЙ ОТВКЕТ ОТ СЕРВЕРА ОТВЕТ CALBACKS  ДанныеПришёлВОтветОтМетодаPOST.length() ");
                         }
                     } else {
-                        Log.d(this.getClass().getName(), " Данных нет c сервера  БуферОтправкаДанных.length() в фоне " + БуферОтправкаДанныхвФоне.length());
+                        Log.d(this.getClass().getName(), " Данных нет c сервера  БуферОтправкаДанных.length() в фоне " + БуферДанныхНаСервер.length());
                     }
                     Log.d(this.getClass().getName(), " ДанныеПришёлВОтветОтМетодаPOST " + ДанныеПришёлВОтветОтМетодаPOST);
                 } catch (Exception e) {
@@ -2662,14 +2608,6 @@ public class Service_For_Remote_Async extends IntentService {
                         localBinderОбщий = (Service_For_Public.LocalBinderОбщий) service;
                         if (service.isBinderAlive()) {
                             // TODO: 16.11.2022
-                       Integer     ФинальныйРезультатAsyncBackgroud  = new Class_Engine_SQL(context).МетодЗАпускаФоновойСинхронизации(context);
-                            Log.d(context.getClass().getName(), "\n"
-                                    + "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud);
-                            МетодПослеAsyncTaskЗавершающий( context);
-                            // TODO: 25.03.2023
-                            if (ФинальныйРезультатAsyncBackgroud>0) {
-                                МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
-                            }
                             Log.d(getApplicationContext().getClass().getName(), "\n"
                                     + " время: " + new Date() + "\n+" +
                                     " Класс в процессе... " + this.getClass().getName() + "\n" +

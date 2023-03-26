@@ -309,9 +309,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
             Log.i(context.getClass().getName(), " выход observableДляWorkmanagerОдноразовойСинхрогнизации doOnComplete  выход "+
                     РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне + " ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle " +ПубличныйIDКомуНАдоОтправитьСообщениеЧерезOneSingle);
     } catch (Exception e) {
-        //  Block of code to handle errors
         e.printStackTrace();
-        ///метод запись ошибок в таблицу
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                 + Thread.currentThread().getStackTrace()[2].getLineNumber());
         new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(),
@@ -491,19 +489,16 @@ return  РезультатЗапускаФоновойСинхронизации
          boolean ФлагРазрешениеРаботысСетьюПользователем = new Class_Find_Setting_User_Network(context).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
          if (ФлагРазрешениеРаботысСетьюПользователем==true) {
 
-             while (serviceForTabelAsync==null){
-                 МетодПодключениекСлубе();
-             }
+             while (serviceForTabelAsync==null)
                  ///////todo запускем синхронизации ОДНОРАЗОВАНАЯ
                        РезультатЗапускаФоновойСинхронизации = serviceForTabelAsync.МетодAsyncИзСлужбы(context);
                                  Log.d(context.getClass().getName().toString(), "\n"
-                                         + "        MyWork_Async_Синхронизация_Одноразовая     РезультатЗапускаФоновойСинхронизации   " + РезультатЗапускаФоновойСинхронизации+
+                                         + "        MyWork_Async_Синхронизация_Одноразовая     РезультатЗапускаФоновойСинхронизации   "
+                                         + РезультатЗапускаФоновойСинхронизации+
                                          "  serviceForTabelAsync " + serviceForTabelAsync);
 
              Log.d(this.getClass().getName(), " MyWork_Async_Синхронизация_Одноразовая ФлагРазрешениеРаботысСетьюПользователем "
                      + ФлагРазрешениеРаботысСетьюПользователем);
-
-
          }
      } catch (Exception e) {
          e.printStackTrace();

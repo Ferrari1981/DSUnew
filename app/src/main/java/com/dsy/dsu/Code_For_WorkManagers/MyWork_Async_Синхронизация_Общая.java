@@ -345,7 +345,7 @@ return  РезультатЗапускаФоновойСинхронизации
 
         if (ВыбранныйРежимСети == true) {
             // TODO: 21.11.2021  НАЧАЛО СИХРОНИЗХАЦИИИ общая
-            РезультатЗапускаФоновойСинхронизации = serviceForTabelAsync.МетодЗапускИзWorkmanagerAsyncBackgronud(getApplicationContext());
+            РезультатЗапускаФоновойСинхронизации = serviceForTabelAsync.МетодAsyncИзСлужбы(getApplicationContext());
             Log.d(getApplicationContext().getClass().getName().toString(),
                     "\n" + "      MyWork_Async_Синхронизация_Общая       РезультатЗапускаФоновойСинхронизации[0]   " + РезультатЗапускаФоновойСинхронизации);
             Log.d(this.getClass().getName(), "  serviceForTabelAsync " + serviceForTabelAsync);
