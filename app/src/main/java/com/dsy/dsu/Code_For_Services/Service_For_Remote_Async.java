@@ -202,6 +202,7 @@ public class Service_For_Remote_Async extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stopSelf();
         Log.d(context.getClass().getName(), "\n"
                 + " время: " + new Date() + "\n+" +
                 " Класс в процессе... " + this.getClass().getName() + "\n" +

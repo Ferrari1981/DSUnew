@@ -159,7 +159,46 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                     (ActivityManager) getApplicationContext().getSystemService(ACTIVITY_SERVICE);
             if (ЗапущенныйПроуессыДляОбщейСинхрониазации!=null) {
                 List<ActivityManager.AppTask> КоличествоЗапущенныйПроуессы = ЗапущенныйПроуессыДляОбщейСинхрониазации.getAppTasks();
+              String  АктивностьЕслиЕстьTOP=new String();
                 if (КоличествоЗапущенныйПроуессы.size() > 0) {
+                    for (ActivityManager.AppTask ТекущаяАктивти : КоличествоЗапущенныйПроуессы) {
+                        if (ТекущаяАктивти!=null) {
+                            Log.i(getApplicationContext().getClass().getName(), "ЗАПУСК    ВНУТРИ метода         " +
+                                    "ТекущаяАктивти.getTaskInfo().numActivities  " + "\n"
+                                    + ТекущаяАктивти.getTaskInfo().numActivities);
+                            // TODO: 20.02.2022
+                            if (ТекущаяАктивти.getTaskInfo().numActivities>0) {
+                                АктивностьЕслиЕстьTOP = ТекущаяАктивти.getTaskInfo().topActivity.getClassName().toString();
+                            }
+                            Log.i(getApplicationContext().getClass().getName(), "ТекущаяАктивти " + ТекущаяАктивти +
+                                    " АктивностьЕслиЕстьTOP  " + АктивностьЕслиЕстьTOP +
+                                    "ТекущаяАктивти.getTaskInfo().numActivities  " + "\n"
+                                    + ТекущаяАктивти.getTaskInfo().numActivities);////   case "com.dsy.dsu.Code_For_Chats_КодДля_Чата.MainActivity_List_Chats" :
+                        }
+                        if (АктивностьЕслиЕстьTOP!=null ) {
+                            switch (АктивностьЕслиЕстьTOP) {// case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_App" :
+                                //     case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Visible_Async":
+                                case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Tabels_Users_And_Passwords":
+                                case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_Start":
+                                case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Visible_Async":
+                                case "com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_App":
+                                    Log.i(getApplicationContext().getClass().getName(), " ВЫХОД  .....ТекущаяАктивтиАктивностьЕслиЕстьTOP" + ТекущаяАктивти +
+                                            " АктивностьЕслиЕстьTOP  " + АктивностьЕслиЕстьTOP);////   case "com.dsy.dsu.Code_For_Chats_КодДля_Чата.MainActivity_List_Chats" :
+                                    break;
+                                // TODO: 01.12.2021 САМ ЗАПУСК WORK MANAGER  СИНХРОНИАЗЦИИ ПРИ ВКЛЮЧЕННОЙ АКТИВТИ
+                                default:
+                                    // TODO: 26.03.2023
+                                    РезультатЗапускаОбщейСинх=     МетодЗапускаОбщей();
+                                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() +
+                                            "\n" +
+                                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                            + " КоличествоЗапущенныйПроуессы.size() " +КоличествоЗапущенныйПроуессы.size()
+                                            +  "РезультатЗапускаОбщейСинх " +РезультатЗапускаОбщейСинх);
+                                    break;
+                            }
+                        }
+                    }
                         Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName()
                                 + "\n" +
                                 " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
@@ -192,6 +231,15 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                     .putLong("WorkManangerVipolil",
                            Long.parseLong(РезультатЗапускаОбщейСинх.toString()))
                     .build();
+
+            getTaskExecutor().postToMainThread(()->{
+                if (localBinderAsync!=null) {
+                    localBinderAsync.onDestroy();
+                }
+                Log.d(getApplicationContext().getClass().getName().toString(), "\n"
+                        + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + localBinderAsync.binder.isBinderAlive());
+            });
+
 // TODO: 25.03.2023
             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +

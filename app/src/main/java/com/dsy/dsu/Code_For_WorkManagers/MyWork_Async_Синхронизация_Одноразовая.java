@@ -42,7 +42,6 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
    private Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal  class_generation_sendBroadcastReceiver_and_firebase_oneSignallass ;
     private Service_For_Remote_Async locaBinderAsync;
     private  Messenger           messengerWorkManager;
-    private     IBinder binder;
 
     // TODO: 28.09.2022
     public MyWork_Async_Синхронизация_Одноразовая(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -73,12 +72,11 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                     messengerWorkManager =new Messenger(service);
                     Log.d(context.getClass().getName().toString(), "\n"
                             + "onServiceConnected  одноразовая messengerActivity  " + messengerWorkManager.getBinder().pingBinder());
-                    binder=   messengerWorkManager.getBinder();
                     if (service.isBinderAlive()) {
                         getTaskExecutor().postToMainThread(()->{
                             locaBinderAsync = new Service_For_Remote_Async();
                             Log.d(getApplicationContext().getClass().getName().toString(), "\n"
-                                    + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + binder.isBinderAlive());
+                                    + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + locaBinderAsync.binder.isBinderAlive());
                         });
                     }
                 } catch (Exception e) {
@@ -197,6 +195,14 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                      РезультатЗапускаСинх)
            .putBoolean("Proccesing_MyWork_Async_Синхронизация_Одноразовая",true)
              .build();
+     // TODO: 26.03.2023
+     getTaskExecutor().postToMainThread(()->{
+         if (locaBinderAsync!=null) {
+             locaBinderAsync.onDestroy();
+         }
+         Log.d(getApplicationContext().getClass().getName().toString(), "\n"
+                 + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + locaBinderAsync.binder.isBinderAlive());
+     });
 // TODO: 26.03.2023
      Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
              " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
