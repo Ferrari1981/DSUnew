@@ -29,6 +29,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_UUID;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.Class_Generation_Data;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassMONTHONLY_ТолькоАнализ;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYEARONLY;
@@ -899,8 +900,19 @@ private class SubClassGetDataAdmissionMaterial_Автомобили {
                 asyncTaskLoader.commitContentChanged();
                 if (РезультатСозданиеНовгоМатериала>0) {
                     Integer  ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(context);
-                    new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(context).
-                            МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(context,ПубличныйIDДляФрагмента);
+                    Bundle bundleДляПЕредачи=new Bundle();
+                    bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+                    bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+                    Intent  intentЗапускОднорworkanager=new Intent();
+                    intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+                    // TODO: 02.08.2022
+                    new Class_Generator_One_WORK_MANAGER(getApplicationContext()).
+                            МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getApplicationContext(),intentЗапускОднорworkanager);
+                    // TODO: 26.06.2022
+                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                            + " ПубличныйIDДляФрагмента "+ПубличныйIDДляФрагмента );
                 }
             }
             return РезультатСозданиеНовгоМатериала  ;
@@ -1050,8 +1062,19 @@ private class SubClassGetDataAdmissionMaterial_Автомобили {
                 asyncTaskLoader.commitContentChanged();
                 if (РезультатУдалениеНовгоМатериала>0) {
                     Integer  ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(context);
-                    new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(context).
-                            МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(context,ПубличныйIDДляФрагмента);
+                    Bundle bundleДляПЕредачи=new Bundle();
+                    bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+                    bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+                    Intent  intentЗапускОднорworkanager=new Intent();
+                    intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+                    // TODO: 02.08.2022
+                    new Class_Generator_One_WORK_MANAGER(getApplicationContext()).
+                            МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getApplicationContext(),intentЗапускОднорworkanager);
+                    // TODO: 26.06.2022
+                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                            + " ПубличныйIDДляФрагмента "+ПубличныйIDДляФрагмента );
                 }
             }
             return РезультатУдалениеНовгоМатериала  ;

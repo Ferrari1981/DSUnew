@@ -729,7 +729,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                                         intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
                                         // TODO: 02.08.2022
                                         new Class_Generator_One_WORK_MANAGER(getApplicationContext()).
-                                                МетодОдноразовыйЗапускВоерМенеджера(getApplicationContext(),intentЗапускОднорworkanager);
+                                                МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getApplicationContext(),intentЗапускОднорworkanager);
                                         // TODO: 26.06.2022
                                         Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                                                 " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
@@ -806,9 +806,9 @@ public class MainActivity_Face_App extends AppCompatActivity {
                                     if (ПубличныйIDДляФрагмента == null) {
                                         ПубличныйIDДляФрагмента = 0;
                                     }
-                                    new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext()).
+                                   /* new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext()).
                                             МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(getApplicationContext(),
-                                                    Integer.parseInt(ПубличныйIDДляФрагмента.toString()));
+                                                    Integer.parseInt(ПубличныйIDДляФрагмента.toString()));*/
                                     Log.d(this.getClass().getName(), "    case \"Данных системы\": запуск синхрониазции из активти Одноразвой Службой  " + ПубличныйIDДляФрагмента);
                                 } catch (Exception e) {
                                     e.printStackTrace();
