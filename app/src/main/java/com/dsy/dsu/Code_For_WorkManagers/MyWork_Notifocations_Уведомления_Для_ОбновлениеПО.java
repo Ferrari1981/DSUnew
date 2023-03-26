@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteCursor;
-import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.Gravity;
@@ -20,17 +19,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
-import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
-import com.dsy.dsu.Code_For_Services.ServiceОбновлениеПО;
+import com.dsy.dsu.Code_For_Services.ServiceUpdatePoОбновлениеПО;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,14 +36,6 @@ import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.functions.Action;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.functions.Predicate;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class MyWork_Notifocations_Уведомления_Для_ОбновлениеПО extends Worker {
@@ -337,7 +325,7 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
         try {
 
             Intent notificationIntentДляУведомленийОбновлениеПоЗагрузить;
-            notificationIntentДляУведомленийОбновлениеПоЗагрузить = new Intent(getApplicationContext(), ServiceОбновлениеПО.class);
+            notificationIntentДляУведомленийОбновлениеПоЗагрузить = new Intent(getApplicationContext(), ServiceUpdatePoОбновлениеПО.class);
             notificationIntentДляУведомленийОбновлениеПоЗагрузить.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             notificationIntentДляУведомленийОбновлениеПоЗагрузить.setAction("ЗагрузитьНовоеПо");
             Log.i(getApplicationContext().getClass().getName(), "СервернаяВерсияПОВнутри  " + СервернаяВерсияПОВнутри);
@@ -379,7 +367,7 @@ public class MyWork_Notifocations_Уведомления_Для_Обновлен
         try {
             Intent notificationIntentДляУведомленийОбновлениеЗакрываем;
             // TODO: 17.11.2021
-            notificationIntentДляУведомленийОбновлениеЗакрываем = new Intent(getApplicationContext(), ServiceОбновлениеПО.class);
+            notificationIntentДляУведомленийОбновлениеЗакрываем = new Intent(getApplicationContext(), ServiceUpdatePoОбновлениеПО.class);
             notificationIntentДляУведомленийОбновлениеЗакрываем.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             //notificationIntentЗакрыть.addCategory(Intent.CATEGORY_LAUNCHER);
             notificationIntentДляУведомленийОбновлениеЗакрываем.setAction("ЗакрываемУведомлениеоНовомПО");

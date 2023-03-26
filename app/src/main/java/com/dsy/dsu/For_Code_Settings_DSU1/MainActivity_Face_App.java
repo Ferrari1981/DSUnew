@@ -53,10 +53,10 @@ import com.dsy.dsu.Code_ForTABEL.MainActivity_List_Tabels;
 import com.dsy.dsu.Code_ForTABEL.MainActivity_New_Templates;
 import com.dsy.dsu.Code_For_Commit_Payments_КодДля_Согласование.MainActivity_CommitPay;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
+import com.dsy.dsu.Code_For_Services.ServiceUpdatePoОбновлениеПО;
 import com.dsy.dsu.Code_For_Services.Service_Async_1C;
 import com.dsy.dsu.Code_For_Services.Service_Notificatios_Для_Согласования;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
-import com.dsy.dsu.Code_For_Services.ServiceОбновлениеПО;
 import com.dsy.dsu.R;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -90,7 +90,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
     @Inject
     private Service_Notificatios_Для_Согласования.LocalBinderДляСогласования binderСогласования1C;
     private Service_for_AdminissionMaterial.LocalBinderДляПолучениеМатериалов binderМатериалы;
-    private ServiceОбновлениеПО.localBinderОбновлениеПО localBinderОбновлениеПО;
+    private ServiceUpdatePoОбновлениеПО.localBinderОбновлениеПО localBinderОбновлениеПО;
     private Animation animation;
     protected SharedPreferences preferences;
     private Service_Async_1C service_Async_СинхронизацияОБЩАЯ1С;
@@ -479,7 +479,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
                 @Override
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     try {
-                      localBinderОбновлениеПО = (ServiceОбновлениеПО.localBinderОбновлениеПО) service;
+                      localBinderОбновлениеПО = (ServiceUpdatePoОбновлениеПО.localBinderОбновлениеПО) service;
                         if (localBinderОбновлениеПО.isBinderAlive()) {
                             Log.i(getApplicationContext().getClass().getName(), "    onServiceConnected  localBinderОбновлениеПО)"
                                     + localBinderОбновлениеПО.isBinderAlive());
@@ -512,10 +512,10 @@ public class MainActivity_Face_App extends AppCompatActivity {
                     }
                 }
             };
-            /*Intent intentЗапускСлужбыОбновлениеПО = new Intent(getApplicationContext(), ServiceОбновлениеПО.class);
+            /*Intent intentЗапускСлужбыОбновлениеПО = new Intent(getApplicationContext(), ServiceUpdatePoОбновлениеПО.class);
             bindService(intentЗапускСлужбыОбновлениеПО, connectionСогласования,Context.BIND_AUTO_CREATE );*/
-            Intent intentЗапускСлужбыОбновлениеПО = new Intent(getApplicationContext(), ServiceОбновлениеПО.class);
-            intentЗапускСлужбыОбновлениеПО.setAction("com.ServiceОбновлениеПО");
+            Intent intentЗапускСлужбыОбновлениеПО = new Intent(getApplicationContext(), ServiceUpdatePoОбновлениеПО.class);
+            intentЗапускСлужбыОбновлениеПО.setAction("com.ServiceUpdatePoОбновлениеПО");
             bindService(intentЗапускСлужбыОбновлениеПО,Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT
                     | Context.BIND_INCLUDE_CAPABILITIES,Executors.newCachedThreadPool(), connectionСогласования );
 

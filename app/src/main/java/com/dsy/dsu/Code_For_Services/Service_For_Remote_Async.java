@@ -35,10 +35,13 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Visible_Processing_Async;
 import com.dsy.dsu.Business_logic_Only_Class.Class__Generation_Genetal_Tables;
+import com.dsy.dsu.Business_logic_Only_Class.Jakson.ItemSerializer;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Connection_BroadcastReceiver_Sous_Asyns_Glassfish;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -62,7 +65,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -84,7 +86,7 @@ import io.reactivex.rxjava3.functions.Predicate;
  * helper methods.
  */
 public class Service_For_Remote_Async extends IntentService {
-    public LocalBinderДляТабеля binder = new LocalBinderДляТабеля();
+    public LocalBinderДляТабеля binderBinderRemoteAsync = new LocalBinderДляТабеля();
     private Context context;
     private    Messenger messengerCallBacks;
     private  Integer МаксималноеКоличествоСтрочекJSON;
@@ -315,7 +317,7 @@ public class Service_For_Remote_Async extends IntentService {
             localBinderОбщий.getService().МетодГлавныйPublicPO(context,intentПослеСинхроницииРегламентаняРаботаУдалениеДанных);
             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
-                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n" +   "  localBinderОбщий  " +localBinderОбщий);
 
         } catch (Exception e) {
         e.printStackTrace();
@@ -1261,16 +1263,17 @@ public class Service_For_Remote_Async extends IntentService {
                                 // TODO: 19.11.2022 ПОДНИМАЕМ ВЕРИСЮ ДАННЫХ
                                 Integer РезультатПовышенииВерсииДанных = subClassUpVersionDATA.МетодVesrionUPMODIFITATION_Client(ИмяТаблицыОтАндройда_Локальноая,context,getССылкаНаСозданнуюБазу());
                                 Log.d(this.getClass().getName(), " РезультатПовышенииВерсииДанных  " + РезультатПовышенииВерсииДанных);
-                                // TODO: 20.03.2023 удаляем им ПАМЯТИ переменнфые
-
-                                // TODO: 20.03.2023 МЕням Статус Удаление на Сервере
-                                МетодBulkUPDATEChangeStatusServerDeleting(ИмяТаблицыОтАндройда_Локальноая, context);
                             }
                             // TODO: 20.03.2023  Запуск Метода Смены Статуса Удаление на Сервера
-                            МетодОчисткаПеременныхПослеСинхроации();
+                            МетодОчисткаПеременныхПослеСинх();
+
                         }
                     }
-
+                    // TODO: 09.11.2022 визуальна часть синхрониазции по таблице
+                    МетодCallBasksВизуальноИзСлужбы(МаксималноеКоличествоСтрочекJSON,
+                            ИндексВизуальнойДляPrograssBar,ИмяТаблицыОтАндройда_Локальноая,
+                            Проценты,"ПроцессеAsyncBackground",
+                            true,false);
                 }
                 Log.d(this.getClass().getName(), "\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
@@ -1287,7 +1290,7 @@ public class Service_For_Remote_Async extends IntentService {
             return  ПубличныйРезультатОтветаОтСерврераУспешно;
         }
 
-        private void МетодОчисткаПеременныхПослеСинхроации() {
+        private void МетодОчисткаПеременныхПослеСинх() {
             try{
             if (ТекущийАдаптерДляВсего!=null) {
                 ТекущийАдаптерДляВсего.clear();
@@ -1295,7 +1298,11 @@ public class Service_For_Remote_Async extends IntentService {
             if (АдаптерДляВставкиИОбновления!=null) {
                 АдаптерДляВставкиИОбновления.clear();
             }
-                Log.d(this.getClass().getName(), "  АдаптерДляВставкиИОбновления   " + АдаптерДляВставкиИОбновления );
+                // TODO: 26.03.2023
+                Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                        + " АдаптерДляВставкиИОбновления "+АдаптерДляВставкиИОбновления );
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -1674,7 +1681,7 @@ public class Service_For_Remote_Async extends IntentService {
                                                     @Override
                                                     public void run() throws Throwable {
                                                         // TODO: 14.11.2022  Заполем  Обновление ЧЕРЕЗ КОНТЕКТ ПРОВАЙДЕР
-                                                        МетодContentProvoderForUpdateJrInsert(context,  имяТаблицыОтАндройда_локальноая);
+                                                        МетодЗаполненияContextValues(context,  имяТаблицыОтАндройда_локальноая);
                                                         Log.d(this.getClass().getName(), " массова вставка МетодContentProvoderForUpdateJrInsert  АдаптерПриОбновленияДанныхсСервера.size() :::  "
                                                                 + ТекущийАдаптерДляВсего.size());
                                                     }
@@ -1821,52 +1828,7 @@ public class Service_For_Remote_Async extends IntentService {
             return результат_ОбновлениенымисСервера;
         }
 
-        // TODO: 20.03.2023  метод смены статуса при удаление на СЕРВРЕРЕ
-        private void МетодBulkUPDATEChangeStatusServerDeleting(@NonNull String имяТаблицыОтАндройда_локальноая,@NonNull Context context) {
-            Long результат_ОбновлениенымисСервераСменаСтатусаУдаления=0l;
-            try{
-                switch (имяТаблицыОтАндройда_локальноая) {
-                    case "data_tabels":
-                    case "tabel":
-                    case  "get_materials_data" :
-                        Uri uri = Uri.parse("content://com.dsy.dsu.providerdatachangedeleting/" + имяТаблицыОтАндройда_локальноая + "");
-                        //   Uri uri = Uri.parse("content://com.dsy.dsu.providerdatabase/" + имяТаблицыОтАндройда_локальноая + "");
-                        if (АдаптерДляВставкиИОбновления.size()>0) {
-                            //TODO  ПОСЛЕ ОБРАБОТКИ ВСЕЙ ТАБЛИЦЫ ТЕСТОВО ЗАПУСКАЕМ ЕТОД МАССОВОЙ ВСТАВКИ ЧЕРЕЗ КОНТЕНТ ПРОВАЙДЕР МЕТОД BurkInset
-                            Log.w(context.getClass().getName(), " АдаптерДляВставкиИОбновления.size()  " + АдаптерДляВставкиИОбновления.size()+
-                                    "\n" + " АдаптерПриОбновленияДанныхсСервера.size()  " + ТекущийАдаптерДляВсего.size()+" uri  " + uri);/////
-                            ContentResolver contentResolver  = context.getContentResolver();
-                            // TODO: 09.11.2022 визуальна часть синхрониазции по таблице
-                            МетодCallBasksВизуальноИзСлужбы(МаксималноеКоличествоСтрочекJSON,
-                                    ИндексВизуальнойДляPrograssBar,имяТаблицыОтАндройда_локальноая,
-                                    Проценты,"ПроцессеAsyncBackground",
-                                    true,false);
-                            ContentValues[] contentValuesМассив=new ContentValues[АдаптерДляВставкиИОбновления.size()];
-                            contentValuesМассив=АдаптерДляВставкиИОбновления.toArray(contentValuesМассив);
-                            int РезультатОбновлениеМассовой = contentResolver.bulkInsert(uri, contentValuesМассив);
-                            // TODO: 27.10.2021
-                            результат_ОбновлениенымисСервераСменаСтатусаУдаления = Long.valueOf(РезультатОбновлениеМассовой);
-                            Log.d(this.getClass().getName(), " РезультатОбновлениеМассовой :::  "
-                                    + РезультатОбновлениеМассовой+"\n"+
-                                    "  имяТаблицыОтАндройда_локальноая " +имяТаблицыОтАндройда_локальноая);
-                        }
-                        break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                        " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                        Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-            }
-        }
-
-
-
-
-
-        private void МетодContentProvoderForUpdateJrInsert(Context context, String имяТаблицыОтАндройда_локальноая) {
-
+        private void МетодЗаполненияContextValues(Context context, String имяТаблицыОтАндройда_локальноая) {
             try{
                 if (ТекущийАдаптерДляВсего.size() > 0) {
                     АдаптерДляВставкиИОбновления.add(ТекущийАдаптерДляВсего);
@@ -2267,6 +2229,16 @@ public class Service_For_Remote_Async extends IntentService {
                         " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                         " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                         + " КурсорДляОтправкиДанныхНаСерверОтАндройда "+КурсорДляОтправкиДанныхНаСерверОтАндройда.getCount() );
+
+                    StringWriter jsonObjectWriter1 = new StringWriter();
+                    ObjectMapper jsonGenerator2 =
+                            new PUBLIC_CONTENT(context).getGeneratorJackson();
+                    StringWriter jsonObjectWriter2 = new StringWriter();
+                    SimpleModule module = new SimpleModule();
+                    module.addSerializer(Cursor.class, new ItemSerializer(КурсорДляОтправкиДанныхНаСерверОтАндройда));
+                    jsonGenerator2.registerModule(module);
+
+
                     // TODO: 23.03.2023 ID ПРОФЕСИИ
                      //Integer IDПрофесии=    МетодIdПрофесии(context);
                     StringWriter jsonObjectWriter = new StringWriter();

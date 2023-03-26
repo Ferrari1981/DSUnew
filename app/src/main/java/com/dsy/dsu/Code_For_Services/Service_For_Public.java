@@ -150,7 +150,6 @@ public class Service_For_Public extends IntentService {
                 // TODO: 25.09.2022 удаление статуса удаленных строк
                 case "ЗапускУдалениеСтатусаУдаленияСтрок":
                   new SubClassFromУдалениеСтатусУдаленный(context).МетодУдаленияСтатусаУдаленных(intent);
-                   // new SubClassFromУдалениеСтатусУдаленный(context).МетодУдаленияСтатусаУдаленных(intent);
                     Log.w(this.getClass().getName(), "   intent.getAction()  " + intent.getAction());
                     break;
                 default:
@@ -561,5 +560,11 @@ public Cursor МетодПолучениеДанныхЧерезCursorLoader(@No
                 Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
             }
         }
+        // TODO: 20.03.2023  метод смены статуса при удаление на СЕРВРЕРЕ
+
+
+
+
+
     }
 }

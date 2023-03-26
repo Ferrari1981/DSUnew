@@ -76,7 +76,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                         getTaskExecutor().postToMainThread(()->{
                             locaBinderAsync = new Service_For_Remote_Async();
                             Log.d(getApplicationContext().getClass().getName().toString(), "\n"
-                                    + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + locaBinderAsync.binder.isBinderAlive());
+                                    + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + locaBinderAsync.binderBinderRemoteAsync.isBinderAlive());
                         });
                     }
                 } catch (Exception e) {

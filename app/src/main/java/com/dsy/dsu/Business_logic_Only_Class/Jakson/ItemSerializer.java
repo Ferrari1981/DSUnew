@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public class ItemSerializer extends StdSerializer<Cursor> {
 
-    public ItemSerializer() {
-        this(null);
+    public ItemSerializer(Cursor курсорДляОтправкиДанныхНаСерверОтАндройда) {
+        this((Class<Cursor>) null);
     }
 
     public ItemSerializer(Class<Cursor> t) {

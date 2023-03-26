@@ -57,9 +57,9 @@ import io.reactivex.rxjava3.functions.Supplier;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
-public class ServiceОбновлениеПО extends IntentService {////Service
+public class ServiceUpdatePoОбновлениеПО extends IntentService {////Service
 
-    public ServiceОбновлениеПО.localBinderОбновлениеПО binder = new ServiceОбновлениеПО.localBinderОбновлениеПО();
+    public ServiceUpdatePoОбновлениеПО.localBinderОбновлениеПО binder = new ServiceUpdatePoОбновлениеПО.localBinderОбновлениеПО();
     String ИмяСлужбыУведомленияДляОбновление = "WorkManager NOtofocationforUpdateSoft";
     private String PROCESS_IDSoftUpdate = "19";
     private  Integer ЛокальнаяВерсияПО = 0;
@@ -71,11 +71,11 @@ public class ServiceОбновлениеПО extends IntentService {////Service
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
      */
-    public ServiceОбновлениеПО() {
+    public ServiceUpdatePoОбновлениеПО() {
         super("Binder_UpdatePO");
     }
 
-    public ServiceОбновлениеПО(String name) {
+    public ServiceUpdatePoОбновлениеПО(String name) {
 
         super(name);
     }
@@ -84,7 +84,7 @@ public class ServiceОбновлениеПО extends IntentService {////Service
     public void onCreate() {
         super.onCreate();
         try{
-        Log.d(getApplicationContext().getClass().getName(), "ServiceОбновлениеПО "
+        Log.d(getApplicationContext().getClass().getName(), "ServiceUpdatePoОбновлениеПО "
                 + " время: "
                 + new Date());
     } catch (Exception e) {
@@ -124,20 +124,20 @@ public class ServiceОбновлениеПО extends IntentService {////Service
         return   binder;
     }
     public class localBinderОбновлениеПО extends Binder {
-        public ServiceОбновлениеПО getService() {
+        public ServiceUpdatePoОбновлениеПО getService() {
             // Return this instance of LocalService so clients can call public methods
             Log.d(getApplicationContext().getClass().getName(), "\n"
                     + " время: " + new Date()+"\n+" +
                     " Класс в процессе... " +  this.getClass().getName()+"\n"+
                     " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName());
-            return ServiceОбновлениеПО.this;
+            return ServiceUpdatePoОбновлениеПО.this;
         }
     }
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         try{
             МетодГлавныйОбновленияПО(false,activity);
-            Log.i(getApplicationContext().getClass().getName(), " ServiceОбновлениеПО  МетодГлавныйЗапускаОбновлениеПО  " + " время запуска  " + new Date());
+            Log.i(getApplicationContext().getClass().getName(), " ServiceUpdatePoОбновлениеПО  МетодГлавныйЗапускаОбновлениеПО  " + " время запуска  " + new Date());
         } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
