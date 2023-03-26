@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -41,6 +42,7 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.Class_Generation_Data;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_UUID;
@@ -1730,12 +1732,25 @@ public class Fragment3_Now_Create_Tasks extends Fragment {
                                                     Long ОперациСозданияНовойЗадания
                                                             = subClass_createNewTasksКлассДляСозданияНовойЗадачи.МетодЗаписиНовойЗадачи();
                                                     Log.d(this.getClass().getName(), "  ОперациСозданияНовойЗадания" + ОперациСозданияНовойЗадания);
-                                                    // TODO: 22.03.2022  результат вставки новой задачи успешно или нет
-                                                    ///  ПубличныйIDДляФрагмента=     Integer.parseInt(holder.spinnerДляСозданиеНовойЗадачи.getTag().toString()) ;
-                                                    // TODO: 13.01.2022  ЗАПУСК СИХРОНИЗВАЦИИ В ХОЛОСТУЮ ХОДholder.spinnerДляСозданиеНовойЗадачи
                                                     if (ОперациСозданияНовойЗадания>0) {
-                                                        new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getContext()).
-                                                                МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(getContext(),ПубличныйIDДляЗаданияКомуПисать);
+
+                                                        // TODO: 26.03.2023  start Async
+                                                        Integer  ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID()
+                                                                .ПолучениеПубличногоТекущегоПользователяID(context);
+                                                        Bundle bundleДляПЕредачи=new Bundle();
+                                                        bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+                                                        bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+                                                        Intent intentЗапускОднорworkanager=new Intent();
+                                                        intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+                                                        // TODO: 02.08.2022
+                                                        new Class_Generator_One_WORK_MANAGER(getContext()).
+                                                                МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getContext(),intentЗапускОднорworkanager);
+                                                        // TODO: 26.06.2022
+                                                        Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                                                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                                                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                                                + " ПубличныйIDДляФрагмента "+ПубличныйIDДляФрагмента );
+
                                                         Log.d(this.getClass().getName(), "  ОперациСозданияНовойЗадания" + ОперациСозданияНовойЗадания+
                                                                 "ПубличныйIDДляЗаданияКомуПисать " +ПубличныйIDДляЗаданияКомуПисать);
                                                     }
@@ -1745,11 +1760,8 @@ public class Fragment3_Now_Create_Tasks extends Fragment {
                                                             // TODO: 22.03.2022
                                                             Log.w(this.getClass().getName(), "   Успешное Создаение Задачи !!!" + ОперациСозданияНовойЗадания);
                                                         }else{
-                                                            // TODO: 21.03.2022 ЗАДАЧА НЕ ВЫЬББРАНА
                                                             Snackbar.make(v, " Ошибка новая задача не создалась !!! ", Snackbar.LENGTH_LONG).show();
-                                                            // TODO: 22.03.2022
                                                             Log.e(this.getClass().getName(), "  Ошибка новая задача не создалась !!!" + ОперациСозданияНовойЗадания);
-
                                                         }
                                                             // TODO: 22.03.2022
                                                             // TODO: 09.03.2022
@@ -1799,18 +1811,13 @@ public class Fragment3_Now_Create_Tasks extends Fragment {
                             } else {
                                 // TODO: 21.03.2022 ЗАДАЧА НЕ ВЫЬББРАНА
                                 Snackbar.make(v, "Нет загаловка задачи !!!  ", Snackbar.LENGTH_LONG).show();
-
                             }
-
-
                         } catch (Exception e) {
                             e.printStackTrace();
-                            ///метод запись ошибок в таблицу
                             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
                             new Class_Generation_Errors(getContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
                                     Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            //   mNotificationManagerДляЧАТА.cancel(1);///.cancelAll();
                         }
 
                             Log.d(this.getClass().getName(), "  holder.buttonДляСозданиеНовогоЗадания.setOnClickListener   МетодБиндингаСлушательДляКнопкиСоздатьНовуюЗадачу    " +

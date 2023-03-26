@@ -21,6 +21,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
 import com.dsy.dsu.R;
@@ -1053,8 +1054,22 @@ try{
                 WorkInfoИнформацияОЗапущенойСлужбеОдноразовая =
                         WorkManager.getInstance(getApplicationContext().getApplicationContext()).getWorkInfosByTag(ИмяСлужбыСинхронизацииОдноразовая).get().get(0);
                 if (WorkInfoИнформацияОЗапущенойСлужбеОдноразовая.getState().compareTo(WorkInfo.State.RUNNING) != 0) {
-                    new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext()).
-                            МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager( getApplicationContext(),ПубличныйIDДляОдноразовойСинхрониазции);
+                    // TODO: 26.03.2023 start Async
+                    // TODO: 26.03.2023 start async
+                    Integer  ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplicationContext());
+                    Bundle bundleДляПЕредачи=new Bundle();
+                    bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+                    bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+                    Intent  intentЗапускОднорworkanager=new Intent();
+                    intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+                    // TODO: 02.08.2022
+                    new Class_Generator_One_WORK_MANAGER(getApplicationContext()).
+                            МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getApplicationContext(),intentЗапускОднорworkanager);
+                    // TODO: 26.06.2022
+                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                            + " ПубличныйIDДляФрагмента "+ПубличныйIDДляФрагмента );
                 }
             }
             Log.w(getApplicationContext().getClass().getName(), " ПЕРВЫЙ ЗАПУСК НА ФРАГМЕНТЕ ЧИТАТЬ И ПИСАТЬ ПубличныйIDДляОдноразовойСинхрониазции   " + ПубличныйIDДляОдноразовойСинхрониазции + "\n");

@@ -43,6 +43,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Code_For_Services.Service_For_Task_Для_Задания_СменаСатуса;
@@ -2058,9 +2059,23 @@ public class Fragment4_Now_Views_Task_For_Complete extends Fragment {
                                " SubClassBuccessLogin_ГлавныйКлассБизнесЛогикиФрагмент1   ПозицияЭлментаVIewCardДополнительно  СтатусПрочтеаУжеЗадачаИлиНет " +
                                msg + " msg.getWhen() " + msg.what);
 
-                       class_generation_sendBroadcastReceiver_and_firebase_oneSignal.МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(getContext(),СкемИдётПереписка );
+                       // TODO: 26.03.2023 start saync
+                       Integer  ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(context);
+                       Bundle bundleДляПЕредачи=new Bundle();
+                       bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+                       bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+                       Intent  intentЗапускОднорworkanager=new Intent();
+                       intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+                       // TODO: 02.08.2022
+                       new Class_Generator_One_WORK_MANAGER(getContext()).
+                               МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getContext(),intentЗапускОднорworkanager);
+                       // TODO: 26.06.2022
+                       Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                               " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                               " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                               + " ПубличныйIDДляФрагмента "+ПубличныйIDДляФрагмента );
 
-                       Log.d(this.getClass().getName(), " ИЗ ВСЕХ ТАБЕЛЕЙ   ОДНОРАЗОВАЯ СИНХРОНИЗАЦИЯ ФиналРЕзультатКЛЮЧНОВЫЙ  СкемИдётПереписка "   +  СкемИдётПереписка);
+              
 
                    Bundle bundleПередаемОбратноДанныеВоФрагмент1=    msg.getData();
                        Log.d(this.getClass().getName(), " " +

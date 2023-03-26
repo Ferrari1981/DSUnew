@@ -38,6 +38,7 @@ import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
 import com.dsy.dsu.Code_For_Services.Service_For_Task_Для_Задания_СменаСатуса;
@@ -1650,55 +1651,43 @@ public class Fragment5_ViewcreatedTasks extends Fragment {
                 Handler.Callback callback = new Handler.Callback() {
                     @Override
                     public boolean handleMessage(@NonNull android.os.Message msg) {
-                        Log.d(this.getClass().getName(), " " +
-                                " SubClassBuccessLogin_ГлавныйКлассБизнесЛогикиФрагмент1   ПозицияЭлментаVIewCardДополнительно  СтатусПрочтеаУжеЗадачаИлиНет " +
-                                msg + " msg.getWhen() " + msg.what);
-                        class_generation_sendBroadcastReceiver_and_firebase_oneSignal.МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(getContext(),СкемИдётПереписка );
+                        Integer  ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(context);
+                        Bundle bundleДляПЕредачи=new Bundle();
+                        bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+                        bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+                        Intent  intentЗапускОднорworkanager=new Intent();
+                        intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+                        // TODO: 02.08.2022
+                        new Class_Generator_One_WORK_MANAGER(getContext()).
+                                МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getContext(),intentЗапускОднорworkanager);
+                        // TODO: 26.06.2022
+                        Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                + " ПубличныйIDДляФрагмента "+ПубличныйIDДляФрагмента );
 
-                        Log.d(this.getClass().getName(), " ИЗ ВСЕХ ТАБЕЛЕЙ   ОДНОРАЗОВАЯ СИНХРОНИЗАЦИЯ ФиналРЕзультатКЛЮЧНОВЫЙ  СкемИдётПереписка "   +  СкемИдётПереписка);
-                   //   new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getContext()).
-                        // TODO: 15.03.2022
+                        Log.d(this.getClass().getName(), " ИЗ ВСЕХ ТАБЕЛЕЙ   ОДНОРАЗОВАЯ СИНХРОНИЗАЦИЯ ФиналРЕзультатКЛЮЧНОВЫЙ  СкемИдётПереписка "
+                                +  СкемИдётПереписка);
                         msg.getTarget().postDelayed(() -> {
-                            // TODO: 09.03.2022
                             fragmentTransactionляЗадачи = fragmentManagerДляЗадачи.beginTransaction();
-
                             fragment_ТекущийФрагмент = new Fragment2_Create_Tasks();
-                            // TODO: 11.03.2022
                             fragmentTransactionляЗадачи.replace(R.id.activity_main_fisrt_for_tasks, fragment_ТекущийФрагмент).commit();//.layout.activity_for_fragemtb_history_tasks
-                            // TODO: 10.03.2022
                             fragmentTransactionляЗадачи.show(fragment_ТекущийФрагмент);
-                            // TODO: 10.03.2022
                             Log.d(this.getClass().getName(), " fragmentTransactionляЗадачи " + fragmentTransactionляЗадачи);
-                            // TODO: 10.03.2022
-                            // TODO: 14.03.2022
-                            //bottomNavigationКонкретноКнопкаСоздатьСейчас.setVisibility(View.GONE);
-                            // TODO: 09.03.2022
                             bottomNavigationViewДляTasks.requestLayout();
-                            // TODO: 14.03.2022
                             linearLayou.requestLayout();
-
-
                             recyclerView.requestLayout();
-
                             recyclerView.forceLayout();
-                            // TODO: 29.03.2022
                             progressBarTaskFragment5.setVisibility(View.GONE);
-
                         }, 1000);
 
-
-
                         Bundle bundle=      msg.getData();
-
                         String ОперацияДанныВЧате=bundle.getString("ОперациЯПрошлаЧат","");
-
                         msg.getTarget().removeMessages(1);
-
                         return true;
                     }
                 };
                 handlerTaskFragment5= new Handler(callback);
-
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +

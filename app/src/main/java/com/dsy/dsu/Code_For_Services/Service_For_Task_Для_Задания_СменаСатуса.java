@@ -22,6 +22,8 @@ import androidx.work.WorkManager;
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_ДляСменыСтатусаНаЗадачиВыполненыйОтказОтмененный;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
@@ -395,9 +397,23 @@ public class Service_For_Task_Для_Задания_СменаСатуса exten
                             WorkInfoИнформацияОЗапущенойСлужбеОдноразовая =
                                     WorkManager.getInstance(getApplicationContext().getApplicationContext()).getWorkInfosByTag(ИмяСлужбыСинхронизацииОдноразовая).get().get(0);
                             if (WorkInfoИнформацияОЗапущенойСлужбеОдноразовая.getState().compareTo(WorkInfo.State.RUNNING) != 0) {
-                                ///Integer ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getContext());
-                                new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(context).
-                                        МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(context,IDКтоСоздалзадачуИдЛЯКогоЗапускатьFirebase);
+
+// TODO: 26.03.2023 start sync
+                                Integer  ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(context);
+                                Bundle bundleДляПЕредачи=new Bundle();
+                                bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+                                bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+                                Intent  intentЗапускОднорworkanager=new Intent();
+                                intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+                                // TODO: 02.08.2022
+                                new Class_Generator_One_WORK_MANAGER(getApplicationContext()).
+                                        МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getApplicationContext(),intentЗапускОднорworkanager);
+                                // TODO: 26.06.2022
+                                Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                        + " ПубличныйIDДляФрагмента "+ПубличныйIDДляФрагмента );
+
                             }
                             Log.i(context.getClass().getName(), " WorkInfoИнформацияОЗапущенойСлужбеОдноразовая  " + WorkInfoИнформацияОЗапущенойСлужбеОдноразовая+
                                     " IDКтоСоздалзадачуИдЛЯКогоЗапускатьFirebase " +IDКтоСоздалзадачуИдЛЯКогоЗапускатьFirebase);//todo super.onBind(intent)
