@@ -41,8 +41,10 @@ public class Class_Generator_One_WORK_MANAGER extends  Class_GRUD_SQL_Operations
         try {
             Bundle bundleДляПЕредачи=intentЗапускОднорworkanager.getExtras();
       Integer КтоЗапуслилСинхронизацию=      bundleДляПЕредачи.getInt("IDПубличныйНеМойАСкемБылаПереписака");
+      Boolean StatusOneWokManagers=      bundleДляПЕредачи.getBoolean("StatusOneWokManagers");
             Data myData = new Data.Builder()
                     .putInt("СообщениеЧатаДляКонктерногоСотрудника", КтоЗапуслилСинхронизацию)
+                    .putBoolean("StatusOneWokManagers", StatusOneWokManagers)
                     .build();
             Constraints constraintsЗапускСинхОдноразоваяСлужба = new Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)

@@ -168,7 +168,8 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                 }else {
                     // TODO: 26.03.2023
                  РезультатЗапускаОбщейСинх=     МетодЗапускаОбщей();
-                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() +
+                            "\n" +
                             " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                             " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
                             + " КоличествоЗапущенныйПроуессы.size() " +КоличествоЗапущенныйПроуессы.size()
