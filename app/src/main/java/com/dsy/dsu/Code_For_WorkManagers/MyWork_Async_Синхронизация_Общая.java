@@ -231,15 +231,6 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                     .putLong("WorkManangerVipolil",
                            Long.parseLong(РезультатЗапускаОбщейСинх.toString()))
                     .build();
-
-            getTaskExecutor().postToMainThread(()->{
-                if (localBinderAsync!=null) {
-                    localBinderAsync.onDestroy();
-                }
-                Log.d(getApplicationContext().getClass().getName().toString(), "\n"
-                        + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + localBinderAsync.binder.isBinderAlive());
-            });
-
 // TODO: 25.03.2023
             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +

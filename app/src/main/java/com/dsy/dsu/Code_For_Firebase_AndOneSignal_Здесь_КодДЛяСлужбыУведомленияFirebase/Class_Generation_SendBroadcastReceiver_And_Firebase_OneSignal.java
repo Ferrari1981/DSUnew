@@ -125,35 +125,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
          }
      }
 
-     // TODO: 30.06.2022 для привязки службы бинга
-     @BinderThread
-     public void МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(@NonNull  Context context,
-                                                                                         @NonNull Integer ПубличныйIDДляОдноразовойСинхрониазции ) {
-         try{
-             // TODO: 01.02.2022 заПУСКАЕМ сИНХРОНИАЗАЦИЮ С ВСЕХ ЛИСТ ТАБЕЛЕЙ
-             Integer  ПубличныйIDДляФрагмента=   new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(context);
-             Bundle bundleДляПЕредачи=new Bundle();
-             bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
-             Intent  intentЗапускОднорworkanager=new Intent();
-             intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
-             // TODO: 02.08.2022
-             new Class_Generator_One_WORK_MANAGER(context).
-                     МетодОдноразовыйЗапускВоерМенеджера(context,intentЗапускОднорworkanager);
-             // TODO: 26.06.2022
-             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
-                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
-                     " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
-                     + " ПубличныйIDДляОдноразовойСинхронПубличныйIDДляФрагментаиазции "+ПубличныйIDДляФрагмента );
-         } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                    Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                    Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        }
-                    }
-    // TODO: 14.11.2021  ПОВТОРЫЙ ЗАПУСК ВОРК МЕНЕДЖЕР уведомления
+
 
      public void МетодЗапускаУведомленияЧАТА() {
          try {
@@ -611,20 +583,17 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
                        + ПубличныйIDДляОдноразовойСинхрониазции);
                /// TODO ########################################################втоаря часть  settings_tabels    ПЕРВАЯ ОБРАБОТКА ТАБЛИЦА  settings_tabels
                Observable observableСменыКлючаИЗАписьНовогоOneSinglal=   Observable.fromArray("settings_tabels","view_onesignal")
-                       .subscribeOn(Schedulers.computation())
-                       .observeOn(AndroidSchedulers.mainThread())
-                       .flatMapStream(new Function<String, Stream<?>>() {
+                       .doOnNext(new Consumer<String>() {
                            @Override
-                           public Stream<?> apply(String ТаблицаКоторуюнадоИзменитьВерсиюДанныхТАюдицы_VIEW_ONESIGNAL) throws Throwable {
-                               // TODO: 24.02.2022
-// TODO: 13.01.2022 САМА ВСТАВКА НОВОГО КЛЮЧА В ТАБЛИЦУ НАСТРОЙКИ СИСТЕМЫ
+                           public void accept(String ТаблицаДляПолучениеКлючаONESIGNAL) throws Throwable {
+                               // TODO: 13.01.2022 САМА ВСТАВКА НОВОГО КЛЮЧА В ТАБЛИЦУ НАСТРОЙКИ СИСТЕМЫ
                                Integer   РезультатОбновленияКлючаДляПервойТаблицыsettings_tabelssОбаview_onesignal=
                                        МетодПервыйОбоаботкиПервойТаблицыПриИзмененияКлюча_settings_tabelsОбаview_onesignal(context,
-                                       НовыйIdОТСервтераOneSignal,
-                                       class_grud_sql_operationsОбновлениеДляТаблицыOneSignal,
-                                       class_grud_sql_operationsПовышаемВерсиюДанныхДляOneSignal,
-                                       create_databaseДЛяOneSignal, ПубличныйIDДляОдноразовойСинхрониазции
-                                       ,ТаблицаКоторуюнадоИзменитьВерсиюДанныхТАюдицы_VIEW_ONESIGNAL);
+                                               НовыйIdОТСервтераOneSignal,
+                                               class_grud_sql_operationsОбновлениеДляТаблицыOneSignal,
+                                               class_grud_sql_operationsПовышаемВерсиюДанныхДляOneSignal,
+                                               create_databaseДЛяOneSignal, ПубличныйIDДляОдноразовойСинхрониазции
+                                               ,ТаблицаДляПолучениеКлючаONESIGNAL);
                                Log.i(this.getClass().getName(), "  РезультатОбновленияКлючаДляПервойТаблицыsettings_tabelssОбаview_onesignal   "
                                        + РезультатОбновленияКлючаДляПервойТаблицыsettings_tabelssОбаview_onesignal);
                                ////TODO УВЕЛИЧИВАЕМ ВЕРИСЮ ДАННЫХ  В ТАБЛИЦЕ MODIFICATION CLIENT
@@ -632,7 +601,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
                                if (РезультатОбновленияКлючаДляПервойТаблицыsettings_tabelssОбаview_onesignal>0) {
                                    // TODO: 29.12.2021 ЧАСТЬ ТЕРТЬЯ УДАЛАЕНИЯ ЛИШНЕХ КЛЮЧЕЙ СТАРЫХ ИЗ ДВУХ ТАБЛЦ ПО ТЕКУЩЕМУ ПОЛЬЗОВАТЕЛ
                                    Integer РезультатПосикаИУдалениявТаблицах_settings_tabels = МетодПослеУспешнойОбновленияКлючаОтOneSignalИщемУдаляемДубли(context,
-                                           ТаблицаКоторуюнадоИзменитьВерсиюДанныхТАюдицы_VIEW_ONESIGNAL,
+                                           ТаблицаДляПолучениеКлючаONESIGNAL,
                                            ПубличныйIDДляОдноразовойСинхрониазции,
                                            НовыйIdОТСервтераOneSignal);
                                    // TODO: 29.12.2021 ПОСЛЕ УСПЕШНОГО ЗАПИСАВАНИЕ НВОГО КЛЮЧА УДАЛЯЕМ ДУБЛИЗЗНАПЧЕНИЙ ЕСЛИ  ОНОИ ИИСТЬ
@@ -640,24 +609,21 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
                                            + РезультатПосикаИУдалениявТаблицах_settings_tabels+ "  ПубличныйIDДляФрагмента " +ПубличныйIDДляОдноразовойСинхрониазции+
                                            " НовыйIdОТСервтераOneSignal " +НовыйIdОТСервтераOneSignal+
                                            " ТаблицаКоторуюнадоДляПосикаИУдаленияБудлейКлбчейONESIGNAL_ДЛЯ_ТАБЛИЦЫ_settings_tabels "
-                                           +ТаблицаКоторуюнадоИзменитьВерсиюДанныхТАюдицы_VIEW_ONESIGNAL);
+                                           +ТаблицаДляПолучениеКлючаONESIGNAL);
                                    // TODO: 24.02.2022 увеличение данных после смены ключа
-                                   if (ТаблицаКоторуюнадоИзменитьВерсиюДанныхТАюдицы_VIEW_ONESIGNAL.equalsIgnoreCase("settings_tabels")) {
+                                   if (ТаблицаДляПолучениеКлючаONESIGNAL.equalsIgnoreCase("settings_tabels")) {
                                        // TODO: 24.02.2022
                                        МетодУвеличениеВерсииДанныхПриСменеКлючаOneSingnal(context,
-                                               ТаблицаКоторуюнадоИзменитьВерсиюДанныхТАюдицы_VIEW_ONESIGNAL,
+                                               ТаблицаДляПолучениеКлючаONESIGNAL,
                                                РезультатОбновленияКлючаДляПервойТаблицыsettings_tabelssОбаview_onesignal);
                                        // TODO: 29.12.2021 ПОСЛЕ УСПЕШНОГО ЗАПИСАВАНИЕ НВОГО КЛЮЧА УДАЛЯЕМ ДУБЛИЗЗНАПЧЕНИЙ ЕСЛИ  ОНОИ ИИСТЬ
                                        Log.d(this.getClass().getName(), "РезультатПосикаИУдалениявТаблицах_settings_tabels "
                                                + РезультатПосикаИУдалениявТаблицах_settings_tabels+ "  ПубличныйIDДляФрагмента " +ПубличныйIDДляОдноразовойСинхрониазции+
                                                " НовыйIdОТСервтераOneSignal " +НовыйIdОТСервтераOneSignal+
                                                " ТаблицаКоторуюнадоДляПосикаИУдаленияБудлейКлбчейONESIGNAL_ДЛЯ_ТАБЛИЦЫ_settings_tabels "
-                                               +ТаблицаКоторуюнадоИзменитьВерсиюДанныхТАюдицы_VIEW_ONESIGNAL);
+                                               +ТаблицаДляПолучениеКлючаONESIGNAL);
                                    }
                                }
-                               ////TODO УВЕЛИЧИВАЕМ ВЕРИСЮ ДАННЫХ  В ТАБЛИЦЕ MODIFICATION CLIENT  после ЗАПИСИ НОВГО КЛЮЧА ОТ СЕРВЕРА  ONE SIGNAL
-                               // TODO: 24.02.2022
-                               return Observable.just(ТаблицаКоторуюнадоИзменитьВерсиюДанныхТАюдицы_VIEW_ONESIGNAL).blockingStream();
                            }
                        })
                        .onErrorComplete(new Predicate<Throwable>() {
@@ -679,9 +645,19 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
                        Log.d(this.getClass().getName(), "РезультатCallsBackСинхрониазцииЧата РезультатРаботы  РезультатРаботыПереписываютНовгоКлюча "
                                +ФиналРЕзультатКЛЮЧНОВЫЙ.toString()+ " ФиналРЕзультатКЛЮЧНОВЫЙ " +ФиналРЕзультатКЛЮЧНОВЫЙ);
                if (ФиналРЕзультатКЛЮЧНОВЫЙ!=null) {
-                   // TODO: 24.12.2021 ЗАПУСКАЕМ СИНХРОНИАЗУАЦИЮ ПОСЛЕ УСПЕШНОГО ПОЛУЧЕНИЯ КЛЮЧА И ЗАПИСИ ЕГО В БАЗУ ДЛЯ ONESIGNAL
-                new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(context).
-                        МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(context, ПубличныйIDДляОдноразовойСинхрониазции);
+                   Bundle bundleДляПЕредачи=new Bundle();
+                   bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляОдноразовойСинхрониазции);
+                   bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+                   Intent  intentЗапускОднорworkanager=new Intent();
+                   intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+                   // TODO: 02.08.2022
+                   new Class_Generator_One_WORK_MANAGER(context).
+                           МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(context,intentЗапускОднорworkanager);
+                   // TODO: 26.06.2022
+                   Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                           " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                           " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                           + " ФиналРЕзультатКЛЮЧНОВЫЙ "+ФиналРЕзультатКЛЮЧНОВЫЙ);
                }
                    Log.d(this.getClass().getName(), " ONESIGNAL  КЛЮЧНОВЫЙ  ФиналРЕзультатКЛЮЧНОВЫЙ !!!   "   +  ФиналРЕзультатКЛЮЧНОВЫЙ+"\n"+
                            " ONESIGNAL  КЛЮЧНОВЫЙ  ФиналРЕзультатКЛЮЧНОВЫЙ !!!   "   +  ФиналРЕзультатКЛЮЧНОВЫЙ+"\n"+
@@ -692,10 +668,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
                        + Thread.currentThread().getStackTrace()[2].getLineNumber());
                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
                        Thread.currentThread().getStackTrace()[2].getLineNumber());
-
-               // TODO: 11.05.2021 запись ошибок
-
-
            }
 
        }

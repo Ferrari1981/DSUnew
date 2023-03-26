@@ -37,6 +37,7 @@ import androidx.work.WorkManager;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_RetryGEtRowInChatsКлассПроверемЕщеРАзПоявилосЛИПуббличныйUUIDМеждуУчасникамиЧата;
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
@@ -515,8 +516,23 @@ public class Fragment_Writer_Read_ЧитатьПисатьЧата extends Fragm
                                     WorkInfoИнформацияОЗапущенойСлужбеОдноразовая =
                                             WorkManager.getInstance(getContext().getApplicationContext()).getWorkInfosByTag(ИмяСлужбыСинхронизацииОдноразовая).get().get(0);
                                     if (WorkInfoИнформацияОЗапущенойСлужбеОдноразовая.getState().compareTo(WorkInfo.State.RUNNING) != 0) {
-                                        new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getContext()).
-                                                МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager( getContext(),Integer.parseInt(ПолученыйIDДляЧата.toString()));
+
+                                        // TODO: 26.03.2023 start asyncc
+                                        Integer  ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getContext());
+                                        Bundle bundleДляПЕредачи=new Bundle();
+                                        bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+                                        bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+                                        Intent  intentЗапускОднорworkanager=new Intent();
+                                        intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+                                        // TODO: 02.08.2022
+                                        new Class_Generator_One_WORK_MANAGER(getContext()).
+                                                МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getContext(),intentЗапускОднорworkanager);
+                                        // TODO: 26.06.2022
+                                        Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                                + " ПубличныйIDДляФрагмента "+ПубличныйIDДляФрагмента );
+
                                         progressBarДляЧатаЧитатьПисать.setVisibility(View.VISIBLE);
                                     }
                                 }
@@ -537,8 +553,22 @@ public class Fragment_Writer_Read_ЧитатьПисатьЧата extends Fragm
                                 WorkInfoИнформацияОЗапущенойСлужбеОдноразовая =
                                         WorkManager.getInstance(getContext().getApplicationContext()).getWorkInfosByTag(ИмяСлужбыСинхронизацииОдноразовая).get().get(0);
                                 if (WorkInfoИнформацияОЗапущенойСлужбеОдноразовая.getState().compareTo(WorkInfo.State.RUNNING) != 0) {
-                                    new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getContext()).
-                                            МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager( getContext(),Integer.parseInt(ПолученыйIDДляЧата.toString()));
+
+                                    // TODO: 26.03.2023 start async
+                                    Integer  ПубличныйIDДляФрагмента = new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getContext());
+                                    Bundle bundleДляПЕредачи=new Bundle();
+                                    bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+                                    bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+                                    Intent  intentЗапускОднорworkanager=new Intent();
+                                    intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+                                    // TODO: 02.08.2022
+                                    new Class_Generator_One_WORK_MANAGER(getContext()).
+                                            МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getContext(),intentЗапускОднорworkanager);
+                                    // TODO: 26.06.2022
+                                    Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                                            " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                                            " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                                            + " ПубличныйIDДляФрагмента "+ПубличныйIDДляФрагмента );
                                     progressBarДляЧатаЧитатьПисать.setVisibility(View.VISIBLE);
                                 }
                             }

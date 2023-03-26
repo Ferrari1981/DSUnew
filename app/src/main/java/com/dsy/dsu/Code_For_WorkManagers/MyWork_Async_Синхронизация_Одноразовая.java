@@ -195,14 +195,6 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                      РезультатЗапускаСинх)
            .putBoolean("Proccesing_MyWork_Async_Синхронизация_Одноразовая",true)
              .build();
-     // TODO: 26.03.2023
-     getTaskExecutor().postToMainThread(()->{
-         if (locaBinderAsync!=null) {
-             locaBinderAsync.onDestroy();
-         }
-         Log.d(getApplicationContext().getClass().getName().toString(), "\n"
-                 + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + locaBinderAsync.binder.isBinderAlive());
-     });
 // TODO: 26.03.2023
      Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
              " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +

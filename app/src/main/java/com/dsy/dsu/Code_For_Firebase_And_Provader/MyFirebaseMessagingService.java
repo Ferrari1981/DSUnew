@@ -1,6 +1,7 @@
 package com.dsy.dsu.Code_For_Firebase_And_Provader;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -8,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -72,13 +74,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
          if (entry.getValue().matches("(.*)android(.*)")) {
                     Log.d(this.getClass().getName(),  " value ЕСЛИ ЕСТЬ СООБЩЕНИ НАПИСАННО ДРУГИМ ПОЛЬОВАТЛЕМ ТО УДАЛЯЕМ УВЕДОМЛЕНИ И СОЗАДЕМ НОВЫЙ СЛУЖЮА BRODCAST"+value+"\n"+ " key " +key);
              Integer  ПубличныйIDДляОдноразовойСинхрониазции=   new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplication());
-             Log.d(this.getClass().getName(), "ПубличныйIDДляФрагмента  ИЗ ВСЕХ ТАБЕЛЕЙ ПубличныйIDДляОдноразовойСинхрониазции " + ПубличныйIDДляОдноразовойСинхрониазции);
-            class_generation_sendBroadcastReceiver_and_firebase_oneSignal.
-                    МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(getApplication(),ПубличныйIDДляОдноразовойСинхрониазции);
-                    Log.d(this.getClass().getName(),  "   ЗАПУСК ОДНОРАЗОВОЙ СИНХРОНИАЗЦИИ" +
-                            "      new  Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplication()).МетодПовторногоЗапускаВсехWorkManagerОДНОРАЗОВОЙСинхрониазцииданных()  " +
-                            "ПОСЛЕ ЗАПУСКА БРОДКАСТЕРА ПОСЛЕ СИСТЕМНОГО УЕДОМДЕНИЯ КОТОРЫЙ И ЗАПУСТИЛ ЭТО  И СОЗАДЕМ НОВЫЙ СЛУЖЮА BRODCAST  FAREBASE " +
-                            " МетодОдноразовыйЗапускВоерМенеджера(getApplication(),ПубличныйIDДляОдноразовойСинхрониазции"+value+"\n" );
+
+             Bundle bundleДляПЕредачи=new Bundle();
+             bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляОдноразовойСинхрониазции);
+             bundleДляПЕредачи.putBoolean("StatusOneWokManagers", true);
+             Intent  intentЗапускОднорworkanager=new Intent();
+             intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+             // TODO: 02.08.2022
+             new Class_Generator_One_WORK_MANAGER(getApplicationContext()).
+                     МетодИзFaceAppОдноразовыйЗапускВоерМенеджера(getApplicationContext(),intentЗапускОднорworkanager);
+             // TODO: 26.06.2022
+             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                     " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                     + " entry.getValue() "+entry.getValue() );
                     break;
            }
         }
