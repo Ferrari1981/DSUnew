@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Messenger;
 import android.util.Log;
@@ -32,14 +33,16 @@ public class Class_Generator_One_WORK_MANAGER extends  Class_GRUD_SQL_Operations
         Log.w(this.context.getClass().getName(), "contextДляКлассаОдноразоваяСлужба " + this.context);
     }
     // TODO: 28.12.2021 srart one work manager
-    public void МетодОдноразовыйЗапускВоерМенеджера(@NotNull Context context, @NonNull Integer ОтправкаСообщенияТолькоСтрогоОдномуУказанномуСотрудника) {
+    public void МетодОдноразовыйЗапускВоерМенеджера(@NotNull Context context, @NonNull Intent intentЗапускОднорworkanager) {
         String ИмяСлужбыСинхронизацииОдноразовая = "WorkManager Synchronizasiy_Data Disposable";
         // com.dsy.dsu.providerdatabase
         Integer РезультатОноразовойСинхрониазции=0;
         Uri uri = Uri.parse("content://data/data/com.dsy.dsu/databases/Database DSU-1.db");
         try {
+            Bundle bundleДляПЕредачи=intentЗапускОднорworkanager.getExtras();
+      Integer КтоЗапуслилСинхронизацию=      bundleДляПЕредачи.getInt("IDПубличныйНеМойАСкемБылаПереписака");
             Data myData = new Data.Builder()
-                    .putInt("СообщениеЧатаДляКонктерногоСотрудника", ОтправкаСообщенияТолькоСтрогоОдномуУказанномуСотрудника)
+                    .putInt("СообщениеЧатаДляКонктерногоСотрудника", КтоЗапуслилСинхронизацию)
                     .build();
             Constraints constraintsЗапускСинхОдноразоваяСлужба = new Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)

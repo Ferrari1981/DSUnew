@@ -270,7 +270,6 @@ public class Service_For_Remote_Async extends IntentService {
             if( this.context==null){
                 this.context=context;
             }
-            // TODO: 25.03.2023 ДОПОЛНИТЕОТНЕ УДЛАНИЕ СТАТУСА УДАЛЕНИЕ ПОСЛЕ СИНХРОНИАЗЦИИ
             МетодБиндинuCлужбыPublic();
             // TODO: 16.11.2022
             ФинальныйРезультатAsyncBackgroud  = new Class_Engine_SQL(context).МетодЗАпускаФоновойСинхронизации(context);
@@ -302,6 +301,7 @@ public class Service_For_Remote_Async extends IntentService {
             Intent intentПослеСинхроницииРегламентаняРаботаУдалениеДанных=new Intent();
             intentПослеСинхроницииРегламентаняРаботаУдалениеДанных.setClass(context, Service_For_Public.class);
             intentПослеСинхроницииРегламентаняРаботаУдалениеДанных.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
+            while (localBinderОбщий==null);
             // TODO: 25.03.2023 дополнительное удаление после синхрониазции статус Удаленныц
             localBinderОбщий.getService().МетодГлавныйPublicPO(context,intentПослеСинхроницииРегламентаняРаботаУдалениеДанных);
             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
@@ -2627,49 +2627,51 @@ public class Service_For_Remote_Async extends IntentService {
         try {
             Intent intentЗапускPublicService = new Intent(context, Service_For_Public.class);
             intentЗапускPublicService.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
-            context.bindService(intentЗапускPublicService,  new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    try {
-                        localBinderОбщий = (Service_For_Public.LocalBinderОбщий) service;
-                        if (service.isBinderAlive()) {
-                            // TODO: 16.11.2022
-                            Log.d(context.getClass().getName(), "\n"
+            if (localBinderОбщий==null) {
+                context.bindService(intentЗапускPublicService,  new ServiceConnection() {
+                    @Override
+                    public void onServiceConnected(ComponentName name, IBinder service) {
+                        try {
+                            localBinderОбщий = (Service_For_Public.LocalBinderОбщий) service;
+                            if (service.isBinderAlive()) {
+                                // TODO: 16.11.2022
+                                Log.d(context.getClass().getName(), "\n"
+                                        + " время: " + new Date() + "\n+" +
+                                        " Класс в процессе... " + this.getClass().getName() + "\n" +
+                                        " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
+                                        + "   service.pingBinder() " + service.pingBinder());
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        }
+                    }
+
+                    @Override
+                    public void onServiceDisconnected(ComponentName name) {
+                        try {
+                            localBinderОбщий = null;
+                            Log.d(getApplicationContext().getClass().getName(), "\n"
                                     + " время: " + new Date() + "\n+" +
                                     " Класс в процессе... " + this.getClass().getName() + "\n" +
                                     " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                                    + "   service.pingBinder() " + service.pingBinder());
+                                    + "    onServiceDisconnected  localBinderОбщий" + localBinderОбщий);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                    Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+                            // TODO: 11.05.2021 запись ошибок
+
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                Thread.currentThread().getStackTrace()[2].getLineNumber());
                     }
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-                    try {
-                        localBinderОбщий = null;
-                        Log.d(getApplicationContext().getClass().getName(), "\n"
-                                + " время: " + new Date() + "\n+" +
-                                " Класс в процессе... " + this.getClass().getName() + "\n" +
-                                " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                                + "    onServiceDisconnected  localBinderОбщий" + localBinderОбщий);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                                Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                Thread.currentThread().getStackTrace()[2].getLineNumber());
-                        // TODO: 11.05.2021 запись ошибок
-
-                    }
-                }
-                },Context.BIND_AUTO_CREATE);
+                    },Context.BIND_AUTO_CREATE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"

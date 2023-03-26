@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteCursor;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -16,7 +15,6 @@ import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
 
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
-import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.Class_Generation_Data;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
@@ -24,8 +22,6 @@ import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
 import com.dsy.dsu.Business_logic_Only_Class.SubClass_Notificatioons_For_Tasks_Cancel_AndComplete;
-import com.dsy.dsu.Code_For_Services.Service_For_Task_Для_Задания_СменаСатуса;
-import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
 import com.dsy.dsu.Code_For_Starting_BroadcastReciever_ЗдесьКодЗапускаБроадКастеров.BroadcastReceiver_Sous_Asyns_Glassfish;
 import com.dsy.dsu.Code_For_Starting_BroadcastReciever_ЗдесьКодЗапускаБроадКастеров.BroadcastReceiver_Sous_Notificatioons_For_Chats;
 import com.dsy.dsu.Code_For_Starting_BroadcastReciever_ЗдесьКодЗапускаБроадКастеров.BroadcastReceiver_Sous_Notificatioons_For_Tasks;
@@ -47,14 +43,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import javax.crypto.NoSuchPaddingException;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;

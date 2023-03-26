@@ -6,43 +6,32 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
 import android.os.Messenger;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.customtabs.ICustomTabsCallback;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.work.Data;
-import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import androidx.work.impl.utils.taskexecutor.TaskExecutor;
-import androidx.work.multiprocess.RemoteCallback;
 
 import com.dsy.dsu.Business_logic_Only_Class.Class_Find_Setting_User_Network;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
 import com.dsy.dsu.Code_For_Services.Service_For_Remote_Async;
-import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
 
 
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -52,7 +41,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
  @Inject
    private Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal  class_generation_sendBroadcastReceiver_and_firebase_oneSignallass ;
     private   Integer РезультатЗапускаФоновойОдноразовойСинхронизацииСтрогоВФОне=0;
-    private Service_For_Remote_Async serviceForTabelAsync;
+    private Service_For_Remote_Async locaBinderAsync;
     private  Messenger           messengerWorkManager;
     private     IBinder binder;
 
@@ -87,9 +76,9 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
                             + "onServiceConnected  одноразовая messengerActivity  " + messengerWorkManager.getBinder().pingBinder());
                     binder=   messengerWorkManager.getBinder();
                     if (service.isBinderAlive()) {
-                            serviceForTabelAsync=new Service_For_Remote_Async();
+                            locaBinderAsync =new Service_For_Remote_Async();
                         Log.d(context.getClass().getName().toString(), "\n"
-                                + "onServiceConnected  одноразовая serviceForTabelAsync  " + serviceForTabelAsync);
+                                + "onServiceConnected  одноразовая serviceForTabelAsync  " + locaBinderAsync);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -137,7 +126,7 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
     public Result doWork() {
         Data    myDataОтветОдноразовойСлужбы=null;
  try{
-     while (serviceForTabelAsync==null);
+     while (locaBinderAsync==null);
      class_generation_sendBroadcastReceiver_and_firebase_oneSignallass=
              new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(context);
      // TODO: 12.10.2022  КТО ЗАПУСТИЛ
@@ -489,11 +478,11 @@ return  РезультатЗапускаФоновойСинхронизации
          boolean ФлагРазрешениеРаботысСетьюПользователем = new Class_Find_Setting_User_Network(context).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
          if (ФлагРазрешениеРаботысСетьюПользователем==true) {
                  ///////todo запускем синхронизации ОДНОРАЗОВАНАЯ
-                       РезультатЗапускаФоновойСинхронизации = serviceForTabelAsync.МетодAsyncИзСлужбы(context);
+                       РезультатЗапускаФоновойСинхронизации = locaBinderAsync.МетодAsyncИзСлужбы(context);
                                  Log.d(context.getClass().getName().toString(), "\n"
                                          + "        MyWork_Async_Синхронизация_Одноразовая     РезультатЗапускаФоновойСинхронизации   "
                                          + РезультатЗапускаФоновойСинхронизации+
-                                         "  serviceForTabelAsync " + serviceForTabelAsync);
+                                         "  serviceForTabelAsync " + locaBinderAsync);
 
              Log.d(this.getClass().getName(), " MyWork_Async_Синхронизация_Одноразовая ФлагРазрешениеРаботысСетьюПользователем "
                      + ФлагРазрешениеРаботысСетьюПользователем);

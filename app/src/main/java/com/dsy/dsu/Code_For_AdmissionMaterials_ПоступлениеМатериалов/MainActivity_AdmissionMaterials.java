@@ -6,18 +6,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
-import android.content.AsyncQueryHandler;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,16 +16,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
-import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
-import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
-import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
 import com.dsy.dsu.R;
-
-import java.util.Date;
-import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
 
 public class MainActivity_AdmissionMaterials extends AppCompatActivity {
     private Activity activity;

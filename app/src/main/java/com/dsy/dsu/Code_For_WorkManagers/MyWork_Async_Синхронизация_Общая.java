@@ -7,13 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -30,17 +25,12 @@ import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлу�
 import com.dsy.dsu.Code_For_Services.Service_For_Public;
 import com.dsy.dsu.Code_For_Services.Service_For_Remote_Async;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
-import javax.crypto.NoSuchPaddingException;
 import javax.inject.Inject;
 
 public class MyWork_Async_Синхронизация_Общая extends Worker {
@@ -51,7 +41,7 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
     @Inject
     private Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal class_generation_sendBroadcastReceiver_and_firebase_oneSignal;
     private     Data myDataОтветОБЩЕЙСИНХРОНИЗАЦИИСлужбы = null;
-    private Service_For_Remote_Async serviceForTabelAsync;
+    private Service_For_Remote_Async localBinderAsync;
     private  Messenger           messengerWorkManager;
     private  String КлючДляFirebaseNotification = "2a1819db-60c8-4ca3-a752-1b6cd9cadfa1";
     private Service_For_Public.LocalBinderОбщий localBinderОбщий;
@@ -86,7 +76,7 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                 IBinder binder = messengerWorkManager.getBinder();
                 if (binder.isBinderAlive()) {
                     getTaskExecutor().postToMainThread(()->{
-                        serviceForTabelAsync = new Service_For_Remote_Async();
+                        localBinderAsync = new Service_For_Remote_Async();
                         Log.d(getApplicationContext().getClass().getName().toString(), "\n"
                                 + " МетодБиндингасМессажером onServiceConnected  binder.isBinderAlive()  " + binder.isBinderAlive());
                     });
@@ -157,7 +147,7 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
     public Result doWork() {
         try {
             // TODO: 25.03.2023  ждем биндинга с службой синхронизации
-            while (serviceForTabelAsync==null);
+            while (localBinderAsync ==null);
             // TODO: 26.03.2023
             while (localBinderОбщий==null);
             class_generation_sendBroadcastReceiver_and_firebase_oneSignal = new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext());
@@ -345,10 +335,10 @@ return  РезультатЗапускаФоновойСинхронизации
 
         if (ВыбранныйРежимСети == true) {
             // TODO: 21.11.2021  НАЧАЛО СИХРОНИЗХАЦИИИ общая
-            РезультатЗапускаФоновойСинхронизации = serviceForTabelAsync.МетодAsyncИзСлужбы(getApplicationContext());
+            РезультатЗапускаФоновойСинхронизации = localBinderAsync.МетодAsyncИзСлужбы(getApplicationContext());
             Log.d(getApplicationContext().getClass().getName().toString(),
                     "\n" + "      MyWork_Async_Синхронизация_Общая       РезультатЗапускаФоновойСинхронизации[0]   " + РезультатЗапускаФоновойСинхронизации);
-            Log.d(this.getClass().getName(), "  serviceForTabelAsync " + serviceForTabelAsync);
+            Log.d(this.getClass().getName(), "  serviceForTabelAsync " + localBinderAsync);
         }
     } catch (Exception e) {
         e.printStackTrace();

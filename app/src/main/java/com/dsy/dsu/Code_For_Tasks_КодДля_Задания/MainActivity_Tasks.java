@@ -21,7 +21,7 @@ import androidx.work.WorkManager;
 
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
-import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.R;
 
 import java.util.Date;
@@ -41,8 +41,7 @@ public class MainActivity_Tasks extends FragmentActivity {
     private WorkInfo WorkInfoИнформацияОЗапущенойСлужбеОдноразовая;
     private String ИмяСлужбыСинхронизацииОдноразовая = "WorkManager Synchronizasiy_Data Disposable";
 
-    // TODO: 02.08.2022  для биндинга одноразовая синхрониазция
-    private Service_ДляЗапускаодноразовойСинхронизации service_дляЗапускаодноразовойСинхронизации;
+
  //    private ServiceConnection connectionДляОдноразовойСинхронизации;
      private  SubClass_Only_ActivyMain_Buccess_Logic subClass_only_activyMain_buccess_logic;
 
@@ -50,13 +49,8 @@ public class MainActivity_Tasks extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         try {
             super.onCreate(savedInstanceState);
-
             activity=this;
-            Log.d(this.getClass().getName(), " service_дляЗапускаодноразовойСинхронизации " + service_дляЗапускаодноразовойСинхронизации);
             subClass_only_activyMain_buccess_logic=new SubClass_Only_ActivyMain_Buccess_Logic(getApplicationContext(),activity);
-
-            subClass_only_activyMain_buccess_logic.     МетодЗапускаетБиндингСлужбыДляЗапускаОдноразовойСинхронизаци(getApplicationContext());
-
             class_generations_public_current_id      =new Class_Generations_PUBLIC_CURRENT_ID();
             /*   setContentView(R.layout.activity_main_fragment1_for_tasks);//R.layout.activity_main_history_chat  //TODO old R.layout.activity_main_history_tasks*/
             setContentView(R.layout.activity_main_fisrt_for_tasks);//R.layout.activity_main_history_chat  //TODO old R.layout.activity_main_history_tasks
@@ -101,33 +95,9 @@ public class MainActivity_Tasks extends FragmentActivity {
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-   try{
-        // TODO: 18.06.2022
-       try {
-           unbindService(    subClass_only_activyMain_buccess_logic.connectionДляОдноразовойСинхронизации);
-       } catch (Exception e) {
-          // e.printStackTrace();
-       }
-       /////////////
 
-    } catch (Exception e) {
-        e.printStackTrace();
-        ///метод запись ошибок в таблицу
-        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
-                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
-                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
-    }
-    }
 
 // TODO: 10.03.2022
-
-
-
-
     private class SubClass_Only_ActivyMain_Buccess_Logic {
         public SubClass_Only_ActivyMain_Buccess_Logic(Context context,Activity activity) {
             // TODO: 10.03.2022
@@ -163,92 +133,28 @@ public class MainActivity_Tasks extends FragmentActivity {
         }
     }
 
-        // TODO: 02.08.2022  код ля биндинга службы одноразовой синхронизации
-        public void МетодЗапускаетБиндингСлужбыДляЗапускаОдноразовойСинхронизаци(@NonNull Context context) {
-            try {
-                //TODO start broad caset receiver
-                service_дляЗапускаодноразовойСинхронизации=new Service_ДляЗапускаодноразовойСинхронизации();
-                Intent intentЗапускСлужюыыСинхрониазцииБиндинг = new Intent(context, Service_ДляЗапускаодноразовойСинхронизации.class);
-                // TODO: 26.06.2022
-                context. bindService(intentЗапускСлужюыыСинхрониазцииБиндинг, connectionДляОдноразовойСинхронизации, Context.BIND_AUTO_CREATE);
-                // context.startService(intentЗапускСлужюыыСинхрониазцииЧерезСлужбу);
-                // TODO: 27.06.2022  запуск
-            } catch (Exception e) {
-                //  Block of code to handle errors
-                e.printStackTrace();
-                ///метод запись ошибок в таблицу
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                        + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                        Thread.currentThread().getStackTrace()[2].getLineNumber());
-                // TODO: 11.05.2021 запись ошибок
-            }
-        }
-        private ServiceConnection connectionДляОдноразовойСинхронизации = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                try{
-                    // We've bound to LocalService, cast the IBinder and get LocalService instance
-                    Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binder = (Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации) service;
-                    service_дляЗапускаодноразовойСинхронизации = binder.getService();
-                    Log.d(getApplicationContext().getClass().getName(), "\n"
-                            + " время: " + new Date()+"\n+" +
-                            " Класс в процессе... " +  this.getClass().getName()+"\n"+
-                            " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                            +"    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации" +service_дляЗапускаодноразовойСинхронизации);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                            Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    // TODO: 11.05.2021 запись ошибок
-                }
-            }
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                try{
-                    Log.d(getApplicationContext().getClass().getName(), "\n"
-                            + " время: " + new Date()+"\n+" +
-                            " Класс в процессе... " +  this.getClass().getName()+"\n"+
-                            " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                            +"    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации" +service_дляЗапускаодноразовойСинхронизации);
-                } catch (Exception e) {
-                    //  Block of code to handle errors
-                    e.printStackTrace();
-                    ///метод запись ошибок в таблицу
-                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                            Thread.currentThread().getStackTrace()[2].getLineNumber());
 
-                    // TODO: 11.05.2021 запись ошибок
-
-                }
-            }
-        };
 
 
         // TODO: 02.08.2022
         void МетодНепосредственногоЗапускаБиндингаОдноразовойСдлужбы(@NonNull  Integer ПубличныйIDДляФрагмента ){
            try{
-               Log.d(getApplicationContext().getClass().getName(), "\n"
-                       + " ПубличныйIDДляФрагмента: " + ПубличныйIDДляФрагмента);
-            Bundle bundleДляПЕредачи=new Bundle();
-            bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака",ПубличныйIDДляФрагмента);
-            Intent intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle = new Intent(getApplicationContext(), Service_ДляЗапускаодноразовойСинхронизации.class);
-            intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle.putExtras(bundleДляПЕредачи);
-            // TODO: 26.06.2022
-            Log.d(this.getClass().getName(), " ПРОШЕЛ ЗАПУСК  метода МетодПовторногоЗапускаВсехWorkManager__ОДНОРАЗОВОЙСинхрониазцииданных()   " +
-                    "   ПубличныйIDДляФрагмента "+
-                    ПубличныйIDДляФрагмента);
-            intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle.putExtras(bundleДляПЕредачи);
-            // TODO: 02.08.2022
-            service_дляЗапускаодноразовойСинхронизации.МетодЗапускаОдноразовойСинхронизацииИзСлужбы(getApplicationContext(),intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle);
+               // TODO: 01.02.2022 заПУСКАЕМ сИНХРОНИАЗАЦИЮ С ВСЕХ ЛИСТ ТАБЕЛЕЙ
+               Integer  ПубличныйIDДляСинх=   new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplicationContext());
+               Bundle bundleДляПЕредачи=new Bundle();
+               bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляСинх);
+               Intent  intentЗапускОднорworkanager=new Intent();
+               intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+               // TODO: 02.08.2022
+               new Class_Generator_One_WORK_MANAGER(getApplicationContext()).
+                       МетодОдноразовыйЗапускВоерМенеджера(getApplicationContext(),intentЗапускОднорworkanager);
+               // TODO: 26.06.2022
+               Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                       " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                       " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                       + " ПубличныйIDДляСинх "+ПубличныйIDДляСинх );
         } catch (Exception e) {
-            //  Block of code to handle errors
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),

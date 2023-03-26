@@ -44,11 +44,11 @@ import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
 import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Business_logic_Only_Class.Class_MODEL_synchronized;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 import com.dsy.dsu.Code_For_Services.Service_For_Public;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
-import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
 import com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_App;
 import com.dsy.dsu.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -2216,17 +2216,20 @@ try{
         Integer РезультатЗапускВизуальнойСинхронизации =0;
         try{
             // TODO: 01.02.2022 заПУСКАЕМ сИНХРОНИАЗАЦИЮ С ВСЕХ ЛИСТ ТАБЕЛЕЙ
+            // TODO: 01.02.2022 заПУСКАЕМ сИНХРОНИАЗАЦИЮ С ВСЕХ ЛИСТ ТАБЕЛЕЙ
             Integer  ПубличныйIDДляФрагмента=   new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplicationContext());
-            Log.d(this.getClass().getName(), "ПубличныйIDДляФрагмента  ИЗ ВСЕХ ТАБЕЛЕЙ " + ПубличныйIDДляФрагмента);
-            Log.d(this.getClass().getName(), " ИЗ ВСЕХ ТАБЕЛЕЙ   ОДНОРАЗОВАЯ СИНХРОНИЗАЦИЯ ");
-            Intent intentЗапускИзТабеляСинхрониазцииОднооразовой = new Intent(getApplicationContext(), Service_ДляЗапускаодноразовойСинхронизации.class);
             Bundle bundleДляПЕредачи=new Bundle();
-            bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака",ПубличныйIDДляФрагмента);
-            intentЗапускИзТабеляСинхрониазцииОднооразовой.putExtras(bundleДляПЕредачи);
-            // TODO: 26.06.2022 запуск одноразоввой синхрониазции из табеля асинхронно
-            startService(intentЗапускИзТабеляСинхрониазцииОднооразовой);
-            Log.d(this.getClass().getName(), " РезультатЗапускВизуальнойСинхронизации  СЛУЖБА запуск визуальной синхрониациии"
-                    + РезультатЗапускВизуальнойСинхронизации);
+            bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+            Intent  intentЗапускОднорworkanager=new Intent();
+            intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+            // TODO: 02.08.2022
+            new Class_Generator_One_WORK_MANAGER(getApplicationContext()).
+                    МетодОдноразовыйЗапускВоерМенеджера(getApplicationContext(),intentЗапускОднорworkanager);
+            // TODO: 26.06.2022
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                    + " ПубличныйIDДляОдноразовойСинхронПубличныйIDДляФрагментаиазции "+ПубличныйIDДляФрагмента );
         } catch (Exception e) {
             e.printStackTrace();
             ///метод запись ошибок в таблицу

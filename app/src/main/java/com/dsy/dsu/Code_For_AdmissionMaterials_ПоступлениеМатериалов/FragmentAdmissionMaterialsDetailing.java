@@ -1,7 +1,5 @@
 package com.dsy.dsu.Code_For_AdmissionMaterials_ПоступлениеМатериалов;
 
-import android.annotation.SuppressLint;
-import android.content.AsyncQueryHandler;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -20,7 +18,6 @@ import android.view.WindowInsets;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -38,7 +35,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.WorkInfo;
@@ -47,9 +43,7 @@ import androidx.work.WorkManager;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.Class_Generation_Data_AssinaMaterial;
-import com.dsy.dsu.Code_For_Services.Service_For_Public;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
-import com.dsy.dsu.Code_For_Services.Service_ДляЗапускаодноразовойСинхронизации;
 import com.dsy.dsu.R;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -60,17 +54,12 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.FloatBuffer;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Spliterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedTransferQueue;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-
 
 
 // TODO: 29.09.2022 фрагмент для получение материалов
