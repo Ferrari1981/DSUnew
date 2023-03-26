@@ -2667,7 +2667,9 @@ public class Service_For_Remote_Async extends IntentService {
                                     + "   ФинальныйРезультатAsyncBackgroud " + ФинальныйРезультатAsyncBackgroud);
                             МетодПослеAsyncTaskЗавершающий( context);
                             // TODO: 25.03.2023
-                            МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
+                            if (ФинальныйРезультатAsyncBackgroud>0) {
+                                МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
+                            }
                             Log.d(getApplicationContext().getClass().getName(), "\n"
                                     + " время: " + new Date() + "\n+" +
                                     " Класс в процессе... " + this.getClass().getName() + "\n" +

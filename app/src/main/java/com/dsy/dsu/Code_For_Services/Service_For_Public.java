@@ -1,6 +1,5 @@
 package com.dsy.dsu.Code_For_Services;
 import android.app.IntentService;
-import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.loader.content.CursorLoader;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
@@ -33,21 +31,15 @@ import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassMONTHONLY_Только
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYEARONLY;
 import com.dsy.dsu.Business_logic_Only_Class.DATE.SubClassYearHONLY_ТолькоАнализ;
 import com.dsy.dsu.Business_logic_Only_Class.SubClassUpVersionDATA;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -66,7 +58,7 @@ import io.reactivex.rxjava3.functions.Predicate;
 public class Service_For_Public extends IntentService {
     // TODO: Rename actions, choose action names that describe tasks that this
     private String ПолученныйПоследнийМесяцДляСортировкиЕгоВСпиноре;
-    public LocalBinderОбщий binder = new LocalBinderОбщий();
+    public LocalBinderОбщий localBinderОбщий = new LocalBinderОбщий();
     protected         SibClassApplyFromBackPeriodof_ЗаполененияТабеляИзПрошлогоМесяца sibClassApplyFromBackPeriodof_заполененияТабеляИзПрошлогоМесяца;
     private Context context;
     public Service_For_Public() {
@@ -99,7 +91,7 @@ public class Service_For_Public extends IntentService {
                 " Класс в процессе... " +  this.getClass().getName()+"\n"+
                 " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName());
         //   return super.onBind(intent);
-        return   binder;
+        return localBinderОбщий;
     }
 
     @Override

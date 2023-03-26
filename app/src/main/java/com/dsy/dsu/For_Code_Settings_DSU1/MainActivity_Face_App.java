@@ -97,9 +97,7 @@ public class MainActivity_Face_App extends AppCompatActivity {
     private Service_for_AdminissionMaterial.LocalBinderДляПолучениеМатериалов binderМатериалы;
 
     private ServiceОбновлениеПО.localBinderОбновлениеПО localBinderОбновлениеПО;
-
     private Animation animation;
-    private AsyncTaskLoader asyncTaskLoader;
     protected Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binderAsyns;
     protected SharedPreferences preferences;
     private Service_Async_1C service_Async_СинхронизацияОБЩАЯ1С;

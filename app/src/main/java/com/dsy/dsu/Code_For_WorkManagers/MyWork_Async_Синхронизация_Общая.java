@@ -27,6 +27,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_Find_Setting_User_Network;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
+import com.dsy.dsu.Code_For_Services.Service_For_Public;
 import com.dsy.dsu.Code_For_Services.Service_For_Remote_Async;
 
 import java.security.InvalidKeyException;
@@ -53,6 +54,7 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
     private Service_For_Remote_Async serviceForTabelAsync;
     private  Messenger           messengerWorkManager;
     private  String КлючДляFirebaseNotification = "2a1819db-60c8-4ca3-a752-1b6cd9cadfa1";
+    private Service_For_Public.LocalBinderОбщий localBinderОбщий;
     // TODO: 28.09.2022
     public MyWork_Async_Синхронизация_Общая(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -60,6 +62,8 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
         Log.i(getApplicationContext().getClass().getName(), " public MyWork_Async_Синхронизация_Общая(@NonNull Context context, @NonNull WorkerParameters workerParams) {  Контекст "+"\n"+ this.getApplicationContext());
             // TODO: 22.12.2022
             МетодБиндингаОбщая();
+            // TODO: 26.03.2023
+            МетодБиндинuCлужбыPublicPo();
         } catch (Exception e) {
         e.printStackTrace();
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
@@ -154,6 +158,8 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
         try {
             // TODO: 25.03.2023  ждем биндинга с службой синхронизации
             while (serviceForTabelAsync==null);
+            // TODO: 26.03.2023
+            while (localBinderОбщий==null);
             class_generation_sendBroadcastReceiver_and_firebase_oneSignal = new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext());
 // TODO: 10.12.2022  РЕГЕСТИРУЕМСЯ НА ONESIGNAL FIREBASE
             МетодРегистрацииУстройсвоНАFirebaseAndOneSignal();
@@ -238,6 +244,11 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
                            Long.parseLong(РезультатЗапускаФоновойСинхронизацииСтрогоВФОне.toString()))
                     .build();
 // TODO: 25.03.2023
+            if (РезультатЗапускаФоновойСинхронизацииСтрогоВФОне>0 ) {
+                // TODO: 25.03.2023
+                МетодПослеСинхрониазцииУдалениеСтатусаУдаленный();
+            }
+
             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
                     " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
@@ -327,12 +338,12 @@ return  РезультатЗапускаФоновойСинхронизации
      Integer РезультатЗапускаФоновойСинхронизации = 0;
         try{
         // TODO: 22.12.2022  сама запуска синхронищации из workmanager ОБЩЕГО
-        boolean РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию =
+        boolean ВыбранныйРежимСети =
                 new Class_Find_Setting_User_Network(getApplicationContext()).МетодПроветяетКакуюУстановкуВыбралПользовательСети();
-        Log.d(this.getClass().getName(), "  MyWork_Async_Синхронизация_Общая РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию "
-                + РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию);
+        Log.d(this.getClass().getName(), "  ВыбранныйРежимСети ВыбранныйРежимСети "
+                + ВыбранныйРежимСети);
 
-        if (РезультатПроВеркиУстановкиПользователяРежимРаботыСетиСтоитЛиЗапускатьСсинхронизацию == true) {
+        if (ВыбранныйРежимСети == true) {
             // TODO: 21.11.2021  НАЧАЛО СИХРОНИЗХАЦИИИ общая
             РезультатЗапускаФоновойСинхронизации = serviceForTabelAsync.МетодЗапускИзWorkmanagerAsyncBackgronud(getApplicationContext());
             Log.d(getApplicationContext().getClass().getName().toString(),
@@ -380,7 +391,82 @@ return  РезультатЗапускаФоновойСинхронизации
 
 
     }
+    public void МетодБиндинuCлужбыPublicPo() {
+        try {
+            Intent intentЗапускPublicPO = new Intent(getApplicationContext(), Service_For_Public.class);
+            intentЗапускPublicPO.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
+            getApplicationContext().bindService(intentЗапускPublicPO, Context.BIND_AUTO_CREATE, Executors.newSingleThreadExecutor(), new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    try {
+                        localBinderОбщий = (Service_For_Public.LocalBinderОбщий) service;
+                        if (service.isBinderAlive()) {
+                            // TODO: 16.11.2022
+                            Log.d(getApplicationContext().getClass().getName(), "\n"
+                                    + " время: " + new Date() + "\n+" +
+                                    " Класс в процессе... " + this.getClass().getName() + "\n" +
+                                    " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
+                                    + "    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации binderAsyns.pingBinder() " + service.pingBinder());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                Thread.currentThread().getStackTrace()[2].getLineNumber());
+                    }
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    try {
+                        localBinderОбщий = null;
+                        Log.d(getApplicationContext().getClass().getName(), "\n"
+                                + " время: " + new Date() + "\n+" +
+                                " Класс в процессе... " + this.getClass().getName() + "\n" +
+                                " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
+                                + "    onServiceDisconnected  localBinderОбщий" + localBinderОбщий);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                                + Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                Thread.currentThread().getStackTrace()[2].getLineNumber());
+                        // TODO: 11.05.2021 запись ошибок
+
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
+                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    Thread.currentThread().getStackTrace()[2].getLineNumber());
+        }
+    }
 /////
+private void МетодПослеСинхрониазцииУдалениеСтатусаУдаленный() {
+    try {
+        Intent intentПослеСинхроницииРегламентаняРаботаУдалениеДанныхИзWorkManager=new Intent();
+        intentПослеСинхроницииРегламентаняРаботаУдалениеДанныхИзWorkManager.setClass(getApplicationContext(), Service_For_Public.class);
+        intentПослеСинхроницииРегламентаняРаботаУдалениеДанныхИзWorkManager.setAction("ЗапускУдалениеСтатусаУдаленияСтрок");
+        // TODO: 25.03.2023 дополнительное удаление после синхрониазции статус Удаленныц
+        localBinderОбщий.getService().МетодГлавныйPublicPO(getApplicationContext(),intentПослеСинхроницииРегламентаняРаботаУдалениеДанныхИзWorkManager);
+        Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
+                " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                Thread.currentThread().getStackTrace()[2].getMethodName(), Thread.currentThread().getStackTrace()[2].getLineNumber());
+        Log.e(getApplicationContext().getClass().getName(), " Ошибка СЛУЖБА Service_ДляЗапускаодноразовойСинхронизации   ");
+    }
+}
 
 }
 
