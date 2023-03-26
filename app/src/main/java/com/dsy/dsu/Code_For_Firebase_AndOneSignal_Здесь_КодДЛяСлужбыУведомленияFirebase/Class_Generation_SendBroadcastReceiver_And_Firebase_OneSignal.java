@@ -63,12 +63,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
      private Context context;
      private  String ПоулчаемДляТекущегоПользователяIDОтСЕРВРЕРАOneSignal = null;
      private  Class_Generator_One_WORK_MANAGER class_generator_one_work_manager;
-     protected   Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации  binderAsyns;
-
     public Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(@NonNull  Context context) {
         this.context=context;
         class_generator_one_work_manager=new Class_Generator_One_WORK_MANAGER(context);
-        Log.d(this.getClass().getName(), " Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal   context  "+context+  "binderAsyns "+binderAsyns);
+        Log.d(this.getClass().getName(), " Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal   context  "+context);
 
     }
     // TODO: 14.11.2021  ПОВТОРЫЙ ЗАПУСК ВОРК МЕНЕДЖЕР СИНХРОГНИАЗУИЯ ДАННЫ
@@ -133,64 +131,33 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
      public void МетодЗапускаетОДНОРАЗОВУЮСинхронизациюВнутриWorkManager(@NonNull  Context context,
                                                                                          @NonNull Integer ПубличныйIDДляОдноразовойСинхрониазции ) {
          try{
-             Intent intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle = new Intent(context, Service_ДляЗапускаодноразовойСинхронизации.class);
-                context.  bindService(intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle, new ServiceConnection() {
-                    @Override
-                    public void onServiceConnected(ComponentName name, IBinder service) {
-                        try{
-                            // We've bound to LocalService, cast the IBinder and get LocalService instance
-                            Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binder =
-                                    (       Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации) service;
-                            binder.pingBinder();
-                            if ( binder.isBinderAlive()) {
-                                Log.d(context.getClass().getName(), "\n"
-                                        + " время: " + new Date()+"\n+" +
-                                        " Класс в процессе... " +  this.getClass().getName()+"\n"+
-                                        " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                                        +"    Service_ДляЗапускаодноразовойСинхронизации   binder.pingBinder()" + binder.pingBinder());
-
-                                Bundle bundleДляПЕредачи=new Bundle();
-                                bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляОдноразовойСинхрониазции);
-                                intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle.putExtras(bundleДляПЕредачи);
-                                // TODO: 02.08.2022
-                                binder.getService().МетодЗапускаОдноразовойСинхронизацииИзСлужбы(context,intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle);
-                                // TODO: 26.06.2022
-                                Log.d(this.getClass().getName(), " ПРОШЕЛ ЗАПУСК  метода МетодПовторногоЗапускаВсехWorkManager__ОДНОРАЗОВОЙСинхрониазцииданных()   " +
-                                        "   ПубличныйIDДляОдноразовойСинхрониазцииДляКонкретногоПользователя "+
-                                        ПубличныйIDДляОдноразовойСинхрониазции);
-                            }
-                        } catch (Exception e) {
+             // TODO: 01.02.2022 заПУСКАЕМ сИНХРОНИАЗАЦИЮ С ВСЕХ ЛИСТ ТАБЕЛЕЙ
+             Integer  ПубличныйIDДляФрагмента=   new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(context);
+             Bundle bundleДляПЕредачи=new Bundle();
+             bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляФрагмента);
+             Intent  intentЗапускОднорworkanager=new Intent();
+             intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
+             // TODO: 02.08.2022
+             new Class_Generator_One_WORK_MANAGER(context).
+                     МетодОдноразовыйЗапускВоерМенеджера(context,intentЗапускОднорworkanager);
+             // TODO: 26.06.2022
+             Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                     " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                     " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                     + " ПубличныйIDДляОдноразовойСинхронПубличныйIDДляФрагментаиазции "+ПубличныйIDДляФрагмента );
+         } catch (Exception e) {
                             e.printStackTrace();
                             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
+                            new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
+                                    Thread.currentThread().getStackTrace()[2].getMethodName(),
                                     Thread.currentThread().getStackTrace()[2].getLineNumber());
                         }
                     }
-                    @Override
-                    public void onServiceDisconnected(ComponentName name) {
-                        Log.d(context.getClass().getName(), "\n"
-                                + " время: " + new Date()+"\n+" +
-                                " Класс в процессе... " +  this.getClass().getName()+"\n"+
-                                " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                                +"    Service_ДляЗапускаодноразовойСинхронизации  binder");
-                    }
-                }, Context.BIND_AUTO_CREATE);
-         } catch (Exception e ) {
-             e.printStackTrace();
-             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
-             new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                     Thread.currentThread().getStackTrace()[2].getLineNumber());
-         }
-     }
     // TODO: 14.11.2021  ПОВТОРЫЙ ЗАПУСК ВОРК МЕНЕДЖЕР уведомления
 
      public void МетодЗапускаУведомленияЧАТА() {
-
          try {
-
-
              //TODO start broad caset receiver
 
              BroadcastReceiver_Sous_Notificatioons_For_Chats broadcastReceiver_sous_notificatioons_ONEUSING =

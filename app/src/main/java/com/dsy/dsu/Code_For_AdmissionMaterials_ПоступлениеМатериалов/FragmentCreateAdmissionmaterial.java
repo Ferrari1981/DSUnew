@@ -94,7 +94,6 @@ public class FragmentCreateAdmissionmaterial extends Fragment {
     private  Object ВытаскиваемIDМатериаловИзСправочника;
     private  View view=null;
     private      AsyncTaskLoader<Object> asyncTaskLoader;
-    private Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binderAsyns;
     private SharedPreferences preferencesМатериалы;
     private Boolean ФлагЧтоУжепервыйПрогоУжеПрошул=false;
     private  ScrollView scrollViewНовыйматериал;
@@ -103,11 +102,6 @@ public class FragmentCreateAdmissionmaterial extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try{
-      Bundle data=      getArguments();
-            if (data!=null) {
-                binder=  (Service_for_AdminissionMaterial.LocalBinderДляПолучениеМатериалов) data.getBinder("binder");
-                binderAsyns=  (Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации) data.getBinder("binderAsyns");
-            }
             preferencesМатериалы = getContext().getSharedPreferences("sharedPreferencesХранилище", Context.MODE_MULTI_PROCESS);
             Log.d(this.getClass().getName(), "  onCreate  FragmentCreateAdmissionmaterialbinder    "+binder);
         } catch (Exception e) {
@@ -343,7 +337,6 @@ public class FragmentCreateAdmissionmaterial extends Fragment {
         fragmentПолученыеМатериалов = new FragmentAdmissionMaterials();
         Bundle data=new Bundle();
         data.putBinder("binder",binder);
-        data.putBinder("binderAsyns",binderAsyns);
         fragmentПолученыеМатериалов.setArguments(data);
         fragmentTransaction.replace(R.id.activity_admissionmaterias_face, fragmentПолученыеМатериалов).commit();//.layout.activity_for_fragemtb_history_tasks
         fragmentTransaction.show(fragmentПолученыеМатериалов);

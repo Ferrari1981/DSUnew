@@ -105,11 +105,6 @@ public class Fragment5_ViewcreatedTasks extends Fragment {
     private Service_For_Task_Для_Задания_СменаСатуса service_for_task_для_задания_сменаСатуса;
     // TODO: 14.07.2022
     private ServiceConnection connectionДляСменыСтатусаЗадач;
-    // TODO: 02.08.2022  для биндинга одноразовая синхрониазция
-    private Service_ДляЗапускаодноразовойСинхронизации service_дляЗапускаодноразовойСинхронизации;
-
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

@@ -102,9 +102,6 @@ public class Fragment3_Now_Create_Tasks extends Fragment {
 
     // TODO: 04.07.2022
     private BottomNavigationItemView bottomNavigationПринудительныйОбмен;
-    // TODO: 16.03.2022
-    // TODO: 02.08.2022  для биндинга одноразовая синхрониазция
-    private Service_ДляЗапускаодноразовойСинхронизации service_дляЗапускаодноразовойСинхронизации;
 
 
 

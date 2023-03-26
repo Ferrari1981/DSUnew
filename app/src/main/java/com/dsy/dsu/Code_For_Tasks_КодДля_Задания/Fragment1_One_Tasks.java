@@ -43,6 +43,7 @@ import com.dsy.dsu.Business_logic_Only_Class.Class_GRUD_SQL_Operations;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
 import com.dsy.dsu.Business_logic_Only_Class.CREATE_DATABASE;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Business_logic_Only_Class.PUBLIC_CONTENT;
 
 
@@ -99,13 +100,6 @@ public class Fragment1_One_Tasks extends Fragment {
     private    Integer IDДляСкемПереписка=0;
     private Handler handlerTaskFragment1;
     private ProgressBar progressBarTaskFragment1;
-   // private   Observer      observerДляWorkManagerОдноразоваяДляЗадач;
-
-    // TODO: 02.08.2022  для биндинга одноразовая синхрониазция
-    private Service_ДляЗапускаодноразовойСинхронизации service_дляЗапускаодноразовойСинхронизации;
-    // TODO: 01.03.2022--конец перпменные для переноса в другие ФОАГМЕНТЫ1,2,3,4,5
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -166,15 +160,11 @@ public class Fragment1_One_Tasks extends Fragment {
          // TODO: 02.08.2022  инициализация Колл бэка главного потока
 // TODO: 02.08.2022  инициализация recuycrevVIew
          subClassBuccessLogin_главныйКлассБизнесЛогикиФрагмент1.МетодИнициализациHandlerCallBack();
-
-         // TODO: 02.08.2022 инициализация запуска биндинга сдлужбы
-         subClassBuccessLogin_главныйКлассБизнесЛогикиФрагмент1.     МетодЗапускаетБиндингСлужбыДляЗапускаОдноразовойСинхронизаци(getContext());
 // TODO: 04.03.2022
          Log.d(this.getClass().getName(), "  subClassBuccessLogin_главныйКлассБизнесЛогикиФрагмент1 " +
                  "" + subClassBuccessLogin_главныйКлассБизнесЛогикиФрагмент1);
     } catch (Exception e) {
         e.printStackTrace();
-        ///метод запись ошибок в таблицу
         Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                 " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
         new Class_Generation_Errors(getContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
@@ -263,20 +253,10 @@ public class Fragment1_One_Tasks extends Fragment {
             Log.d(this.getClass().getName(), " отработоатл new SubClassBuccessLogin_ГлавныйКлассБизнесЛогикиФрагмент1 onDestroyView  " );
             handlerTaskFragment1.removeCallbacksAndMessages(null);
             WorkManager.getInstance(getContext()).getWorkInfosForUniqueWorkLiveData(ИмяСлужбыWorkmanagerОдноразовая).removeObserver(null);
-            try {
-                getContext().    unbindService(subClassBuccessLogin_главныйКлассБизнесЛогикиФрагмент1.connectionДляОдноразовойСинхронизации);
-            } catch (Exception e) {
-               // e.printStackTrace();
-            }
-            // TODO: 20.02.2022
-           // WorkManager.getInstance(getContext()).getWorkInfosByTagLiveData(ИмяСлужбыWorkmanagerДляВсехЗадач).removeObserver(observerДляWorkManagerОдноразоваяДляЗадач);
-         //   WorkManager.getInstance(getContext()).cancelUniqueWork(ИмяСлужбыСинхронизацииОдноразовая);
-           // handlerTaskFragment1.removeCallbacksAndMessages(null);
             Log.d(this.getClass().getName(), " отработоатл new SubClassBuccessLogin_ГлавныйКлассБизнесЛогикиФрагмент1  ИмяСлужбыСинхронизацииДляЗадачиИзЧата  " +
                     "" + ИмяСлужбыWorkmanagerОдноразовая);
         } catch (Exception e) {
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() +
                     " Линия  :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new Class_Generation_Errors(getContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(),
@@ -2234,88 +2214,26 @@ public class Fragment1_One_Tasks extends Fragment {
                         Thread.currentThread().getStackTrace()[2].getLineNumber());
             }
         }
-        // TODO: 02.08.2022  код ля биндинга службы одноразовой синхронизации
-        public void МетодЗапускаетБиндингСлужбыДляЗапускаОдноразовойСинхронизаци(@NonNull Context context) {
-            try {
-                service_дляЗапускаодноразовойСинхронизации=new Service_ДляЗапускаодноразовойСинхронизации();
-                Intent intentЗапускСлужюыыСинхрониазцииБиндинг = new Intent(context, Service_ДляЗапускаодноразовойСинхронизации.class);
-                context. bindService(intentЗапускСлужюыыСинхрониазцииБиндинг, connectionДляОдноразовойСинхронизации, Context.BIND_AUTO_CREATE);
-            } catch (Exception e) {
-                //  Block of code to handle errors
-                e.printStackTrace();
-                ///метод запись ошибок в таблицу
-                Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                        + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                new Class_Generation_Errors(context).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                        Thread.currentThread().getStackTrace()[2].getLineNumber());
-                // TODO: 11.05.2021 запись ошибок
-            }
-        }
-        private ServiceConnection connectionДляОдноразовойСинхронизации = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                try{
-                    // We've bound to LocalService, cast the IBinder and get LocalService instance
-                    Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binder = (Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации) service;
-                    service_дляЗапускаодноразовойСинхронизации = binder.getService();
-                    Log.d(getContext().getClass().getName(), "\n"
-                            + " время: " + new Date()+"\n+" +
-                            " Класс в процессе... " +  this.getClass().getName()+"\n"+
-                            " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                            +"    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации" +service_дляЗапускаодноразовойСинхронизации);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    new Class_Generation_Errors(getContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                            Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    // TODO: 11.05.2021 запись ошибок
-                }
-            }
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                try{
-                    Log.d(getContext().getClass().getName(), "\n"
-                            + " время: " + new Date()+"\n+" +
-                            " Класс в процессе... " +  this.getClass().getName()+"\n"+
-                            " метод в процессе... " + Thread.currentThread().getStackTrace()[2].getMethodName()
-                            +"    onServiceDisconnected  service_дляЗапускаодноразовойСинхронизации" +service_дляЗапускаодноразовойСинхронизации);
-                } catch (Exception e) {
-                    //  Block of code to handle errors
-                    e.printStackTrace();
-                    ///метод запись ошибок в таблицу
-                    Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
-                            + Thread.currentThread().getStackTrace()[2].getLineNumber());
-                    new Class_Generation_Errors(getContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),
-                            Thread.currentThread().getStackTrace()[2].getLineNumber());
-
-                    // TODO: 11.05.2021 запись ошибок
-
-                }
-            }
-        };
-
-
-        // TODO: 02.08.2022
         void МетодНепосредственногоЗапускаБиндингаОдноразовойСдлужбы(@NonNull  Integer ПубличныйIDДляФрагмента ){
             try{
                 Log.d(getContext().getClass().getName(), "\n"
                         + " ПубличныйIDДляФрагмента: " + ПубличныйIDДляФрагмента);
+                // TODO: 01.02.2022 заПУСКАЕМ сИНХРОНИАЗАЦИЮ С ВСЕХ ЛИСТ ТАБЕЛЕЙ
+                Integer  ПубличныйIDДляСинх=   new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getContext());
                 Bundle bundleДляПЕредачи=new Bundle();
-                bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака",ПубличныйIDДляФрагмента);
-                Intent intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle = new Intent(getContext(), Service_ДляЗапускаодноразовойСинхронизации.class);
-                intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle.putExtras(bundleДляПЕредачи);
-                // TODO: 26.06.2022
-                Log.d(this.getClass().getName(), " ПРОШЕЛ ЗАПУСК  метода МетодПовторногоЗапускаВсехWorkManager__ОДНОРАЗОВОЙСинхрониазцииданных()   " +
-                        "   ПубличныйIDДляФрагмента "+
-                        ПубличныйIDДляФрагмента);
-                intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle.putExtras(bundleДляПЕредачи);
+                bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляСинх);
+                Intent  intentЗапускОднорworkanager=new Intent();
+                intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
                 // TODO: 02.08.2022
-                service_дляЗапускаодноразовойСинхронизации.МетодЗапускаОдноразовойСинхронизацииИзСлужбы(getContext(),intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle);
+                new Class_Generator_One_WORK_MANAGER(getContext()).
+                        МетодОдноразовыйЗапускВоерМенеджера(getContext(),intentЗапускОднорworkanager);
+                // TODO: 26.06.2022
+                Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                        " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                        " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                        + " ПубличныйIDДляОдноразовойСинхронПубличныйIDДляФрагментаиазции "+ПубличныйIDДляФрагмента );
             } catch (Exception e) {
-                //  Block of code to handle errors
                 e.printStackTrace();
-                ///метод запись ошибок в таблицу
                 Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                         + Thread.currentThread().getStackTrace()[2].getLineNumber());
                 new Class_Generation_Errors(getContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),

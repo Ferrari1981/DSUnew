@@ -42,6 +42,7 @@ import android.widget.TextView;
 
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
 import com.dsy.dsu.For_Code_Settings_DSU1.MainActivity_Face_App;
 import com.dsy.dsu.R;
@@ -80,7 +81,6 @@ public class FragmentAdmissionMaterials extends Fragment {
     private MyRecycleViewAdapter myRecycleViewAdapter;
     private MyViewHolder myViewHolder;
     private  Service_for_AdminissionMaterial.LocalBinderДляПолучениеМатериалов binder;
-    private Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binderAsyns;
     private Integer ТекущаяЦФО=0;
     private Integer ТекущаяНомерМатериала=0;
     private String ТекущаяИмяЦФО=new String();
@@ -104,9 +104,6 @@ public class FragmentAdmissionMaterials extends Fragment {
             Bundle data=      getArguments();
             if (data!=null) {
                 binder=  (Service_for_AdminissionMaterial.LocalBinderДляПолучениеМатериалов) data.getBinder("binder");
-            }
-            if (data!=null) {
-                binderAsyns=  (Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации) data.getBinder("binderAsyns");
             }
             Log.d(this.getClass().getName(), "  onViewCreated  FragmentAdmissionMaterials  binder  "+binder);
         } catch (Exception e) {
@@ -335,7 +332,6 @@ public class FragmentAdmissionMaterials extends Fragment {
                         Bundle gameData = new Bundle();
                         gameData.putString("ФлагСтатусИзФрагментаСканирования", "ЗакрываетИзСканирования");
                         gameData.putBinder("binder", binder);
-                        gameData.putBinder("binderAsyns", binderAsyns);
                         Интент_BackВозвращаемАктивти.putExtras(gameData);
                         Log.d(this.getClass().getName(), "  выходим из задания МетодКпопкаВозвращениеНазадИзСогласованиии");
                         handler.postDelayed(()->{ startActivity(Интент_BackВозвращаемАктивти); },500);
@@ -410,7 +406,6 @@ public class FragmentAdmissionMaterials extends Fragment {
             fragment_СозданиеНовогоМатериалов = new FragmentCreateAdmissionmaterial();
             Bundle data=new Bundle();
             data.putBinder("binder",binder);
-            data.putBinder("binderAsyns",binderAsyns);
             fragment_СозданиеНовогоМатериалов.setArguments(data);
             fragmentTransaction.replace(R.id.activity_admissionmaterias_face, fragment_СозданиеНовогоМатериалов).commit();//.layout.activity_for_fragemtb_history_task
             fragmentTransaction.show(fragment_СозданиеНовогоМатериалов);
@@ -432,17 +427,21 @@ public class FragmentAdmissionMaterials extends Fragment {
         try{
             Log.d(getContext().getClass().getName(), "\n"
                     + " ПубличныйIDДляФрагмента: " + ПубличныйIDДляФрагмента);
+            // TODO: 01.02.2022 заПУСКАЕМ сИНХРОНИАЗАЦИЮ С ВСЕХ ЛИСТ ТАБЕЛЕЙ
+            Integer  ПубличныйIDДляАсих=   new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getContext());
             Bundle bundleДляПЕредачи=new Bundle();
-            bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака",ПубличныйIDДляФрагмента);
-            Intent intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle = new Intent(getContext(), Service_ДляЗапускаодноразовойСинхронизации.class);
-            intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle.putExtras(bundleДляПЕредачи);
-            // TODO: 26.06.2022
-            Log.d(this.getClass().getName(), " ПРОШЕЛ ЗАПУСК  метода МетодПовторногоЗапускаВсехWorkManager__ОДНОРАЗОВОЙСинхрониазцииданных()   " +
-                    "   ПубличныйIDДляФрагмента "+
-                    ПубличныйIDДляФрагмента);
-            intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle.putExtras(bundleДляПЕредачи);
+            bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляАсих);
+            Intent  intentЗапускОднорworkanager=new Intent();
+            intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
             // TODO: 02.08.2022
-            binderAsyns.getService().МетодЗапускаОдноразовойСинхронизацииИзСлужбы(getActivity(),intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle);
+            new Class_Generator_One_WORK_MANAGER(getActivity()).
+                    МетодОдноразовыйЗапускВоерМенеджера(getContext(),intentЗапускОднорworkanager);
+            // TODO: 26.06.2022
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                    + " ПубличныйIDДляОдноразовойСинхронПубличныйIDДляФрагментаиазции "+ПубличныйIDДляФрагмента );
+
         } catch (Exception e) {
             //  Block of code to handle errors
             e.printStackTrace();
@@ -1280,7 +1279,6 @@ public class FragmentAdmissionMaterials extends Fragment {
                         fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                             Fragment              fragmentAdmissionMaterialsDetailing = new FragmentAdmissionMaterialsDetailing();
                             bundleПереходДетализацию.putBinder("binder",binder);
-                            bundleПереходДетализацию.putBinder("binderAsyns",binderAsyns);
                             fragmentAdmissionMaterialsDetailing.setArguments(bundleПереходДетализацию);
                             fragmentTransaction.replace(R.id.activity_admissionmaterias_face, fragmentAdmissionMaterialsDetailing);//.layout.activity_for_fragemtb_history_tasks
                             fragmentTransaction.commit();

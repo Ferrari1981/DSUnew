@@ -16,6 +16,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generations_PUBLIC_CURRENT_ID;
+import com.dsy.dsu.Business_logic_Only_Class.Class_Generator_One_WORK_MANAGER;
 import com.dsy.dsu.Code_For_Services.Service_for_AdminissionMaterial;
 import com.dsy.dsu.R;
 
@@ -26,7 +28,6 @@ public class MainActivity_AdmissionMaterials extends AppCompatActivity {
     private Fragment fragment_ДляПолучениеМатериалов;
     private LinearLayout activity_admissionmaterias_face,activity_admissionmaterias_down;
     private  Service_for_AdminissionMaterial.LocalBinderДляПолучениеМатериалов binder;
-    private Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации binderAsyns;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +55,6 @@ public class MainActivity_AdmissionMaterials extends AppCompatActivity {
             if (data!=null) {
                 binder=  (Service_for_AdminissionMaterial.LocalBinderДляПолучениеМатериалов) data.getBinder("binder");
             }
-            if (data!=null) {
-                binderAsyns=  (Service_ДляЗапускаодноразовойСинхронизации.LocalBinderДляЗапускаОдноразовойСнхронизации) data.getBinder("binderAsyns");
-            }
             Log.d(this.getClass().getName(), "  onViewCreated  FragmentAdmissionMaterials  binder  "+binder);
             // TODO: 27.09.2022  запускаем фрагмент получение материалов
             МетодЗапускФрагментаПриемМатериалов();
@@ -81,7 +79,6 @@ public class MainActivity_AdmissionMaterials extends AppCompatActivity {
             fragment_ДляПолучениеМатериалов = new FragmentAdmissionMaterials();
             Bundle data=new Bundle();
             data.putBinder("binder",binder);
-            data.putBinder("binderAsyns",binderAsyns);
             fragment_ДляПолучениеМатериалов.setArguments(data);
             fragmentTransaction.add(R.id.activity_admissionmaterias_face, fragment_ДляПолучениеМатериалов);//.layout.activity_for_fragemtb_history_tasks
             fragmentTransaction.commit();
@@ -107,21 +104,22 @@ public class MainActivity_AdmissionMaterials extends AppCompatActivity {
         try{
             Log.d(getApplicationContext().getClass().getName(), "\n"
                     + " ПубличныйIDДляФрагмента: " + ПубличныйIDДляФрагмента);
+            // TODO: 01.02.2022 заПУСКАЕМ сИНХРОНИАЗАЦИЮ С ВСЕХ ЛИСТ ТАБЕЛЕЙ
+            Integer  ПубличныйIDДляАсинх=   new Class_Generations_PUBLIC_CURRENT_ID().ПолучениеПубличногоТекущегоПользователяID(getApplicationContext());
             Bundle bundleДляПЕредачи=new Bundle();
-            bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака",ПубличныйIDДляФрагмента);
-            Intent intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle = new Intent(getApplicationContext(), Service_ДляЗапускаодноразовойСинхронизации.class);
-            intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle.putExtras(bundleДляПЕредачи);
-            // TODO: 26.06.2022
-            Log.d(this.getClass().getName(), " ПРОШЕЛ ЗАПУСК  метода МетодПовторногоЗапускаВсехWorkManager__ОДНОРАЗОВОЙСинхрониазцииданных()   " +
-                    "   ПубличныйIDДляФрагмента "+
-                    ПубличныйIDДляФрагмента);
-            intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle.putExtras(bundleДляПЕредачи);
+            bundleДляПЕредачи.putInt("IDПубличныйНеМойАСкемБылаПереписака", ПубличныйIDДляАсинх);
+            Intent  intentЗапускОднорworkanager=new Intent();
+            intentЗапускОднорworkanager.putExtras(bundleДляПЕредачи);
             // TODO: 02.08.2022
-            binderAsyns.getService().МетодЗапускаОдноразовойСинхронизацииИзСлужбы(getApplicationContext(),intentЗапускСлужюыыСинхрониазцииЧерезСлужбуBundle);
+            new Class_Generator_One_WORK_MANAGER(getApplicationContext()).
+                    МетодОдноразовыйЗапускВоерМенеджера(getApplicationContext(),intentЗапускОднорworkanager);
+            // TODO: 26.06.2022
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n"
+                    + " ПубличныйIDДляОдноразовойСинхронПубличныйIDДляФрагментаиазции "+ПубличныйIDДляФрагмента );
         } catch (Exception e) {
-            //  Block of code to handle errors
             e.printStackTrace();
-            ///метод запись ошибок в таблицу
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
             new Class_Generation_Errors(getApplicationContext()).МетодЗаписиВЖурналНовойОшибки(e.toString(), this.getClass().getName(), Thread.currentThread().getStackTrace()[2].getMethodName(),

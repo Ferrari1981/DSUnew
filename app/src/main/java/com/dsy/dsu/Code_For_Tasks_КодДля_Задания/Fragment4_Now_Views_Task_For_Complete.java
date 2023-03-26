@@ -109,13 +109,6 @@ public class Fragment4_Now_Views_Task_For_Complete extends Fragment {
     // TODO: 05.07.2022
     @Inject
     private  Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal class_generation_sendBroadcastReceiver_and_firebase_oneSignal;
-    // TODO: 02.08.2022  для биндинга одноразовая синхрониазция
-    private Service_ДляЗапускаодноразовойСинхронизации service_дляЗапускаодноразовойСинхронизации;
-
-
-    // TODO: 01.03.2022--конец перпменные для переноса в другие ФОАГМЕНТЫ1,2,3,4,5
-
-    // TODO: 16.03.2022
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

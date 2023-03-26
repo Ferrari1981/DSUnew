@@ -1,35 +1,22 @@
 package com.dsy.dsu.Code_For_WorkManagers;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Context;
-import android.content.Intent;
-import android.os.ParcelUuid;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.work.Data;
-import androidx.work.WorkInfo;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.dsy.dsu.Business_logic_Only_Class.Class_Generation_Errors;
-import com.dsy.dsu.Code_For_Firebase_AndOneSignal_Здесь_КодДЛяСлужбыУведомленияFirebase.Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import javax.inject.Inject;
 public class MyWork_ScannerBluetooth_ДляПосикаДевайсов extends Worker {
     private Context Контекст;
     private String ИмяСлужбыСинхронизации = "WorkManager ScannerBluetooth";

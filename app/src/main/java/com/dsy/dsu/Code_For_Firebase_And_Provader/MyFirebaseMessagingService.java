@@ -14,8 +14,6 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
-import javax.inject.Inject;
-
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
   private Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal class_generation_sendBroadcastReceiver_and_firebase_oneSignal;
     // TODO: 02.12.2021
