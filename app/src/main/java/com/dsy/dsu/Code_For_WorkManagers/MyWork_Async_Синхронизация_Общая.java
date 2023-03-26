@@ -147,9 +147,6 @@ public class MyWork_Async_Синхронизация_Общая extends Worker {
     public Result doWork() {
         try {
             // TODO: 25.03.2023  ждем биндинга с службой синхронизации
-            while (localBinderAsync ==null);
-            // TODO: 26.03.2023
-            while (localBinderОбщий==null);
             class_generation_sendBroadcastReceiver_and_firebase_oneSignal = new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(getApplicationContext());
 // TODO: 10.12.2022  РЕГЕСТИРУЕМСЯ НА ONESIGNAL FIREBASE
             МетодРегистрацииУстройсвоНАFirebaseAndOneSignal();

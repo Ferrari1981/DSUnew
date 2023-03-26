@@ -61,6 +61,10 @@ public class Class_Generator_One_WORK_MANAGER extends  Class_GRUD_SQL_Operations
                             .build();//      .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             WorkManager.getInstance(context).enqueueUniqueWork(ИмяСлужбыСинхронизацииОдноразовая,
                     ExistingWorkPolicy.APPEND_OR_REPLACE, OneTimeWorkЗапускФОновойСинхрониазциииИзНУтриТабеля);
+//////////20.15
+            Log.d(this.getClass().getName(),"\n" + " class " + Thread.currentThread().getStackTrace()[2].getClassName() + "\n" +
+                    " metod " + Thread.currentThread().getStackTrace()[2].getMethodName() + "\n" +
+                    " line " + Thread.currentThread().getStackTrace()[2].getLineNumber() + "\n");
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(this.getClass().getName(), "Ошибка " + e + " Метод :" + Thread.currentThread().getStackTrace()[2].getMethodName() + " Линия  :"

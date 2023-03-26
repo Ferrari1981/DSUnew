@@ -126,7 +126,6 @@ public class MyWork_Async_Синхронизация_Одноразовая exte
     public Result doWork() {
         Data    myDataОтветОдноразовойСлужбы=null;
  try{
-     while (locaBinderAsync==null);
      class_generation_sendBroadcastReceiver_and_firebase_oneSignallass=
              new Class_Generation_SendBroadcastReceiver_And_Firebase_OneSignal(context);
      // TODO: 12.10.2022  КТО ЗАПУСТИЛ
